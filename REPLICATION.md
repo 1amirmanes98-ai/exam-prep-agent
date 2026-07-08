@@ -87,8 +87,38 @@ first Pages deploy may fail "Resource not accessible" → user sets Settings →
 
 Mock exams (generate ONE, solve-first, numeric sanity-check — ≈40k each);
 cheat sheet (compile from index with per-item source check — ≈80k); figures
-(write per-course, computed not drawn); full adversarial audit (≈150–300k —
-worth it, but run ONE audit pass at the end, not after every phase).
+(see Phase 7); full adversarial audit (≈150–300k — worth it, but run ONE audit
+pass at the end, not after every phase).
+
+## Phase 7 — Illustrations, diagrams & figures (≈40–80k tokens)
+
+Rules that keep figures an asset instead of a liability in a rigor-focused course:
+
+1. **Computed, never hand-drawn.** Every curve must be produced live in the page
+   by integrating/simulating the stated equation (RK4/Euler ODE integration, real
+   GD iterates, fixed-seed Monte-Carlo) — a subtly wrong hand-drawn figure is
+   worse than none. Diagrammatic figures (decompositions, covers) are allowed
+   only when they depict a *definition*, not a behavior.
+2. **Where they live in the code:** the `FIGS` registry + `FIG_TOPIC_MAP` /
+   `FIG_MEMO_MAP` blocks in `site_template.html` are the ONE sanctioned
+   course-specific edit to the template (everything else stays verbatim). Each
+   entry = { title, pillar (a config slot), caption, draw(canvas) }. Use
+   `figCanvas()` (dpr-aware) and `cssVar()` for theme colors — figures must
+   redraw correctly on theme toggle (already wired).
+3. **Pick 4–8 concepts where geometry IS the insight** (a flow riding a conserved
+   quantity, rates separating, a projection, a cover, oscillations doubling).
+   Skip decorative network diagrams and stock imagery — zero exam value.
+4. **Mounting:** map by regex onto topic names and cheat-sheet item names; they
+   render as collapsed 📈 nodes (lazy-drawn), so they add no page weight or
+   clutter. Never mount inside exam questions/solutions — figures earn no exam
+   points and answers should model full-credit *written* arguments.
+5. **Captions state the exact model** ("Computed: σ̇ᵣ = −3(σᵣ²)^(2/3)(σᵣ−σᵣ*)
+   from σ(0)=0.01") and cite the lecture; captions are indexed by Ask
+   automatically. Raster images/photos are a last resort: the site must stay
+   self-contained, so anything external would need embedding as a data: URI —
+   prefer canvas.
+6. **Verify visually once**: expand each figure in headless Chromium, screenshot,
+   and eyeball that the computed behavior matches the theorem it illustrates.
 
 ## Phase 6 — Hebrew-language course (do this ONLY when one actually exists)
 
