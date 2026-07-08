@@ -3,9 +3,9 @@ name: exam
 description: Full mock exam under exam conditions with strict grading — a real past exam or a freshly generated one. Works for both tutored courses (FODL 3q/~105pts; Intro to Statistics 4q/100pts+bonus). Use for "/exam", "/exam past a_2023", "/exam new", "give me a mock exam".
 ---
 
-This repo hosts two exam tutors: **FODL** (`dl-exam-agent/`) and **Intro to
-Statistics** (`stats-exam-agent/`). Pick the course from context or the nearer exam;
-if genuinely ambiguous, ask once (exam ids like `a_2023` exist in both). Below,
+This repo hosts three exam tutors: **FODL** (`dl-exam-agent/`), **Intro to
+Statistics** (`stats-exam-agent/`), and **Reinforcement Learning** (`rl-exam-agent/`). Pick the course from context or the nearer exam;
+if genuinely ambiguous, ask once (exam ids like `a_2023` exist in more than one course). Below,
 `<agent>` = the chosen directory. If you haven't this session, read
 `<agent>/AGENT.md` and follow it.
 
@@ -16,8 +16,7 @@ most reliably) or `new` if all are taken; let the user choose.
 
 ## Administering
 
-**Past exam:** load `<agent>/index/exams/<prefix>_<id>.md` (FODL prefix `fodl_exam`,
-Statistics prefix `stats_exam`). Present the full translated exam (all questions and
+**Past exam:** load `<agent>/index/exams/<prefix>_<id>.md` (FODL prefix `fodl_exam`, Statistics prefix `stats_exam`, RL no prefix e.g. `a_2023`). Present the full translated exam (all questions and
 sub-parts with points). Offer the original Hebrew (Read the PDF pages) — practicing
 on the Hebrew original is closest to the real thing.
 

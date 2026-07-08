@@ -159,3 +159,44 @@ buttons: גלה את הפתרון · ידעתי ✓ · כמעט ◐ · פספס�
 - Agents batching all writes to the end, then dying (rate limits) — write-as-you-go.
 - Debugging LaTeX/quirks/Pages issues from scratch — they're already solved here;
   read this file and the commit history instead.
+
+## Engine updates & lessons (from the RL replication — the 3rd course)
+
+The RL agent (`rl-exam-agent/`, a 4-pillar Hebrew-exam course) refined the engine and the
+process. Copy new agents' `scripts/` from the **most up-to-date** agent — currently
+`rl-exam-agent/scripts/` — which adds, all still driven by `SITE_CONFIG.json`:
+
+- **Config-driven pillar count (3 or 4).** A slot is a hero pillar (gets a card, template-bar
+  segment, and topic/flashcard/quiz filter) **iff it has a `slotRole`**; any extra slot with no
+  role is the misc/catch-all bucket. So FODL/stats (3 roles) render 3 pillars and RL (4 roles)
+  renders 4 — no template edit, no hard-coded "3". Put exactly as many entries in `slotRoles`
+  as you want hero pillars.
+- **Two-tier solutions.** Each question can show a short **`**Hint:**`** fold above a
+  **`**Full solution:**`** fold. Past-exam files just keep their worked solution (rendered as
+  "Full solution"); mocks put `**Hint:**` / `**Full solution:**` in each `## QN` solutions block.
+- **Mock total** is derived from the sum of the mock's question points (no hard-coded value).
+
+Caveat: the `dl-`/`stats-` script copies additionally carry the **Hebrew RTL** UI patch
+(`contrib/hebrew-rtl.patch`) that only a Hebrew-language *site* needs — so the templates have
+legitimately diverged (RTL vs. the newer engine). Reconcile them into one shared template the
+next time a Hebrew course needs the newer features; an English course (like RL) just uses the
+newer engine directly.
+
+Process lessons that made this replication cheaper/faster:
+
+- **Materials are often already sorted.** If the user hands you clean per-category folders,
+  skip re-sorting — map them straight into `materials/{lectures,recitations,exams,...}`.
+- **Hebrew (or scanned) exams are the cost center** — their text mirrors are RTL-garbled, so
+  agents must *visually* Read the PDF pages. English lecture/recitation slides index fine from
+  the cheap `pdftotext`/pymupdf mirrors; reserve visual reads for exams and formula checks.
+- **Fan out ~1 agent per 2–3 files** (≈16 for a full course), each given the exact output
+  format and told to **write-as-you-go**; then run a tiny **format-validation script** (grep for
+  the required `## Q`, `**Pillar:**`, `**Statement:**`, `**Solution sketch:**` markers, and that
+  points sum to the exam total) before building — it catches parser-breaking mistakes for free.
+- **Synthesize `TOPICS.md` + `EXAM_MAP.md` yourself** after indexing, by parsing the generated
+  `index/exams/*.md` for each question's pillar/points/topics — that gives you real recurring-
+  archetype **frequencies** (e.g. "Q1 Planning 13/13, Q3 Approximation 13/13") to drive the
+  dashboard and the mock design, instead of guessing.
+- **Verify once with a headless-Chromium script**, not screenshots-per-edit: zero console
+  errors; KaTeX count > 0 on an exam page **and** on the raw quirks-mode fragment; a mock parses
+  to the right pillars/total; localStorage survives reload. One run per phase.

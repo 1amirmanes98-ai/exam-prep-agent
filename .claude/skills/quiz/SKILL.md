@@ -3,8 +3,8 @@ name: quiz
 description: Adaptive graded quiz on course topics, one question at a time with points and feedback. Works for both tutored courses (FODL and Intro to Statistics). Use when the user wants to be tested (e.g. "/quiz", "/quiz generalization", "/quiz hypothesis testing", "test me on confidence intervals").
 ---
 
-This repo hosts two exam tutors: **FODL** (`dl-exam-agent/`) and **Intro to
-Statistics** (`stats-exam-agent/`). Pick the course from the topic/context or the
+This repo hosts three exam tutors: **FODL** (`dl-exam-agent/`), **Intro to
+Statistics** (`stats-exam-agent/`), and **Reinforcement Learning** (`rl-exam-agent/`). Pick the course from the topic/context or the
 nearer exam; if genuinely ambiguous, ask once. Below, `<agent>` = the chosen
 directory. If you haven't this session, read `<agent>/AGENT.md` and follow it.
 
