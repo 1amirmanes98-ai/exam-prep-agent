@@ -41,6 +41,12 @@ DEFAULT_CONFIG = {
                        "NTK convergence", "Telgarsky sawtooth depth separation",
                        "PAC-Bayes bound"],
     "figures": True,  # the built-in computed figures are FODL-specific; set false elsewhere
+    # Phase 6 (RTL/i18n): direction, language, and a UI strings object. Defaults are
+    # English LTR; a Hebrew course sets "dir":"rtl","lang":"he" and fills "ui" (the
+    # template reads every UI string via CONFIG.ui.<key> with English fallbacks).
+    "dir": "ltr",
+    "lang": "en",
+    "ui": {},
 }
 CONFIG = dict(DEFAULT_CONFIG)
 

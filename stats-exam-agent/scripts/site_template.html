@@ -42,11 +42,11 @@ a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 
 /* ---------- nav ---------- */
-.rail{border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.rail{border-inline-end:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
 .brand{font-family:var(--serif);font-size:1.25rem;font-weight:700;letter-spacing:.01em;padding:0 10px 4px}
 .brand small{display:block;font-family:var(--sans);font-weight:500;font-size:.68rem;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-top:2px}
 .rail nav{display:flex;flex-direction:column;gap:2px;margin-top:14px}
-.navbtn{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;background:none;border-radius:8px;color:var(--muted);text-align:left;font-weight:550}
+.navbtn{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;background:none;border-radius:8px;color:var(--muted);text-align:start;font-weight:550}
 .navbtn svg{flex:0 0 auto}
 .navbtn:hover{background:var(--surface2)}
 .navbtn.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
@@ -55,7 +55,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .themebtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 10px;color:var(--muted);font-size:.85rem}
 
 /* ---------- main ---------- */
-main{padding:30px clamp(16px,4vw,44px) 90px;max-width:980px;width:100%;margin:0 auto}
+main{padding:30px clamp(16px,4vw,44px) 90px;max-width:980px;width:100%;margin:0 auto;min-width:0}
 section{display:none}
 section.on{display:block}
 h1{font-family:var(--serif);font-size:1.7rem;margin:0 0 4px;text-wrap:balance}
@@ -70,7 +70,7 @@ h2{font-family:var(--serif);font-size:1.22rem;margin:30px 0 12px}
 .p-Practices{--pc:var(--prac)}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--pc);background:color-mix(in srgb,var(--pc) 12%,transparent);border-radius:999px;padding:3px 10px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--pc);flex:0 0 auto}
-.chip{display:inline-block;font-family:var(--mono);font-size:.72rem;color:var(--muted);background:var(--surface2);border-radius:6px;padding:2px 7px;margin:2px 3px 2px 0}
+.chip{display:inline-block;font-family:var(--mono);font-size:.72rem;color:var(--muted);background:var(--surface2);border-radius:6px;padding:2px 7px;margin-block:2px;margin-inline:0 3px}
 .pts{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.8rem;color:var(--muted)}
 
 /* ---------- dashboard ---------- */
@@ -79,7 +79,7 @@ h2{font-family:var(--serif);font-size:1.22rem;margin:30px 0 12px}
 .pillarcard h3{font-family:var(--serif);margin:10px 0 2px;font-size:1.06rem}
 .pillarcard .role{font-size:.78rem;color:var(--muted)}
 .pillarcard .avg{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.7rem;font-weight:600;color:var(--pc);margin-top:10px}
-.pillarcard .avg small{font-size:.72rem;color:var(--muted);font-weight:400;margin-left:4px}
+.pillarcard .avg small{font-size:.72rem;color:var(--muted);font-weight:400;margin-inline-start:4px}
 .pillarcard svg{color:var(--pc);display:block}
 .tmplbar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:16px 0 6px}
 .tmplbar div{height:100%}
@@ -89,7 +89,7 @@ h2{font-family:var(--serif);font-size:1.22rem;margin:30px 0 12px}
 .stat{padding:14px 16px}
 .stat .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.5rem;font-weight:600}
 .stat .k{font-size:.76rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
-.arch{padding:12px 16px;display:flex;gap:12px;align-items:baseline;border-bottom:1px solid var(--line);width:100%;border-left:0;border-right:0;border-top:0;background:none;text-align:left;font:inherit;cursor:pointer}
+.arch{padding:12px 16px;display:flex;gap:12px;align-items:baseline;border-bottom:1px solid var(--line);width:100%;border-inline:0;border-top:0;background:none;text-align:start;font:inherit;cursor:pointer}
 .arch:hover{background:var(--surface2)}
 .arch:last-child{border-bottom:0}
 .arch .go{color:var(--muted);flex:0 0 auto}
@@ -102,7 +102,7 @@ details.notesec-d .secbody{padding:0 0 14px;overflow-x:auto}
 .figbody canvas{display:block}
 .figcap{font-size:.8rem;color:var(--muted);margin:8px 0 0;max-width:64ch}
 .arch .n{font-family:var(--mono);color:var(--muted);font-size:.8rem;flex:0 0 1.4em}
-.arch .freq{margin-left:auto;white-space:nowrap;flex:0 0 auto;letter-spacing:2px;color:var(--pc);font-size:.72rem}
+.arch .freq{margin-inline-start:auto;white-space:nowrap;flex:0 0 auto;letter-spacing:2px;color:var(--pc);font-size:.72rem}
 .datebox{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .datebox input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .count{font-family:var(--serif);font-size:1.05rem}
@@ -117,19 +117,19 @@ details.notesec-d .secbody{padding:0 0 14px;overflow-x:auto}
 .topicrow .t{font-weight:600;grid-column:2}
 .topicrow .meta{grid-column:2;font-size:.8rem;color:var(--muted)}
 .topicrow .stripe{grid-column:1;grid-row:1/span 2;width:4px;border-radius:2px;background:var(--pc)}
-.prio{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:1px}
+.prio{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-inline-start:8px;vertical-align:1px}
 .prio.core{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
 .prio.frequent{background:color-mix(in srgb,var(--gen) 16%,transparent);color:var(--gen)}
 .prio.seen{background:var(--surface2);color:var(--muted)}
 
 /* ---------- exams ---------- */
 .examgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
-.examcard{padding:16px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
+.examcard{padding:16px;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
 .examcard:hover{border-color:var(--muted)}
 .examcard h3{margin:0 0 8px;font-family:var(--serif);font-size:1.02rem}
 .examcard .qrow{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);padding:2px 0}
 .qcard{margin-top:16px;overflow:hidden}
-.qhead{padding:16px 18px;border-left:4px solid var(--pc);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.qhead{padding:16px 18px;border-inline-start:4px solid var(--pc);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
 .qhead h3{font-family:var(--serif);margin:0;font-size:1.05rem;flex:1 1 300px}
 .qbody{padding:4px 18px 16px;border-top:1px solid var(--line);overflow-x:auto}
 .qbody .katex-display{margin:.7em 0}
@@ -166,7 +166,7 @@ details.sketch .inner{padding:0 16px 12px;overflow-x:auto}
 .topicrow.click:hover{background:var(--surface2)}
 .topicrow .go{grid-column:3;grid-row:1/span 2;align-self:center;color:var(--muted)}
 .topicrow.click{grid-template-columns:auto 1fr auto}
-.scopechip{display:inline-flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--pc,var(--ink)) 10%,transparent);color:var(--pc,var(--ink));border:1px solid color-mix(in srgb,var(--pc,var(--ink)) 40%,transparent);border-radius:999px;padding:5px 8px 5px 14px;font-size:.85rem;font-weight:600}
+.scopechip{display:inline-flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--pc,var(--ink)) 10%,transparent);color:var(--pc,var(--ink));border:1px solid color-mix(in srgb,var(--pc,var(--ink)) 40%,transparent);border-radius:999px;padding-block:5px;padding-inline:14px 8px;font-size:.85rem;font-weight:600}
 .scopechip button{border:0;background:none;color:inherit;font-size:1rem;padding:0 4px;line-height:1}
 details.note{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);margin-top:12px;box-shadow:var(--shadow)}
 details.note>summary{cursor:pointer;padding:14px 18px;font-family:var(--serif);font-weight:700;list-style:none;display:flex;gap:10px;align-items:baseline}
@@ -177,14 +177,14 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 .notesec{overflow-x:auto}
 .askbox{display:flex;gap:10px;margin:14px 0 6px}
 .askbox input{flex:1;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
-.hit{padding:16px 18px;border-left:4px solid var(--pc,var(--ink));margin-top:12px;overflow-x:auto}
+.hit{padding:16px 18px;border-inline-start:4px solid var(--pc,var(--ink));margin-top:12px;overflow-x:auto}
 .hit .src{font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;color:var(--pc,var(--muted));font-weight:700;margin-bottom:8px}
 .hit .src .sec{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:500}
 .hit .src .srcbtn{border:0;background:none;padding:0;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;font-weight:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .suggest{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 
 /* memorize tab */
-.memoitem{padding:14px 16px 14px 14px;margin-top:10px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;border-left:4px solid var(--pc,var(--line))}
+.memoitem{padding:14px 16px;margin-top:10px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;border-inline-start:4px solid var(--pc,var(--line))}
 .memoitem.known{opacity:.62}
 .memoitem input[type=checkbox]{width:19px;height:19px;accent-color:var(--good);margin-top:2px;cursor:pointer}
 .memoitem .iname{font-weight:650;font-family:var(--serif);font-size:1.02rem}
@@ -195,11 +195,13 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 .memoitem .seen{margin-top:6px}
 .memosec{display:flex;align-items:baseline;gap:12px;margin:26px 0 4px}
 .memosec h2{margin:0}
-.memosec .pts{margin-left:auto}
+.memosec .pts{margin-inline-start:auto}
 
+/* LTR islands: math/code never flip inside RTL text */
+.katex,.katex-display,code,pre,.pts,.chip,.diff{direction:ltr;unicode-bidi:isolate}
 /* markdown inside cards */
 .md p{margin:.5em 0}
-.md ul,.md ol{margin:.4em 0;padding-left:1.4em}
+.md ul,.md ol{margin:.4em 0;padding-inline-start:1.4em}
 .md li{margin:.25em 0}
 .md strong{font-weight:650}
 .md code{font-family:var(--mono);font-size:.85em;background:var(--surface2);border-radius:4px;padding:1px 4px}
@@ -222,7 +224,7 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     <div class="brand" id="brand"></div>
     <nav id="nav"></nav>
     <div class="spacer"></div>
-    <button class="themebtn" id="themeToggle" type="button">◐ Theme</button>
+    <button class="themebtn" id="themeToggle" type="button" data-i18n="theme">◐ Theme</button>
   </aside>
   <main>
     <section id="view-dash">
@@ -232,25 +234,25 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
         <div class="datebox">
           <span class="count" id="daysLeft"></span>
           <span style="flex:1"></span>
-          <label for="examDate" style="font-size:.85rem;color:var(--muted)">Exam date</label>
+          <label for="examDate" style="font-size:.85rem;color:var(--muted)" data-i18n="examDate">Exam date</label>
           <input type="date" id="examDate">
         </div>
       </div>
       <div class="hero" id="pillarCards"></div>
-      <h2>One exam, three slots — average points per question</h2>
+      <h2 data-i18n="hTemplate">One exam, three slots — average points per question</h2>
       <div class="card" style="padding:18px 20px">
         <div class="tmplbar" id="tmplBar"></div>
         <div class="legendrow" id="tmplLegend"></div>
       </div>
-      <h2>Recurring question archetypes <span class="pts">(drill these — they repeat across years)</span></h2>
+      <h2><span data-i18n="hArchetypes">Recurring question archetypes</span> <span class="pts" data-i18n="hArchetypesNote">(drill these — they repeat across years)</span></h2>
       <div class="card" id="archList"></div>
-      <h2>Your progress <span class="pts">(saved in this browser)</span></h2>
+      <h2><span data-i18n="hProgress">Your progress</span> <span class="pts" data-i18n="hProgressNote">(saved in this browser)</span></h2>
       <div class="statrow" id="statRow"></div>
     </section>
 
     <section id="view-topics">
-      <h1>Topic map</h1>
-      <p class="sub">Every syllabus topic, where it's taught, and every exam question that tested it. Priorities reflect how often the graders actually ask.</p>
+      <h1 data-i18n="topicMapTitle">Topic map</h1>
+      <p class="sub" data-i18n="topicMapSub">Every syllabus topic, where it's taught, and every exam question that tested it. Priorities reflect how often the graders actually ask.</p>
       <div id="topicHome">
         <div class="filters" id="topicFilters"></div>
         <div class="card" id="topicList"></div>
@@ -259,31 +261,31 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     </section>
 
     <section id="view-ask">
-      <h1>Ask the course</h1>
-      <p class="sub">Type a question or a term — retrieval over <b>everything on this site</b>: lecture/recitation/homework notes, all exams with their solution sketches, the cheat sheet, and the topic map. You get a direct where-does-it-appear answer plus verbatim quoted passages. (For worked answers and grading, ask your tutor in a Claude session; this searches, it doesn't think.)</p>
+      <h1 data-i18n="askTitle">Ask the course</h1>
+      <p class="sub" data-i18n="askSub">Type a question or a term — retrieval over <b>everything on this site</b>: lecture/recitation/homework notes, all exams with their solution sketches, the cheat sheet, and the topic map. You get a direct where-does-it-appear answer plus verbatim quoted passages. (For worked answers and grading, ask your tutor in a Claude session; this searches, it doesn't think.)</p>
       <p class="pts" id="askCorpus" style="margin:0 0 10px"></p>
       <div class="askbox">
         <input id="askInput" type="search" placeholder="e.g. why does balancedness hold under gradient flow?" aria-label="Ask the lecture notes">
-        <button class="btn primary" id="askBtn" type="button">Ask</button>
+        <button class="btn primary" id="askBtn" type="button" data-i18n="askBtn">Ask</button>
       </div>
       <div class="suggest" id="askSuggest"></div>
       <div id="askResults"></div>
     </section>
 
     <section id="view-exams">
-      <h1>Past exams, 2020–2024</h1>
-      <p class="sub">All 12 exams translated to English with per-question topic tags and collapsible solution sketches. Colors mark the pillar of each question.</p>
+      <h1 data-i18n="examsTitle">Past exams, 2020–2024</h1>
+      <p class="sub" data-i18n="examsSub">All 12 exams translated to English with per-question topic tags and collapsible solution sketches. Colors mark the pillar of each question.</p>
       <div id="examHome">
         <div class="examgrid" id="examGrid"></div>
-        <h2 id="mockHead" style="display:none">Mock exams — generated by your tutor <span class="pts">(novel variants, never copies; solutions sealed below each question)</span></h2>
+        <h2 id="mockHead" style="display:none"><span data-i18n="hMocks">Mock exams — generated by your tutor</span> <span class="pts" data-i18n="hMocksNote">(novel variants, never copies; solutions sealed below each question)</span></h2>
         <div class="examgrid" id="mockGrid"></div>
       </div>
       <div id="examDetail" style="display:none"></div>
     </section>
 
     <section id="view-flash">
-      <h1>Flashcards</h1>
-      <p class="sub">Definitions and theorems extracted from the lecture notes. The real exam allows no formula sheet — exact statements, with all conditions, are the bar.</p>
+      <h1 data-i18n="flashTitle">Flashcards</h1>
+      <p class="sub" data-i18n="flashSub">Definitions and theorems extracted from the lecture notes. The real exam allows no formula sheet — exact statements, with all conditions, are the bar.</p>
       <div class="filters" id="flashFilters"></div>
       <div class="deckmeta" id="deckMeta"></div>
       <div class="progressbar"><div id="flashProg" style="width:0%"></div></div>
@@ -291,8 +293,8 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     </section>
 
     <section id="view-memo">
-      <h1>Know these cold</h1>
-      <p class="sub">The exam allows no aid material. This is the curated list of theorems, formulas, and canonical examples worth hard memorization — with the exact statement, when to reach for it, and where past exams used it. Tick what you already know; it saves in this browser.</p>
+      <h1 data-i18n="memoTitle">Know these cold</h1>
+      <p class="sub" data-i18n="memoSub">The exam allows no aid material. This is the curated list of theorems, formulas, and canonical examples worth hard memorization — with the exact statement, when to reach for it, and where past exams used it. Tick what you already know; it saves in this browser.</p>
       <div class="card" style="padding:14px 18px;margin-bottom:6px">
         <div class="deckmeta" id="memoStats" style="margin:0"></div>
         <div class="progressbar" style="margin:10px 0 2px"><div id="memoProg" style="width:0%;background:var(--good)"></div></div>
@@ -301,11 +303,11 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     </section>
 
     <section id="view-quiz">
-      <h1>Quiz — real exam questions</h1>
-      <p class="sub">A random past-exam question. Solve it on paper like the real thing, then reveal the sketch and grade yourself honestly.</p>
+      <h1 data-i18n="quizTitle">Quiz — real exam questions</h1>
+      <p class="sub" data-i18n="quizSub">A random past-exam question. Solve it on paper like the real thing, then reveal the sketch and grade yourself honestly.</p>
       <div class="filters" id="quizFilters"></div>
       <div id="quizArea"></div>
-      <h2>Weak spots <span class="pts">(from your self-grades)</span></h2>
+      <h2><span data-i18n="hWeak">Weak spots</span> <span class="pts" data-i18n="hWeakNote">(from your self-grades)</span></h2>
       <div class="card" id="weakList"><div class="empty">Answer a few questions and your weak topics will show up here.</div></div>
     </section>
     <section id="view-qset">
@@ -326,6 +328,13 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 "use strict";
 const CONFIG = JSON.parse(document.getElementById("config").textContent);
 const DATA = JSON.parse(document.getElementById("data").textContent);
+// Phase 6 (RTL/i18n): direction, language, and every UI string come from CONFIG
+// with English fallbacks in code, so this template stays course-agnostic.
+document.documentElement.dir = CONFIG.dir || "ltr";
+document.documentElement.lang = CONFIG.lang || "en";
+const UI = CONFIG.ui || {};
+const t = (k, fb) => (UI[k] != null ? UI[k] : fb);
+function applyStaticI18n(){ document.querySelectorAll("[data-i18n]").forEach(el => { const v = UI[el.dataset.i18n]; if (v != null) el.textContent = v; }); const ai = document.getElementById("askInput"); if (ai && UI.askPlaceholder) ai.setAttribute("placeholder", UI.askPlaceholder); }
 const $ = (s, el) => (el || document).querySelector(s);
 // Categories come from SITE_CONFIG.json ("slots", single-word names); the first
 // three are the primary categories, the last is the misc bucket. Colors map to
@@ -344,6 +353,7 @@ const PILLARS = CONFIG.slots.slice(0, 3);
     (CONFIG.courseSubtitle ? "<small>" + CONFIG.courseSubtitle + "</small>" : "");
   document.getElementById("heroTitle").textContent = CONFIG.heroTitle;
   document.getElementById("heroSub").textContent = CONFIG.heroSub;
+  applyStaticI18n();
 })();
 const ICONS = {
   dash: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1"/><rect x="9" y="9" width="5.5" height="5.5" rx="1"/></svg>',
@@ -391,10 +401,10 @@ function mathify(el) {
     throwOnError: false
   });
 }
-function setMd(el, src) { el.innerHTML = md(src); el.classList.add("md"); mathify(el); }
+function setMd(el, src) { el.innerHTML = md(src); el.classList.add("md"); el.setAttribute("dir", "auto"); mathify(el); }
 
 /* ---------- nav ---------- */
-const VIEWS = [["dash", "Overview"], ["topics", "Topics"], ["ask", "Ask"], ["exams", "Exams"], ["memo", "Memorize"], ["flash", "Flashcards"], ["quiz", "Quiz"]];
+const VIEWS = [["dash", t("navOverview","Overview")], ["topics", t("navTopics","Topics")], ["ask", t("navAsk","Ask")], ["exams", t("navExams","Exams")], ["memo", t("navMemo","Memorize")], ["flash", t("navFlash","Flashcards")], ["quiz", t("navQuiz","Quiz")]];
 const nav = $("#nav");
 VIEWS.forEach(([id, label]) => {
   const b = document.createElement("button");
@@ -418,11 +428,11 @@ function questionCard(e, q) {
   c.innerHTML =
     "<div class='qhead'><h3>Q" + q.n + " · " + q.title + "</h3>" +
     "<span class='pill'><span class='dot'></span>" + q.pillar + "</span>" +
-    "<span class='pts'>" + q.pts + " pts · <button type='button' class='srcbtn examjump'>" + examLabel(e) + "</button></span>" +
+    "<span class='pts'>" + q.pts + " " + t("pts","pts") + " · <button type='button' class='srcbtn examjump'>" + examLabel(e) + "</button></span>" +
     (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
     "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
     "<div class='qbody mdslot'></div>" +
-    "<details class='sketch'><summary>Solution sketch — try it yourself first</summary><div class='inner sketchslot'></div></details>";
+    "<details class='sketch'><summary>" + t("sketchSummary","Solution sketch — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>";
   $(".examjump", c).onclick = () => { show("exams"); renderExamDetail(e); };
   mathify($(".qhead", c)); // titles contain inline math
   setMd($(".mdslot", c), q.statement);
@@ -434,8 +444,8 @@ function collapsedQuestion(e, q) {
   // tree node: closed by default, the full card builds lazily on first open
   const d = document.createElement("details");
   d.className = "note qwrap p-" + q.pillar;
-  d.innerHTML = "<summary><span class='pts' style='margin-right:8px'>" + examLabel(e) +
-    " · Q" + q.n + " (" + q.pts + " pts)</span> " + q.title + "</summary><div class='qslot' style='padding:0 14px 14px'></div>";
+  d.innerHTML = "<summary><span class='pts' style='margin-inline-end:8px'>" + examLabel(e) +
+    " · Q" + q.n + " (" + q.pts + " " + t("pts","pts") + ")</span> " + q.title + "</summary><div class='qslot' style='padding:0 14px 14px'></div>";
   mathify($("summary", d));
   let built = false;
   d.addEventListener("toggle", () => {
@@ -497,7 +507,7 @@ function renderDash() {
     d.className = "card pillarcard p-" + pillar;
     d.innerHTML = (CONFIG.figures && ILLOS[pillar] ? ILLOS[pillar] : "") +
       "<h3>" + pillar + "</h3><div class='role'>" + (PILLAR_ROLE[pillar] || "") + "</div>" +
-      "<div class='avg'>" + avg + "<small>avg pts · " + n + " past questions</small></div>";
+      "<div class='avg'>" + avg + "<small>" + t("avgPts","avg pts") + " · " + n + " " + t("pastQuestions","past questions") + "</small></div>";
     pc.appendChild(d);
   });
   const total = avgs.reduce((a, b) => a + b.avg, 0);
@@ -510,7 +520,7 @@ function renderDash() {
     bar.appendChild(seg);
     const l = document.createElement("span");
     l.className = "p-" + pillar;
-    l.innerHTML = "<span class='dot' style='display:inline-block;vertical-align:-1px;margin-right:5px'></span><b>" + pillar + "</b> ≈" + avg + " pts";
+    l.innerHTML = "<span class='dot' style='display:inline-block;vertical-align:-1px;margin-inline-end:5px'></span><b>" + pillar + "</b> ≈" + avg + " " + t("pts","pts") + "";
     leg.appendChild(l);
   });
   const tc = $("#tmplBar").closest(".card");
@@ -536,9 +546,9 @@ function renderDash() {
 }
 function renderCountdown() {
   const el = $("#daysLeft");
-  if (!store.data.examDate) { el.textContent = "Set your exam date →"; return; }
+  if (!store.data.examDate) { el.textContent = t("setExamDate","Set your exam date →"); return; }
   const days = Math.ceil((new Date(store.data.examDate) - Date.now()) / 864e5);
-  el.innerHTML = days >= 0 ? "<b>" + days + "</b> days to the exam" : "Exam date passed — update it →";
+  el.innerHTML = days >= 0 ? "<b>" + days + "</b> " + t("daysToExam","days to the exam") : t("examDatePassed","Exam date passed — update it →");
 }
 function renderStats() {
   const cardStats = Object.values(store.data.cards);
@@ -608,7 +618,7 @@ function renderTopicDetail(t) {
   $("#topicHome").style.display = "none";
   const det = $("#topicDetail"); det.style.display = "block"; det.innerHTML = "";
   const back = document.createElement("button");
-  back.type = "button"; back.className = "backbtn"; back.textContent = "← All topics";
+  back.type = "button"; back.className = "backbtn"; back.textContent = t("backTopics","← All topics");
   back.onclick = () => { det.style.display = "none"; $("#topicHome").style.display = "block"; };
   det.appendChild(back);
   const head = document.createElement("div");
@@ -624,7 +634,7 @@ function renderTopicDetail(t) {
   const nq = (t.exam_refs || []).length;
   if (nq) {
     const b = document.createElement("button"); b.type = "button"; b.className = "btn primary";
-    b.textContent = "Quiz me on this topic (" + nq + " past questions)";
+    b.textContent = t("quizMeOnTopic","Quiz me on this topic") + " (" + nq + ")";
     b.onclick = () => { setQuizScope(t); show("quiz"); };
     act.appendChild(b);
   }
@@ -632,14 +642,14 @@ function renderTopicDetail(t) {
   const nCards = DATA.cards.filter(c => lecRefs.includes(c.lecture)).length;
   if (nCards) {
     const b = document.createElement("button"); b.type = "button"; b.className = "btn";
-    b.textContent = "Flashcards from these lectures (" + nCards + ")";
+    b.textContent = t("flashFromLectures","Flashcards from these lectures") + " (" + nCards + ")";
     b.onclick = () => { setFlashScope(t, lecRefs); show("flash"); };
     act.appendChild(b);
   }
   det.appendChild(act);
 
   // material from class
-  const h2m = document.createElement("h2"); h2m.textContent = "Material from class"; det.appendChild(h2m);
+  const h2m = document.createElement("h2"); h2m.textContent = t("hMaterial","Material from class"); det.appendChild(h2m);
   figsForText(t.topic, FIG_TOPIC_MAP).forEach(id => det.appendChild(figNode(id)));
   const refs = (t.taught_refs || []).filter(r => noteByName[r]);
   if (!refs.length) {
@@ -670,7 +680,7 @@ function renderTopicDetail(t) {
   // the actual past-exam questions on this topic, inline, sketches sealed
   if (nq) {
     const h2e = document.createElement("h2");
-    h2e.textContent = "The past-exam questions on this topic";
+    h2e.textContent = t("hTopicQuestions","The past-exam questions on this topic");
     det.appendChild(h2e);
     const pe = document.createElement("p"); pe.className = "sub";
     pe.textContent = "Full statements below; solutions stay sealed until you open them. Click an exam name to open the whole exam.";
@@ -692,8 +702,8 @@ function examCardButton(e) {
   b.innerHTML = "<h3>" + examLabel(e) + (e.mock ? " <span class='pill' style='--pc:var(--exp);vertical-align:2px'>new</span>" : "") + "</h3>" +
     e.questions.map(q =>
       "<div class='qrow p-" + q.pillar + "'><span class='dot'></span>Q" + q.n + " · " + q.pillar +
-      "<span style='margin-left:auto' class='pts'>" + q.pts + " pts</span></div>").join("") +
-    "<div class='pts' style='margin-top:8px'>" + (e.total || "?") + " pts total</div>";
+      "<span style='margin-inline-start:auto' class='pts'>" + q.pts + " " + t("pts","pts") + "</span></div>").join("") +
+    "<div class='pts' style='margin-top:8px'>" + (e.total || "?") + " " + t("ptsTotal","pts total") + "</div>";
   b.onclick = () => renderExamDetail(e);
   return b;
 }
@@ -710,12 +720,12 @@ function renderExamDetail(e) {
   $("#examHome").style.display = "none";
   const det = $("#examDetail"); det.style.display = "block"; det.innerHTML = "";
   const back = document.createElement("button");
-  back.type = "button"; back.className = "backbtn"; back.textContent = "← All exams";
+  back.type = "button"; back.className = "backbtn"; back.textContent = t("backExams","← All exams");
   back.onclick = () => { det.style.display = "none"; $("#examHome").style.display = "block"; };
   det.appendChild(back);
   const h = document.createElement("h1"); h.textContent = examLabel(e); det.appendChild(h);
   const sub = document.createElement("p"); sub.className = "sub";
-  sub.textContent = (e.date || "") + (e.total ? " · " + e.total + " points · " + CONFIG.examFormatLine : "");
+  sub.textContent = (e.date || "") + (e.total ? " · " + e.total + " " + t("points","points") + " · " + CONFIG.examFormatLine : "");
   det.appendChild(sub);
   e.questions.forEach(q => {
     const c = document.createElement("div");
@@ -723,7 +733,7 @@ function renderExamDetail(e) {
     c.innerHTML =
       "<div class='qhead'><h3>Q" + q.n + " · " + q.title + "</h3>" +
       "<span class='pill'><span class='dot'></span>" + q.pillar + "</span>" +
-      "<span class='pts'>" + q.pts + " pts</span>" +
+      "<span class='pts'>" + q.pts + " " + t("pts","pts") + "</span>" +
       (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
       "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
       "<div class='qbody mdslot'></div>" +
@@ -786,7 +796,7 @@ function renderFlash() {
   if (!deck.length) { area.innerHTML = "<div class='card empty'>No cards match this filter.</div>"; return; }
   if (deckPos >= deck.length) {
     area.innerHTML = "<div class='card empty'>Deck done 🎉 — misses were logged and will lead the next run.<br><br></div>";
-    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = "Restart deck";
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = t("restartDeck","Restart deck");
     b.onclick = () => { buildDeck(); renderFlash(); };
     area.firstElementChild.appendChild(b);
     return;
@@ -803,11 +813,11 @@ function renderFlash() {
   if (revealed) setMd($(".backslot", el), c.back);
   const act = document.createElement("div"); act.className = "actions";
   if (!revealed) {
-    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = "Reveal";
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = t("reveal","Reveal");
     b.onclick = () => { revealed = true; renderFlash(); };
     act.appendChild(b);
   } else {
-    [["miss", "✗ Missed"], ["half", "◐ Almost"], ["got", "✓ Got it"]].forEach(([g, label]) => {
+    [["miss", t("miss","✗ Missed")], ["half", t("almost","◐ Almost")], ["got", t("got","✓ Got it")]].forEach(([g, label]) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "btn " + g; b.textContent = label;
       b.onclick = () => {
         const id = cardId(c);
@@ -860,7 +870,7 @@ function renderQuizFilters() {
     f.appendChild(chip);
     return;
   }
-  [["any", "Surprise me"], ...PILLARS.map(p => [p, p])].forEach(([k, label]) => {
+  [["any", t("surpriseMe","Surprise me")], ...PILLARS.map(p => [p, p])].forEach(([k, label]) => {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "chipbtn" + (k !== "any" ? " p-" + k : "") + (quizPillar === k ? " on" : "");
@@ -879,22 +889,22 @@ function renderQuiz() {
   el.innerHTML =
     "<div class='qhead'><h3>" + q.title + "</h3>" +
     "<span class='pill'><span class='dot'></span>" + q.pillar + "</span>" +
-    "<span class='pts'>" + q.pts + " pts · " + examLabel(exam) + "</span></div>" +
+    "<span class='pts'>" + q.pts + " " + t("pts","pts") + " · " + examLabel(exam) + "</span></div>" +
     "<div class='qbody mdslot'></div>" +
     (quizRevealed ? "<div class='qbody sketchslot' style='border-top:1px dashed var(--line)'></div>" : "");
   area.appendChild(el);
   mathify($(".qhead", el));
   setMd($(".mdslot", el), q.statement);
-  if (quizRevealed) { const s = $(".sketchslot", el); setMd(s, "**Solution sketch**\n\n" + q.sketch); }
+  if (quizRevealed) { const s = $(".sketchslot", el); setMd(s, "**" + t("solutionSketch","Solution sketch") + "**\n\n" + q.sketch); }
   const act = document.createElement("div"); act.className = "actions";
   if (!quizRevealed) {
-    const b1 = document.createElement("button"); b1.type = "button"; b1.className = "btn primary"; b1.textContent = "Reveal solution sketch";
+    const b1 = document.createElement("button"); b1.type = "button"; b1.className = "btn primary"; b1.textContent = t("revealSketch","Reveal solution sketch");
     b1.onclick = () => { quizRevealed = true; renderQuiz(); };
-    const b2 = document.createElement("button"); b2.type = "button"; b2.className = "btn"; b2.textContent = "Skip → another question";
+    const b2 = document.createElement("button"); b2.type = "button"; b2.className = "btn"; b2.textContent = t("skipQuestion","Skip → another question");
     b2.onclick = () => { pickQuiz(); renderQuiz(); };
     act.append(b1, b2);
   } else {
-    [["miss", "✗ Couldn't do it"], ["half", "◐ Partially"], ["got", "✓ Nailed it"]].forEach(([g, label]) => {
+    [["miss", t("couldnt","✗ Couldn't do it")], ["half", t("partially","◐ Partially")], ["got", t("nailed","✓ Nailed it")]].forEach(([g, label]) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "btn " + g; b.textContent = label;
       b.onclick = () => {
         store.data.quiz.push({ ts: Date.now(), qid: quizQ.qid, pillar: q.pillar, topics: q.topics, grade: g });
@@ -940,7 +950,7 @@ function renderMemoStats() {
 function renderMemo() {
   const cs = DATA.cheatsheet;
   const list = $("#memoList");
-  if (!cs) { list.innerHTML = "<div class='card empty'>No cheat sheet in this build.</div>"; return; }
+  if (!cs) { list.innerHTML = "<div class='card empty'>" + t("memoEmpty","No cheat sheet in this build.") + "</div>"; return; }
   list.innerHTML = "";
   cs.sections.forEach(sec => {
     const pillar = memoSecPillar(sec.name);
@@ -949,7 +959,7 @@ function renderMemo() {
     wrap.className = "note p-" + pillar;
     const known = () => sec.items.filter(i => store.data.memo[memoId(sec, i)]).length;
     wrap.innerHTML = "<summary>" + sec.name +
-      " <span class='pts seccount' style='margin-left:auto'></span></summary><div class='notebody secslot'></div>";
+      " <span class='pts seccount' style='margin-inline-start:auto'></span></summary><div class='notebody secslot'></div>";
     const countEl = $(".seccount", wrap);
     const refreshCount = () => countEl.textContent = known() + "/" + sec.items.length + " known";
     refreshCount();
@@ -1361,7 +1371,7 @@ function buildChunks() {
   (DATA.notes || []).forEach(n => n.sections.forEach(sec =>
     pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + sec.h, pillar: n.pillar })));
   [...DATA.exams, ...(DATA.mocks || [])].forEach(e => e.questions.forEach(q => {
-    const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " pts)";
+    const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " " + t("pts","pts") + ")";
     pushSplit(q.statement || "", { srcLabel: label, sec: "question statement", pillar: q.pillar, exam: e.id, qn: q.n });
     pushSplit(q.sketch || "", { srcLabel: label, sec: "solution sketch", pillar: q.pillar, exam: e.id, qn: q.n });
   }));
