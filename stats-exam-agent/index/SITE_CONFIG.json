@@ -135,6 +135,13 @@
     "ptsTotal": "נק׳ סה״כ",
     "points": "נקודות",
     "avgPts": "ממוצע נק׳ לבחינה",
-    "pastQuestions": "שאלות עבר"
+    "pastQuestions": "שאלות עבר",
+    "secAbout": "כללי",
+    "secKeyDefs": "הגדרות עיקריות",
+    "secKeyThms": "משפטים ותוצאות",
+    "secOutline": "מתאר",
+    "secMethods": "שיטות ומתכונים",
+    "secExamples": "דוגמאות מהשיעור",
+    "secTraps": "מלכודות במבחן"
   }
 }
