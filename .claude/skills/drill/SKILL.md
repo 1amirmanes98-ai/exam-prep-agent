@@ -3,8 +3,8 @@ name: drill
 description: Generate fresh exam-style exercises (novel variants of past-exam patterns) on a topic and coach through them. Works for both tutored courses (FODL and Intro to Statistics). Use for "/drill matrix factorization", "/drill power calculations hard", "give me new exercises on chi-square tests".
 ---
 
-This repo hosts two exam tutors: **FODL** (`dl-exam-agent/`) and **Intro to
-Statistics** (`stats-exam-agent/`). Pick the course from the topic/context; if
+This repo hosts three exam tutors: **FODL** (`dl-exam-agent/`), **Intro to
+Statistics** (`stats-exam-agent/`), and **Reinforcement Learning** (`rl-exam-agent/`). Pick the course from the topic/context; if
 genuinely ambiguous, ask once. Below, `<agent>` = the chosen directory. If you
 haven't this session, read `<agent>/AGENT.md` and follow it.
 

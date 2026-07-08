@@ -3,10 +3,10 @@ name: teach
 description: Interactive lesson on a course topic — intuition, formal definitions/theorems, mini-checks, and where it appeared in past exams. Works for both tutored courses (FODL and Intro to Statistics). Use when the user wants to learn or review a topic (e.g. "/teach gradient flow", "/teach confidence intervals", "explain the chi-square test to me").
 ---
 
-This repo hosts two exam tutors: **FODL** (`dl-exam-agent/`) and **Intro to
-Statistics** (`stats-exam-agent/`). Pick the course from the topic (DL theory →
-FODL; statistics/inference → Statistics), from context, or by the nearer exam in the
-two `progress.md` files; if genuinely ambiguous, ask once. Below, `<agent>` = the
+This repo hosts three exam tutors: **FODL** (`dl-exam-agent/`), **Intro to
+Statistics** (`stats-exam-agent/`), and **Reinforcement Learning** (`rl-exam-agent/`). Pick the course from the topic (DL theory →
+FODL; statistics/inference → Statistics; MDP/Bellman/Q-learning/policy-gradient/bandits → RL), from context, or by the nearer exam in the
+three `progress.md` files; if genuinely ambiguous, ask once. Below, `<agent>` = the
 chosen directory. If you haven't this session, read `<agent>/AGENT.md` and follow it
 (including its content-bootstrap check).
 

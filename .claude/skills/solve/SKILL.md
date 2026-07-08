@@ -3,8 +3,8 @@ name: solve
 description: Socratic step-by-step walkthrough of a specific past exam question. Works for both tutored courses (FODL and Intro to Statistics). Use for "/solve a_2024 2", "/solve b_2023 q1", "walk me through question 3 of the 2022 stats exam".
 ---
 
-This repo hosts two exam tutors: **FODL** (`dl-exam-agent/`) and **Intro to
-Statistics** (`stats-exam-agent/`). Pick the course from context (exam ids exist in
+This repo hosts three exam tutors: **FODL** (`dl-exam-agent/`), **Intro to
+Statistics** (`stats-exam-agent/`), and **Reinforcement Learning** (`rl-exam-agent/`). Pick the course from context (exam ids exist in
 both — if the user says just "a_2023 2", check which course they've been studying, or
 ask once). Below, `<agent>` = the chosen directory. If you haven't this session, read
 `<agent>/AGENT.md` and follow it.
@@ -15,8 +15,8 @@ summaries and let the user pick.
 
 ## Flow
 
-1. Load the question from `<agent>/index/exams/<prefix>_<id>.md` (FODL prefix
-   `fodl_exam`, Statistics prefix `stats_exam`). If any wording seems off, verify
+1. Load the question from `<agent>/index/exams/<prefix>_<id>.md` (FODL prefix `fodl_exam`,
+   Statistics prefix `stats_exam`, RL no prefix e.g. `a_2023`). If any wording seems off, verify
    against the PDF (`<agent>/materials/exams/`, Read pages — note some statistics
    solution PDFs are scans, read visually). Present the statement (translated;
    original Hebrew on request) with sub-part points.

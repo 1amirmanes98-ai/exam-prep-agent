@@ -12,3 +12,8 @@ stats-exam-agent/index/
 
 # Python bytecode
 __pycache__/
+# Same policy for the reinforcement-learning tutor (rl-exam-agent/README.md):
+rl-exam-agent/materials/
+rl-exam-agent/index/
+# ...except the site config, which is code-not-content and needed for replication
+!rl-exam-agent/index/SITE_CONFIG.json

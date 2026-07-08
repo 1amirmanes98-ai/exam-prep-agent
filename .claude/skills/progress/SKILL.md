@@ -3,8 +3,8 @@ name: progress
 description: Study dashboard — coverage per pillar, scores over time, weak spots, days to exam, and a recommended plan. Works for both tutored courses (FODL and Intro to Statistics). Use for "/progress", "how am I doing", "what should I study next".
 ---
 
-This repo hosts two exam tutors: **FODL** (`dl-exam-agent/`) and **Intro to
-Statistics** (`stats-exam-agent/`). If the user names a course (or only one has an
+This repo hosts three exam tutors: **FODL** (`dl-exam-agent/`), **Intro to
+Statistics** (`stats-exam-agent/`), and **Reinforcement Learning** (`rl-exam-agent/`). If the user names a course (or only one has an
 upcoming exam), report on that one; with no signal, give a compact combined view of
 both and lead with the nearer exam. Below, `<agent>` = the chosen directory. If you
 haven't this session, read `<agent>/AGENT.md` and follow it.
