@@ -25,6 +25,12 @@ it wrong (exception: a genuinely new feature).
 4. **Decide with the user NOW**: is course content allowed on their (public?) repo?
    Default: keep `materials/` + `index/` gitignored; ship content via a zip +
    `restore_content.sh` (like the template), and publish only `docs/index.html`.
+5. **Decide the CONTENT language NOW** (second up-front decision — this one burned
+   ~700k tokens once). If the course is Hebrew and the user will want a Hebrew site,
+   index the prose **in Hebrew directly** in Phase 1 (structural markers stay
+   English — see Phase 6). Indexing in English "by convention" and translating the
+   whole index back later costs a full extra fan-out (~300–500k tokens) and risks
+   translation drift from the original exam wording.
 
 ## Phase 1 — Index the course (the expensive part; ≈250–500k tokens)
 
@@ -52,6 +58,16 @@ prompts from the template's index files' structure:
   reads ONLY for scanned/Hebrew/garbled files or to double-check a formula.
 - Instruct agents to **write each file as soon as it's done** (crash resilience).
 - Skip homework indexing in v1 if budget-tight; add later.
+- **Wall-clock control on small boxes:** a workflow's agent concurrency is capped at
+  `min(16, cpu_cores − 2)` — on a 4-core cloud box that is **2 agents**, so one big
+  fan-out crawls (8 units/40 min). The cap is *per workflow*: make the fan-out script
+  take an `args {units:[...]}` slice and launch **5–7 parallel workflows** over
+  disjoint slices → ~14 concurrent agents, ~7× faster, identical prompts/quality.
+  (Also: `args` may arrive as a JSON *string* — normalize with a
+  `typeof args === "string" ? JSON.parse(args) : args` guard at the top.)
+- If subagents die with credit/model errors mid-fleet, relaunch the failed slices
+  with an explicit `model:` override in the agent opts instead of rerunning everything
+  — completed files on disk are the ground truth of what's left.
 
 ## Phase 2 — Config + build + verify (≈30k tokens)
 
@@ -120,42 +136,62 @@ Rules that keep figures an asset instead of a liability in a rigor-focused cours
 6. **Verify visually once**: expand each figure in headless Chromium, screenshot,
    and eyeball that the computed behavior matches the theorem it illustrates.
 
-## Phase 6 — Hebrew-language course (do this ONLY when one actually exists)
+## Phase 6 — Hebrew-language course (IMPLEMENTED in the template — config-only)
 
-Hebrew **content** already works: index files may be written in Hebrew (math stays
-LTR inside KaTeX automatically), and the Ask tokenizer understands Hebrew words
-(with a Hebrew stopword list and definite-article stripping). Keep the *structural*
-markers of the index format in English (`**Def (…).**`, `## Q1 (40 pts) — …`,
-`**Statement:**`) — the parsers key on them; only the prose goes Hebrew.
+As of the Hebrew-RTL upgrade (see `contrib/hebrew-rtl.patch` and the live example at
+`stats-exam-agent/`), the template ships with full RTL/i18n support. **Do not edit the
+template files** — everything is driven from `SITE_CONFIG.json`:
 
-A Hebrew **UI** (RTL) is a one-session template upgrade. Checklist:
-1. Add to SITE_CONFIG.json: `"dir": "rtl"`, `"lang": "he"`, and a `"ui"` strings
-   object; template boot sets `document.documentElement.dir/lang` from config and
-   reads every UI string via `CONFIG.ui.<key>` with English fallbacks.
-2. CSS: convert physical properties to logical ones — `border-left` →
-   `border-inline-start` (the colored card stripes: `.qhead`, `.hit`, `.memoitem`,
-   `.topicrow .stripe`), `text-align:left` → `start`, `margin/padding-left/right` →
-   `-inline-start/-end`. Flex/grid mirror automatically.
-3. Force LTR islands: `.katex, .katex-display, code, pre { direction: ltr;
-   unicode-bidi: isolate; }` — and verify mixed Hebrew-text + inline-math
-   paragraphs visually (this is most of the verification work).
-4. Verify RTL in headless Chromium at desktop + 390px widths; check the bottom
-   mobile nav order and that `overflow-x` didn't flip.
+1. `"dir": "rtl"`, `"lang": "he"` — boot sets `document.documentElement.dir/lang`.
+2. `"ui": { ... }` — every UI string (nav, buttons, headings, section subtitles, units
+   like "pts", the Ask corpus line and result headers, priority badges, flashcard
+   prompts/filters, empty states). **Copy the complete working pack from
+   `stats-exam-agent/index/SITE_CONFIG.json`** — it is the canonical reference; any
+   missing key silently falls back to English, so partial packs "work" but produce
+   the mixed-language UI you are trying to avoid. Static-HTML strings are wired via
+   `data-i18n` attributes; JS-generated strings via the `tr()` helper.
+3. `"slotLabels": { "SlotId": "שם בעברית", ... }` — Hebrew DISPLAY names for the
+   category slots. Slot **IDs** stay single-word English (they are CSS classes and
+   index-file tokens); only what users see is translated.
 
-Ready-made Hebrew UI strings pack (translate-once, copy into `"ui"`):
-nav: סקירה · נושאים · חיפוש · מבחנים · לשינון · כרטיסיות · בוחן;
-buttons: גלה את הפתרון · ידעתי ✓ · כמעט ◐ · פספסתי ✗ · דלג לשאלה אחרת ·
-חזרה · ערבב לי · הצג במבחן המלא; headings: החומר מהשיעור ·
-שאלות מבחן בנושא הזה · סקיצת פתרון — נסו לבד קודם · ידוע לי (מעקב שינון) ·
-תבנית המבחן · דפוסי שאלות חוזרים; misc: נקודות · קושי · הופיע ב־ ·
-נבנה מחדש בכל טעינה · ימים למבחן.
+**Content language.** Hebrew content already works end-to-end: index prose may be
+Hebrew (decide this in Phase 0!), math stays LTR inside KaTeX, rendered markdown gets
+`dir="auto"` so each block auto-detects its direction (English and Hebrew content both
+read correctly), and the Ask tokenizer understands Hebrew (stopwords +
+definite-article stripping). Keep the *structural* markers of the index format in
+English — the parsers key on them: `## Q1 (40 pts) — …` headers,
+`**Statement…:**`/`**Solution sketch:**`/`**Topics:**`/`**Pillar:**` keys, the
+`## Key definitions` / `## Key theorems & results` section names, `**Def (…)**`
+item markers, pillar tokens, and `a2023_Q2`-style refs. Only prose goes Hebrew.
+If translating an existing English index, give each agent the original Hebrew text
+mirrors so exam statements are *restored* to authentic wording, not back-translated.
+
+**Pitfalls already paid for (so you don't pay again):**
+- Name the i18n helper `tr()`, NOT `t()` — the template uses `t` as a local variable
+  (topics), and the collision ("t is not a function") silently blanks whole tabs.
+- LTR islands are broader than just math: `.katex, .katex-display, code, pre, .pts,
+  .chip, .diff { direction: ltr; unicode-bidi: isolate }`.
+- `main { min-width: 0 }` on the grid child — without it, wide content forces
+  horizontal scroll at 390px (a CSS-grid min-content quirk, not an RTL issue).
+- Verify in headless Chromium at desktop + 390px: `document.dir === "rtl"`, nav rail
+  on the RIGHT, card stripes flipped (borderRight = 4px), KaTeX computed
+  `direction: ltr`, a Hebrew search query returns hits, bottom mobile nav mirrored,
+  zero console errors, no horizontal scroll. Screenshot 2–3 mixed Hebrew+math
+  paragraphs and eyeball them — bidi bugs hide from DOM checks.
 
 ## Anti-patterns that burned tokens the first time
 
 - Rewriting/adapting `site_template.html` instead of using SITE_CONFIG. (Biggest sink.)
+- Indexing a Hebrew course in English "by convention", then translating the whole
+  index back to Hebrew later — a full extra fan-out. Decide content language in
+  Phase 0 and index in it directly. (Second-biggest sink.)
 - Re-reading whole PDFs visually when text mirrors sufficed.
 - Re-verifying with screenshots after every tiny edit — verify once per phase.
 - Auditing everything at maximum depth repeatedly — one adversarial pass at the end.
 - Agents batching all writes to the end, then dying (rate limits) — write-as-you-go.
+- One giant fan-out workflow on a 4-core box (2-agent cap) — slice into parallel
+  workflows (see Phase 1 cost controls).
+- Translating UI strings piecemeal from screenshots — enumerate ALL string literals
+  in the template first (grep), wrap them once, then fill the `ui` pack completely.
 - Debugging LaTeX/quirks/Pages issues from scratch — they're already solved here;
   read this file and the commit history instead.
