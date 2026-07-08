@@ -1313,7 +1313,7 @@ function figNode(id) {
   const f = FIGS[id]; if (!f || !CONFIG.figures) return document.createDocumentFragment();
   const d = document.createElement("details");
   d.className = "note figd p-" + (f.pillar || "Practices");
-  d.innerHTML = "<summary>📈 Figure — " + f.title + "</summary>" +
+  d.innerHTML = "<summary>📈 " + tr("figLabel","Figure") + " — " + f.title + "</summary>" +
     "<div class='figbody'><canvas></canvas><p class='figcap'>" + f.caption + "</p></div>";
   const cv = $("canvas", d);
   let drawn = false;

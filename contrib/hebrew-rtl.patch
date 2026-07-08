@@ -16,7 +16,7 @@ index ffea63b..b465875 100644
  CONFIG = dict(DEFAULT_CONFIG)
  
 diff --git a/dl-exam-agent/scripts/site_template.html b/dl-exam-agent/scripts/site_template.html
-index fbadfd9..b765a12 100644
+index fbadfd9..9cfb45d 100644
 --- a/dl-exam-agent/scripts/site_template.html
 +++ b/dl-exam-agent/scripts/site_template.html
 @@ -42,11 +42,11 @@ a{color:inherit}
@@ -629,6 +629,15 @@ index fbadfd9..b765a12 100644
          else seenEl.innerHTML = "<span class='pts'>" + item.seen + "</span>";
        } else if (item.seen) seenEl.innerHTML = "<span class='pts'>" + item.seen + "</span>";
        const cb = $("input", el);
+@@ -1302,7 +1313,7 @@ function figNode(id) {
+   const f = FIGS[id]; if (!f || !CONFIG.figures) return document.createDocumentFragment();
+   const d = document.createElement("details");
+   d.className = "note figd p-" + (f.pillar || "Practices");
+-  d.innerHTML = "<summary>📈 Figure — " + f.title + "</summary>" +
++  d.innerHTML = "<summary>📈 " + tr("figLabel","Figure") + " — " + f.title + "</summary>" +
+     "<div class='figbody'><canvas></canvas><p class='figcap'>" + f.caption + "</p></div>";
+   const cv = $("canvas", d);
+   let drawn = false;
 @@ -1361,7 +1372,7 @@ function buildChunks() {
    (DATA.notes || []).forEach(n => n.sections.forEach(sec =>
      pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + sec.h, pillar: n.pillar })));
