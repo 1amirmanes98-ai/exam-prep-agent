@@ -11,15 +11,21 @@ An AI exam-prep system in two parts:
    flashcards, quizzes, a memorization cheat sheet with tracking, computed concept
    figures, and retrieval search over everything.
 
-Currently serving: **Foundations of Deep Learning** (TAU 03683080) →
-**https://1amirmanes98-ai.github.io/exam-prep-agent/**
+Currently serving two courses:
 
-## Study (FODL)
+- **Foundations of Deep Learning** (TAU 03683080) →
+  **https://1amirmanes98-ai.github.io/exam-prep-agent/**
+- **Intro to Statistics** (TAU 0365.1813, Prof. Ruth Heller) →
+  **https://1amirmanes98-ai.github.io/exam-prep-agent/stats/**
 
-- **Website:** the link above — no account, free, everything client-side.
-- **Tutor:** open a Claude Code session on this repo and run `/progress` to start
-  (fresh sessions: attach `fodl-tutor-content.zip` and say "restore my study
-  content" — see [`dl-exam-agent/README.md`](dl-exam-agent/README.md)).
+## Study
+
+- **Website:** the links above — no account, free, everything client-side.
+- **Tutor:** open a Claude Code session on this repo and run `/progress` to start.
+  The skills serve both courses and pick the right one from your question; on a fresh
+  clone, attach the matching content zip (`fodl-tutor-content.zip` /
+  `stats-tutor-content.zip`) and say "restore my study content" — see each agent's
+  README ([FODL](dl-exam-agent/README.md) · [Statistics](stats-exam-agent/README.md)).
 - Skills: `/teach` · `/quiz` · `/exam` · `/solve` · `/drill` · `/flashcards` · `/progress`
 
 ## 🔁 Build this for YOUR course
@@ -39,16 +45,18 @@ past-exams zips → *"Build me an exam-prep agent and study site like
 ## Repo layout
 
 ```
-dl-exam-agent/
+dl-exam-agent/          # FODL tutor (same layout as stats-exam-agent below)
+stats-exam-agent/
 ├── AGENT.md            # tutor operating manual (grounding, grading, progress rules)
 ├── README.md           # tutor usage + content-restore + site rebuild instructions
 ├── progress.md         # study memory (committed at session end)
 ├── generated_exams/    # tutor-generated mock exams + sealed rubrics (original content)
 ├── scripts/            # course-agnostic: site builder, template, restore script
 └── index/SITE_CONFIG.json  # ALL course-specific site values
-.claude/skills/         # /teach /quiz /exam /solve /drill /flashcards /progress
+.claude/skills/         # /teach /quiz /exam /solve /drill /flashcards /progress (shared)
 .github/workflows/      # Pages deploy (docs/ → github.io on every push)
-docs/index.html         # the built site
+docs/index.html         # the built FODL site
+docs/stats/index.html   # the built Statistics site
 REPLICATION.md          # how to rebuild this for any course, cheaply
 ```
 
