@@ -335,6 +335,8 @@ document.documentElement.lang = CONFIG.lang || "en";
 const UI = CONFIG.ui || {};
 const tr = (k, fb) => (UI[k] != null ? UI[k] : fb);
 const slotLabel = s => (CONFIG.slotLabels && CONFIG.slotLabels[s] != null) ? CONFIG.slotLabels[s] : s;
+const SEC_I18N = { "About": "secAbout", "Key definitions": "secKeyDefs", "Key theorems & results": "secKeyThms", "Outline": "secOutline", "Methods & recipes": "secMethods", "Worked examples from class": "secExamples", "Exam traps": "secTraps" };
+const secLabel = h => SEC_I18N[h] ? tr(SEC_I18N[h], h) : h;
 function applyStaticI18n(){ document.querySelectorAll("[data-i18n]").forEach(el => { const v = UI[el.dataset.i18n]; if (v != null) el.textContent = v; }); const ai = document.getElementById("askInput"); if (ai && UI.askPlaceholder) ai.setAttribute("placeholder", UI.askPlaceholder); }
 const $ = (s, el) => (el || document).querySelector(s);
 // Categories come from SITE_CONFIG.json ("slots", single-word names); the first
@@ -625,7 +627,7 @@ function renderTopicDetail(t) {
   const head = document.createElement("div");
   head.className = "p-" + t.pillar;
   head.innerHTML = "<h1 class='mdslot' style='display:inline'></h1>" +
-    "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + t.pillar + "</span> " +
+    "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + slotLabel(t.pillar) + "</span> " +
     "<span class='prio " + t.priority + "'>" + (t.priority === "core" ? tr("prioCoreLong","core — appears essentially every exam") : t.priority === "frequent" ? tr("prioFreqLong","frequent variant") : tr("prioSeenLong","appeared 1–3 times")) + "</span></p>";
   det.appendChild(head);
   setMd($(".mdslot", head), t.topic);
@@ -668,7 +670,7 @@ function renderTopicDetail(t) {
     n.sections.forEach(sec => {
       const sd = document.createElement("details");
       sd.className = "notesec-d p-" + t.pillar;
-      sd.innerHTML = "<summary>" + sec.h + "</summary><div class='secbody mdslot'></div>";
+      sd.innerHTML = "<summary>" + secLabel(sec.h) + "</summary><div class='secbody mdslot'></div>";
       let rendered = false;
       sd.addEventListener("toggle", () => {
         if (sd.open && !rendered) { rendered = true; setMd($(".mdslot", sd), sec.b); }
@@ -738,7 +740,7 @@ function renderExamDetail(e) {
       (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
       "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
       "<div class='qbody mdslot'></div>" +
-      "<details class='sketch'><summary>Solution sketch — try it yourself first</summary><div class='inner sketchslot'></div></details>";
+      "<details class='sketch'><summary>" + tr("sketchSummary","Solution sketch — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>";
     det.appendChild(c);
     mathify($(".qhead", c));
     setMd($(".mdslot", c), q.statement);
@@ -1346,7 +1348,7 @@ function pushSplit(text, meta) {
 function buildChunks() {
   CHUNKS = [];
   (DATA.notes || []).forEach(n => n.sections.forEach(sec =>
-    pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + sec.h, pillar: n.pillar })));
+    pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + secLabel(sec.h), pillar: n.pillar })));
   [...DATA.exams, ...(DATA.mocks || [])].forEach(e => e.questions.forEach(q => {
     const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " " + tr("pts","pts") + ")";
     pushSplit(q.statement || "", { srcLabel: label, sec: "question statement", pillar: q.pillar, exam: e.id, qn: q.n });

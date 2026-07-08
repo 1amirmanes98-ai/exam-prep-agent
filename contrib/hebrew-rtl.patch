@@ -16,7 +16,7 @@ index ffea63b..b465875 100644
  CONFIG = dict(DEFAULT_CONFIG)
  
 diff --git a/dl-exam-agent/scripts/site_template.html b/dl-exam-agent/scripts/site_template.html
-index fbadfd9..9cfb45d 100644
+index fbadfd9..ad0b510 100644
 --- a/dl-exam-agent/scripts/site_template.html
 +++ b/dl-exam-agent/scripts/site_template.html
 @@ -42,11 +42,11 @@ a{color:inherit}
@@ -252,7 +252,7 @@ index fbadfd9..9cfb45d 100644
      </section>
      <section id="view-qset">
        <button class="backbtn" id="qsetBack" type="button">← Back</button>
-@@ -326,6 +328,14 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
+@@ -326,6 +328,16 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
  "use strict";
  const CONFIG = JSON.parse(document.getElementById("config").textContent);
  const DATA = JSON.parse(document.getElementById("data").textContent);
@@ -263,11 +263,13 @@ index fbadfd9..9cfb45d 100644
 +const UI = CONFIG.ui || {};
 +const tr = (k, fb) => (UI[k] != null ? UI[k] : fb);
 +const slotLabel = s => (CONFIG.slotLabels && CONFIG.slotLabels[s] != null) ? CONFIG.slotLabels[s] : s;
++const SEC_I18N = { "About": "secAbout", "Key definitions": "secKeyDefs", "Key theorems & results": "secKeyThms", "Outline": "secOutline", "Methods & recipes": "secMethods", "Worked examples from class": "secExamples", "Exam traps": "secTraps" };
++const secLabel = h => SEC_I18N[h] ? tr(SEC_I18N[h], h) : h;
 +function applyStaticI18n(){ document.querySelectorAll("[data-i18n]").forEach(el => { const v = UI[el.dataset.i18n]; if (v != null) el.textContent = v; }); const ai = document.getElementById("askInput"); if (ai && UI.askPlaceholder) ai.setAttribute("placeholder", UI.askPlaceholder); }
  const $ = (s, el) => (el || document).querySelector(s);
  // Categories come from SITE_CONFIG.json ("slots", single-word names); the first
  // three are the primary categories, the last is the misc bucket. Colors map to
-@@ -344,6 +354,7 @@ const PILLARS = CONFIG.slots.slice(0, 3);
+@@ -344,6 +356,7 @@ const PILLARS = CONFIG.slots.slice(0, 3);
      (CONFIG.courseSubtitle ? "<small>" + CONFIG.courseSubtitle + "</small>" : "");
    document.getElementById("heroTitle").textContent = CONFIG.heroTitle;
    document.getElementById("heroSub").textContent = CONFIG.heroSub;
@@ -275,7 +277,7 @@ index fbadfd9..9cfb45d 100644
  })();
  const ICONS = {
    dash: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1"/><rect x="9" y="9" width="5.5" height="5.5" rx="1"/></svg>',
-@@ -391,10 +402,10 @@ function mathify(el) {
+@@ -391,10 +404,10 @@ function mathify(el) {
      throwOnError: false
    });
  }
@@ -288,7 +290,7 @@ index fbadfd9..9cfb45d 100644
  const nav = $("#nav");
  VIEWS.forEach(([id, label]) => {
    const b = document.createElement("button");
-@@ -417,12 +428,12 @@ function questionCard(e, q) {
+@@ -417,12 +430,12 @@ function questionCard(e, q) {
    c.className = "card qcard p-" + q.pillar;
    c.innerHTML =
      "<div class='qhead'><h3>Q" + q.n + " · " + q.title + "</h3>" +
@@ -304,7 +306,7 @@ index fbadfd9..9cfb45d 100644
    $(".examjump", c).onclick = () => { show("exams"); renderExamDetail(e); };
    mathify($(".qhead", c)); // titles contain inline math
    setMd($(".mdslot", c), q.statement);
-@@ -434,8 +445,8 @@ function collapsedQuestion(e, q) {
+@@ -434,8 +447,8 @@ function collapsedQuestion(e, q) {
    // tree node: closed by default, the full card builds lazily on first open
    const d = document.createElement("details");
    d.className = "note qwrap p-" + q.pillar;
@@ -315,7 +317,7 @@ index fbadfd9..9cfb45d 100644
    mathify($("summary", d));
    let built = false;
    d.addEventListener("toggle", () => {
-@@ -462,7 +473,7 @@ function showQset(title, sub, refs) {
+@@ -462,7 +475,7 @@ function showQset(title, sub, refs) {
    $("#qsetTitle").textContent = title;
    const list = $("#qsetList"); list.innerHTML = "";
    const n = renderQuestionCards(refs, list);
@@ -324,7 +326,7 @@ index fbadfd9..9cfb45d 100644
    show("qset");
    window.scrollTo(0, 0);
  }
-@@ -496,8 +507,8 @@ function renderDash() {
+@@ -496,8 +509,8 @@ function renderDash() {
      const d = document.createElement("div");
      d.className = "card pillarcard p-" + pillar;
      d.innerHTML = (CONFIG.figures && ILLOS[pillar] ? ILLOS[pillar] : "") +
@@ -335,7 +337,7 @@ index fbadfd9..9cfb45d 100644
      pc.appendChild(d);
    });
    const total = avgs.reduce((a, b) => a + b.avg, 0);
-@@ -510,7 +521,7 @@ function renderDash() {
+@@ -510,7 +523,7 @@ function renderDash() {
      bar.appendChild(seg);
      const l = document.createElement("span");
      l.className = "p-" + pillar;
@@ -344,7 +346,7 @@ index fbadfd9..9cfb45d 100644
      leg.appendChild(l);
    });
    const tc = $("#tmplBar").closest(".card");
-@@ -519,7 +530,7 @@ function renderDash() {
+@@ -519,7 +532,7 @@ function renderDash() {
    DATA.archetypes.forEach((a, i) => {
      const row = document.createElement("button");
      row.type = "button";
@@ -353,7 +355,7 @@ index fbadfd9..9cfb45d 100644
      row.className = "arch p-" + pillar;
      row.innerHTML = "<span class='n'>" + (i + 1) + "</span><span class='mdslot'></span>" +
        "<span class='freq'>" + "●".repeat(Math.max(1, a.count)) + "</span><span class='go'>›</span>";
-@@ -536,9 +547,9 @@ function renderDash() {
+@@ -536,9 +549,9 @@ function renderDash() {
  }
  function renderCountdown() {
    const el = $("#daysLeft");
@@ -365,7 +367,7 @@ index fbadfd9..9cfb45d 100644
  }
  function renderStats() {
    const cardStats = Object.values(store.data.cards);
-@@ -562,13 +573,13 @@ function renderStats() {
+@@ -562,13 +575,13 @@ function renderStats() {
  }
  
  /* ---------- topics ---------- */
@@ -381,7 +383,7 @@ index fbadfd9..9cfb45d 100644
      b.onclick = () => { topicPillar = p; renderTopicFilters(); renderTopics(); };
      f.appendChild(b);
    });
-@@ -592,7 +603,7 @@ function renderTopics() {
+@@ -592,7 +605,7 @@ function renderTopics() {
      setMd(slot, t.topic);
      const badge = document.createElement("span");
      badge.className = "prio " + t.priority;
@@ -390,7 +392,7 @@ index fbadfd9..9cfb45d 100644
      (slot.firstElementChild || slot).appendChild(badge);
    });
  }
-@@ -608,14 +619,14 @@ function renderTopicDetail(t) {
+@@ -608,14 +621,14 @@ function renderTopicDetail(t) {
    $("#topicHome").style.display = "none";
    const det = $("#topicDetail"); det.style.display = "block"; det.innerHTML = "";
    const back = document.createElement("button");
@@ -401,13 +403,14 @@ index fbadfd9..9cfb45d 100644
    const head = document.createElement("div");
    head.className = "p-" + t.pillar;
    head.innerHTML = "<h1 class='mdslot' style='display:inline'></h1>" +
-     "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + t.pillar + "</span> " +
+-    "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + t.pillar + "</span> " +
 -    "<span class='prio " + t.priority + "'>" + (t.priority === "core" ? "core — appears essentially every exam" : t.priority === "frequent" ? "frequent variant" : "appeared 1–3 times") + "</span></p>";
++    "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + slotLabel(t.pillar) + "</span> " +
 +    "<span class='prio " + t.priority + "'>" + (t.priority === "core" ? tr("prioCoreLong","core — appears essentially every exam") : t.priority === "frequent" ? tr("prioFreqLong","frequent variant") : tr("prioSeenLong","appeared 1–3 times")) + "</span></p>";
    det.appendChild(head);
    setMd($(".mdslot", head), t.topic);
  
-@@ -624,7 +635,7 @@ function renderTopicDetail(t) {
+@@ -624,7 +637,7 @@ function renderTopicDetail(t) {
    const nq = (t.exam_refs || []).length;
    if (nq) {
      const b = document.createElement("button"); b.type = "button"; b.className = "btn primary";
@@ -416,7 +419,7 @@ index fbadfd9..9cfb45d 100644
      b.onclick = () => { setQuizScope(t); show("quiz"); };
      act.appendChild(b);
    }
-@@ -632,19 +643,19 @@ function renderTopicDetail(t) {
+@@ -632,19 +645,19 @@ function renderTopicDetail(t) {
    const nCards = DATA.cards.filter(c => lecRefs.includes(c.lecture)).length;
    if (nCards) {
      const b = document.createElement("button"); b.type = "button"; b.className = "btn";
@@ -439,7 +442,16 @@ index fbadfd9..9cfb45d 100644
    }
    refs.forEach((r, i) => {
      const n = noteByName[r];
-@@ -670,10 +681,10 @@ function renderTopicDetail(t) {
+@@ -657,7 +670,7 @@ function renderTopicDetail(t) {
+     n.sections.forEach(sec => {
+       const sd = document.createElement("details");
+       sd.className = "notesec-d p-" + t.pillar;
+-      sd.innerHTML = "<summary>" + sec.h + "</summary><div class='secbody mdslot'></div>";
++      sd.innerHTML = "<summary>" + secLabel(sec.h) + "</summary><div class='secbody mdslot'></div>";
+       let rendered = false;
+       sd.addEventListener("toggle", () => {
+         if (sd.open && !rendered) { rendered = true; setMd($(".mdslot", sd), sec.b); }
+@@ -670,10 +683,10 @@ function renderTopicDetail(t) {
    // the actual past-exam questions on this topic, inline, sketches sealed
    if (nq) {
      const h2e = document.createElement("h2");
@@ -452,7 +464,7 @@ index fbadfd9..9cfb45d 100644
      det.appendChild(pe);
      renderQuestionCards(t.exam_refs || [], det);
    }
-@@ -692,8 +703,8 @@ function examCardButton(e) {
+@@ -692,8 +705,8 @@ function examCardButton(e) {
    b.innerHTML = "<h3>" + examLabel(e) + (e.mock ? " <span class='pill' style='--pc:var(--exp);vertical-align:2px'>new</span>" : "") + "</h3>" +
      e.questions.map(q =>
        "<div class='qrow p-" + q.pillar + "'><span class='dot'></span>Q" + q.n + " · " + q.pillar +
@@ -463,7 +475,7 @@ index fbadfd9..9cfb45d 100644
    b.onclick = () => renderExamDetail(e);
    return b;
  }
-@@ -710,20 +721,20 @@ function renderExamDetail(e) {
+@@ -710,24 +723,24 @@ function renderExamDetail(e) {
    $("#examHome").style.display = "none";
    const det = $("#examDetail"); det.style.display = "block"; det.innerHTML = "";
    const back = document.createElement("button");
@@ -488,7 +500,12 @@ index fbadfd9..9cfb45d 100644
        (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
        "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
        "<div class='qbody mdslot'></div>" +
-@@ -738,7 +749,7 @@ function renderExamDetail(e) {
+-      "<details class='sketch'><summary>Solution sketch — try it yourself first</summary><div class='inner sketchslot'></div></details>";
++      "<details class='sketch'><summary>" + tr("sketchSummary","Solution sketch — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>";
+     det.appendChild(c);
+     mathify($(".qhead", c));
+     setMd($(".mdslot", c), q.statement);
+@@ -738,7 +751,7 @@ function renderExamDetail(e) {
  }
  
  /* ---------- flashcards ---------- */
@@ -497,7 +514,7 @@ index fbadfd9..9cfb45d 100644
  let flashScope = null; // {label, lectures:[...]}
  function setFlashScope(t, lecRefs) {
    flashScope = { label: "topic scope", lectures: lecRefs, pillar: t.pillar };
-@@ -765,11 +776,11 @@ function renderFlashFilters() {
+@@ -765,11 +778,11 @@ function renderFlashFilters() {
    } else PILLARS.forEach(p => {
      const b = document.createElement("button");
      b.type = "button"; b.className = "chipbtn p-" + p + (flashPillar === p ? " on" : "");
@@ -511,7 +528,7 @@ index fbadfd9..9cfb45d 100644
      const b = document.createElement("button");
      b.type = "button"; b.className = "chipbtn" + (flashKind === k ? " on" : "");
      b.textContent = label;
-@@ -779,20 +790,20 @@ function renderFlashFilters() {
+@@ -779,20 +792,20 @@ function renderFlashFilters() {
  }
  function renderFlash() {
    const area = $("#flashArea");
@@ -536,7 +553,7 @@ index fbadfd9..9cfb45d 100644
    const el = document.createElement("div");
    el.className = "card bigcard p-" + c.pillar;
    el.innerHTML = "<div class='pts'>" + kindLabel + "</div><div class='front mdslot'></div>" +
-@@ -803,11 +814,11 @@ function renderFlash() {
+@@ -803,11 +816,11 @@ function renderFlash() {
    if (revealed) setMd($(".backslot", el), c.back);
    const act = document.createElement("div"); act.className = "actions";
    if (!revealed) {
@@ -550,7 +567,7 @@ index fbadfd9..9cfb45d 100644
        const b = document.createElement("button"); b.type = "button"; b.className = "btn " + g; b.textContent = label;
        b.onclick = () => {
          const id = cardId(c);
-@@ -855,12 +866,12 @@ function renderQuizFilters() {
+@@ -855,12 +868,12 @@ function renderQuizFilters() {
    if (quizScope) {
      const chip = document.createElement("span");
      chip.className = "scopechip p-" + quizScope.pillar;
@@ -565,7 +582,7 @@ index fbadfd9..9cfb45d 100644
      const b = document.createElement("button");
      b.type = "button";
      b.className = "chipbtn" + (k !== "any" ? " p-" + k : "") + (quizPillar === k ? " on" : "");
-@@ -878,23 +889,23 @@ function renderQuiz() {
+@@ -878,23 +891,23 @@ function renderQuiz() {
    el.className = "card qcard p-" + q.pillar;
    el.innerHTML =
      "<div class='qhead'><h3>" + q.title + "</h3>" +
@@ -595,7 +612,7 @@ index fbadfd9..9cfb45d 100644
        const b = document.createElement("button"); b.type = "button"; b.className = "btn " + g; b.textContent = label;
        b.onclick = () => {
          store.data.quiz.push({ ts: Date.now(), qid: quizQ.qid, pillar: q.pillar, topics: q.topics, grade: g });
-@@ -934,13 +945,13 @@ function renderMemoStats() {
+@@ -934,13 +947,13 @@ function renderMemoStats() {
    const cs = DATA.cheatsheet; if (!cs) return;
    const total = cs.sections.reduce((a, s) => a + s.items.length, 0);
    const known = cs.sections.reduce((a, s) => a + s.items.filter(i => store.data.memo[memoId(s, i)]).length, 0);
@@ -611,7 +628,7 @@ index fbadfd9..9cfb45d 100644
    list.innerHTML = "";
    cs.sections.forEach(sec => {
      const pillar = memoSecPillar(sec.name);
-@@ -949,7 +960,7 @@ function renderMemo() {
+@@ -949,7 +962,7 @@ function renderMemo() {
      wrap.className = "note p-" + pillar;
      const known = () => sec.items.filter(i => store.data.memo[memoId(sec, i)]).length;
      wrap.innerHTML = "<summary>" + sec.name +
@@ -620,7 +637,7 @@ index fbadfd9..9cfb45d 100644
      const countEl = $(".seccount", wrap);
      const refreshCount = () => countEl.textContent = known() + "/" + sec.items.length + " known";
      refreshCount();
-@@ -998,7 +1009,7 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
+@@ -998,7 +1011,7 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
            b.onclick = () => openExam(eid);
            seenEl.appendChild(b);
          });
@@ -629,7 +646,7 @@ index fbadfd9..9cfb45d 100644
          else seenEl.innerHTML = "<span class='pts'>" + item.seen + "</span>";
        } else if (item.seen) seenEl.innerHTML = "<span class='pts'>" + item.seen + "</span>";
        const cb = $("input", el);
-@@ -1302,7 +1313,7 @@ function figNode(id) {
+@@ -1302,7 +1315,7 @@ function figNode(id) {
    const f = FIGS[id]; if (!f || !CONFIG.figures) return document.createDocumentFragment();
    const d = document.createElement("details");
    d.className = "note figd p-" + (f.pillar || "Practices");
@@ -638,16 +655,19 @@ index fbadfd9..9cfb45d 100644
      "<div class='figbody'><canvas></canvas><p class='figcap'>" + f.caption + "</p></div>";
    const cv = $("canvas", d);
    let drawn = false;
-@@ -1361,7 +1372,7 @@ function buildChunks() {
+@@ -1359,9 +1372,9 @@ function pushSplit(text, meta) {
+ function buildChunks() {
+   CHUNKS = [];
    (DATA.notes || []).forEach(n => n.sections.forEach(sec =>
-     pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + sec.h, pillar: n.pillar })));
+-    pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + sec.h, pillar: n.pillar })));
++    pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + secLabel(sec.h), pillar: n.pillar })));
    [...DATA.exams, ...(DATA.mocks || [])].forEach(e => e.questions.forEach(q => {
 -    const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " pts)";
 +    const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " " + tr("pts","pts") + ")";
      pushSplit(q.statement || "", { srcLabel: label, sec: "question statement", pillar: q.pillar, exam: e.id, qn: q.n });
      pushSplit(q.sketch || "", { srcLabel: label, sec: "solution sketch", pillar: q.pillar, exam: e.id, qn: q.n });
    }));
-@@ -1462,25 +1473,25 @@ function renderAsk() {
+@@ -1462,25 +1475,25 @@ function renderAsk() {
        let head = "<b>" + r.term + "</b>";
        if (r.fuzzy) head += " <span class='pts'>(matched from “" + r.from + "”)</span>";
        head += s.exams.length
@@ -679,7 +699,7 @@ index fbadfd9..9cfb45d 100644
      return;
    }
    hits.forEach(({ c }) => {
-@@ -1496,7 +1507,7 @@ function renderAsk() {
+@@ -1496,7 +1509,7 @@ function renderAsk() {
    });
    const note = document.createElement("p");
    note.className = "sub"; note.style.marginTop = "14px";
@@ -688,7 +708,7 @@ index fbadfd9..9cfb45d 100644
    out.appendChild(note);
  }
  
-@@ -1513,9 +1524,9 @@ $("#askInput").addEventListener("keydown", ev => { if (ev.key === "Enter") rende
+@@ -1513,9 +1526,9 @@ $("#askInput").addEventListener("keydown", ev => { if (ev.key === "Enter") rende
  buildChunks();
  (() => {
    const by = {};
