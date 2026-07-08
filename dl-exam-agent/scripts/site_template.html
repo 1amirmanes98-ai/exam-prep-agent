@@ -547,7 +547,7 @@ function renderDash() {
   DATA.archetypes.forEach((a, i) => {
     const row = document.createElement("button");
     row.type = "button";
-    const pillar = i < 4 ? "Expressiveness" : i < 8 ? "Optimization" : "Generalization";
+    const pillar = i < 4 ? PILLARS[0] : i < 8 ? PILLARS[1] : (PILLARS[2] || PILLARS[0]);
     row.className = "arch p-" + pillar;
     row.innerHTML = "<span class='n'>" + (i + 1) + "</span><span class='mdslot'></span>" +
       "<span class='freq'>" + "●".repeat(Math.max(1, a.count)) + "</span><span class='go'>›</span>";
@@ -590,7 +590,7 @@ function renderStats() {
 }
 
 /* ---------- topics ---------- */
-let topicPillar = "Expressiveness";
+let topicPillar = PILLARS[0];
 function renderTopicFilters() {
   const f = $("#topicFilters"); f.innerHTML = "";
   PILLARS.forEach(p => {
@@ -766,7 +766,7 @@ function renderExamDetail(e) {
 }
 
 /* ---------- flashcards ---------- */
-let flashPillar = "Expressiveness", flashKind = "all", deck = [], deckPos = 0, revealed = false;
+let flashPillar = PILLARS[0], flashKind = "all", deck = [], deckPos = 0, revealed = false;
 let flashScope = null; // {label, lectures:[...]}
 function setFlashScope(t, lecRefs) {
   flashScope = { label: "topic scope", lectures: lecRefs, pillar: t.pillar };

@@ -16,7 +16,7 @@ index ffea63b..b465875 100644
  CONFIG = dict(DEFAULT_CONFIG)
  
 diff --git a/dl-exam-agent/scripts/site_template.html b/dl-exam-agent/scripts/site_template.html
-index fbadfd9..7c9210c 100644
+index fbadfd9..b765a12 100644
 --- a/dl-exam-agent/scripts/site_template.html
 +++ b/dl-exam-agent/scripts/site_template.html
 @@ -42,11 +42,11 @@ a{color:inherit}
@@ -344,6 +344,15 @@ index fbadfd9..7c9210c 100644
      leg.appendChild(l);
    });
    const tc = $("#tmplBar").closest(".card");
+@@ -519,7 +530,7 @@ function renderDash() {
+   DATA.archetypes.forEach((a, i) => {
+     const row = document.createElement("button");
+     row.type = "button";
+-    const pillar = i < 4 ? "Expressiveness" : i < 8 ? "Optimization" : "Generalization";
++    const pillar = i < 4 ? PILLARS[0] : i < 8 ? PILLARS[1] : (PILLARS[2] || PILLARS[0]);
+     row.className = "arch p-" + pillar;
+     row.innerHTML = "<span class='n'>" + (i + 1) + "</span><span class='mdslot'></span>" +
+       "<span class='freq'>" + "●".repeat(Math.max(1, a.count)) + "</span><span class='go'>›</span>";
 @@ -536,9 +547,9 @@ function renderDash() {
  }
  function renderCountdown() {
@@ -356,7 +365,14 @@ index fbadfd9..7c9210c 100644
  }
  function renderStats() {
    const cardStats = Object.values(store.data.cards);
-@@ -568,7 +579,7 @@ function renderTopicFilters() {
+@@ -562,13 +573,13 @@ function renderStats() {
+ }
+ 
+ /* ---------- topics ---------- */
+-let topicPillar = "Expressiveness";
++let topicPillar = PILLARS[0];
+ function renderTopicFilters() {
+   const f = $("#topicFilters"); f.innerHTML = "";
    PILLARS.forEach(p => {
      const b = document.createElement("button");
      b.type = "button"; b.className = "chipbtn p-" + p + (topicPillar === p ? " on" : "");
@@ -472,6 +488,15 @@ index fbadfd9..7c9210c 100644
        (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
        "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
        "<div class='qbody mdslot'></div>" +
+@@ -738,7 +749,7 @@ function renderExamDetail(e) {
+ }
+ 
+ /* ---------- flashcards ---------- */
+-let flashPillar = "Expressiveness", flashKind = "all", deck = [], deckPos = 0, revealed = false;
++let flashPillar = PILLARS[0], flashKind = "all", deck = [], deckPos = 0, revealed = false;
+ let flashScope = null; // {label, lectures:[...]}
+ function setFlashScope(t, lecRefs) {
+   flashScope = { label: "topic scope", lectures: lecRefs, pillar: t.pillar };
 @@ -765,11 +776,11 @@ function renderFlashFilters() {
    } else PILLARS.forEach(p => {
      const b = document.createElement("button");
