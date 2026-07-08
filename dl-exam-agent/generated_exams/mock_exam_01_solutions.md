@@ -38,6 +38,10 @@ $g_L$ has $2^L$ pieces ⇒ $k_1 + k_2 - 1 \ge 2^L$ (2 pts). Conclusion (2 pts): 
 of this maxout form must be exponential in $L$ while ReLU depth achieves it linearly —
 a depth-separation statement (cf. Lecture 2 / Telgarsky).
 
+**💡 Useful tricks:** Max-of-affines cue: pointwise max of convex functions is convex; order active pieces by slope to count them; prove approximation lower bounds via midpoint convexity $h(1/2)\le\frac{h(0)+h(1)}{2}$ on concave targets; decompose any PWL as $ax+b+\sum_i c_i[x-t_i]_+$ (Lecture 2).
+
+**⚠️ Watch out:** "$k$ lines give $k$ pieces" fails without convexity — lines cross up to $\binom{k}{2}$ times; prove, don't assume, that a convex PWL is a max of its affine pieces; make the $\epsilon\ge\tfrac18$ argument quantitative; state the exponential-width conclusion explicitly.
+
 ## Q2 — Asymmetric rank-1 factorization (35)
 
 **1. (7)** $\nabla_u L = (uv^\top - M)v$, $\nabla_v L = (uv^\top - M)^\top u$; at
@@ -70,6 +74,10 @@ $\sqrt\lambda$ (cannot cross the equilibrium: $\dot a = 0$ there); monotone + bo
 ⇒ $a(t) \to a_\infty$ with $a_\infty(\lambda - a_\infty^2) = 0$ and
 $a_\infty \ge \alpha > 0$ ⇒ $a_\infty = \sqrt\lambda$. Conclusion (2 pts):
 $uv^\top = a^2 xy^\top \to \lambda xy^\top = M$, so $L \to 0$.
+
+**💡 Useful tricks:** Non-convexity from a critical point ($0,0$) undercut by the top singular triplet; derive gradients by the directional derivative $\langle uv^\top-M,\delta u\,v^\top\rangle$; imbalance $\|u\|^2-\|v\|^2$ is conserved (scalar-transpose $u^\top Mv=v^\top M^\top u$); an aligned rank-1 ansatz $u=ax,v=ay$ collapses the flow to the scalar $\dot a=\lambda a-a^3$, and monotone+bounded ⇒ $a^2\to\lambda$.
+
+**⚠️ Watch out:** (1) exhibit a strictly-*better* point, not merely a critical one; (2) full marks need an actual derivation, not a quoted gradient; (4) invoke ODE uniqueness so the ansatz IS the solution, and rule out $a_\infty=0$ using that $a$ increases from $\alpha>0$.
 
 ## Q3 — Ternary sparse predictors (30)
 
@@ -106,6 +114,10 @@ the algorithm-class pair, not the class alone (Zhang et al. narrative, Lectures 
 Full credit needs: (i) bound depends on returned $h$'s sparsity; (ii) simultaneity
 over $k$ is what makes this legitimate; (iii) explicit use of "implicit
 regularization/bias".
+
+**💡 Useful tricks:** Ternary weights ⇒ $|\mathcal H|\leq3^d$; sparse count $|\mathcal H_k|\leq(2d+1)^k$ via (position, sign, null) tuples — cleaner than binomials; SRM split $\delta_k=\delta2^{-(k+1)}$ makes the bound prefer sparse $h$; part 4 = implicit bias to small effective $k$.
+
+**⚠️ Watch out:** (1) invert Hoeffding correctly ($d\ln3$, not $\ln d$); (3) the $\delta_k$ split must be summable AND increasing in $k$; (4) the bound controls the *gap* and applies to the returned sparse $h$ only if you note simultaneity over $k$ — low true loss still needs small $L_S$.
 
 ## Grading notes
 - Total 105; per-part partial credit as marked. Hints used during attempt: −20% of

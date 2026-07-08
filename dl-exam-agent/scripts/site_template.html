@@ -205,6 +205,13 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 .md li{margin:.25em 0}
 .md strong{font-weight:650}
 .md code{font-family:var(--mono);font-size:.85em;background:var(--surface2);border-radius:4px;padding:1px 4px}
+/* takeaway callouts inside solutions (💡 tricks / ⚠️ watch-outs) */
+.md .co-trick,.md .co-warn{list-style:none;border-radius:8px;padding:10px 14px;margin:12px 0 6px}
+.md li.co-trick,.md li.co-warn{margin-inline-start:-1.1em}
+.md .co-trick{background:color-mix(in srgb,var(--pc,var(--opt)) 9%,transparent);border-inline-start:3px solid var(--pc,var(--opt))}
+.md .co-warn{background:color-mix(in srgb,var(--gen) 11%,transparent);border-inline-start:3px solid var(--gen)}
+.md .co-trick>strong:first-child{color:var(--pc,var(--opt))}
+.md .co-warn>strong:first-child{color:var(--gen)}
 
 /* ---------- responsive ---------- */
 @media (max-width:820px){
@@ -401,7 +408,17 @@ function mathify(el) {
     throwOnError: false
   });
 }
-function setMd(el, src) { el.innerHTML = md(src); el.classList.add("md"); el.setAttribute("dir", "auto"); mathify(el); }
+function setMd(el, src) {
+  el.innerHTML = md(src); el.classList.add("md"); el.setAttribute("dir", "auto"); mathify(el);
+  // takeaway callouts: bullets/paragraphs opening with the trick/warn markers
+  el.querySelectorAll("li, p").forEach(n => {
+    const s = n.querySelector("strong");
+    if (!s || s !== n.firstElementChild) return;
+    const t = s.textContent;
+    if (t.startsWith("💡")) n.classList.add("co-trick");
+    else if (t.startsWith("⚠️") || t.startsWith("⚠")) n.classList.add("co-warn");
+  });
+}
 
 /* ---------- nav ---------- */
 const VIEWS = [["dash", t("navOverview","Overview")], ["topics", t("navTopics","Topics")], ["ask", t("navAsk","Ask")], ["exams", t("navExams","Exams")], ["memo", t("navMemo","Memorize")], ["flash", t("navFlash","Flashcards")], ["quiz", t("navQuiz","Quiz")]];

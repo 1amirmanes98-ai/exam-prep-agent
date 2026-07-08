@@ -76,6 +76,10 @@ PSD $\Rightarrow$ symmetric with all $\lambda_i \ge 0$; the spectral constructio
 (i) now has $c_i = \lambda_i \ge 0$. Trap: answering "matrices with non-negative
 entries" — 0 pts for the characterization.
 
+**💡 Useful tricks:** Product-pooling width-$R$ = rank-$\leq R$ matrices (rank subadditivity one way, column-space basis construction the other); universal iff $R\geq M$, with $I_M$ the full-rank witness; EYM gives $\min$ error $M-R$; the symmetric weight-sharing constraint yields exactly the symmetric matrices (spectral theorem, sign carried by $c_r\in\mathbb R$), and $c_r\geq0$ restricts to PSD.
+
+**⚠️ Watch out:** (1) prove BOTH inclusions *with a construction* — "rank $\leq R$ means $R$ outer products" is not a proof; (3) here $\sigma_i(I_M)=1$ so the class-printed EYM ($\sigma_i$) and classical ($\sigma_i^2$) coincide — but mind $\sigma_i^2$ in general; (4) the answer is PSD (not "non-negative entries"), and allowing $c\in\mathbb R$ is what makes the symmetric case work.
+
 ## Q2 — Prediction dynamics under a (time-varying) kernel (35)
 
 **1. (8)** Gradient (3 pts): $\ell(w) = \frac12 (\Phi w - y)^\top (\Phi w - y)$; the
@@ -146,6 +150,10 @@ $\lambda_{\min}(H^*) > 0$; 1 pt naming the regime (NTK / lazy training) or the
 global-minimum-despite-non-convexity point. Content over length, but −1 if
 substantially over four sentences.
 
+**💡 Useful tricks:** Derive $\nabla\ell=\Phi^\top(\Phi w-y)$ then $\dot u=-H(u-y)$ with $H=\Phi\Phi^\top$ constant; solve each eigenmode with the integrating factor $e^{\lambda_n t}q_n$ (no dividing by $q_n$); for time-varying $H(t)\succeq\lambda I$, differentiate $\|e\|^2$ and use the integrating factor $e^{2\lambda t}\|e\|^2$; lazy training is what justifies treating the kernel as constant.
+
+**⚠️ Watch out:** for time-varying $H(t)$ you may NOT write $e^{-\int H}e(0)$ (the $H(t)$ don't commute — that's the whole point) or use a single fixed eigenbasis; differentiate $\|e\|^2$, not $\|e\|$ (non-differentiable at $0$); the conceptual part needs BOTH the $O(1/\sqrt n)$ weight movement AND the init concentration $H(0)\approx H^*$.
+
 ## Q3 — Rademacher complexity of ℓ1-bounded linear predictors (30)
 
 **1. (8)** Definition (2 pts): $R(A) = \frac{1}{N} \, \mathbb{E}_{\sigma}\big[
@@ -210,6 +218,10 @@ sparse ones) and remains meaningful even when $d \gg N$; it therefore explains
 generalization exactly when gradient training's implicit bias selects such low-norm
 solutions — generalization as a property of the algorithm–class pair (Lectures 6–7,
 same weighting pattern as the norm-adaptive bound of Exam 2021 Moed B, Q3).
+
+**💡 Useful tricks:** Dual norm — $\sup_{\|w\|_1\leq B}\langle w,v\rangle=B\|v\|_\infty$, attained at a signed coordinate vector; reduce $\|\sum\sigma_n x_n\|_\infty$ to a $\max$ over the $2d$ points $\pm v^j$ and apply Massart; peel the loss off with contraction ($\rho$); make it norm-adaptive by a union over dyadic radii $2^j$ with $\delta_j=\delta2^{-(j+1)}$.
+
+**⚠️ Watch out:** apply duality *per $\sigma$-realization* (make it visible); the $\pm$ doubling gives $\ln(2d)$, not $\ln d$; Massart is for the FINITE set $V$, never the infinite ball; the coordinate norm bound is $\sqrt N$, not $N$; the dyadic split must be summable.
 
 ## Grading notes
 - Total 105; per-part partial credit as marked. Hints used during attempt: −20% of

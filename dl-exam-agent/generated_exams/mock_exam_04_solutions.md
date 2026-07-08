@@ -121,6 +121,10 @@ restrict — over $\mathbb{R}$ they cannot even realize constant sequences.)*
 Trap: proving only non-realizability and forgetting to *prove* the witness is
 realizable by $\mathcal{H}_2$ (both claims are asked).
 
+**💡 Useful tricks:** Induct for the closed form $a_t=C^\top A^{L-t}B$; linear-in-$x$ ⇒ non-universal (witness $x_1x_2$); $d=1$ gives a *backwards* geometric $a_t=p\lambda^{L-t}$ with signature $a_{t+1}a_{t-1}=a_t^2$; anti-symmetric $A=\omega J$ has $J^k$ period-$4$, forcing $a_{t-2}=-\omega^2a_t$ ⇒ a sign constraint.
+
+**⚠️ Watch out:** (1) here you must PROVE the closed form (a_2024 gave it) and prove non-membership for *all* $d$; (3) apply the three-term identity only at interior $t\in\{2,\dots,L-1\}$, and verify the witness is realizable in $\mathcal H_2$; (4) $A^{L-t}$ is a matrix *power* (rotation by $k\cdot90°$ scaled by $\omega^k$) — NOT the exponential $e^{(L-t)A}$; it's a period-4 geometric, not a bounded sinusoid.
+
 ## Q2 — Gradient flow on a single ReLU neuron (35)
 
 **1. (8)** Write $\mathcal{L}(w, v) = \tfrac12 \sum_n r_n^2$ with
@@ -188,6 +192,10 @@ $\mathcal{L} \to \tfrac12$ instead of the required $\mathcal{L} \ge \tfrac12$
 (more than needed, fine if correct); contrasting with the wrong class result
 (the relevant class theorem is linear-network convergence, not saddle
 avoidance).
+
+**💡 Useful tricks:** Chain rule with the $\mathbb 1[z>0]$ convention; homogeneity $z\,\mathbb 1[z>0]=[z]_+$ ⇒ balancedness $v^2-\|w\|^2$ conserved; *strict* imbalance $c_0>0$ ⇒ $v(t)^2\geq c_0>0$ ⇒ sign of $v$ frozen (simpler than the balanced case); $v>0,\ [w]_+\geq0$ ⇒ a negative label is unreachable ⇒ loss floor $\tfrac12$.
+
+**⚠️ Watch out:** (1) don't drop the factor $v$ in $\dot w$; (2) derive balancedness in *this* setting — don't cite class; (3) sign preservation needs continuity + IVT, and strict imbalance hands you $|v(t)|\geq\sqrt{c_0}$ for free; (4) the global min needs $v<0$, and the contrast is with *linear-network convergence* (Thm 2), not saddle avoidance.
 
 ## Q3 — PAC-Bayes with Gaussian priors and posteriors (30)
 
@@ -280,6 +288,10 @@ family that can in principle track the observed generalization phenomena.
 (Larger $\sigma^2$ trades smaller KL against a wider noise ball; part 3b tunes
 this legitimately.) Credit: 2 flatness ↔ noisy-training-loss term; 2 low norm ↔
 KL term; 1 the tie to the class discussion. Deduct 1 if over four sentences.
+
+**💡 Useful tricks:** Gaussian KL: normalizations cancel and $\mathbb E_Q[\theta]=w$ ⇒ $KL=\|w\|^2/2\sigma^2$; the "$\forall Q$" sits *inside* the high-probability event, so the posterior may be picked after seeing $S$ (no union over $w$); tune the prior *scale* with a grid $P_j=N(0,2^j\sigma_0^2)$, $\delta_j=\delta2^{-(j+1)}$; a small bound ⇔ flat + low-norm minimum.
+
+**⚠️ Watch out:** (1) watch the exponent sign; the second moments cancel; (2) do NOT union-bound over $w$ — the free $\forall Q$ is the point; (3a) name the *broken step* — the $\mathbb E_S\leftrightarrow\mathbb E_{\theta\sim P}$ swap needs $P\perp S$, and Hoeffding fails on $S$-selected hypotheses — not a vague "overfitting"; (3b) keep $\delta_j$ summable, recompute $KL$ at variance $2^j\sigma_0^2$, and tune only the scale, never the prior mean.
 
 ## Grading notes
 - Total 105; per-part partial credit as marked. Hints used during attempt: −20% of

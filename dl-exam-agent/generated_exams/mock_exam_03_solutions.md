@@ -120,6 +120,10 @@ cannot match a general $f$); concluding $f\equiv\varphi$ from equal slopes witho
 gluing the piecewise constants via continuity and the anchor on the first piece;
 forgetting that the affine term costs two neurons.
 
+**💡 Useful tricks:** Composition *multiplies* pieces (breakpoints of $f\circ g$ = preimages of $f$'s breakpoints under $g$'s affine pieces); a shared per-layer partition gives the clean $(w+1)^L$ bound; a strict extremum forces a breakpoint, which lower-bounds the sawtooth at $2^L$; decompose PWL as $ax+b+\sum_i c_i[x-t_i]_+$ and realize the affine part with $a[x]_+-a[-x]_+$.
+
+**⚠️ Watch out:** pieces multiply, they don't add ($p+q$ is wrong); use a *common* partition for all neurons of a layer — per-neuron bookkeeping only gives a weak $(2w)^L$; the lower bound needs the strict-extremum argument (swing-counting yields just $\sim2^{L-1}$); never drop the $ax+b$ term (it costs two neurons).
+
 ## Q2 — Gradient flow on a cubic reparameterization of linear regression (35)
 
 **1. (7)** $L(z)=\frac12\sum_{n=1}^N\big(\sum_{j=1}^d X_{nj}z_j^3-y_n\big)^2$. By the
@@ -201,6 +205,10 @@ gradient flow is a critical point" without justification — a precise citation 
 recitation result that proves it (Recitation: Optimization Exercises 1, P5) earns
 full credit per the front-matter rules; forgetting to rule out $z_\infty=0$.
 
+**💡 Useful tricks:** Chain rule gives $\dot z=-3\,z^{\odot2}\odot(X^\top r)$ — note the factor $3$; zero coordinates stay zero by *scalar uniqueness* of $\dot\psi=a(t)\psi^2,\ \psi(0)=0$ ⇒ implicit sparsity ($\mathrm{supp}(w(t))\subseteq\mathrm{supp}(z_0)$); non-convexity via a critical-but-not-global point ($z=0$); 1D convergence by sign + confinement + monotone-bounded.
+
+**⚠️ Watch out:** "$\dot\psi=0$ at $0$ ⇒ never moves" is FALSE without uniqueness (counterexample $\dot\psi=3\psi^{2/3}$ has $\psi=t^3$); $L''(0)=0$ is a *flat non-strict* degeneracy — you cannot disprove convexity from the Hessian alone, exhibit a non-global critical point or a chord violation; confining $z<1$ needs the uniqueness barrier; rule out $z_\infty=0$.
+
 ## Q3 — Generalization via a cover of the parameter ball (30)
 
 **1. (7)** *One dimension (4 pts):* let $k:=\lceil1/\epsilon\rceil$ and
@@ -270,6 +278,10 @@ asserted.)
 *Traps:* leaving $\epsilon$ in the final bound; choosing $\epsilon$ constant (the
 $2\rho\epsilon$ term then does not vanish); ignoring the constraint $\epsilon\le1$
 for small $N$ (handled by the $\min$, or by stating the bound for $N$ large enough).
+
+**💡 Useful tricks:** Grid spacing $2\epsilon$ (a radius-$\epsilon$ ball covers a length-$2\epsilon$ interval), clamped into $[-1,1]$; product cover $|C_\epsilon|\leq(\lceil1/\epsilon\rceil+1)^d$; Hoeffding on the *data-independent* cover + union; $2\rho\epsilon$ Lipschitz transfer to the whole ball; balance $\epsilon\sim1/(\rho\sqrt N)$ to make everything vanish.
+
+**⚠️ Watch out:** use spacing $2\epsilon$, not $\epsilon$ (else the size blows up); keep cover points *inside* the ball (clamp); Hoeffding needs the FIXED cover, never a data-dependent $w$; pay $2\rho\epsilon$ (both $L_D$ and $L_S$ transfer); choose $\epsilon(N)\to0$ or the transfer term never vanishes.
 
 ## Grading notes
 - Total 105; per-part partial credit as marked. Hints used during the attempt: −20%
