@@ -761,6 +761,7 @@ function renderExamDetail(e) {
     det.appendChild(c);
     mathify($(".qhead", c));
     setMd($(".mdslot", c), q.statement);
+    (FIG_EXAM[e.id + "_Q" + q.n] || []).forEach(fid => $(".mdslot", c).appendChild(figNode(fid, true)));
     setMd($(".sketchslot", c), q.sketch);
   });
   mathify(det); // titles and headers contain math too
@@ -1050,6 +1051,122 @@ function figCanvas(el, w, h) {
   ctx.clearRect(0, 0, w, h);
   return ctx;
 }
+/* ---------- exam figure generators (schematic reconstructions) ----------
+   The index stores each exam plot's DESCRIBED shape + exact parameters (a regression
+   line, axis ranges, quantile refs) but not the raw sample points, so these draw
+   faithful SCHEMATIC reconstructions — correct shape / trend / line — captioned as
+   illustrations, not pixel copies of the original exam image. Each generator returns
+   a draw(canvas) closure so a FIGS entry is one config object. */
+function figRng(seed) { let s = (seed || 1) >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function figGauss(R) { return (R() + R() + R() + R() - 2) / 2; } // approx N(0,~0.33)
+function figFrame(ctx, x0, y0, w, h, xlab, ylab) {
+  const muted = cssVar("--muted"), ink = cssVar("--ink");
+  ctx.strokeStyle = muted; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y0 + h); ctx.lineTo(x0 + w, y0 + h); ctx.stroke();
+  ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
+  if (xlab) { ctx.textAlign = "center"; ctx.fillText(xlab, x0 + w / 2, y0 + h + 24); }
+  if (ylab) { ctx.save(); ctx.translate(x0 - 32, y0 + h / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center"; ctx.fillText(ylab, 0, 0); ctx.restore(); }
+  ctx.textAlign = "left";
+}
+function figScatter(cfg) {
+  return function (cv) {
+    const W = cfg.W || 560, H = cfg.H || 320, ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), ink = cssVar("--ink");
+    const x0 = 52, y0 = 16, w = W - 78, h = H - 54;
+    const [xa, xb] = cfg.xr, [ya, yb] = cfg.yr;
+    const sx = x => x0 + (x - xa) / (xb - xa) * w, sy = y => y0 + h - (y - ya) / (yb - ya) * h;
+    figFrame(ctx, x0, y0, w, h, cfg.xlab, cfg.ylab);
+    const b = cfg.slope != null ? cfg.slope : (cfg.dir === "neg" ? -1 : 1) * (yb - ya) / (xb - xa) * 0.78;
+    const a = cfg.intercept != null ? cfg.intercept : (ya + yb) / 2 - b * (xa + xb) / 2;
+    const line = x => a + b * x, R = figRng(cfg.seed || 7), n = cfg.n || 32;
+    const spread = (cfg.spread != null ? cfg.spread : 0.16) * (yb - ya);
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, y0, w, h); ctx.clip();
+    ctx.fillStyle = acc; ctx.globalAlpha = .68;
+    for (let i = 0; i < n; i++) {
+      const x = xa + (i + 0.5) / n * (xb - xa) + (R() - 0.5) * (xb - xa) / n * 1.4;
+      const y = line(x) + figGauss(R) * spread * 2;
+      ctx.beginPath(); ctx.arc(sx(x), sy(y), 3, 0, 7); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = cssVar("--bad") || "#c0392b"; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(sx(xa), sy(line(xa))); ctx.lineTo(sx(xb), sy(line(xb))); ctx.stroke();
+    ctx.restore();
+    if (cfg.eqn) { ctx.fillStyle = ink; ctx.font = "12.5px " + cssVar("--mono"); ctx.fillText(cfg.eqn, x0 + 10, y0 + 15); }
+  };
+}
+function figHist(cfg) {
+  const shapeH = (shape, t) => { // t in [0,1] across bins -> relative height
+    if (shape === "sym") return Math.exp(-Math.pow((t - 0.5) * 3.1, 2));
+    if (shape === "rskew") return Math.pow(Math.max(0, 1 - t), 0.6) * Math.exp(-Math.pow((t - 0.12) * 3.0, 2)) + 0.75 * Math.exp(-Math.pow((t - 0.14) * 4.2, 2));
+    if (shape === "lskew") return shapeH("rskew", 1 - t);
+    return Math.exp(-Math.pow((t - 0.5) * 3.1, 2));
+  };
+  return function (cv) {
+    const panels = cfg.panels, W = cfg.W || (panels.length > 1 ? 640 : 520), H = cfg.H || 260;
+    const ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), ink = cssVar("--ink");
+    const gap = 30, pw = (W - 40 - gap * (panels.length - 1)) / panels.length, y0 = 14, h = H - 52;
+    panels.forEach((p, pi) => {
+      const x0 = 30 + pi * (pw + gap), nb = p.bins || 13, pwi = pw - 8;
+      figFrame(ctx, x0, y0 + 14, pwi, h - 14, "", pi === 0 ? (cfg.ylab || "שכיחות") : "");
+      let hs = []; for (let i = 0; i < nb; i++) hs.push(shapeH(p.shape, (i + 0.5) / nb));
+      const mx = Math.max(...hs), bw = pwi / nb, base = y0 + h;
+      ctx.fillStyle = acc; ctx.globalAlpha = .78;
+      hs.forEach((v, i) => { const bh = v / mx * (h - 22); ctx.fillRect(x0 + i * bw + 1, base - bh, bw - 2, bh); });
+      ctx.globalAlpha = 1;
+      ctx.textAlign = "center";
+      if (p.label) { ctx.fillStyle = ink; ctx.font = "600 13px " + cssVar("--sans"); ctx.fillText(p.label, x0 + pwi / 2, y0 + 10); }
+      if (p.range) { ctx.fillStyle = cssVar("--muted"); ctx.font = "11px " + cssVar("--sans"); ctx.fillText(p.range, x0 + pwi / 2, y0 + h + 20); }
+      ctx.textAlign = "left";
+    });
+  };
+}
+function figQQ(cfg) {
+  const mapq = (pat, t) => { // t = theoretical (normal) quantile -> sample quantile
+    if (pat === "heavy") return t * (1 + 0.42 * t * t);
+    if (pat === "light") return Math.sign(t) * Math.pow(Math.abs(t), 0.62) * 1.15;
+    if (pat === "rskew") return t + 0.34 * (t * t - 1);
+    if (pat === "lskew") return t - 0.34 * (t * t - 1);
+    return t;
+  };
+  return function (cv) {
+    const W = cfg.W || 380, H = cfg.H || 320, ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), muted = cssVar("--muted");
+    const x0 = 46, y0 = 16, w = W - 66, h = H - 54, R = 2.9;
+    const sx = v => x0 + (v + R) / (2 * R) * w, sy = v => y0 + h - (v + R) / (2 * R) * h;
+    figFrame(ctx, x0, y0, w, h, cfg.xlab || "שברוני הנורמלית", cfg.ylab || "שברוני המדגם");
+    ctx.strokeStyle = muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(sx(-R), sy(-R)); ctx.lineTo(sx(R), sy(R)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, y0, w, h); ctx.clip();
+    ctx.fillStyle = acc; ctx.globalAlpha = .8;
+    const n = cfg.n || 22;
+    for (let i = 0; i < n; i++) { const t = -2.3 + (i + 0.5) / n * 4.6, s = mapq(cfg.pattern, t); ctx.beginPath(); ctx.arc(sx(t), sy(s), 3, 0, 7); ctx.fill(); }
+    ctx.globalAlpha = 1; ctx.restore();
+  };
+}
+function figBox(cfg) {
+  const q = { sym: [.5, .28, .72, .12, .88], rskew: [.32, .2, .52, .1, .86], lskew: [.68, .48, .8, .14, .9], rskewX: [.22, .13, .38, .06, .8] };
+  return function (cv) {
+    const boxes = cfg.boxes, W = cfg.W || Math.max(300, boxes.length * 120 + 60), H = cfg.H || 300;
+    const ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), ink = cssVar("--ink"), muted = cssVar("--muted");
+    const x0 = 40, y0 = 16, h = H - 52, slot = (W - x0 - 20) / boxes.length;
+    figFrame(ctx, x0, y0, W - x0 - 20, h, "", cfg.ylab || "");
+    boxes.forEach((bx, i) => {
+      const p = q[bx.shape] || q.sym, cx = x0 + slot * (i + 0.5), bw = Math.min(46, slot * 0.5);
+      const Y = v => y0 + h - v * h;
+      ctx.strokeStyle = ink; ctx.fillStyle = acc; ctx.globalAlpha = .5; ctx.lineWidth = 1.4;
+      ctx.fillRect(cx - bw / 2, Y(p[2]), bw, Y(p[1]) - Y(p[2])); ctx.globalAlpha = 1;
+      ctx.strokeRect(cx - bw / 2, Y(p[2]), bw, Y(p[1]) - Y(p[2]));
+      ctx.beginPath(); ctx.moveTo(cx - bw / 2, Y(p[0])); ctx.lineTo(cx + bw / 2, Y(p[0])); ctx.stroke(); // median
+      ctx.strokeStyle = muted; ctx.beginPath();
+      ctx.moveTo(cx, Y(p[1])); ctx.lineTo(cx, Y(p[3])); ctx.moveTo(cx, Y(p[2])); ctx.lineTo(cx, Y(p[4])); ctx.stroke();
+      ctx.moveTo(cx - bw / 4, Y(p[3])); ctx.lineTo(cx + bw / 4, Y(p[3])); ctx.moveTo(cx - bw / 4, Y(p[4])); ctx.lineTo(cx + bw / 4, Y(p[4])); ctx.stroke();
+      if (bx.out) bx.out.forEach(o => { ctx.strokeStyle = cssVar("--bad"); ctx.beginPath(); ctx.arc(cx, Y(o), 2.4, 0, 7); ctx.stroke(); });
+      if (bx.label) { ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans"); ctx.textAlign = "center"; ctx.fillText(bx.label, cx, y0 + h + 22); ctx.textAlign = "left"; }
+    });
+  };
+}
 const FIGS = {
   // id "pillars" is the dashboard mount slot (the template inserts figNode("pillars")
   // under the exam-template bar). Statistics' most exam-relevant picture lives there.
@@ -1304,17 +1421,84 @@ const FIGS = {
     }
   }
 };
+/* exam-specific schematic figures (mounted per question via FIG_EXAM) */
+Object.assign(FIGS, {
+  ex_b2022_grades: {
+    title: "תרשים פיזור: ציון סמסטר ב׳ כנגד סמסטר א׳",
+    pillar: "Descriptive",
+    caption: "איור להמחשה (שחזור סכמטי): ענן נקודות עולה ולינארי של ציון סמסטר ב׳ (Y) כנגד ציון סמסטר א׳ (X) עבור 88 תלמידים, עם קו הרגרסיה. הנקודות ממחישות את המגמה המתוארת — לא ערכי המדגם המקוריים.",
+    draw: figScatter({ xr: [58, 80], yr: [68, 88], n: 88, dir: "pos", spread: 0.14, seed: 22, xlab: "ציון סמסטר א׳ (X)", ylab: "ציון סמסטר ב׳ (Y)" })
+  },
+  ex_a2013_hists: {
+    title: "שלוש היסטוגרמות: X, Y, Z",
+    pillar: "Descriptive",
+    caption: "איור להמחשה: X אסימטרית ימינה (טווח ~40–180), Y סימטרית בצורת פעמון (~0–100), Z אסימטרית שמאלה (~-80–60). הצורות נאמנות לתיאור בשאלה; גובה העמודות סכמטי.",
+    draw: figHist({ panels: [{ shape: "rskew", label: "X", range: "~40–180" }, { shape: "sym", label: "Y", range: "~0–100" }, { shape: "lskew", label: "Z", range: "~-80–60" }] })
+  },
+  ex_a2020_qq: {
+    title: "QQ-plot מול ההתפלגות הנורמלית",
+    pillar: "Descriptive",
+    caption: "איור להמחשה: הנקודות בשני הקצוות סוטות מהקו הישר כלפי חוץ — כלומר זנבות כבדים (עבים) יותר מהנורמלי, סימטרית סביב המרכז, כפי שמתואר בשאלה.",
+    draw: figQQ({ pattern: "heavy", seed: 5 })
+  }
+});
+const FIG_EXAM = {
+  "b_2022_Q2": ["ex_b2022_grades"],
+  "a_2013_Q1": ["ex_a2013_hists"],
+  "a_2020_Q1": ["ex_a2020_qq"]
+};
+/* exam figures — generated from figspec_*.json (schematic reconstructions) */
+Object.assign(FIGS, {
+  "ex_a_2012_Q1": { title: "היסטוגרמת תשואות יומיות", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): היסטוגרמה של תשואות יומיות באחוזים ל-2000 ימי מסחר, פעמונית בקירוב וממורכזת סביב 0, עיקר הנתונים בין כ-1- ל-1 (עמודת השיא ≈300) וכמעט כולם בין 2- ל-2, עם עמודה קטנה ומבודדת ליד 3-. סכמטי בלבד, אינו נתוני המקור.", draw: figHist({"panels": [{"shape": "sym", "label": "תשואות (X)", "range": "~-3–2"}], "ylab": "שכיחות"}) },
+  "ex_a_2012_Q2": { title: "מכירת פחיות מול גודל הקהל", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של מספר פחיות השתייה (Y, אלפים) מול גודל הקהל (X, אלפים) ב-40 משחקים, עם קו רגרסיה עולה Y=0.49X+0.87 (r=0.90). הנקודות נועדו להמחשה בלבד.", draw: figScatter({"xr": [4, 40], "yr": [0, 23], "xlab": "גודל הקהל באלפים (X)", "ylab": "פחיות שתייה באלפים (Y)", "dir": "pos", "slope": 0.488, "intercept": 0.874, "eqn": "Y=0.49X+0.87", "spread": 0.13, "n": 40}) },
+  "ex_a_2012_Q5": { title: "זמן עד כשל לפי סוג החלק", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשימי קופסה זה-לצד-זה של הזמן עד כשל המנוע (מיליוני סיבובים) לפי סוג החלק — סוג I עם חציון גבוה יותר (≈11) וקופסה כ-5.6–15.2, וסוג II מוטה ימינה עם חציון ≈4.7 קרוב לתחתית הקופסה. סכמטי בלבד.", draw: figBox({"boxes": [{"shape": "sym", "label": "סוג I"}, {"shape": "rskew", "label": "סוג II"}], "ylab": "זמן עד כשל (מיליוני סיבובים)"}) },
+  "ex_b_2012_Q1": { title: "תרשים QQ נורמלי", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים QQ נורמלי (שברוני המדגם מול שברוני הנורמלית) המדגים את המדגם הנכון — ענן לינארי בקירוב המעיד על נורמליות. ארבעת התרשימים המקוריים דומים בצורתם ונבדלים במיקום ובסקאלה; זהו שחזור סכמטי בלבד.", draw: figQQ({"pattern": "linear", "xlab": "שברוני הנורמלית", "ylab": "שברוני המדגם"}) },
+  "ex_b_2012_Q2": { title: "גיל עץ מול קוטר", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של גיל העץ (Y, שנים) מול הקוטר (X, ס\"מ) ל-27 עצים, עם קו הרגרסיה Y=-0.97+0.88X (r≈0.88). סכמטי בלבד.", draw: figScatter({"xr": [5, 45], "yr": [0, 42], "xlab": "קוטר (X, ס\"מ)", "ylab": "גיל (Y, שנים)", "dir": "pos", "slope": 0.882, "intercept": -0.974, "eqn": "Y=0.88X-0.97", "spread": 0.14, "n": 27}) },
+  "ex_a_2013_Q2": { title: "תפוקת אורז מול חנקן", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של תפוקת האורז (Y, oz) מול כמות החנקן (X, oz, בטווח 0–16) עם קו רגרסיה עולה Y=20X+240 (r=0.95). הקשר לינארי; סכמטי בלבד.", draw: figScatter({"xr": [0, 16], "yr": [190, 610], "xlab": "כמות חנקן (X, oz)", "ylab": "תפוקת אורז (Y, oz)", "dir": "pos", "slope": 20, "intercept": 240, "eqn": "Y=20X+240", "spread": 0.09}) },
+  "ex_a_2013_Q5": { title: "חלבון לפני/אחרי טיפול והפרשים", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשימי קופסה של רמות החלבון לפני ואחרי הטיפול (שתיהן מוטות ימינה) ושל ההפרשים — ההפרשים הגולמיים סימטריים בקירוב והפרשי הלוג עם חריג נמוך. סכמטי בלבד; הסקאלות אינן זהות בין הקופסאות.", draw: figBox({"boxes": [{"shape": "rskew", "label": "לפני"}, {"shape": "rskew", "label": "אחרי"}, {"shape": "sym", "label": "הפרשים (גולמי)"}, {"shape": "lskew", "label": "הפרשי לוג"}]}) },
+  "ex_b_2013_Q1": { title: "תרשים פיזור (קשר חיובי חלש)", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור המדגים ענן יחיד עם קשר חיובי חלש (כמו תרשימים I ו-II בשאלה). בשאלה מופיעים שלושה תרשימים, ואחד (III) מציג שני אשכולות נפרדים שאינם ניתנים לשחזור בסכמה זו. סכמטי בלבד.", draw: figScatter({"xr": [0, 10], "yr": [0, 10], "xlab": "X", "ylab": "Y", "dir": "pos", "slope": 0.5, "intercept": 2, "spread": 0.25, "n": 11}) },
+  "ex_b_2013_Q2": { title: "log10(שרתי אינטרנט) מול שנים", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של log10(מספר שרתי האינטרנט) מול שנים מאז ינואר 97, עם קו רגרסיה כמעט מושלם log10=5.8+0.4·Yrs (R²=0.996). הנקודות צמודות מאוד לקו; סכמטי בלבד.", draw: figScatter({"xr": [0, 4], "yr": [5.6, 7.6], "xlab": "שנים מאז ינואר 97", "ylab": "log10(שרתי אינטרנט)", "dir": "pos", "slope": 0.4, "intercept": 5.8, "eqn": "log10(servers)=5.8+0.4·Yrs", "spread": 0.04, "n": 45}) },
+  "ex_a_2014_Q2": { title: "זמני ריצת 100 מטר אולימפיים", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של זמני הריצה הזוכים בריצת 100 מטר במשחקים האולימפיים (שניות, כ-9.8 עד 10.8) כנגד שנת האולימפיאדה (כ-1928 עד 2004). המגמה יורדת לאורך השנים, עם כמה זמנים איטיים חריגים בשנים המוקדמות. אין זו הגרסה המקורית מן הבחינה אלא שחזור סכמטי בלבד.", draw: figScatter({"xr": [1928, 2004], "yr": [9.8, 10.8], "xlab": "שנה", "ylab": "זמן ריצה (שניות)", "dir": "neg", "spread": 0.12, "n": 18}) },
+  "ex_a_2018_Q2": { title: "משקל סוף השנה כנגד תחילת השנה", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של משקל התלמידים בסוף השנה (יוני, ק\"ג) כנגד המשקל בתחילת השנה (ספטמבר, ק\"ג) עבור 500 תלמידים, עם מגמה לינארית חיובית ברורה (r≈0.71, קו רגרסיה Y=1.02X+8.94). שחזור סכמטי בלבד, ולא הנתונים המקוריים.", draw: figScatter({"xr": [18.97, 80.57], "yr": [15.62, 104.13], "xlab": "משקל בתחילת השנה (ק\"ג)", "ylab": "משקל בסוף השנה (ק\"ג)", "dir": "pos", "slope": 1.0235, "intercept": 8.94, "eqn": "Y=1.02X+8.94", "spread": 0.21, "n": 120}) },
+  "ex_b_2018_Q2": { title: "עלות משלוח כנגד משקל האריזה", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של עלות המשלוח (דולר) כנגד משקל האריזה (פאונד) עבור 20 משלוחים, עם קשר לינארי חיובי חזק (r≈0.98, קו רגרסיה Y=5.17X+15.19). שחזור סכמטי בלבד.", draw: figScatter({"xr": [4.44, 17.58], "yr": [37.45, 106.75], "xlab": "משקל האריזה (פאונד)", "ylab": "עלות המשלוח (דולר)", "dir": "pos", "slope": 5.17, "intercept": 15.19, "eqn": "Y=5.17X+15.19", "spread": 0.06, "n": 20}) },
+  "ex_a_2021_Q3": { title: "גבהי אמהות מול בנות", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של גובה האם (X) מול גובה הבת (Y) ביחידות inch, כ-1100 זוגות, ענן מפוזר בעל שיפוע חיובי מתון (מתאם r≈0.5).", draw: figScatter({"xr": [55.3, 69.7], "yr": [56.0, 71.6], "xlab": "גובה האם (inch)", "ylab": "גובה הבת (inch)", "dir": "pos", "slope": 0.542, "intercept": 29.95, "eqn": "Y=29.95+0.542X", "spread": 0.26}) },
+  "ex_a_2022_Q2": { title: "תרשימי קופסה — אורך גב של תמנונים", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): ארבעה תרשימי קופסה של אורך הגב (במ\"מ) בארבעה תתי-סוגים של תמנונים. (i) קופסה נמוכה בטווח עם זקן עליון ארוך וערך חריג — עקמומיות ימנית מתונה; (ii) קופסה דחוסה סמוך לתחתית עם ערכים חריגים גבוהים — עקמומיות ימנית קיצונית; (iii) קופסה גדולה במרכז הטווח, זקנים קצרים וללא חריגים — סימטרית עם זנבות קצרים; (iv) קופסה גבוהה עם השתרעות ארוכה כלפי מטה — עקמומיות שמאלית עם ערכים חריגים נמוכים.", draw: figBox({"boxes": [{"shape": "rskew", "label": "i"}, {"shape": "rskewX", "label": "ii"}, {"shape": "sym", "label": "iii"}, {"shape": "lskew", "label": "iv"}], "ylab": "אורך הגב (מ\"מ)"}) },
+  "ex_b_2023_Q1": { title: "תרשים Q-Q נורמלי (qqnorm)", pillar: "Descriptive", caption: "איור לשחזור סכמטי של תרשים ה-Q-Q הנורמלי שבשאלה: הנקודות יוצרות תבנית קמורה העולה כלפי מעלה — מתחת לישר הייחוס באמצע ומעליו בקצה, כאשר האחוזונים הדגומים הגבוהים ביותר גבוהים במידה ניכרת מעל הישר, המעיד על זנב ימני כבד (הטיה ימנית).", draw: figQQ({"pattern": "rskew", "xlab": "שברוני הנורמלית", "ylab": "שברוני המדגם"}) },
+  "ex_a_2024_Q2": { title: "תרשים Q-Q: מדגם מול ההתפלגות f(x)=2x", pillar: "Descriptive", caption: "איור להמחשה סכמטית של תרשים ה-Q-Q שבשאלה: ארבעת סטטיסטי הסדר של המדגם (0.213, 0.500, 0.900, 0.995) על ציר ה-Y מול האחוזונים התיאורטיים F⁻¹(p)=√p (0.447, 0.632, 0.775, 0.894) על ציר ה-X, הנופלים בקירוב על הישר y=x לבדיקת ההתאמה להתפלגות בעלת הצפיפות f(x)=2x.", draw: figScatter({"xr": [0, 1], "yr": [0, 1], "xlab": "אחוזון תיאורטי (שברון ההתפלגות)", "ylab": "סטטיסטי הסדר של המדגם", "dir": "pos", "slope": 1, "intercept": 0, "eqn": "Y=X", "spread": 0.04, "n": 4}) },
+  "ex_b_2024_Q1": { title: "תרשים פיזור — בדיקת התאמה מעריכית", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים פיזור של התצפיות הסדורות של מדגם מעריכי מול כמותוני ההתפלגות המעריכית התיאורטיים (‎−log(1−i/1001)‎). הנקודות שוכנות בקירוב על ישר, המעיד על קשר לינארי — כפי שנטען בסעיף א.", draw: figScatter({"xr": [0, 7], "yr": [0, 7], "xlab": "כמותוני ההתפלגות המעריכית", "ylab": "התצפיות הסדורות", "dir": "pos", "spread": 0.04, "n": 50}) },
+  "ex_b_2025_Q2": { title: "תרשים QQ — התאמה להתפלגות מעריכית", pillar: "Descriptive", caption: "איור להמחשה (שחזור סכמטי): תרשים QQ של ארבע התצפיות המסודרות (0.3, 0.7, 1.2, 2.1) מול שברוני ההתפלגות המעריכית. הנקודות שוכנות בקירוב על ישר, המעיד על התאמה טובה להתפלגות מעריכית.", draw: figQQ({"pattern": "linear", "xlab": "שברוני ההתפלגות המעריכית", "ylab": "התצפיות המסודרות"}) }
+});
+Object.assign(FIG_EXAM, {
+  "a_2012_Q1": ["ex_a_2012_Q1"],
+  "a_2012_Q2": ["ex_a_2012_Q2"],
+  "a_2012_Q5": ["ex_a_2012_Q5"],
+  "b_2012_Q1": ["ex_b_2012_Q1"],
+  "b_2012_Q2": ["ex_b_2012_Q2"],
+  "a_2013_Q2": ["ex_a_2013_Q2"],
+  "a_2013_Q5": ["ex_a_2013_Q5"],
+  "b_2013_Q1": ["ex_b_2013_Q1"],
+  "b_2013_Q2": ["ex_b_2013_Q2"],
+  "a_2014_Q2": ["ex_a_2014_Q2"],
+  "a_2018_Q2": ["ex_a_2018_Q2"],
+  "b_2018_Q2": ["ex_b_2018_Q2"],
+  "a_2021_Q3": ["ex_a_2021_Q3"],
+  "a_2022_Q2": ["ex_a_2022_Q2"],
+  "b_2023_Q1": ["ex_b_2023_Q1"],
+  "a_2024_Q2": ["ex_a_2024_Q2"],
+  "b_2024_Q1": ["ex_b_2024_Q1"],
+  "b_2025_Q2": ["ex_b_2025_Q2"]
+});
 const MOUNTED_FIGS = [];
-function figNode(id) {
+function figNode(id, open) {
   const f = FIGS[id]; if (!f || !CONFIG.figures) return document.createDocumentFragment();
   const d = document.createElement("details");
   d.className = "note figd p-" + (f.pillar || "Practices");
   d.innerHTML = "<summary>📈 " + tr("figLabel","Figure") + " — " + f.title + "</summary>" +
     "<div class='figbody'><canvas></canvas><p class='figcap'>" + f.caption + "</p></div>";
   const cv = $("canvas", d);
-  let drawn = false;
-  d.addEventListener("toggle", () => { if (d.open) { f.draw(cv); drawn = true; } });
+  d.addEventListener("toggle", () => { if (d.open) f.draw(cv); });
   MOUNTED_FIGS.push({ d, cv, f });
+  if (open) { d.open = true; requestAnimationFrame(() => f.draw(cv)); }
   return d;
 }
 function figsForText(text, map) {
