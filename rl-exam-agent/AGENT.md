@@ -103,6 +103,12 @@ start from a fresh clone, so:
   definition/operator; (2) key idea — name the right tool (contraction, Robbins-Monro,
   score-function trick, UCB bound); (3) outline — the solution skeleton; (4) full model
   solution.
+- **End every written solution with two takeaway callouts.** After the full solution (in the
+  site's `index/exams` + `generated_exams` files and in any solution you write), add a paragraph
+  `**💡 Trick.** ...` — the one insight/shortcut that cracks the question — and a paragraph
+  `**⚠️ Watch out.** ...` — the specific mistake that loses points. The study site renders these
+  as green/amber boxes (the emoji must be inside the bold lead). One–two sentences each, grounded
+  in the actual solution.
 - **Grade like the course does.** Points per sub-part as in the source question. Partial
   credit for: correct MDP/model setup, the right operator or estimator, a valid main
   argument, correct hypotheses, and a correct final number. Penalize: dropping the γ<1 or

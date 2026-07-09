@@ -13,6 +13,13 @@ course-specific values live in one small file you write: `index/SITE_CONFIG.json
 If you find yourself editing the template HTML or the build script, you are doing
 it wrong (exception: a genuinely new feature).
 
+**Reusable tooling lives in `replication/`** — use it instead of re-deriving anything:
+`INDEX_FORMAT.md` (the exact output spec to hand every indexing agent — the single biggest
+speedup), `fetch_libs.sh` (fetch the pinned KaTeX/marked/fonts), `make_text_mirrors.py`
+(PDF+PPTX → text mirrors), `validate_index.py` (pre-build format check — run before building),
+and `verify_site.mjs` (the once-per-phase headless-Chromium verification). The phases below
+point at each.
+
 ## Phase 0 — Setup (≈5k tokens)
 
 1. Clone the template read-only: `git clone https://github.com/1amirmanes98-ai/exam-prep-agent /tmp/template`

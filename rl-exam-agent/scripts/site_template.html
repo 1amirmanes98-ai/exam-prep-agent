@@ -301,7 +301,7 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 
     <section id="view-memo">
       <h1>Know these cold</h1>
-      <p class="sub">The exam allows no aid material. This is the curated list of theorems, formulas, and canonical examples worth hard memorization — with the exact statement, when to reach for it, and where past exams used it. Tick what you already know; it saves in this browser.</p>
+      <p class="sub" id="memoSub">The curated list of theorems, formulas, and canonical examples worth hard memorization — with the exact statement, when to reach for it, and where past exams used it. Tick what you already know; it saves in this browser.</p>
       <div class="card" style="padding:14px 18px;margin-bottom:6px">
         <div class="deckmeta" id="memoStats" style="margin:0"></div>
         <div class="progressbar" style="margin:10px 0 2px"><div id="memoProg" style="width:0%;background:var(--good)"></div></div>
@@ -366,11 +366,7 @@ const ICONS = {
   ask: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>',
   memo: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 4.5 4 6l2.5-2.5M2.5 9.5 4 11l2.5-2.5"/><path d="M9 5h5M9 10h5"/></svg>'
 };
-const ILLOS = {
-  Expressiveness: '<svg width="72" height="34" viewBox="0 0 72 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polyline points="2,30 12,4 22,30 32,4 42,30 52,4 62,30 70,12"/></svg>',
-  Optimization: '<svg width="72" height="34" viewBox="0 0 72 34" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4 C 22 6, 26 24, 46 28 S 66 30, 70 30"/><circle cx="63" cy="29.4" r="3.4" fill="currentColor" stroke="none"/></svg>',
-  Generalization: '<svg width="72" height="34" viewBox="0 0 72 34" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6 C 24 8, 40 22, 70 24"/><path d="M2 32 C 24 30, 40 26, 70 25" stroke-dasharray="4 3"/></svg>'
-};
+const ILLOS = {};
 const PILLAR_ROLE = CONFIG.slotRoles || {};
 
 /* ---------- storage ---------- */
@@ -971,6 +967,7 @@ function renderMemo() {
   const cs = DATA.cheatsheet;
   const list = $("#memoList");
   if (!cs) { list.innerHTML = "<div class='card empty'>No cheat sheet in this build.</div>"; return; }
+  if (cs.intro && $("#memoSub")) $("#memoSub").textContent = cs.intro;
   list.innerHTML = "";
   cs.sections.forEach(sec => {
     const pillar = memoSecPillar(sec.name);
@@ -1051,279 +1048,117 @@ function figCanvas(el, w, h) {
   return ctx;
 }
 const FIGS = {
-  sawtooth: {
-    title: "Depth doubles the sawtooth",
-    pillar: "Expressiveness",
-    caption: "Computed: the width-3 tent map g and its self-compositions. Pieces double with every composition (2 → 4 → 8): an L-layer net oscillates ~2^L times while a shallow net needs width ~2^L to keep up (Telgarsky, Lecture 2).",
+  vi_contraction: {
+    title: "Value iteration is a γ-contraction",
+    pillar: "Planning",
+    caption: "Computed: value iteration on a fixed 3-state, 2-action MDP (γ=0.9). The max-norm error ‖Vₖ−V*‖∞ (purple) stays under the γᵏ‖V₀−V*‖∞ envelope (dashed) at every step — the contraction that makes VI converge geometrically (Lecture 4).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--exp");
-      const g = x => x < .5 ? 2 * x : 2 - 2 * x;
-      for (let k = 1; k <= 3; k++) {
-        const y0 = 8 + (k - 1) * 98, h = 78, x0 = 46, w = W - 66;
-        ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.globalAlpha = .5;
-        ctx.strokeRect(x0, y0, w, h); ctx.globalAlpha = 1;
-        ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath();
-        for (let i = 0; i <= 600; i++) {
-          let x = i / 600, y = x;
-          for (let j = 0; j < k; j++) y = g(y);          // the actual composition
-          const px = x0 + x * w, py = y0 + h - y * h;
-          i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-        }
-        ctx.stroke();
-        ctx.fillStyle = ink; ctx.font = "13px " + cssVar("--serif");
-        ctx.fillText(k === 1 ? "g — 2 pieces" : k === 2 ? "g∘g — 4 pieces" : "g∘g∘g — 8 pieces", x0 + 6, y0 + 14);
-      }
+      const col = cssVar("--exp"), muted = cssVar("--muted"), ink = cssVar("--ink");
+      const g = 0.9, R = [[5,0,1],[2,3,0]];
+      const P = [[[0.7,0.3,0],[0.2,0.8,0],[0,0.5,0.5]],[[0.9,0.1,0],[0,0.6,0.4],[0.3,0,0.7]]];
+      const back = V => [0,1,2].map(s => Math.max(
+        R[0][s]+g*P[0][s].reduce((x,p,sp)=>x+p*V[sp],0),
+        R[1][s]+g*P[1][s].reduce((x,p,sp)=>x+p*V[sp],0)));
+      let Vs=[0,0,0]; for(let i=0;i<400;i++) Vs=back(Vs);
+      let V=[0,0,0]; const errs=[];
+      for(let k=0;k<24;k++){ errs.push(Math.max(Math.abs(V[0]-Vs[0]),Math.abs(V[1]-Vs[1]),Math.abs(V[2]-Vs[2]))); V=back(V); }
+      const e0=errs[0], N=errs.length, x0=48,y0=16,w=W-72,h=H-52;
+      const sx=k=>x0+k/(N-1)*w, sy=e=>y0+h-(e/e0)*h;
+      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
+      ctx.setLineDash([5,4]); ctx.strokeStyle=muted; ctx.lineWidth=1.5; ctx.beginPath();
+      for(let k=0;k<N;k++){ const px=sx(k),py=sy(e0*Math.pow(g,k)); k?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke();
+      ctx.setLineDash([]); ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
+      for(let k=0;k<N;k++){ const px=sx(k),py=sy(errs[k]); k?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke();
+      for(let k=0;k<N;k++){ ctx.fillStyle=col; ctx.beginPath(); ctx.arc(sx(k),sy(errs[k]),2.3,0,7); ctx.fill(); }
+      ctx.fillStyle=col; ctx.font="13px "+cssVar("--serif"); ctx.fillText("‖Vₖ − V*‖∞", x0+10, y0+16);
+      ctx.fillStyle=muted; ctx.fillText("γᵏ·‖V₀ − V*‖∞  (contraction bound)", x0+10, y0+34);
+      ctx.fillStyle=ink; ctx.fillText("iteration k →", W-118, H-10);
     }
   },
-  phase: {
-    title: "Gradient flow rides the conserved hyperbolas",
-    pillar: "Optimization",
-    caption: "Computed trajectories (RK4) of gradient flow on L(w₁,w₂)=½(w₁w₂−1)². Solid teal paths are the real flow; dashed curves are the level sets w₁²−w₂²=const — balancedness (Lecture 4) says the flow can never leave its hyperbola. Green curve: the minima set w₁w₂=1.",
-    draw(cv) {
-      const W = 640, H = 340, ctx = figCanvas(cv, W, H);
-      const muted = cssVar("--muted"), opt = cssVar("--opt"), good = cssVar("--good"), ink = cssVar("--ink");
-      const R = 2.3, sx = v => (v + R) / (2 * R) * (W - 40) + 20, sy = v => H - 20 - (v + R) / (2 * R) * (H - 40);
-      // dashed conserved hyperbolas w1^2 - w2^2 = c
-      ctx.setLineDash([4, 4]); ctx.lineWidth = 1; ctx.strokeStyle = muted; ctx.globalAlpha = .6;
-      [-3, -1.5, 0, 1.5, 3].forEach(c => {
-        [-1, 1].forEach(sgn => {
-          ctx.beginPath(); let started = false;
-          for (let w2 = -R; w2 <= R; w2 += .01) {
-            const v = w2 * w2 + c;
-            if (v < 0) { started = false; continue; }
-            const w1 = sgn * Math.sqrt(v);
-            if (Math.abs(w1) > R) { started = false; continue; }
-            const px = sx(w1), py = sy(w2);
-            started ? ctx.lineTo(px, py) : (ctx.moveTo(px, py), started = true);
-          }
-          ctx.stroke();
-        });
-      });
-      ctx.setLineDash([]); ctx.globalAlpha = 1;
-      // minima curve w1*w2 = 1
-      ctx.strokeStyle = good; ctx.lineWidth = 1.5;
-      [[.44, R], [-R, -.44]].forEach(([a, b]) => {
-        ctx.beginPath(); let st = false;
-        for (let w1 = a; w1 <= b; w1 += .01) {
-          const w2 = 1 / w1;
-          if (Math.abs(w2) > R) { st = false; continue; }
-          st ? ctx.lineTo(sx(w1), sy(w2)) : (ctx.moveTo(sx(w1), sy(w2)), st = true);
-        }
-        ctx.stroke();
-      });
-      // real GF trajectories, RK4 on -∇L
-      const f = ([a, b]) => { const r = a * b - 1; return [-r * b, -r * a]; };
-      ctx.strokeStyle = opt; ctx.lineWidth = 1.8;
-      for (let i = 0; i < 18; i++) {
-        const th = i / 18 * 2 * Math.PI;
-        let p = [2.1 * Math.cos(th), 2.1 * Math.sin(th)];
-        ctx.beginPath(); ctx.moveTo(sx(p[0]), sy(p[1]));
-        for (let s = 0; s < 900; s++) {
-          const h = .008, k1 = f(p), p2 = [p[0] + h / 2 * k1[0], p[1] + h / 2 * k1[1]],
-            k2 = f(p2), p3 = [p[0] + h / 2 * k2[0], p[1] + h / 2 * k2[1]],
-            k3 = f(p3), p4 = [p[0] + h * k3[0], p[1] + h * k3[1]], k4 = f(p4);
-          p = [p[0] + h / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]),
-               p[1] + h / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1])];
-          if (Math.abs(p[0]) > R || Math.abs(p[1]) > R) break;
-          ctx.lineTo(sx(p[0]), sy(p[1]));
-        }
-        ctx.stroke();
-      }
-      ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("w₂", sx(0) + 6, 16); ctx.fillText("w₁", W - 34, sy(0) - 6);
-    }
-  },
-  sigma: {
-    title: "Rich get richer: singular-value dynamics",
-    pillar: "Optimization",
-    caption: "Computed σᵣ(t) for the depth-3 dynamics σ̇ᵣ = −3(σᵣ²)^(2/3)(σᵣ−σᵣ*) from tiny init σᵣ(0)=0.01, targets σ*=3, 2, 1, 0.4. Modes with large targets take off first and sequentially; small ones stall near zero — the implicit low-rank bias of deep matrix factorization (Lecture 8).",
+  td_learning: {
+    title: "TD(0) learns the value function",
+    pillar: "Learning",
+    caption: "Computed: TD(0) on the 5-state random walk (γ=1, α=0.1, fixed seed). The five estimates V(s) (teal) climb from 0 toward their true values s/6 (dashed) as episodes accumulate — model-free prediction, bootstrapping from sampled transitions (Lectures 6–7).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const muted = cssVar("--muted"), ink = cssVar("--ink");
-      const cols = [cssVar("--opt"), cssVar("--exp"), cssVar("--gen"), muted];
-      const T = 9, dt = .002, n = Math.round(T / dt);
-      const targets = [3, 2, 1, .4], x0 = 44, y0 = 14, w = W - 64, h = H - 52;
-      ctx.strokeStyle = muted; ctx.globalAlpha = .5; ctx.strokeRect(x0, y0, w, h); ctx.globalAlpha = 1;
-      targets.forEach((s, r) => {
-        let sig = .01;
-        ctx.strokeStyle = cols[r]; ctx.lineWidth = 2; ctx.beginPath();
-        ctx.moveTo(x0, y0 + h - sig / 3.2 * h);
-        for (let i = 1; i <= n; i++) {
-          sig += dt * (-3 * Math.pow(sig * sig, 2 / 3) * (sig - s)); // the actual ODE
-          if (i % 25 === 0) ctx.lineTo(x0 + i / n * w, y0 + h - Math.min(sig, 3.2) / 3.2 * h);
-        }
-        ctx.stroke();
-        ctx.fillStyle = cols[r]; ctx.font = "12px " + cssVar("--sans");
-        ctx.fillText("σ*=" + s, x0 + w + 4 - 40, y0 + h - s / 3.2 * h - 4);
-      });
-      ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("t →", x0 + w - 24, y0 + h + 16); ctx.fillText("σᵣ(t)", x0 + 2, y0 + 12);
-    }
-  },
-  minnorm: {
-    title: "GD finds the minimum-norm solution",
-    pillar: "Generalization",
-    caption: "Computed GD iterates (dots) on ½(w·x−y)² for one equation w·x=1, x=(1, 0.6), from w=0. The trajectory never leaves the row space span{x} (dashed ray) and converges to the projection of 0 onto the solution line — the minimum-norm solution (ring). Any other point on the line (×) also fits the data but has larger norm (dotted circle = the min-norm radius). Lecture 7's implicit bias.",
-    draw(cv) {
-      const W = 640, H = 320, ctx = figCanvas(cv, W, H);
-      const muted = cssVar("--muted"), opt = cssVar("--opt"), good = cssVar("--good"), bad = cssVar("--bad"), ink = cssVar("--ink");
-      const R = 1.6, sx = v => (v + .55) / R * (W - 60) + 30, sy = v => H - 30 - (v + .35) / R * (H - 60);
-      const X = [1, .6], y = 1, nrm2 = X[0] * X[0] + X[1] * X[1];
-      // solution line w·x = 1
-      ctx.strokeStyle = ink; ctx.lineWidth = 1.5; ctx.beginPath();
-      const lineW2 = w1 => (y - X[0] * w1) / X[1];
-      ctx.moveTo(sx(-.4), sy(lineW2(-.4))); ctx.lineTo(sx(1.05), sy(lineW2(1.05))); ctx.stroke();
-      // row space ray
-      ctx.setLineDash([5, 4]); ctx.strokeStyle = muted; ctx.beginPath();
-      ctx.moveTo(sx(0), sy(0)); ctx.lineTo(sx(1.05), sy(.63)); ctx.stroke(); ctx.setLineDash([]);
-      // min-norm point + its norm circle
-      const mn = [X[0] * y / nrm2, X[1] * y / nrm2], rr = Math.hypot(mn[0], mn[1]);
-      ctx.setLineDash([2, 4]); ctx.strokeStyle = good; ctx.beginPath();
-      ctx.arc(sx(0), sy(0), (sx(rr) - sx(0)), 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
-      // GD iterates
-      let wv = [0, 0]; ctx.fillStyle = opt;
-      for (let k = 0; k < 14; k++) {
-        ctx.beginPath(); ctx.arc(sx(wv[0]), sy(wv[1]), 3.2, 0, 2 * Math.PI); ctx.fill();
-        const r = wv[0] * X[0] + wv[1] * X[1] - y;
-        wv = [wv[0] - .35 * r * X[0], wv[1] - .35 * r * X[1]];   // the actual GD step
+      const col = cssVar("--opt"), muted = cssVar("--muted"), ink = cssVar("--ink");
+      let seed = 7; const rnd = () => (seed = (seed*1103515245+12345)&0x7fffffff)/0x7fffffff;
+      const al=0.1, EP=140; const V=[0,0,0,0,0,0,0]; const hist=[[],[],[],[],[]];
+      for(let e=0;e<EP;e++){
+        let s=3;
+        while(s>0 && s<6){ const sp = s + (rnd()<0.5?-1:1); const r = (sp===6)?1:0;
+          V[s]+= al*(r + (sp>0&&sp<6?V[sp]:0) - V[s]); s=sp; }
+        for(let i=1;i<=5;i++) hist[i-1].push(V[i]);
       }
-      ctx.strokeStyle = good; ctx.lineWidth = 2; ctx.beginPath();
-      ctx.arc(sx(mn[0]), sy(mn[1]), 6, 0, 2 * Math.PI); ctx.stroke();
-      // a worse solution on the line
-      const other = [-.25, lineW2(-.25)];
-      ctx.strokeStyle = bad; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(sx(other[0]) - 5, sy(other[1]) - 5); ctx.lineTo(sx(other[0]) + 5, sy(other[1]) + 5);
-      ctx.moveTo(sx(other[0]) + 5, sy(other[1]) - 5); ctx.lineTo(sx(other[0]) - 5, sy(other[1]) + 5); ctx.stroke();
-      ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("w·x = 1 (all solutions)", sx(.62), sy(lineW2(.62)) - 8);
-      ctx.fillText("span{x}", sx(.86), sy(.52));
-      ctx.fillStyle = good; ctx.fillText("min-norm", sx(mn[0]) + 9, sy(mn[1]) + 4);
-      ctx.fillStyle = bad; ctx.fillText("fits too, bigger ‖w‖", sx(other[0]) + 8, sy(other[1]) + 4);
+      const x0=44,y0=14,w=W-64,h=H-46, sx=e=>x0+e/(EP-1)*w, sy=v=>y0+h-v*h;
+      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
+      ctx.setLineDash([4,4]); ctx.strokeStyle=muted; ctx.lineWidth=1;
+      for(let i=1;i<=5;i++){ const y=sy(i/6); ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x0+w,y); ctx.stroke();
+        ctx.fillStyle=muted; ctx.font="11px "+cssVar("--mono"); ctx.fillText((i)+"/6", x0-30, y+4); }
+      ctx.setLineDash([]);
+      for(let i=0;i<5;i++){ ctx.strokeStyle=col; ctx.globalAlpha=.45+.11*i; ctx.lineWidth=1.8; ctx.beginPath();
+        hist[i].forEach((v,e)=>{ const px=sx(e),py=sy(v); e?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke(); }
+      ctx.globalAlpha=1; ctx.fillStyle=ink; ctx.font="13px "+cssVar("--serif"); ctx.fillText("episodes →", W-104, H-8);
+      ctx.fillStyle=col; ctx.fillText("V(s) estimates", x0+8, y0+16);
     }
   },
-  hoeffding: {
-    title: "Hoeffding concentration, watched live",
-    pillar: "Generalization",
-    caption: "Computed: 40 simulated empirical means of fair coin flips (grey paths) against the Hoeffding envelope p ± √(ln(2/δ)/2N) for δ=0.05 (amber). The paths concentrate at rate 1/√N exactly as the bound promises — the engine inside every Q3 uniform-convergence argument.",
+  gridworld_policy: {
+    title: "The optimal policy on a GridWorld",
+    pillar: "Planning",
+    caption: "Computed: value iteration on a 5×5 GridWorld (γ=0.9; goal top-right = +1 absorbing; a blocked cell). Cells shaded by V*; arrows are the greedy optimal action argmaxₐ Q*(s,a) — dynamic programming turning values into a policy (Lectures 3–4).",
+    draw(cv) {
+      const W = 340, H = 300, ctx = figCanvas(cv, W, H);
+      const col = cssVar("--exp"), muted = cssVar("--muted"), ink = cssVar("--ink"), good = cssVar("--good");
+      const n=5, g=0.9, goal=[0,4], wall=[2,2];
+      const id=(r,c)=>r*n+c, isW=(r,c)=>r===wall[0]&&c===wall[1], isG=(r,c)=>r===goal[0]&&c===goal[1];
+      const A=[[-1,0],[1,0],[0,-1],[0,1]];
+      const step=(r,c,a)=>{ let nr=r+A[a][0], nc=c+A[a][1]; if(nr<0||nr>=n||nc<0||nc>=n||isW(nr,nc)) return [r,c]; return [nr,nc]; };
+      let V=new Array(n*n).fill(0);
+      for(let it=0;it<120;it++){ const nV=V.slice();
+        for(let r=0;r<n;r++)for(let c=0;c<n;c++){ if(isW(r,c)||isG(r,c)) continue;
+          let best=-1e9; for(let a=0;a<4;a++){ const [nr,nc]=step(r,c,a); const rew=isG(nr,nc)?1:0; best=Math.max(best,rew+g*V[id(nr,nc)]); }
+          nV[id(r,c)]=best; } V=nV; }
+      const vmax=Math.max(...V), cell=Math.min((W-20)/n,(H-20)/n), ox=(W-cell*n)/2, oy=(H-cell*n)/2;
+      for(let r=0;r<n;r++)for(let c=0;c<n;c++){ const x=ox+c*cell, y=oy+r*cell;
+        if(isW(r,c)){ ctx.fillStyle=muted; ctx.globalAlpha=.85; } else { ctx.fillStyle=col; ctx.globalAlpha=isG(r,c)?.9:0.12+0.6*(V[id(r,c)]/(vmax||1)); }
+        ctx.fillRect(x+1,y+1,cell-2,cell-2); ctx.globalAlpha=1;
+        ctx.strokeStyle=muted; ctx.globalAlpha=.4; ctx.strokeRect(x+1,y+1,cell-2,cell-2); ctx.globalAlpha=1;
+        if(isG(r,c)){ ctx.fillStyle=good; ctx.font="bold 15px "+cssVar("--serif"); ctx.fillText("★", x+cell/2-6, y+cell/2+6); continue; }
+        if(isW(r,c)) continue;
+        let best=-1e9, ba=0; for(let a=0;a<4;a++){ const [nr,nc]=step(r,c,a); const rew=isG(nr,nc)?1:0; const q=rew+g*V[id(nr,nc)]; if(q>best){best=q;ba=a;} }
+        const cx=x+cell/2, cy=y+cell/2, L=cell*0.26, dx=A[ba][1]*L, dy=A[ba][0]*L;
+        ctx.strokeStyle=ink; ctx.fillStyle=ink; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx-dx,cy-dy); ctx.lineTo(cx+dx,cy+dy); ctx.stroke();
+        const ang=Math.atan2(dy,dx); ctx.beginPath(); ctx.moveTo(cx+dx,cy+dy);
+        ctx.lineTo(cx+dx-6*Math.cos(ang-0.5),cy+dy-6*Math.sin(ang-0.5)); ctx.lineTo(cx+dx-6*Math.cos(ang+0.5),cy+dy-6*Math.sin(ang+0.5)); ctx.closePath(); ctx.fill();
+      }
+    }
+  },
+  ucb_regret: {
+    title: "UCB regret grows only like log T",
+    pillar: "Bandits",
+    caption: "Computed: UCB1 on 5 Bernoulli arms (means .50/.55/.60/.63/.65, fixed seed). Cumulative regret Σ(μ*−μₐₜ) (orange) is concave — sublinear, ≈ log T — far below the dashed linear 'keep-exploring' reference. Balancing exploration vs exploitation (Lecture 10).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const muted = cssVar("--muted"), gen = cssVar("--gen"), ink = cssVar("--ink");
-      const x0 = 44, y0 = 14, w = W - 64, h = H - 52, NMAX = 400;
-      const sx = n => x0 + (n / NMAX) * w, sy = v => y0 + h - v * h;
-      ctx.strokeStyle = muted; ctx.globalAlpha = .5; ctx.strokeRect(x0, y0, w, h); ctx.globalAlpha = 1;
-      // simulated empirical means (fixed-seed LCG so the figure is reproducible)
-      let seed = 42; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
-      ctx.strokeStyle = muted; ctx.globalAlpha = .35; ctx.lineWidth = 1;
-      for (let p = 0; p < 40; p++) {
-        let sum = 0; ctx.beginPath();
-        for (let n = 1; n <= NMAX; n++) {
-          sum += rnd() < .5 ? 0 : 1;
-          const px = sx(n), py = sy(sum / n);
-          n === 1 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-        }
-        ctx.stroke();
+      const col = cssVar("--gen"), muted = cssVar("--muted"), ink = cssVar("--ink");
+      const mu=[.50,.55,.60,.63,.65], K=mu.length, best=Math.max(...mu), T=1500;
+      let seed=91; const rnd=()=>(seed=(seed*1103515245+12345)&0x7fffffff)/0x7fffffff;
+      const n=new Array(K).fill(0), sum=new Array(K).fill(0); let reg=0; const curve=[];
+      for(let t=1;t<=T;t++){ let a;
+        if(t<=K){ a=t-1; } else { let bi=0,bv=-1e9; for(let i=0;i<K;i++){ const ucb=sum[i]/n[i]+Math.sqrt(2*Math.log(t)/n[i]); if(ucb>bv){bv=ucb;bi=i;} } a=bi; }
+        const r=rnd()<mu[a]?1:0; n[a]++; sum[a]+=r; reg+=best-mu[a]; curve.push(reg);
       }
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = gen; ctx.lineWidth = 2;
-      [1, -1].forEach(s => {
-        ctx.beginPath(); let st = false;
-        for (let n = 2; n <= NMAX; n++) {
-          const eps = Math.sqrt(Math.log(2 / .05) / (2 * n));
-          const v = Math.min(1, Math.max(0, .5 + s * eps));
-          st ? ctx.lineTo(sx(n), sy(v)) : (ctx.moveTo(sx(n), sy(v)), st = true);
-        }
-        ctx.stroke();
-      });
-      ctx.setLineDash([3, 4]); ctx.strokeStyle = ink; ctx.beginPath();
-      ctx.moveTo(sx(1), sy(.5)); ctx.lineTo(sx(NMAX), sy(.5)); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("N →", x0 + w - 26, y0 + h + 16);
-      ctx.fillStyle = gen; ctx.fillText("±√(ln(2/δ)/2N)", x0 + 8, y0 + 16);
-    }
-  },
-  ntkdecay: {
-    title: "NTK modes decay at their own eigenvalue rates",
-    pillar: "Optimization",
-    caption: "Computed: |qᵢ(t)| = e^(−λᵢt) on a log scale for eigenvalues λ = 3, 1, 0.3, 0.05 — and λ = 0 (dashed): a singular kernel mode NEVER decays, which is exactly why zero-loss convergence needs H* non-singular (Lecture 5; Moed B 2020 Q2).",
-    draw(cv) {
-      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const muted = cssVar("--muted"), ink = cssVar("--ink"), bad = cssVar("--bad");
-      const cols = [cssVar("--opt"), cssVar("--exp"), cssVar("--gen"), muted, bad];
-      const lams = [3, 1, .3, .05, 0], T = 8, x0 = 44, y0 = 14, w = W - 96, h = H - 52;
-      ctx.strokeStyle = muted; ctx.globalAlpha = .5; ctx.strokeRect(x0, y0, w, h); ctx.globalAlpha = 1;
-      const LOGMIN = -4;
-      lams.forEach((lam, i) => {
-        ctx.strokeStyle = cols[i]; ctx.lineWidth = 2;
-        if (lam === 0) ctx.setLineDash([6, 4]);
-        ctx.beginPath();
-        for (let s = 0; s <= 300; s++) {
-          const t = s / 300 * T;
-          const lg = Math.max(LOGMIN, -lam * t / Math.LN10);
-          const px = x0 + s / 300 * w, py = y0 + (0 - lg) / (0 - LOGMIN) * h;
-          s ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-        }
-        ctx.stroke(); ctx.setLineDash([]);
-        ctx.fillStyle = cols[i]; ctx.font = "12px " + cssVar("--sans");
-        const yEnd = y0 + Math.min(1, (lam * T / Math.LN10) / -LOGMIN) * h;
-        ctx.fillText("λ=" + lam, x0 + w + 6, Math.min(y0 + h - 2, yEnd + 4));
-      });
-      ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("t →", x0 + w - 22, y0 + h + 16); ctx.fillText("log₁₀|qᵢ(t)|", x0 + 2, y0 + 12);
-    }
-  },
-  covering: {
-    title: "An ε-cover of the parameter ball",
-    pillar: "Generalization",
-    caption: "Computed: the ℓ∞ ball [−1,1]² tiled by grid points (ε=0.25), each covering an ε-square. Any parameter w (teal) sits within ε of a cover point, so Hoeffding + union bound over the FINITE cover plus the 2ρε Lipschitz transfer controls the whole continuum — the Moed A 2023 / Moed C 2024 Q3 pattern. In d dimensions |C_ε| is exponential in d.",
-    draw(cv) {
-      const W = 640, H = 320, ctx = figCanvas(cv, W, H);
-      const muted = cssVar("--muted"), gen = cssVar("--gen"), opt = cssVar("--opt"), ink = cssVar("--ink");
-      const eps = .25, R = 1.15, cx = W / 2 - 60, cy = H / 2, sc = (H - 60) / (2 * R);
-      const sx = v => cx + v * sc, sy = v => cy - v * sc;
-      ctx.strokeStyle = ink; ctx.lineWidth = 2;
-      ctx.strokeRect(sx(-1), sy(1), 2 * sc, 2 * sc);
-      const k = Math.ceil(1 / eps);
-      ctx.strokeStyle = gen; ctx.fillStyle = gen; ctx.lineWidth = 1;
-      for (let i = 0; i <= k; i++) for (let j = 0; j <= k; j++) {
-        const px = -1 + i * 2 * eps, py = -1 + j * 2 * eps;
-        ctx.globalAlpha = .25;
-        ctx.strokeRect(sx(px - eps), sy(py + eps), 2 * eps * sc, 2 * eps * sc);
-        ctx.globalAlpha = 1;
-        ctx.beginPath(); ctx.arc(sx(px), sy(py), 2.4, 0, 2 * Math.PI); ctx.fill();
-      }
-      const wpt = [.62, -.33], near = [.5, -.5];
-      ctx.fillStyle = opt; ctx.beginPath(); ctx.arc(sx(wpt[0]), sy(wpt[1]), 5, 0, 2 * Math.PI); ctx.fill();
-      ctx.strokeStyle = opt; ctx.lineWidth = 2; ctx.beginPath();
-      ctx.moveTo(sx(wpt[0]), sy(wpt[1])); ctx.lineTo(sx(near[0]), sy(near[1])); ctx.stroke();
-      ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("w", sx(wpt[0]) + 8, sy(wpt[1]) - 6);
-      ctx.fillText("‖w − w̃‖∞ ≤ ε", sx(1) + 14, sy(.1));
-      ctx.fillStyle = gen; ctx.fillText("|C_ε| ≤ (⌈1/ε⌉+1)^d", sx(1) + 14, sy(-.1));
-    }
-  },
-  pillars: {
-    title: "The three-pillar decomposition",
-    pillar: "Practices",
-    caption: "The course's organizing identity (Lecture 1): the population loss of the learned predictor splits into training error (Optimization: did we minimize L_S?), estimation error (Generalization: does L_S track L_D?), and approximation error (Expressiveness: can the class express a good predictor at all?).",
-    draw(cv) {
-      const W = 640, H = 170, ctx = figCanvas(cv, W, H);
-      const ink = cssVar("--ink"), segs = [["Training error", cssVar("--opt"), .24], ["Estimation error", cssVar("--gen"), .33], ["Approximation error", cssVar("--exp"), .43]];
-      let x = 40; const y0 = 62, h = 30, w = W - 80;
-      ctx.font = "13px " + cssVar("--sans");
-      segs.forEach(([label, col, frac]) => {
-        ctx.fillStyle = col; ctx.globalAlpha = .85;
-        ctx.fillRect(x, y0, w * frac, h); ctx.globalAlpha = 1;
-        ctx.fillStyle = col;
-        ctx.fillText(label, x + 4, y0 + h + 18);
-        ctx.font = "11px " + cssVar("--sans"); ctx.fillStyle = cssVar("--muted");
-        ctx.fillText(label === "Training error" ? "Optimization" : label === "Estimation error" ? "Generalization" : "Expressiveness", x + 4, y0 + h + 34);
-        ctx.font = "13px " + cssVar("--sans");
-        x += w * frac;
-      });
-      ctx.fillStyle = ink; ctx.font = "14px " + cssVar("--serif");
-      ctx.fillText("L_D(ĥ)  —  population loss of the learned predictor", 40, 30);
-      ctx.strokeStyle = ink; ctx.beginPath(); ctx.moveTo(40, 40); ctx.lineTo(40 + w, 40); ctx.stroke();
+      const x0=44,y0=14,w=W-64,h=H-46, rmax=curve[T-1], sx=t=>x0+t/(T-1)*w, sy=v=>y0+h-(v/rmax)*h;
+      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
+      // dashed reference: regret if you kept pulling a fixed sub-optimal arm (linear in t)
+      const slope=best-mu[2];
+      ctx.setLineDash([5,4]); ctx.strokeStyle=muted; ctx.lineWidth=1.4; ctx.beginPath();
+      ctx.moveTo(sx(0),sy(0)); ctx.lineTo(sx(T-1), sy(Math.min(rmax, slope*T))); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
+      curve.forEach((v,t)=>{ const px=sx(t),py=sy(v); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke();
+      ctx.fillStyle=col; ctx.font="13px "+cssVar("--serif"); ctx.fillText("UCB regret (≈ log T)", x0+10, y0+h-10);
+      ctx.fillStyle=muted; ctx.fillText("linear reference", x0+w-118, y0+16);
+      ctx.fillStyle=ink; ctx.fillText("round t →", W-96, H-8);
     }
   }
 };
@@ -1346,23 +1181,17 @@ function figsForText(text, map) {
   return out;
 }
 const FIG_TOPIC_MAP = [
-  [/depth separation|piecewise-linear\/constant/i, "sawtooth"],
-  [/balancedness|scalar linear|conservation/i, "phase"],
-  [/matrix factorization/i, "sigma"],
-  [/min-norm/i, "minnorm"],
-  [/hoeffding/i, "hoeffding"],
-  [/ntk/i, "ntkdecay"],
-  [/covering|discretization/i, "covering"],
+  [/value iteration|contraction|bellman operator/i, "vi_contraction"],
+  [/temporal difference|td\(|monte.?carlo|model-free|q-learning/i, "td_learning"],
+  [/mdp formal|optimal policy|policy iteration|grid|dynamic programming/i, "gridworld_policy"],
+  [/bandit|ucb|regret|exploration|best.?arm/i, "ucb_regret"],
 ];
 const FIG_MEMO_MAP = [
-  [/sawtooth/i, "sawtooth"],
-  [/balancedness conservation/i, "phase"],
-  [/singular-value \/ eigenvalue dynamics/i, "sigma"],
-  [/min-norm implicit bias/i, "minnorm"],
-  [/three-pillar/i, "pillars"],
-  [/hoeffding's inequality/i, "hoeffding"],
-  [/ntk prediction dynamics/i, "ntkdecay"],
-  [/covering \+ lipschitz/i, "covering"],
+  [/value iteration|policy iteration/i, "vi_contraction"],
+  [/bellman optimality operator/i, "vi_contraction"],
+  [/td\(0\)|temporal difference|monte-carlo|q-learning/i, "td_learning"],
+  [/discounted mdp|optimal policy/i, "gridworld_policy"],
+  [/ucb|regret|best-arm/i, "ucb_regret"],
 ];
 
 /* ---------- ask (client-side retrieval, verbatim quotes) ---------- */
