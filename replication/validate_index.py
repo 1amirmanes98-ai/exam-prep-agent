@@ -31,6 +31,7 @@ def main(index_dir):
     slots = set(cfg["slots"])
     errors, warns = [], []
     exam_ids = set()
+    callouts = 0
 
     for f in sorted(glob.glob(f"{index_dir}/exams/*.md")):
         eid = os.path.basename(f)[:-3]
@@ -47,6 +48,7 @@ def main(index_dir):
         if npil < len(qs): warns.append(f"{eid}: {npil} Pillar lines for {len(qs)} questions")
         if nstmt < len(qs): errors.append(f"{eid}: {nstmt} Statements for {len(qs)} questions")
         if nsol < len(qs): warns.append(f"{eid}: {nsol} solutions for {len(qs)} questions")
+        callouts += len(re.findall(r"\*\*\s*(?:💡|⚠)", t))
         psum = sum(int(p) for _, p, _ in qs)
         if total_m and int(total_m.group(1)) != psum:
             warns.append(f"{eid}: points sum {psum} != Total {total_m.group(1)}")
@@ -66,6 +68,23 @@ def main(index_dir):
         for a, y in refs:
             if f"{a}{y}" not in exam_ids:
                 warns.append(f"TOPICS.md: examined ref {a}{y}_Q.. has no exam file")
+
+    cheat = os.path.join(index_dir, "CHEATSHEET.md")
+    if os.path.exists(cheat):
+        ct = open(cheat).read()
+        items = re.findall(r"^### [^\n]+\n(.*?)(?=\n### |\n## |\Z)", ct, re.S | re.M)
+        with_stmt = sum(1 for b in items if re.search(r"\*\*Statement:\*\*", b))
+        if with_stmt < 20:
+            warns.append(f"CHEATSHEET.md: only {with_stmt} items with **Statement:** (aim ~40-55)")
+        kws = [k.lower() for k in cfg.get("slotKeywords", {})]
+        for sm in re.finditer(r"^## +(.+)$", ct, re.M):
+            if not any(k in sm.group(1).strip().lower() for k in kws):
+                warns.append(f"CHEATSHEET.md: section '{sm.group(1).strip()}' has no slotKeywords term -> default color")
+    else:
+        warns.append("no CHEATSHEET.md -> the Memorize tab will be empty (see INDEX_FORMAT FORMAT E)")
+
+    if callouts == 0 and exam_ids:
+        warns.append("no trick/watch-out solution callouts found (optional; see INDEX_FORMAT FORMAT C)")
 
     for e in errors: print("ERROR:", e)
     for w in warns: print("warn: ", w)

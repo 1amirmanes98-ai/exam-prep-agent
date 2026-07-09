@@ -7,9 +7,10 @@ An AI exam-prep system in two parts:
    tracks your progress between sessions — every claim grounded in the actual course
    materials, never from memory.
 2. **A self-contained study website** (free GitHub Pages, works on any phone):
-   all past exams translated with sealed solution sketches, generated mock exams,
-   flashcards, quizzes, a memorization cheat sheet with tracking, computed concept
-   figures, and retrieval search over everything.
+   all past exams translated with sealed solution sketches and a 💡-trick / ⚠️-watch-out
+   takeaway on each, generated mock exams, flashcards, quizzes, a memorization cheat
+   sheet with tracking, computed concept figures plus per-question exam figures
+   (histograms, scatter/regression, QQ, boxplots), and retrieval search over everything.
 
 Currently serving three courses:
 
@@ -48,6 +49,7 @@ phase (`REPLICATION.md` Phase 6).
 | `fetch_libs.sh` | fetch the pinned KaTeX/marked/fonts the build inlines |
 | `make_text_mirrors.py` | PDF/PPTX → greppable text mirrors (read the cheap mirror first) |
 | `validate_index.py` | pre-build format check (catches parser-breaking mistakes for free) |
+| `exam_figures.js` | drop-in canvas generators (histogram/scatter/QQ/boxplot/residual) for per-question exam figures — copy in, wire 3 hooks, populate `FIG_EXAM` |
 | `verify_site.mjs` | the once-per-phase headless-Chromium verification (console errors, KaTeX in both modes, localStorage, and every computed figure draws + pillar-coverage warning) |
 
 Short version: create a repo → open a Claude Code session with your materials +

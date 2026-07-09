@@ -126,12 +126,44 @@ Parser contract for exams:
   the bold lead (the site keys on a paragraph/bullet whose leading `<strong>` starts with 💡/⚠️),
   each on its own line separated by blank lines. The site styles them into green/amber callout
   boxes automatically; math renders inside.
+- **Optional exam figures** (newer engine): for a question that hinges on a PLOT — histogram,
+  scatter/regression, QQ-plot, boxplot, residuals — the site can draw a schematic figure under
+  the statement (`replication/exam_figures.js` + REPLICATION.md Phase 7). The indexer's only job
+  is to preserve the exam's EXACT numbers in the statement — the regression equation, the R
+  summary stats (mean/sd/cor), axis ranges, and the described shape — so the figure is faithful.
 
 ## FORMAT D — Exercise bank → `index/exercise_bank/<name>.md`
 
 FORMAT B's shape, titled `# <Course> Exercise Booklet`, grouped into `## <Topic>` sections
 each tagged with its pillar, listing the booklet's problems with a one-line method/answer per
 problem. A discoverable practice-problem catalog, not full solutions.
+
+## FORMAT E — Memorize / cheat sheet → `index/CHEATSHEET.md`
+
+The site's **Memorize** tab: the curated list of items worth knowing by heart for the exam's
+allowed formula sheet(s). Aim for **~40–55 items** grouped into `## ` sections whose names each
+**contain a `slotKeywords` term** (so each section inherits the right pillar color). Skipping
+this file leaves the Memorize tab empty.
+
+```
+# <Course> cheat sheet
+one-line intro.
+
+## <Section name — must contain a slotKeywords term, e.g. "Estimation" / "אמידה">
+### <item name, may contain inline $math$>
+**Statement:** the definition/formula itself, with all conditions ($LaTeX$ for math).
+**Use it when:** the situation that calls for it.
+**Seen in:** comma-separated exam refs (a2024_Q2, b2013_Q4) — or the literal: core theory.
+**Watch out:** the classic mistake / subtlety that loses marks.
+
+### <next item>
+...
+```
+
+Parser contract: `**Statement:**` is REQUIRED for every `### ` item; `**Use it when:**`,
+`**Seen in:**`, `**Watch out:**` are optional. Keep the field KEYS in English (the parser
+matches them); write the VALUES in the course language. Ground every item in the lectures, and
+put the real exam refs in **Seen in** so the site makes them clickable.
 
 ---
 
@@ -144,3 +176,6 @@ problem. A discoverable practice-problem catalog, not full solutions.
   pillar/topics — that yields real recurring-archetype **frequencies**.
 - `index/EXAM_MAP.md` — a master table + a `## Recurring question archetypes` numbered list;
   each archetype names its exam refs inline (the site parses them out and makes them clickable).
+- `index/CHEATSHEET.md` — the Memorize-tab cheat sheet (FORMAT E). Generate it once the exams
+  are indexed, so the **Seen in** refs are real; ~40–55 items across the pillar sections.
+  Skipping it ships a live but empty Memorize tab.
