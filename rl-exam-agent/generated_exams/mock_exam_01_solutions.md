@@ -35,6 +35,10 @@ $V(W)(1-0.63-0.243)=10-0.81\Rightarrow 0.127\,V(W)=9.19\Rightarrow \boxed{V^*(W)
 $\boxed{V^*(B)=-3+0.9\cdot72.36=62.13}$. Check in $W$: run $=10+0.9(0.7\cdot72.36+0.3\cdot62.13)=72.36$
 vs service $=4+0.9\cdot72.36=69.13$; run wins, consistent with $\pi^*(W)=\text{run}$.
 
+**💡 Trick.** Only the state matters — a 2-state MDP is a $2\times2$ linear system; solve it directly rather than iterating VI to the limit.
+
+**⚠️ Watch out.** Value iteration never reaches $V^*$ in finitely many steps; for the exact value of a fixed policy, solve $(I-\gamma P^\pi)V=r^\pi$.
+
 ## Q2 — TD(0) vs first-visit MC
 
 **Hint:** TD(0) bootstraps off the current (still-zero) next-state estimates, so on the first
@@ -61,6 +65,10 @@ episode it already equals the true (sampled) return. TD is biased but low-varian
 online; MC is unbiased but high-variance. (True values here are $V(s_1)=8,V(s_2)=6,V(s_3)=5$;
 TD converges to them over many episodes.)
 
+**💡 Trick.** On the first pass every bootstrap target is still $0$, so TD(0) just does $\alpha r$ — the reward hasn't propagated back yet.
+
+**⚠️ Watch out.** Don't report the one-episode TD values as the true values; TD is biased early, MC uses the full return.
+
 ## Q3 — Softmax policy gradient
 
 **Hint:** Write $\log\pi(a\mid s)=\theta^\top\phi(s,a)-\log\sum_{a'}e^{\theta^\top\phi(s,a')}$ and
@@ -81,6 +89,10 @@ $\nabla_\theta\log\pi(a_1\mid s)=(1,0)-(0.6225,0.3775)=\mathbf{(0.3775,\,-0.3775
 
 **(c)** $\theta\leftarrow(0.5,0)+0.1\cdot3\cdot(0.3775,-0.3775)=(0.5,0)+(0.11325,-0.11325)
 =\mathbf{(0.6133,\,-0.1133)}$. The update raises the probability of the rewarded action $a_1$.
+
+**💡 Trick.** The score is always $\phi(a)-\mathbb{E}_\pi[\phi]$ — the 'minus the mean feature' term falls out of the log-partition automatically.
+
+**⚠️ Watch out.** Normalize the policy first; dropping the $-\mathbb{E}_\pi[\phi]$ term is the classic lost point.
 
 ## Q4 — Explore-then-commit regret
 
@@ -115,3 +127,7 @@ $$\mathrm{Reg}(T)=O\!\Big(\tfrac{1}{\Delta}\log(T\Delta^2)\Big).$$
 Numeric check at $T=10^5,\ \Delta=0.1$: the bound is minimized at $m^\star=2209$ (theory
 $\tfrac{4}{\Delta^2}\log(\tfrac{T\Delta^2}{4})=2208.6$), giving regret $\approx 261$ — matching the
 $\tfrac{4}{\Delta}\log(\tfrac{T\Delta^2}{4})\approx 221$ scaling (same order).
+
+**💡 Trick.** Balance the two regret terms: make the exponential tail $\approx 1/(T\Delta)$, giving $m\approx(4/\Delta^2)\ln(T\Delta^2)$.
+
+**⚠️ Watch out.** The commit-phase regret is (prob wrong)$\times T\times\Delta$ — multiply by the whole remaining horizon, not a constant.

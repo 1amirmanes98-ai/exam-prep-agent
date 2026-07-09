@@ -11,12 +11,14 @@ An AI exam-prep system in two parts:
    flashcards, quizzes, a memorization cheat sheet with tracking, computed concept
    figures, and retrieval search over everything.
 
-Currently serving two courses:
+Currently serving three courses:
 
 - **Foundations of Deep Learning** (TAU 03683080) →
   **https://1amirmanes98-ai.github.io/exam-prep-agent/**
 - **Intro to Statistics** (TAU 0365.1813, Prof. Ruth Heller) →
   **https://1amirmanes98-ai.github.io/exam-prep-agent/stats/**
+- **Reinforcement Learning** (TAU 0368.3075, Prof. Yishay Mansour) →
+  **https://1amirmanes98-ai.github.io/exam-prep-agent/rl/**
 
 ## Study
 
@@ -38,15 +40,34 @@ course-specific lives in one config file (`index/SITE_CONFIG.json`). Hebrew cour
 content is supported out of the box; a full Hebrew/RTL UI is a documented one-time
 phase (`REPLICATION.md` Phase 6).
 
+**Reusable toolkit in [`replication/`](replication/)** — so the next build re-derives nothing:
+
+| tool | what it does |
+|---|---|
+| `INDEX_FORMAT.md` | the exact output spec to hand every indexing agent (the biggest speedup) |
+| `fetch_libs.sh` | fetch the pinned KaTeX/marked/fonts the build inlines |
+| `make_text_mirrors.py` | PDF/PPTX → greppable text mirrors (read the cheap mirror first) |
+| `validate_index.py` | pre-build format check (catches parser-breaking mistakes for free) |
+| `verify_site.mjs` | the once-per-phase headless-Chromium verification |
+
 Short version: create a repo → open a Claude Code session with your materials +
 past-exams zips → *"Build me an exam-prep agent and study site like
 `1amirmanes98-ai/exam-prep-agent` — read its REPLICATION.md and follow it exactly."*
 
+### התחלה מהירה (עברית)
+
+לבניית סוכן לקורס חדש: פִּתחו ריפו, פִּתחו סשן של Claude Code עם שני קבצי zip (חומרי הקורס +
+מבחני עבר), ובקשו: *"בנה לי סוכן לימוד ואתר מבחנים כמו `1amirmanes98-ai/exam-prep-agent` —
+קרא את `REPLICATION.md` ועקוב אחריו בדיוק."* מבחנים בעברית נתמכים (הסוכן קורא את עמודי ה-PDF
+חזותית ומתרגם); הכלים המשותפים ב-`replication/` חוסכים זמן וטוקנים; ממשק עברי (RTL) לאתר הוא
+שדרוג חד-פעמי מתועד (Phase 6).
+
 ## Repo layout
 
 ```
-dl-exam-agent/          # FODL tutor (same layout as stats-exam-agent below)
+dl-exam-agent/          # FODL tutor (same layout as stats-/rl- below)
 stats-exam-agent/
+rl-exam-agent/
 ├── AGENT.md            # tutor operating manual (grounding, grading, progress rules)
 ├── README.md           # tutor usage + content-restore + site rebuild instructions
 ├── progress.md         # study memory (committed at session end)
@@ -55,8 +76,8 @@ stats-exam-agent/
 └── index/SITE_CONFIG.json  # ALL course-specific site values
 .claude/skills/         # /teach /quiz /exam /solve /drill /flashcards /progress (shared)
 .github/workflows/      # Pages deploy (docs/ → github.io on every push)
-docs/index.html         # the built FODL site
-docs/stats/index.html   # the built Statistics site
+docs/index.html         # built FODL site   ·   docs/stats/ · docs/rl/  the others
+replication/            # reusable toolkit: INDEX_FORMAT.md + build/validate/verify scripts
 REPLICATION.md          # how to rebuild this for any course, cheaply
 ```
 

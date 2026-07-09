@@ -22,6 +22,10 @@ So stop and continue give the **same** value $r/(b+r)$; the max is $r/(b+r)$, an
 
 **(c)** $W(2,3)=\tfrac{3}{5}=\mathbf{0.6}$ (numerically verified via DP over the $(b,r)$ grid, matching $r/(b+r)$ exactly). No strategy beats the naive "bet immediately" probability $r/(b+r)$: waiting for a "good moment" cannot help, because the revealed-card process is a martingale for the fraction of red remaining.
 
+**💡 Trick.** Guess $W=\tfrac{r}{b+r}$ and induct on $b+r$; the two continue-terms telescope back to $\tfrac{r}{b+r}$.
+
+**⚠️ Watch out.** Every policy is optimal here — 'wait for a good moment' cannot beat betting immediately (a martingale).
+
 ## Q2 — TD(λ) with eligibility traces
 
 **Hint:** Keep a trace vector. At each step compute $\delta$, bump the current state's trace to
@@ -39,6 +43,10 @@ reward). The eligibility traces let the later rewards flow back to earlier state
 episode, so $s_1$ (visited first, then kept "eligible") accumulates credit from all three
 $\delta$'s — hence the larger value.
 
+**💡 Trick.** Keep the trace vector: bump the current state to $1$, update all states by $\alpha\delta e$, then decay by $\gamma\lambda$.
+
+**⚠️ Watch out.** Earlier states getting more credit than plain TD(0) after one episode is the eligibility trace working — not an error.
+
 ## Q3 — A two-step Bellman operator
 
 **Hint:** For contraction, subtract two applications: $T^{\pi,2}u-T^{\pi,2}v=\gamma^2P^2(u-v)$ and
@@ -55,6 +63,10 @@ So $V^\pi$ is the fixed point.
 **(b)** $V^\pi=(I-\gamma P)^{-1}r=\mathbf{(4.7934,\ 3.6364,\ 0)}$. Iterating $T^{\pi,2}$ from $v=0$
 converges to the same vector (verified). The observed contraction ratio
 $\|T^{\pi,2}u-T^{\pi,2}w\|_\infty/\|u-w\|_\infty = 0.81 = \gamma^2$, exactly as proved.
+
+**💡 Trick.** Subtract two applications: the $v$-dependent part is $\gamma^2P^2$, so the contraction factor is $\gamma^2$, not $\gamma$.
+
+**⚠️ Watch out.** $P^2$ is row-stochastic, so $\|P^2x\|_\infty\le\|x\|_\infty$ — the contraction rides that non-expansion.
 
 ## Q4 — Successive elimination regret
 
@@ -75,3 +87,7 @@ $\mathrm{Reg}(T)=O\!\big(\sum_{i:\Delta_i>0}\tfrac{1}{\Delta_i}\log T\big)$ (plu
 
 **(c)** With the constant $8$: pulls $\approx\tfrac{8}{\Delta_i^2}\log T=\tfrac{8}{0.04}\ln(10^5)=200\cdot11.51=\mathbf{2303}$.
 Regret contribution $=\Delta_i\times\text{pulls}=\tfrac{8}{\Delta_i}\log T=40\cdot11.51\approx\mathbf{460}$.
+
+**💡 Trick.** An arm survives until its width $\sqrt{2\ln T/m}$ drops below $\Delta/2$, i.e. $m\approx(8/\Delta^2)\ln T$ pulls.
+
+**⚠️ Watch out.** Regret per arm is $\Delta\times$pulls $=(8/\Delta)\ln T$: small gaps cost more pulls but less each — the $1/\Delta$ remains.

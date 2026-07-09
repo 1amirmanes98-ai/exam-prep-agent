@@ -25,6 +25,10 @@ $10\cdot10=100$ and $10\cdot20=200$, but is below $10\cdot30=300$).
 
 **(d)** $V^\*(10)=V^\*(20)=\gamma W=286.36$; $V^\*(30)=300$; $V^\*(40)=400$.
 
+**💡 Trick.** Collapse everything to one scalar $W$ (the pre-offer value); the optimal rule is just the threshold $s\ge(1-\gamma)\gamma W$.
+
+**⚠️ Watch out.** The accept value is $s/(1-\gamma)$ (salary forever), not $s$ — a one-period reward gives the wrong threshold.
+
 ## Q2 — Q-learning by hand
 
 **Hint:** Apply the update transition-by-transition. Because every $Q$ starts at $0$, each
@@ -42,6 +46,10 @@ Table: $Q(A,x)=2.5,\ Q(C,x)=5$, all others $0$.
 bootstrap target were both $0$. On a **second identical pass**, values propagate backward:
 $Q(B,y)\leftarrow 0.5(0+0.9\cdot5)=2.25$ (now $Q(C,x)=5>0$), and $Q(A,x)\leftarrow 2.5+0.5(5+0.9\cdot2.25-2.5)=4.26$.
 
+**💡 Trick.** Process the transitions in order, and remember a terminal next-state contributes $\max_{a'}Q=0$.
+
+**⚠️ Watch out.** $Q(B,y)$ staying $0$ on pass one is correct, not a slip — both its reward and its bootstrap were $0$.
+
 ## Q3 — Gaussian policy gradient
 
 **Hint:** $\log\pi=-\tfrac{(a-\mu)^2}{2\sigma^2}+\text{const}$ with $\mu=\theta^\top\phi$;
@@ -57,6 +65,10 @@ score $=(1-(-0.5))\,\phi=1.5\cdot(1,2)=\mathbf{(1.5,\,3.0)}$. (Finite-difference
 
 **(c)** $\theta\leftarrow(0.5,-0.5)+0.1\cdot2\cdot(1.5,3.0)=(0.5,-0.5)+(0.3,0.6)=\mathbf{(0.8,\,0.1)}$.
 The update shifts the mean toward the rewarded action.
+
+**💡 Trick.** For a Gaussian policy the score is $\frac{a-\mu}{\sigma^2}\phi$ — linear in the action error.
+
+**⚠️ Watch out.** $\mu=\theta^\top\phi$, so $\partial\mu/\partial\theta=\phi$; don't drop the chain-rule $\phi$ factor.
 
 ## Q4 — PAC best-arm identification
 
@@ -82,3 +94,7 @@ the tighter direct-$\varepsilon$ version is used below).
 **(d)** Using $\ell=300$ (direct tolerance $\varepsilon$): union-bound failure
 $\le 2n\,e^{-2\ell\varepsilon^2}=20\,e^{-2\cdot300\cdot0.01}=20\,e^{-6}=0.0496\le0.05$. ✓
 Total $=10\cdot300=3000$ pulls.
+
+**💡 Trick.** Hoeffding + union bound: $\ell=\frac{2}{\varepsilon^2}\ln\frac{2n}{\delta}$ makes every arm's estimate $\varepsilon$-accurate w.p. $1-\delta$.
+
+**⚠️ Watch out.** The union bound is over all $n$ arms — the $\ln(n/\delta)$, not $\ln(1/\delta)$, is what earns the points.
