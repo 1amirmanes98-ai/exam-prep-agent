@@ -12,7 +12,14 @@
     "estimation": "Estimation",
     "twosample": "Testing",
     "two-sample": "Testing",
-    "testing": "Testing"
+    "testing": "Testing",
+    "תיאור": "Descriptive",
+    "רגרסי": "Descriptive",
+    "אמיד": "Estimation",
+    "רווח סמך": "Estimation",
+    "השער": "Testing",
+    "מדגמ": "Testing",
+    "קטגורי": "Testing"
   },
   "slotRoles": {
     "Descriptive": "שבועות 1–4 · תיאור הנתונים ומידול",
@@ -131,6 +138,8 @@
     "passagesTotal": "קטעים בסך הכול.",
     "weakEmpty": "ענו על כמה שאלות והנושאים החלשים שלכם יופיעו כאן.",
     "figLabel": "איור",
+    "useWhen": "מתי להשתמש:",
+    "knownWord": "ידועים",
     "pts": "נק׳",
     "ptsTotal": "נק׳ סה״כ",
     "points": "נקודות",
