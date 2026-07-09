@@ -48,7 +48,7 @@ phase (`REPLICATION.md` Phase 6).
 | `fetch_libs.sh` | fetch the pinned KaTeX/marked/fonts the build inlines |
 | `make_text_mirrors.py` | PDF/PPTX → greppable text mirrors (read the cheap mirror first) |
 | `validate_index.py` | pre-build format check (catches parser-breaking mistakes for free) |
-| `verify_site.mjs` | the once-per-phase headless-Chromium verification |
+| `verify_site.mjs` | the once-per-phase headless-Chromium verification (console errors, KaTeX in both modes, localStorage, and every computed figure draws + pillar-coverage warning) |
 
 Short version: create a repo → open a Claude Code session with your materials +
 past-exams zips → *"Build me an exam-prep agent and study site like
@@ -61,6 +61,22 @@ past-exams zips → *"Build me an exam-prep agent and study site like
 קרא את `REPLICATION.md` ועקוב אחריו בדיוק."* מבחנים בעברית נתמכים (הסוכן קורא את עמודי ה-PDF
 חזותית ומתרגם); הכלים המשותפים ב-`replication/` חוסכים זמן וטוקנים; ממשק עברי (RTL) לאתר הוא
 שדרוג חד-פעמי מתועד (Phase 6).
+
+**לקחים שנצברו (בקצרה) — כדי לעבוד מהר יותר, חכם יותר, זול יותר:**
+
+- **החליטו מראש (Phase 0):** שפת התוכן (עברית/אנגלית) והפרטיות (האם חומרי הקורס עולים לריפו).
+  אינדוקס באנגלית ואז תרגום חזרה לעברית = fan-out שלם מבוזבז (~300–500k טוקנים).
+- **אל תערכו את התבנית.** כל מה שספציפי לקורס יושב ב-`index/SITE_CONFIG.json`. אם אתם עורכים את
+  `site_template.html` או `build_site.py` — כנראה טעות (חריג יחיד: פיצ'ר איורים חדש).
+- **איורים מאוד עוזרים ללמידה** — אבל *מחושבים* (מסימולציה/משוואה חיה), לא ידניים; אחד לכל pillar;
+  וגם **מקופלים ליד הפתרונות** (עוזר לראות את הקונספט ליד התשובה). מאמתים במסלול האמיתי בדף
+  (`figNode`), לא ב-harness שמוחק את ה-`body` — אחרת הצבעים נשברים והכל נצבע שחור.
+- **מבחנים בעברית = מוקד העלות** (טקסט משובש, צריך קריאה חזותית של ה-PDF). שקופיות ההרצאה/תרגול
+  נקראות זול מ-text mirrors.
+- **git:** אחרי שה-PR מוזג — פותחים **ענף חדש מ-`main`** ל-PR חדש; לא דוחפים עוד על ענף של PR שכבר
+  מוזג (זה סתם מבלבל ולא ניתן למיזוג מחדש).
+- **אימות פעם אחת לכל שלב** ב-Chromium (0 שגיאות, KaTeX עובד, localStorage שורד) — לא צילום מסך
+  אחרי כל עריכה קטנה.
 
 ## Repo layout
 

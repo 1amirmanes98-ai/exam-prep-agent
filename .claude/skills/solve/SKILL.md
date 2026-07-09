@@ -27,7 +27,9 @@ summaries and let the user pick.
    ("what is the null distribution of this statistic?", "what does convexity give you
    here?") rather than lecturing. Reveal each step only after they've engaged with it.
 4. After each sub-part: recap the clean argument at full-credit rigor, name the general
-   technique, and cite where it was taught (week/lecture/recitation/slides).
+   technique, and cite where it was taught (week/lecture/recitation/slides). If the study
+   site mounts a computed figure on this question's solution (it attaches one, folded, to
+   matching questions), point the student to it as a visual check on the concept.
 5. At the end: the complete model solution in one block (exam-ready), the techniques
    checklist, and 1–2 "same pattern" questions from other exams (from EXAM_MAP) to try
    next via `/quiz` or another `/solve`.

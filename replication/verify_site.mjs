@@ -2,7 +2,12 @@
 // Runs the checks that actually catch regressions: zero console/page errors; KaTeX renders
 // in BOTH standards mode (the docs page) and quirks mode (the raw fragment — proves the
 // KaTeX guard patch); at least one hero pillar card; an exam page renders math; localStorage
-// survives reload. Exits non-zero on any failure.
+// survives reload; and (when CONFIG.figures is on) every computed figure draws without
+// throwing, with a warning for any pillar that has no figure. Exits non-zero on any failure.
+//
+// Figures are drawn in the REAL page context on purpose: a scratch harness that does
+// `document.body.innerHTML = …` detaches the canvases from the :root CSS variables, so
+// cssVar() returns empty and every figure paints black — a phantom bug. Draw in-page.
 //
 // Usage:
 //   node replication/verify_site.mjs <docs/xx/index.html> [<standalone-fragment.html>]
@@ -46,6 +51,26 @@ async function openExam(p) {
   if (cards < 1) fails.push("docs: no hero pillar cards");
   if (katex === 0) fails.push("docs: 0 KaTeX on an exam page");
   if (!persisted) fails.push("docs: localStorage did not survive reload");
+  // --- computed figures (when enabled): each must draw without throwing; warn on gaps ---
+  const figReport = await p.evaluate(() => {
+    // CONFIG/FIGS are global *lexical* bindings (const in a classic script), reachable by
+    // bare name but NOT as window.* — probe with typeof, not window.CONFIG.
+    if (typeof CONFIG === "undefined" || !CONFIG.figures || typeof FIGS === "undefined") return null;
+    const out = { errs: [], pillars: {}, total: 0 };
+    for (const [id, f] of Object.entries(FIGS)) {
+      const cv = document.createElement("canvas"); document.body.appendChild(cv);
+      try { f.draw(cv); } catch (e) { out.errs.push(id + ": " + e.message); }
+      out.pillars[f.pillar] = (out.pillars[f.pillar] || 0) + 1; out.total++; cv.remove();
+    }
+    const heroSlots = (CONFIG.slots || []).filter(s => (CONFIG.slotRoles || {})[s]);
+    out.uncovered = heroSlots.filter(s => !out.pillars[s]);
+    return out;
+  });
+  if (figReport) {
+    console.log(`figs: count=${figReport.total} drawErrors=${figReport.errs.length} uncoveredPillars=${figReport.uncovered.join(",") || "none"}`);
+    if (figReport.errs.length) fails.push("figure draw errors:\n  " + figReport.errs.join("\n  "));
+    if (figReport.uncovered.length) console.log("  ⚠️  pillars with no figure (consider adding one): " + figReport.uncovered.join(", "));
+  }
   await p.close();
 }
 
