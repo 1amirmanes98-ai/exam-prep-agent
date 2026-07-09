@@ -458,6 +458,7 @@ function questionCard(e, q) {
   setMd($(".mdslot", c), q.statement);
   const sk = $(".sketchslot", c);
   if (q.sketch) setMd(sk, q.sketch); else sk.innerHTML = "<p class='sub'>No sketch available.</p>";
+  sketchFigs(sk, q);
   return c;
 }
 function collapsedQuestion(e, q) {
@@ -761,7 +762,7 @@ function renderExamDetail(e) {
     det.appendChild(c);
     mathify($(".qhead", c));
     setMd($(".mdslot", c), q.statement);
-    setMd($(".sketchslot", c), q.sketch);
+    const skE = $(".sketchslot", c); setMd(skE, q.sketch); sketchFigs(skE, q);
   });
   mathify(det); // titles and headers contain math too
   det.scrollIntoView({ behavior: "auto", block: "start" });
@@ -1051,6 +1052,107 @@ function figCanvas(el, w, h) {
   return ctx;
 }
 const FIGS = {
+  linnet: {
+    title: "A deep linear network is a single matrix",
+    pillar: "Optimization",
+    caption: "Structure of a depth-3 linear network: every layer applies a weight matrix and there is no nonlinearity between them, so the whole map collapses to the single product W = W₃W₂W₁. Many parameters (the individual Wᵢ) realize one end-to-end matrix W — and gradient descent on the Wᵢ is what implicitly biases which W you reach. This composition-into-one-matrix is the object the course's deep-linear-network results analyse.",
+    draw(cv) {
+      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
+      const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--opt"), serif = cssVar("--serif");
+      const widths = [3, 5, 4, 2];
+      const cols = widths.length, xL = 82, xR = W - 82, gap = (xR - xL) / (cols - 1);
+      const cy = 150, r = 8.5, vs = 24;
+      const P = widths.map((n, i) => ({ x: xL + i * gap, ys: Array.from({ length: n }, (_, k) => cy + (k - (n - 1) / 2) * vs) }));
+      // full-connectivity edges (faint)
+      ctx.strokeStyle = muted; ctx.globalAlpha = .3; ctx.lineWidth = 1;
+      for (let i = 0; i < cols - 1; i++) P[i].ys.forEach(y1 => P[i + 1].ys.forEach(y2 => { ctx.beginPath(); ctx.moveTo(P[i].x, y1); ctx.lineTo(P[i + 1].x, y2); ctx.stroke(); }));
+      ctx.globalAlpha = 1;
+      // neurons (input/output filled, hidden hollow)
+      P.forEach((p, i) => { const edge = i === 0 || i === cols - 1; p.ys.forEach(y => { ctx.beginPath(); ctx.arc(p.x, y, r, 0, 2 * Math.PI); ctx.fillStyle = col; ctx.globalAlpha = edge ? .85 : .16; ctx.fill(); ctx.globalAlpha = 1; ctx.lineWidth = 1.6; ctx.strokeStyle = col; ctx.stroke(); }); });
+      ctx.textAlign = "center";
+      ctx.fillStyle = muted; ctx.font = "12px " + serif;
+      ctx.fillText("input  x ∈ ℝ³", P[0].x, 26);
+      ctx.fillText("output  y ∈ ℝ²", P[cols - 1].x, 26);
+      // weight matrix names + shapes between layers
+      const wl = ["W₁", "W₂", "W₃"];
+      for (let i = 0; i < cols - 1; i++) { const xm = (P[i].x + P[i + 1].x) / 2; ctx.fillStyle = ink; ctx.font = "600 15px " + serif; ctx.fillText(wl[i], xm, 44); ctx.fillStyle = muted; ctx.font = "11px " + serif; ctx.fillText(widths[i + 1] + "×" + widths[i], xm, 60); }
+      // layer dimensions
+      ctx.fillStyle = muted; ctx.font = "12px " + serif;
+      const yb = cy + ((Math.max(...widths) - 1) / 2) * vs + 26;
+      P.forEach((p, i) => ctx.fillText("d" + "₀₁₂₃"[i] + " = " + widths[i], p.x, yb));
+      // the collapse
+      ctx.fillStyle = col; ctx.font = "600 16px " + serif;
+      ctx.fillText("end-to-end map:   W = W₃ · W₂ · W₁   ∈ ℝ²ˣ³", W / 2, H - 18);
+    }
+  },
+  factor: {
+    title: "Symmetric factorization  W = UUᵀ",
+    pillar: "Optimization",
+    caption: "The object of the matrix-factorization problem: a d×k search matrix U is squared into W = UUᵀ, which is automatically symmetric and positive-semidefinite with rank ≤ k. Gradient descent optimises the factor U, not W directly, and among all factors giving the same fit it is biased toward small-norm, low-rank U — the implicit regularisation these questions probe.",
+    draw(cv) {
+      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
+      const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--opt"), serif = cssVar("--serif");
+      function block(x, y, w, h, label, dim) {
+        ctx.fillStyle = col; ctx.globalAlpha = .14; ctx.fillRect(x, y, w, h); ctx.globalAlpha = 1;
+        ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = ink; ctx.font = "600 17px " + serif; ctx.textAlign = "center";
+        ctx.fillText(label, x + w / 2, y + h / 2 + 6);
+        ctx.fillStyle = muted; ctx.font = "11px " + serif; ctx.fillText(dim, x + w / 2, y + h + 15);
+      }
+      const cy = 100;
+      ctx.textAlign = "center";
+      block(80, cy - 55, 56, 110, "U", "d × k");
+      ctx.fillStyle = ink; ctx.font = "600 20px " + serif; ctx.fillText("·", 158, cy + 6);
+      block(176, cy - 28, 110, 56, "Uᵀ", "k × d");
+      ctx.fillStyle = ink; ctx.font = "600 20px " + serif; ctx.fillText("=", 322, cy + 6);
+      block(356, cy - 55, 110, 110, "W", "d × d");
+      ctx.textAlign = "left";
+      ctx.fillStyle = col; ctx.font = "600 15px " + serif; ctx.fillText("W = UUᵀ", 80, H - 66);
+      ctx.fillStyle = muted; ctx.font = "13px " + serif;
+      ctx.fillText("symmetric   ·   positive-semidefinite  (W ⪰ 0)   ·   rank ≤ k", 172, H - 66);
+      ctx.fillStyle = ink; ctx.font = "13px " + serif;
+      ctx.fillText("=  Σᵢ₌₁ᵏ  uᵢ uᵢᵀ      (a sum of k rank-1 outer products)", 80, H - 36);
+    }
+  },
+  tensor: {
+    title: "A tensor as a sum of rank-1 terms (CP)",
+    pillar: "Expressiveness",
+    caption: "The expressiveness pillar arranges a network's computation as a tensor and studies its rank. A CP decomposition writes that tensor as a sum of R rank-1 terms, each an outer product a∘b∘c of three vectors. Shallow nets realise only low CP-rank tensors; deep nets reach tensors of exponentially higher hierarchical (HT) rank — the algebraic source of depth separation (Lecture 2; Kronecker / expressiveness recitation).",
+    draw(cv) {
+      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
+      const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--exp"), serif = cssVar("--serif");
+      const cy = 128;
+      (function cube(x, y, s) {
+        const dx = s * .5, dy = s * .3;
+        ctx.strokeStyle = col; ctx.lineWidth = 1.4; ctx.fillStyle = col;
+        ctx.globalAlpha = .16; ctx.fillRect(x, y, s, s); ctx.globalAlpha = 1; ctx.strokeRect(x, y, s, s);
+        ctx.globalAlpha = .3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y - dy); ctx.lineTo(x + s + dx, y - dy); ctx.lineTo(x + s, y); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+        ctx.globalAlpha = .09; ctx.beginPath(); ctx.moveTo(x + s, y); ctx.lineTo(x + s + dx, y - dy); ctx.lineTo(x + s + dx, y + s - dy); ctx.lineTo(x + s, y + s); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+      })(52, cy - 30, 60);
+      ctx.fillStyle = ink; ctx.font = "600 15px " + serif; ctx.textAlign = "center"; ctx.fillText("tensor 𝒯", 92, cy + 62);
+      ctx.font = "600 22px " + serif; ctx.fillText("=", 168, cy + 4);
+      function tripod(x, label) {
+        const L = 30, arms = [[0, -L], [L * .88, L * .5], [-L * .8, L * .48]];
+        ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2;
+        arms.forEach(([ax, ay]) => {
+          ctx.beginPath(); ctx.moveTo(x, cy); ctx.lineTo(x + ax, cy + ay); ctx.stroke();
+          const a = Math.atan2(ay, ax);
+          ctx.beginPath(); ctx.moveTo(x + ax, cy + ay);
+          ctx.lineTo(x + ax - 7 * Math.cos(a - .4), cy + ay - 7 * Math.sin(a - .4));
+          ctx.lineTo(x + ax - 7 * Math.cos(a + .4), cy + ay - 7 * Math.sin(a + .4));
+          ctx.closePath(); ctx.fill();
+        });
+        ctx.fillStyle = muted; ctx.font = "italic 12px " + serif; ctx.textAlign = "center"; ctx.fillText(label, x, cy + 52);
+      }
+      tripod(228, "a₁∘b₁∘c₁");
+      ctx.fillStyle = ink; ctx.font = "600 20px " + serif; ctx.fillText("+", 292, cy + 4);
+      tripod(352, "a₂∘b₂∘c₂");
+      ctx.fillStyle = ink; ctx.font = "600 20px " + serif; ctx.fillText("+  ⋯  +", 424, cy + 4);
+      tripod(504, "aᵣ∘bᵣ∘cᵣ");
+      ctx.fillStyle = col; ctx.font = "600 14px " + serif; ctx.textAlign = "center";
+      ctx.fillText("CP rank = smallest number R of rank-1 terms", W / 2, H - 16);
+    }
+  },
   sawtooth: {
     title: "Depth doubles the sawtooth",
     pillar: "Expressiveness",
@@ -1345,10 +1447,19 @@ function figsForText(text, map) {
   map.forEach(([re, id]) => { if (re.test(text) && !out.includes(id)) out.push(id); });
   return out;
 }
+// diagrams that belong with a specific question's worked solution (matched on its topics)
+function sketchFigs(slot, q) {
+  if (!q || !(q.topics && q.topics.length)) return;
+  figsForText(q.topics.join(" ") + " " + (q.title || ""), FIG_TOPIC_MAP)
+    .slice(0, 2).forEach(id => slot.appendChild(figNode(id)));  // at most 2 diagrams per solution
+}
 const FIG_TOPIC_MAP = [
+  [/deep linear|linear network|linear-nn|end-to-end/i, "linnet"],
+  [/matrix.?factoriz|symmetric.*matrix|positive.semidefinite|low-rank|\bUU/i, "factor"],
+  [/tensor|cp.?decomp|hierarchical.?tucker|kronecker|matriciz/i, "tensor"],
   [/depth separation|piecewise-linear\/constant/i, "sawtooth"],
   [/balancedness|scalar linear|conservation/i, "phase"],
-  [/matrix factorization/i, "sigma"],
+  [/singular.value|eigenvalue dynamics|matrix factorization/i, "sigma"],
   [/min-norm/i, "minnorm"],
   [/hoeffding/i, "hoeffding"],
   [/ntk/i, "ntkdecay"],
@@ -1358,6 +1469,8 @@ const FIG_MEMO_MAP = [
   [/sawtooth/i, "sawtooth"],
   [/balancedness conservation/i, "phase"],
   [/singular-value \/ eigenvalue dynamics/i, "sigma"],
+  [/matrix factorization|symmetric.*factoriz|positive semidefinite/i, "factor"],
+  [/tensor|cp decomposition|hierarchical tucker/i, "tensor"],
   [/min-norm implicit bias/i, "minnorm"],
   [/three-pillar/i, "pillars"],
   [/hoeffding's inequality/i, "hoeffding"],
