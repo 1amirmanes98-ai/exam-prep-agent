@@ -103,8 +103,9 @@ first Pages deploy may fail "Resource not accessible" → user sets Settings →
 
 Mock exams (generate ONE, solve-first, numeric sanity-check — ≈40k each);
 cheat sheet (compile from index with per-item source check — ≈80k); figures
-(see Phase 7); full adversarial audit (≈150–300k — worth it, but run ONE audit
-pass at the end, not after every phase).
+(see Phase 7); takeaway callouts on each solution (💡 tricks / ⚠️ watch-outs —
+see “Engine updates & lessons”); full adversarial audit (≈150–300k — worth it,
+but run ONE audit pass at the end, not after every phase).
 
 ## Phase 7 — Illustrations, diagrams & figures (≈40–80k tokens)
 
@@ -210,6 +211,13 @@ process. Copy new agents' `scripts/` from the **most up-to-date** agent — curr
 - **Two-tier solutions.** Each question can show a short **`**Hint:**`** fold above a
   **`**Full solution:**`** fold. Past-exam files just keep their worked solution (rendered as
   "Full solution"); mocks put `**Hint:**` / `**Full solution:**` in each `## QN` solutions block.
+- **Takeaway callouts on solutions.** All three templates' `setMd()` auto-boxes any bullet or
+  paragraph whose leading bold text starts with `💡` or `⚠️` (`💡 Useful tricks` → pillar/`--opt`
+  color; `⚠️ Watch out` → `--gen`). To use them, append two blocks per solution — past-exam files
+  as bullets under `**Solution sketch:**`, mocks as a paragraph per `## QN`:
+  `**💡 Useful tricks:** …` / `**⚠️ Watch out:** …`. The CSS is logical-property based
+  (`border-inline-start`) so it flips in an RTL/Hebrew site untouched, and the labels live in
+  content (emoji-detected) so a Hebrew course just writes them in Hebrew.
 - **Mock total** is derived from the sum of the mock's question points (no hard-coded value).
 
 Caveat: the `dl-`/`stats-` script copies additionally carry the **Hebrew RTL** UI patch
