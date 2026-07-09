@@ -31,6 +31,11 @@ frequency × weakness × not yet covered), and let the user pick.
    - flag common traps and what the exam expects to be stated rigorously (for
      Statistics: conditions for approximations, one- vs two-sided, conclusion phrased
      in context).
+   - **use pictures.** If the concept has a computed figure on the study site (an MDP
+     transition diagram, a contraction/regret/learning curve, a geometric
+     decomposition), point the student to it and describe the shape in words — "picture
+     the error shrinking under the γᵏ envelope". A diagram next to the definition is one
+     of the highest-value learning aids; prefer it over another paragraph of prose.
 4. **Connect to exams.** Show 1–2 concrete past-exam questions on this topic (from
    `index/exams/`), with year/moed/points — don't solve them, just show what mastery
    is asked for. Offer `/solve` for a walkthrough or `/quiz <topic>` to test.

@@ -132,17 +132,35 @@ Rules that keep figures an asset instead of a liability in a rigor-focused cours
 3. **Pick 4–8 concepts where geometry IS the insight** (a flow riding a conserved
    quantity, rates separating, a projection, a cover, oscillations doubling).
    Skip decorative network diagrams and stock imagery — zero exam value.
-4. **Mounting:** map by regex onto topic names and cheat-sheet item names; they
-   render as collapsed 📈 nodes (lazy-drawn), so they add no page weight or
-   clutter. Never mount inside exam questions/solutions — figures earn no exam
-   points and answers should model full-credit *written* arguments.
+   **Cover every pillar.** A pillar with no figure is a visible gap — in the RL
+   course Approximation (policy gradient) had none until a later pass; sweep the
+   `slots` list and make sure each has at least one figure before you stop.
+4. **Mounting — topics, memo, AND solutions.** Map by regex (`FIG_TOPIC_MAP` /
+   `FIG_MEMO_MAP`) onto topic and cheat-sheet item names; they render as collapsed
+   📈 nodes (lazy-drawn), so they add no page weight or clutter. **Also mount a
+   single folded figure on matching exam/mock solutions** — `figsForSolution(q)`
+   appended to the `.sketchslot` in both `questionCard` and `renderExamDetail`. The
+   diagram sitting next to the worked answer is a real learning aid; this **reverses
+   the original "never in solutions" rule** after users explicitly asked for it.
+   Keep it **capped at one and collapsed** so it never competes with the full
+   *written* argument, and put generic regexes (a bare `/mdp/`) LAST in the map so
+   specific concepts win the match.
 5. **Captions state the exact model** ("Computed: σ̇ᵣ = −3(σᵣ²)^(2/3)(σᵣ−σᵣ*)
    from σ(0)=0.01") and cite the lecture; captions are indexed by Ask
    automatically. Raster images/photos are a last resort: the site must stay
    self-contained, so anything external would need embedding as a data: URI —
    prefer canvas.
-6. **Verify visually once**: expand each figure in headless Chromium, screenshot,
-   and eyeball that the computed behavior matches the theorem it illustrates.
+6. **Verify visually once — via the real mount path.** Build a `figNode()` inside
+   the *live* page and screenshot its canvas. Do **not** screenshot from a scratch
+   harness that overwrites `document.body.innerHTML` — that detaches `cssVar()` from
+   `:root`, and every figure silently renders as false all-black (a full debugging
+   detour paid for already). Eyeball each figure for (a) the computed behavior
+   matching the theorem and (b) **label collisions** — a figure can draw throw-free
+   yet have two edge labels stacked on top of each other. Canvas gotchas already
+   paid for: `color-mix()` is unreliable as a canvas `fillStyle` (use `globalAlpha`
+   + a solid `cssVar()` color); and on a **reversed** arrow the left-normal vector
+   flips sign, so a bidirectional edge needs opposite-signed label offsets on its
+   two directions.
 
 ## Phase 6 — Hebrew-language course (IMPLEMENTED in the template — config-only)
 
@@ -203,6 +221,14 @@ mirrors so exam statements are *restored* to authentic wording, not back-transla
   in the template first (grep), wrap them once, then fill the `ui` pack completely.
 - Debugging LaTeX/quirks/Pages issues from scratch — they're already solved here;
   read this file and the commit history instead.
+- **Stacking follow-up commits on a branch whose PR was already merged.** A merged
+  PR is closed and finished; pushing more onto its branch just confuses everyone
+  (and can't be re-merged). For follow-up work, branch fresh off the latest `main`
+  and open a NEW PR — even a one-commit change. (Paid for on the RL figures follow-up.)
+- **Verifying canvas figures from a `document.body.innerHTML = …` scratch harness.**
+  It detaches the figures from the `:root` CSS variables, so `cssVar()` returns empty
+  and everything paints black — you chase a "bug" that only exists in the harness.
+  Mount the real `figNode()` in the loaded page and screenshot that.
 
 ## Engine updates & lessons (from the RL replication — the 3rd course)
 
@@ -226,6 +252,12 @@ process. Copy new agents' `scripts/` from the **most up-to-date** agent — curr
   (`border-inline-start`) so it flips in an RTL/Hebrew site untouched, and the labels live in
   content (emoji-detected) so a Hebrew course just writes them in Hebrew.
 - **Mock total** is derived from the sum of the mock's question points (no hard-coded value).
+- **Figures on solutions + full pillar coverage.** The `FIGS` registry now covers every
+  pillar (RL added an MDP transition *diagram* for Planning and a policy-gradient curve for
+  Approximation), and `figsForSolution()` mounts one folded figure next to matching worked
+  solutions — not just on topics/memo. This is the ONE sanctioned course-specific edit to
+  `site_template.html` (the `FIGS` / `FIG_TOPIC_MAP` / `FIG_MEMO_MAP` blocks + the
+  `figsForSolution` mount); everything else in the template still stays verbatim.
 
 Caveat: the `dl-`/`stats-` script copies additionally carry the **Hebrew RTL** UI patch
 (`contrib/hebrew-rtl.patch`) that only a Hebrew-language *site* needs — so the templates have
