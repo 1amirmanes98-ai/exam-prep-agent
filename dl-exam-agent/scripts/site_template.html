@@ -982,7 +982,7 @@ function renderMemo() {
     wrap.innerHTML = "<summary>" + sec.name +
       " <span class='pts seccount' style='margin-inline-start:auto'></span></summary><div class='notebody secslot'></div>";
     const countEl = $(".seccount", wrap);
-    const refreshCount = () => countEl.textContent = known() + "/" + sec.items.length + " known";
+    const refreshCount = () => countEl.textContent = known() + "/" + sec.items.length + " " + tr("knownWord","known");
     refreshCount();
     wrap.dataset.refresh = "1";
     wrap.refreshCount = refreshCount;
@@ -1004,7 +1004,7 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
       el.innerHTML = "<input type='checkbox' aria-label='I know this'" + (store.data.memo[id] ? " checked" : "") + ">" +
         "<div class='iname'>" + item.name + "</div>" +
         "<div class='ibody'><div class='stmt mdslot'></div>" +
-        (item.use ? "<div class='use'><b>Use it when:</b> <span class='useslot'></span></div>" : "") +
+        (item.use ? "<div class='use'><b>" + tr("useWhen","Use it when:") + "</b> <span class='useslot'></span></div>" : "") +
         (item.watch ? "<div class='watch'>⚠ <span class='watchslot'></span></div>" : "") +
         "<div class='seen seenslot'></div></div>";
       list.appendChild(el);

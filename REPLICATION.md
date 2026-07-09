@@ -88,6 +88,10 @@ prompts from the template's index files' structure:
    the 13 woff2 fonts — exact list in `dl-exam-agent/README.md`).
 3. Build: `python3 dl-exam-agent/scripts/build_site.py dl-exam-agent/index <libs> \
    dl-exam-agent/scripts/site_template.html /tmp/site.html docs/index.html`
+   The **5th arg** (`docs/index.html`) is written **wrapped in `<!doctype html>`**
+   (standards mode — needed so KaTeX doesn't hit quirks mode); the 4th arg is the raw
+   fragment. Always pass the 5th arg for the deployed copy, and **never hand-patch the
+   doctype into `docs/`** — a plain rebuild would just drop it again.
 4. Verify ONCE in headless Chromium (Playwright, executablePath
    `/opt/pw-browsers/chromium`): zero console errors; KaTeX count > 0 on an exam
    page; **test the raw fragment (quirks mode) — the build already patches KaTeX's
@@ -109,10 +113,13 @@ first Pages deploy may fail "Resource not accessible" → user sets Settings →
 ## Phase 5 — Optional extras (defer until the user asks)
 
 Mock exams (generate ONE, solve-first, numeric sanity-check — ≈40k each);
-cheat sheet (compile from index with per-item source check — ≈80k); figures
-(see Phase 7); takeaway callouts on each solution (💡 tricks / ⚠️ watch-outs —
-see “Engine updates & lessons”); full adversarial audit (≈150–300k — worth it,
-but run ONE audit pass at the end, not after every phase).
+**cheat sheet** → `index/CHEATSHEET.md` in **INDEX_FORMAT.md FORMAT E** (populates the
+Memorize tab; ~40–55 grounded items — generate it AFTER the exams are indexed so the
+`Seen in` refs are real; skipping it ships a live but **empty** Memorize tab); figures
+(see Phase 7); **takeaway callouts** on each solution (💡 tricks / ⚠️ watch-outs — the
+format is in **INDEX_FORMAT.md** under FORMAT C, so hand it to the indexing agents and
+they land for free); full adversarial audit (≈150–300k — worth it, but run ONE audit
+pass at the end, not after every phase).
 
 ## Phase 7 — Illustrations, diagrams & figures (≈40–80k tokens)
 
@@ -161,6 +168,22 @@ Rules that keep figures an asset instead of a liability in a rigor-focused cours
    + a solid `cssVar()` color); and on a **reversed** arrow the left-normal vector
    flips sign, so a bidirectional edge needs opposite-signed label offsets on its
    two directions.
+7. **Per-question exam figures (data-driven) — a second, complementary system.** The
+   figures above are *concept* pictures mapped onto topics/memo by regex. A course whose
+   EXAMS lean on plots (histograms, scatter/regression, QQ-plots, boxplots, residuals)
+   also wants a figure drawn **under each such question's statement**. That engine is a
+   reusable toolkit file — **`replication/exam_figures.js`** — with pre-tested generators
+   (`figScatter` / `figHist` / `figQQ` / `figBox`) and three wiring hooks (a
+   `figNode(id, open)` flag, a `FIG_EXAM` question→figure map, and an open mount in
+   `renderExamDetail`). To fill `FIG_EXAM` cheaply: fan out one extraction agent per batch
+   of exam files that emits a tiny JSON spec `{qid, type, title, caption, params}` (no
+   agent writes canvas code), then a deterministic assembler turns that JSON into the
+   `Object.assign(FIGS,…)` + `FIG_EXAM` block. Pass the exam's EXACT printed numbers
+   (regression equation, R summary stats, axis ranges) so the reconstruction is faithful,
+   and caption each as an **illustration / schematic** (the index has the described shape
+   + parameters, not the raw sample points). Mount **open** — a question depends on its
+   plot — and verify via the real page mount, not a body-overwriting harness. Live
+   reference implementation: the ~21 figures in `stats-exam-agent/`.
 
 ## Phase 6 — Hebrew-language course (IMPLEMENTED in the template — config-only)
 
