@@ -455,6 +455,7 @@ function questionCard(e, q) {
   if (q.hint) setMd($(".hintslot", c), q.hint);
   const sk = $(".sketchslot", c);
   if (q.sketch) setMd(sk, q.sketch); else sk.innerHTML = "<p class='sub'>No solution available.</p>";
+  if (CONFIG.figures && q.sketch) figsForSolution(q).slice(0, 1).forEach(id => sk.appendChild(figNode(id)));
   return c;
 }
 function collapsedQuestion(e, q) {
@@ -765,6 +766,7 @@ function renderExamDetail(e) {
     setMd($(".mdslot", c), q.statement);
     if (q.hint) setMd($(".hintslot", c), q.hint);
     setMd($(".sketchslot", c), q.sketch);
+    if (CONFIG.figures && q.sketch) figsForSolution(q).slice(0, 1).forEach(id => $(".sketchslot", c).appendChild(figNode(id)));
   });
   mathify(det); // titles and headers contain math too
   det.scrollIntoView({ behavior: "auto", block: "start" });
@@ -1167,6 +1169,82 @@ const FIGS = {
       ctx.fillStyle=muted; ctx.fillText("linear reference", x0+w-118, y0+16);
       ctx.fillStyle=ink; ctx.fillText("round t →", W-96, H-8);
     }
+  },
+  mdp_diagram: {
+    title: "An MDP as a transition diagram",
+    pillar: "Planning",
+    caption: "The objects a Markov decision process is built from: states (circles), actions (colored edges), each edge labeled with its transition probability and immediate reward P(s'|s,a) / r. From state s₁ action a (purple) splits 0.8/0.2; action b (orange) is a sure move. s₂ is absorbing. Every planning method — Bellman operators, value & policy iteration — runs on exactly this structure (Lectures 2–3).",
+    draw(cv) {
+      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
+      const ink = cssVar("--ink"), muted = cssVar("--muted"), a1 = cssVar("--exp"), a2 = cssVar("--gen"), good = cssVar("--good");
+      const N = { s0:[120,150], s1:[330,150], s2:[540,110] };
+      const rad = 30;
+      function edge(p, q, col, off, lab, curve){
+        const dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy), ux=dx/L, uy=dy/L, nx=-uy, ny=ux;
+        const sx=p[0]+ux*rad+nx*off, sy=p[1]+uy*rad+ny*off, ex=q[0]-ux*rad+nx*off, ey=q[1]-uy*rad+ny*off;
+        const mx=(sx+ex)/2+nx*(curve||0), my=(sy+ey)/2+ny*(curve||0);
+        ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=2.2;
+        ctx.beginPath(); ctx.moveTo(sx,sy); ctx.quadraticCurveTo(mx,my,ex,ey); ctx.stroke();
+        const ang=Math.atan2(ey-my,ex-mx);
+        ctx.beginPath(); ctx.moveTo(ex,ey);
+        ctx.lineTo(ex-9*Math.cos(ang-0.4),ey-9*Math.sin(ang-0.4));
+        ctx.lineTo(ex-9*Math.cos(ang+0.4),ey-9*Math.sin(ang+0.4)); ctx.closePath(); ctx.fill();
+        ctx.font="12px "+cssVar("--mono"); ctx.fillStyle=col;
+        ctx.fillText(lab, mx-ctx.measureText(lab).width/2, my + (curve<0?-6:16));
+      }
+      function selfLoop(p, col, lab){
+        ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=2.2;
+        ctx.beginPath(); ctx.arc(p[0], p[1]-rad-14, 15, 0.6, Math.PI*2-0.2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(p[0]+11,p[1]-rad-6);
+        ctx.lineTo(p[0]+6,p[1]-rad-14); ctx.lineTo(p[0]+16,p[1]-rad-15); ctx.closePath(); ctx.fill();
+        ctx.font="12px "+cssVar("--mono"); ctx.fillText(lab, p[0]-ctx.measureText(lab).width/2, p[1]-rad-34);
+      }
+      edge(N.s0, N.s1, a2, 0, "b: p=1, r=0", -34);
+      edge(N.s1, N.s2, a1, 0, "a: p=.8, r=+1", -26);
+      edge(N.s1, N.s0, a1, -16, "a: p=.2, r=0", -40);
+      selfLoop(N.s2, good, "p=1, r=0");
+      for (const [k,[x,y]] of Object.entries(N)){
+        ctx.beginPath(); ctx.arc(x,y,rad,0,7);
+        if(k==="s2"){ ctx.globalAlpha=.18; ctx.fillStyle=good; ctx.fill(); ctx.globalAlpha=1; }
+        else { ctx.fillStyle=cssVar("--surface2"); ctx.fill(); }
+        ctx.lineWidth=2; ctx.strokeStyle=k==="s2"?good:muted; ctx.stroke();
+        ctx.fillStyle=ink; ctx.font="15px "+cssVar("--serif");
+        const t="s"+k[1]; ctx.fillText(t, x-ctx.measureText(t).width/2, y+5);
+      }
+      ctx.fillStyle=muted; ctx.font="12px "+cssVar("--sans"); ctx.fillText("s₂ absorbing (terminal)", 452, 200);
+    }
+  },
+  policy_gradient: {
+    title: "Policy gradient climbs the expected return",
+    pillar: "Approximation",
+    caption: "Computed: gradient ascent on a softmax policy over two actions (rewards 1.0 vs 0.3), following the policy-gradient theorem ∇J = E[r·∇log π]. Expected return J(θ) (orange) rises monotonically to the optimum (dashed) as the policy shifts probability onto the better action — no model, just the score-function estimator (Lecture 9, REINFORCE / actor-critic).",
+    draw(cv) {
+      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
+      const col = cssVar("--gen"), muted = cssVar("--muted"), ink = cssVar("--ink"), opt = cssVar("--opt");
+      const r = [1.0, 0.3], lr = 0.9, IT = 60;
+      let th = [0, 0]; const J = [], p0 = [];
+      for (let k=0;k<IT;k++){
+        const e0=Math.exp(th[0]), e1=Math.exp(th[1]), z=e0+e1, pi=[e0/z, e1/z];
+        const j = pi[0]*r[0]+pi[1]*r[1]; J.push(j); p0.push(pi[0]);
+        const grad = [pi[0]*(r[0]-j), pi[1]*(r[1]-j)];
+        th = [th[0]+lr*grad[0], th[1]+lr*grad[1]];
+      }
+      const x0=44,y0=16,w=W-72,h=H-48, jmin=J[0], jmax=r[0];
+      const sx=k=>x0+k/(IT-1)*w, sy=v=>y0+h-((v-jmin)/(jmax-jmin))*h;
+      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
+      ctx.setLineDash([5,4]); ctx.strokeStyle=muted; ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(x0,sy(jmax)); ctx.lineTo(x0+w,sy(jmax)); ctx.stroke(); ctx.setLineDash([]);
+      // probability of the optimal action, faint, on same panel (0..1 → panel)
+      ctx.strokeStyle=opt; ctx.globalAlpha=.5; ctx.lineWidth=1.8; ctx.beginPath();
+      p0.forEach((v,k)=>{ const px=sx(k),py=y0+h-v*h; k?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke(); ctx.globalAlpha=1;
+      ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
+      J.forEach((v,k)=>{ const px=sx(k),py=sy(v); k?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke();
+      for(let k=0;k<IT;k+=6){ ctx.fillStyle=col; ctx.beginPath(); ctx.arc(sx(k),sy(J[k]),2.4,0,7); ctx.fill(); }
+      ctx.fillStyle=col; ctx.font="13px "+cssVar("--serif"); ctx.fillText("J(θ) = expected return", x0+10, y0+h-12);
+      ctx.fillStyle=muted; ctx.fillText("optimum r* = 1.0", x0+w-116, sy(jmax)-6);
+      ctx.fillStyle=opt; ctx.globalAlpha=.8; ctx.fillText("π(best action) →1", x0+10, y0+16); ctx.globalAlpha=1;
+      ctx.fillStyle=ink; ctx.fillText("gradient step →", W-128, H-8);
+    }
   }
 };
 const MOUNTED_FIGS = [];
@@ -1192,6 +1270,8 @@ const FIG_TOPIC_MAP = [
   [/temporal difference|td\(|monte.?carlo|model-free|q-learning/i, "td_learning"],
   [/mdp formal|optimal policy|policy iteration|grid|dynamic programming/i, "gridworld_policy"],
   [/bandit|ucb|regret|exploration|best.?arm/i, "ucb_regret"],
+  [/mdp|markov decision|transition|state.?space|reward function/i, "mdp_diagram"],
+  [/policy gradient|reinforce|actor.?critic|score function|function approximation/i, "policy_gradient"],
 ];
 const FIG_MEMO_MAP = [
   [/value iteration|policy iteration/i, "vi_contraction"],
@@ -1199,7 +1279,13 @@ const FIG_MEMO_MAP = [
   [/td\(0\)|temporal difference|monte-carlo|q-learning/i, "td_learning"],
   [/discounted mdp|optimal policy/i, "gridworld_policy"],
   [/ucb|regret|best-arm/i, "ucb_regret"],
+  [/mdp|markov decision|transition/i, "mdp_diagram"],
+  [/policy gradient|reinforce|actor-critic|score function/i, "policy_gradient"],
 ];
+// Solutions get a folded concept figure when the question's topic matches one.
+function figsForSolution(q) {
+  return figsForText((q.title || "") + " " + (q.topics || []).join(" ") + " " + (q.pillar || ""), FIG_TOPIC_MAP);
+}
 
 /* ---------- ask (client-side retrieval, verbatim quotes) ---------- */
 let CHUNKS = null, DF = null;
