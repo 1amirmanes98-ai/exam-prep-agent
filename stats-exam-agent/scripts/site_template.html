@@ -817,7 +817,7 @@ function renderExamDetail(e) {
 }
 
 /* ---------- flashcards ---------- */
-let flashPillar = PILLARS[0], flashKind = "all", deck = [], deckPos = 0, revealed = false;
+let flashPillar = PILLARS[0], flashKind = "all", flashMistakes = false, deck = [], deckPos = 0, revealed = false;
 let flashScope = null; // {label, lectures:[...]}
 function setFlashScope(t, lecRefs) {
   flashScope = { label: "topic scope", lectures: lecRefs, pillar: t.pillar };
@@ -828,6 +828,10 @@ function buildDeck() {
   deck = flashScope
     ? DATA.cards.filter(c => flashScope.lectures.includes(c.lecture) && (flashKind === "all" || c.kind === flashKind))
     : DATA.cards.filter(c => c.pillar === flashPillar && (flashKind === "all" || c.kind === flashKind));
+  if (flashMistakes) {
+    // review-mistakes mode: keep only cards you previously graded miss or almost
+    deck = deck.filter(c => { const s = store.data.cards[cardId(c)]; return s && (s.last === "miss" || s.last === "half"); });
+  }
   const rank = c => { const s = store.data.cards[cardId(c)]; return !s ? 1 : s.last === "miss" ? 0 : s.last === "half" ? 2 : 3; };
   deck.sort((a, b) => rank(a) - rank(b) || Math.random() - 0.5);
   deckPos = 0; revealed = false;
@@ -856,6 +860,12 @@ function renderFlashFilters() {
     b.onclick = () => { flashKind = k; buildDeck(); renderFlashFilters(); renderFlash(); };
     f.appendChild(b);
   });
+  // review-mistakes toggle: restrict the deck to cards you graded miss/almost
+  const mb = document.createElement("button");
+  mb.type = "button"; mb.className = "chipbtn" + (flashMistakes ? " on" : "");
+  mb.textContent = tr("kMistakes", "🔁 My mistakes");
+  mb.onclick = () => { flashMistakes = !flashMistakes; buildDeck(); renderFlashFilters(); renderFlash(); };
+  f.appendChild(mb);
   // grades persist in this browser; wiping them is the user's call only
   const rb = document.createElement("button");
   rb.type = "button"; rb.className = "chipbtn danger";
@@ -874,7 +884,7 @@ function renderFlash() {
   $("#flashProg").style.width = deck.length ? (100 * deckPos / deck.length) + "%" : "0%";
   $("#flashProg").parentElement.className = "progressbar p-" + (flashScope ? flashScope.pillar : flashPillar);
   area.innerHTML = "";
-  if (!deck.length) { area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + tr("noCardsMatch","No cards match this filter.") + "</div>"; return; }
+  if (!deck.length) { area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + (flashMistakes ? tr("noMistakesYet","No cards graded as a mistake yet — practice a bit and your misses will collect here. 🎉") : tr("noCardsMatch","No cards match this filter.")) + "</div>"; return; }
   if (deckPos >= deck.length) {
     area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + tr("deckDone","Deck done 🎉 — misses were logged and will lead the next run.") + "<br><br></div>";
     const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = tr("restartDeck","Restart deck");
