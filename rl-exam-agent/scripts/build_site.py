@@ -41,6 +41,12 @@ DEFAULT_CONFIG = {
                        "NTK convergence", "Telgarsky sawtooth depth separation",
                        "PAC-Bayes bound"],
     "figures": True,  # the built-in computed figures are FODL-specific; set false elsewhere
+    # Phase 6 (RTL/i18n): direction, language, and a UI strings object. Defaults are
+    # English LTR; a Hebrew course sets "dir":"rtl","lang":"he" and fills "ui" (the
+    # template reads every UI string via CONFIG.ui.<key> with English fallbacks).
+    "dir": "ltr",
+    "lang": "en",
+    "ui": {},
 }
 CONFIG = dict(DEFAULT_CONFIG)
 
@@ -71,7 +77,7 @@ def parse_exam(path: Path) -> dict:
     }
     # question blocks start with "## Q"
     for block in re.split(r"\n(?=## Q)", text):
-        m = re.match(r"## Q(\d+)\s*\((\d+)\s*pts?\)\s*[—-]\s*(.+)", block)
+        m = re.match(r"## Q(\d+)\s*\((\d+)\s*pts?[^)]*\)\s*[—-]\s*(.+)", block)
         if not m:
             continue
         qnum, pts, title = int(m.group(1)), int(m.group(2)), m.group(3).strip()
@@ -88,6 +94,7 @@ def parse_exam(path: Path) -> dict:
         km = re.search(r"\*\*Solution sketch[^:]*:\*\*\s*\n(.*)", block, re.DOTALL)
         if km:
             sketch = km.group(1).strip()
+        # optional two-tier solution: a **Hint:** line before the full sketch
         hm = re.search(r"\*\*Hint[^:]*:\*\*\s*(.+?)(?=\n\*\*|\Z)", block, re.DOTALL)
         exam["questions"].append({
             "n": qnum,
@@ -149,6 +156,11 @@ def parse_lecture(path: Path) -> dict:
             # front = the bold lead (name); back = the whole item
             fm = re.match(r"(?:[-*]\s*)?\*\*(.+?)\*\*", item)
             front = fm.group(1).strip().rstrip(".") if fm else item[:80]
+            # the card's kind (def/thm) is already shown by its prompt, so drop the
+            # redundant English marker keyword — leave just the concept name on the front
+            km = re.match(r"^(?:Def|Definition|Thm|Theorem|Lem|Lemma|Prop|Proposition|Cor|Corollary)\s*\((.*)\)\s*$", front, re.I)
+            if km:
+                front = km.group(1).strip()
             cards.append({
                 "kind": kind,
                 "front": front,
@@ -238,7 +250,7 @@ def parse_archetypes(path: Path) -> list:
     return out
 
 
-MOCK_Q_RE = re.compile(r"^## Q(?:uestion)?\s*(\d+)\s*\((\d+)\s*pts?\)\s*[—-]\s*(.+)$",
+MOCK_Q_RE = re.compile(r"^## Q(?:uestion)?\s*(\d+)\s*\((\d+)\s*pts?[^)]*\)\s*[—-]\s*(.+)$",
                        re.MULTILINE)
 
 
@@ -366,11 +378,17 @@ def main():
     payload = json.dumps(data, ensure_ascii=False)
     # JSON goes inside a <script type="application/json"> tag — escape closers.
     payload = payload.replace("</", "<\\/")
+    # course figure registries: injected verbatim from <index>/figures.js when present
+    figs_path = index_dir / "figures.js"
+    figs_js = (figs_path.read_text(encoding="utf-8").replace("</", "<\\/")
+               if figs_path.exists() else
+               "const FIGS = {}, FIG_EXAM = {}, FIG_TOPIC_MAP = [], FIG_MEMO_MAP = [];")
     for k, v in (("__KATEX_CSS__", kcss),
                  ("__KATEX_JS__", kjs),
                  ("__AUTORENDER_JS__", (libs_dir / "auto-render.min.js").read_text(encoding="utf-8")),
                  ("__MARKED_JS__", (libs_dir / "marked.min.js").read_text(encoding="utf-8")),
                  ("__CONFIG__", json.dumps(CONFIG, ensure_ascii=False).replace("</", "<\\/")),
+                 ("__FIGS__", figs_js),
                  ("__COURSE_NAME__", CONFIG["courseName"]),
                  ("__DATA__", payload)):
         assert k in html, f"placeholder {k} missing from template"

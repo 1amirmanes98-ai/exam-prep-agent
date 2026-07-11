@@ -42,11 +42,11 @@ a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 
 /* ---------- nav ---------- */
-.rail{border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.rail{border-inline-end:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
 .brand{font-family:var(--serif);font-size:1.25rem;font-weight:700;letter-spacing:.01em;padding:0 10px 4px}
 .brand small{display:block;font-family:var(--sans);font-weight:500;font-size:.68rem;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-top:2px}
 .rail nav{display:flex;flex-direction:column;gap:2px;margin-top:14px}
-.navbtn{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;background:none;border-radius:8px;color:var(--muted);text-align:left;font-weight:550}
+.navbtn{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;background:none;border-radius:8px;color:var(--muted);text-align:start;font-weight:550}
 .navbtn svg{flex:0 0 auto}
 .navbtn:hover{background:var(--surface2)}
 .navbtn.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
@@ -55,7 +55,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .themebtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 10px;color:var(--muted);font-size:.85rem}
 
 /* ---------- main ---------- */
-main{padding:30px clamp(16px,4vw,44px) 90px;max-width:980px;width:100%;margin:0 auto}
+main{padding:30px clamp(16px,4vw,44px) 90px;max-width:980px;width:100%;margin:0 auto;min-width:0}
 section{display:none}
 section.on{display:block}
 h1{font-family:var(--serif);font-size:1.7rem;margin:0 0 4px;text-wrap:balance}
@@ -70,16 +70,16 @@ h2{font-family:var(--serif);font-size:1.22rem;margin:30px 0 12px}
 .p-Practices{--pc:var(--prac)}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--pc);background:color-mix(in srgb,var(--pc) 12%,transparent);border-radius:999px;padding:3px 10px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--pc);flex:0 0 auto}
-.chip{display:inline-block;font-family:var(--mono);font-size:.72rem;color:var(--muted);background:var(--surface2);border-radius:6px;padding:2px 7px;margin:2px 3px 2px 0}
+.chip{display:inline-block;font-family:var(--mono);font-size:.72rem;color:var(--muted);background:var(--surface2);border-radius:6px;padding:2px 7px;margin-block:2px;margin-inline:0 3px}
 .pts{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.8rem;color:var(--muted)}
 
 /* ---------- dashboard ---------- */
-.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:18px}
+.hero{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
 .pillarcard{padding:18px;position:relative;overflow:hidden;border-top:3px solid var(--pc)}
 .pillarcard h3{font-family:var(--serif);margin:10px 0 2px;font-size:1.06rem}
 .pillarcard .role{font-size:.78rem;color:var(--muted)}
 .pillarcard .avg{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.7rem;font-weight:600;color:var(--pc);margin-top:10px}
-.pillarcard .avg small{font-size:.72rem;color:var(--muted);font-weight:400;margin-left:4px}
+.pillarcard .avg small{font-size:.72rem;color:var(--muted);font-weight:400;margin-inline-start:4px}
 .pillarcard svg{color:var(--pc);display:block}
 .tmplbar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:16px 0 6px}
 .tmplbar div{height:100%}
@@ -89,7 +89,7 @@ h2{font-family:var(--serif);font-size:1.22rem;margin:30px 0 12px}
 .stat{padding:14px 16px}
 .stat .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.5rem;font-weight:600}
 .stat .k{font-size:.76rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
-.arch{padding:12px 16px;display:flex;gap:12px;align-items:baseline;border-bottom:1px solid var(--line);width:100%;border-left:0;border-right:0;border-top:0;background:none;text-align:left;font:inherit;cursor:pointer}
+.arch{padding:12px 16px;display:flex;gap:12px;align-items:baseline;border-bottom:1px solid var(--line);width:100%;border-inline:0;border-top:0;background:none;text-align:start;font:inherit;cursor:pointer}
 .arch:hover{background:var(--surface2)}
 .arch:last-child{border-bottom:0}
 .arch .go{color:var(--muted);flex:0 0 auto}
@@ -102,7 +102,7 @@ details.notesec-d .secbody{padding:0 0 14px;overflow-x:auto}
 .figbody canvas{display:block}
 .figcap{font-size:.8rem;color:var(--muted);margin:8px 0 0;max-width:64ch}
 .arch .n{font-family:var(--mono);color:var(--muted);font-size:.8rem;flex:0 0 1.4em}
-.arch .freq{margin-left:auto;white-space:nowrap;flex:0 0 auto;letter-spacing:2px;color:var(--pc);font-size:.72rem}
+.arch .freq{margin-inline-start:auto;white-space:nowrap;flex:0 0 auto;letter-spacing:2px;color:var(--pc);font-size:.72rem}
 .datebox{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .datebox input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .count{font-family:var(--serif);font-size:1.05rem}
@@ -117,19 +117,23 @@ details.notesec-d .secbody{padding:0 0 14px;overflow-x:auto}
 .topicrow .t{font-weight:600;grid-column:2}
 .topicrow .meta{grid-column:2;font-size:.8rem;color:var(--muted)}
 .topicrow .stripe{grid-column:1;grid-row:1/span 2;width:4px;border-radius:2px;background:var(--pc)}
-.prio{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:1px}
+.prio{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-inline-start:8px;vertical-align:1px}
 .prio.core{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
 .prio.frequent{background:color-mix(in srgb,var(--gen) 16%,transparent);color:var(--gen)}
 .prio.seen{background:var(--surface2);color:var(--muted)}
 
 /* ---------- exams ---------- */
 .examgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
-.examcard{padding:16px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
+.examcard{padding:16px;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
 .examcard:hover{border-color:var(--muted)}
 .examcard h3{margin:0 0 8px;font-family:var(--serif);font-size:1.02rem}
 .examcard .qrow{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);padding:2px 0}
 .qcard{margin-top:16px;overflow:hidden}
-.qhead{padding:16px 18px;border-left:4px solid var(--pc);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.qcard.qflash{animation:qflash 1.6s ease-out 1}
+@keyframes qflash{0%,15%{box-shadow:0 0 0 3px var(--pc,var(--ink)) inset,0 0 0 3px var(--pc,var(--ink))}100%{box-shadow:0 0 0 0 transparent inset,0 0 0 0 transparent}}
+details.sketch.hintfold{border-style:dotted;opacity:.9}
+details.sketch.hintfold summary{color:var(--muted)}
+.qhead{padding:16px 18px;border-inline-start:4px solid var(--pc);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
 .qhead h3{font-family:var(--serif);margin:0;font-size:1.05rem;flex:1 1 300px}
 .qbody{padding:4px 18px 16px;border-top:1px solid var(--line);overflow-x:auto}
 .qbody .katex-display{margin:.7em 0}
@@ -138,8 +142,6 @@ details.sketch summary{cursor:pointer;padding:10px 14px;font-weight:600;color:va
 details.sketch summary::before{content:"▸ ";font-size:.8em}
 details.sketch[open] summary::before{content:"▾ "}
 details.sketch .inner{padding:0 16px 12px;overflow-x:auto}
-details.sketch.hintfold{border-style:dotted;opacity:.9}
-details.sketch.hintfold summary{color:var(--muted)}
 .diff{letter-spacing:2px;font-size:.72rem;color:var(--pc)}
 .backbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;font-size:.85rem;color:var(--muted);margin-bottom:14px}
 
@@ -168,7 +170,7 @@ details.sketch.hintfold summary{color:var(--muted)}
 .topicrow.click:hover{background:var(--surface2)}
 .topicrow .go{grid-column:3;grid-row:1/span 2;align-self:center;color:var(--muted)}
 .topicrow.click{grid-template-columns:auto 1fr auto}
-.scopechip{display:inline-flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--pc,var(--ink)) 10%,transparent);color:var(--pc,var(--ink));border:1px solid color-mix(in srgb,var(--pc,var(--ink)) 40%,transparent);border-radius:999px;padding:5px 8px 5px 14px;font-size:.85rem;font-weight:600}
+.scopechip{display:inline-flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--pc,var(--ink)) 10%,transparent);color:var(--pc,var(--ink));border:1px solid color-mix(in srgb,var(--pc,var(--ink)) 40%,transparent);border-radius:999px;padding-block:5px;padding-inline:14px 8px;font-size:.85rem;font-weight:600}
 .scopechip button{border:0;background:none;color:inherit;font-size:1rem;padding:0 4px;line-height:1}
 details.note{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);margin-top:12px;box-shadow:var(--shadow)}
 details.note>summary{cursor:pointer;padding:14px 18px;font-family:var(--serif);font-weight:700;list-style:none;display:flex;gap:10px;align-items:baseline}
@@ -179,14 +181,14 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 .notesec{overflow-x:auto}
 .askbox{display:flex;gap:10px;margin:14px 0 6px}
 .askbox input{flex:1;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
-.hit{padding:16px 18px;border-left:4px solid var(--pc,var(--ink));margin-top:12px;overflow-x:auto}
+.hit{padding:16px 18px;border-inline-start:4px solid var(--pc,var(--ink));margin-top:12px;overflow-x:auto}
 .hit .src{font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;color:var(--pc,var(--muted));font-weight:700;margin-bottom:8px}
 .hit .src .sec{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:500}
 .hit .src .srcbtn{border:0;background:none;padding:0;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;font-weight:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .suggest{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 
 /* memorize tab */
-.memoitem{padding:14px 16px 14px 14px;margin-top:10px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;border-left:4px solid var(--pc,var(--line))}
+.memoitem{padding:14px 16px;margin-top:10px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;border-inline-start:4px solid var(--pc,var(--line))}
 .memoitem.known{opacity:.62}
 .memoitem input[type=checkbox]{width:19px;height:19px;accent-color:var(--good);margin-top:2px;cursor:pointer}
 .memoitem .iname{font-weight:650;font-family:var(--serif);font-size:1.02rem}
@@ -197,11 +199,29 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 .memoitem .seen{margin-top:6px}
 .memosec{display:flex;align-items:baseline;gap:12px;margin:26px 0 4px}
 .memosec h2{margin:0}
-.memosec .pts{margin-left:auto}
+.memosec .pts{margin-inline-start:auto}
 
+/* LTR islands: math/code never flip inside RTL text */
+.katex,.katex-display,code,pre,.pts,.chip,.diff{direction:ltr;unicode-bidi:isolate}
 /* markdown inside cards */
-.md p{margin:.5em 0}
-.md ul,.md ol{margin:.4em 0;padding-left:1.4em}
+.md p{margin:.6em 0}
+details.sketch .md p{margin:1em 0}
+details.sketch .md p:not(.co-trick):not(.co-warn)>strong:first-child{color:var(--pc,var(--ink))}
+/* per-question archetype template box */
+details.tmpl{border:1px solid color-mix(in srgb,var(--pc,var(--ink)) 28%,transparent);border-inline-start:3px solid var(--pc,var(--ink));border-radius:8px;margin:10px 18px 0;background:color-mix(in srgb,var(--pc,var(--ink)) 6%,transparent)}
+details.tmpl>summary{cursor:pointer;padding:9px 14px;font-weight:650;color:var(--pc,var(--ink));list-style:none;font-size:.9rem}
+details.tmpl>summary::before{content:"▸ ";font-size:.8em}
+details.tmpl[open]>summary::before{content:"▾ "}
+details.tmpl .tmplbody{padding:0 14px 10px}
+/* flashcards: saved-grade badge, prompt label, reset button */
+.lastgrade{font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 10px;align-self:flex-start}
+.lastgrade.got{color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.lastgrade.half{color:var(--gen);background:color-mix(in srgb,var(--gen) 14%,transparent)}
+.lastgrade.miss{color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.bigcard .kind{font-size:.78rem;color:var(--muted);font-weight:600}
+.chipbtn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent);margin-inline-start:auto}
+.memoitem .slbl{font-size:.76rem;color:var(--muted);font-weight:600}
+.md ul,.md ol{margin:.4em 0;padding-inline-start:1.4em}
 .md li{margin:.25em 0}
 .md strong{font-weight:650}
 .md code{font-family:var(--mono);font-size:.85em;background:var(--surface2);border-radius:4px;padding:1px 4px}
@@ -231,7 +251,7 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     <div class="brand" id="brand"></div>
     <nav id="nav"></nav>
     <div class="spacer"></div>
-    <button class="themebtn" id="themeToggle" type="button">◐ Theme</button>
+    <button class="themebtn" id="themeToggle" type="button" data-i18n="theme">◐ Theme</button>
   </aside>
   <main>
     <section id="view-dash">
@@ -241,25 +261,25 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
         <div class="datebox">
           <span class="count" id="daysLeft"></span>
           <span style="flex:1"></span>
-          <label for="examDate" style="font-size:.85rem;color:var(--muted)">Exam date</label>
+          <label for="examDate" style="font-size:.85rem;color:var(--muted)" data-i18n="examDate">Exam date</label>
           <input type="date" id="examDate">
         </div>
       </div>
       <div class="hero" id="pillarCards"></div>
-      <h2>Average points per question, by pillar</h2>
+      <h2 data-i18n="hTemplate">One exam, three slots — average points per question</h2>
       <div class="card" style="padding:18px 20px">
         <div class="tmplbar" id="tmplBar"></div>
         <div class="legendrow" id="tmplLegend"></div>
       </div>
-      <h2>Recurring question archetypes <span class="pts">(drill these — they repeat across years)</span></h2>
+      <h2><span data-i18n="hArchetypes">Recurring question archetypes</span> <span class="pts" data-i18n="hArchetypesNote">(drill these — they repeat across years)</span></h2>
       <div class="card" id="archList"></div>
-      <h2>Your progress <span class="pts">(saved in this browser)</span></h2>
+      <h2><span data-i18n="hProgress">Your progress</span> <span class="pts" data-i18n="hProgressNote">(saved in this browser)</span></h2>
       <div class="statrow" id="statRow"></div>
     </section>
 
     <section id="view-topics">
-      <h1>Topic map</h1>
-      <p class="sub">Every syllabus topic, where it's taught, and every exam question that tested it. Priorities reflect how often the graders actually ask.</p>
+      <h1 data-i18n="topicMapTitle">Topic map</h1>
+      <p class="sub" data-i18n="topicMapSub">Every syllabus topic, where it's taught, and every exam question that tested it. Priorities reflect how often the graders actually ask.</p>
       <div id="topicHome">
         <div class="filters" id="topicFilters"></div>
         <div class="card" id="topicList"></div>
@@ -268,31 +288,31 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     </section>
 
     <section id="view-ask">
-      <h1>Ask the course</h1>
-      <p class="sub">Type a question or a term — retrieval over <b>everything on this site</b>: lecture/recitation/homework notes, all exams with their solution sketches, the cheat sheet, and the topic map. You get a direct where-does-it-appear answer plus verbatim quoted passages. (For worked answers and grading, ask your tutor in a Claude session; this searches, it doesn't think.)</p>
+      <h1 data-i18n="askTitle">Ask the course</h1>
+      <p class="sub" data-i18n="askSub">Type a question or a term — retrieval over <b>everything on this site</b>: lecture/recitation/homework notes, all exams with their solution sketches, the cheat sheet, and the topic map. You get a direct where-does-it-appear answer plus verbatim quoted passages. (For worked answers and grading, ask your tutor in a Claude session; this searches, it doesn't think.)</p>
       <p class="pts" id="askCorpus" style="margin:0 0 10px"></p>
       <div class="askbox">
         <input id="askInput" type="search" placeholder="e.g. why does balancedness hold under gradient flow?" aria-label="Ask the lecture notes">
-        <button class="btn primary" id="askBtn" type="button">Ask</button>
+        <button class="btn primary" id="askBtn" type="button" data-i18n="askBtn">Ask</button>
       </div>
       <div class="suggest" id="askSuggest"></div>
       <div id="askResults"></div>
     </section>
 
     <section id="view-exams">
-      <h1>Past exams, 2020–2024</h1>
-      <p class="sub">All past exams translated to English with per-question topic tags and collapsible hints and full solutions. Colors mark the pillar of each question.</p>
+      <h1 data-i18n="examsTitle">Past exams, 2020–2024</h1>
+      <p class="sub" data-i18n="examsSub">All 12 exams translated to English with per-question topic tags and collapsible solution sketches. Colors mark the pillar of each question.</p>
       <div id="examHome">
         <div class="examgrid" id="examGrid"></div>
-        <h2 id="mockHead" style="display:none">Mock exams — generated by your tutor <span class="pts">(novel variants, never copies; solutions sealed below each question)</span></h2>
+        <h2 id="mockHead" style="display:none"><span data-i18n="hMocks">Mock exams — generated by your tutor</span> <span class="pts" data-i18n="hMocksNote">(novel variants, never copies; solutions sealed below each question)</span></h2>
         <div class="examgrid" id="mockGrid"></div>
       </div>
       <div id="examDetail" style="display:none"></div>
     </section>
 
     <section id="view-flash">
-      <h1>Flashcards</h1>
-      <p class="sub">Definitions and theorems extracted from the lecture notes. The real exam allows no formula sheet — exact statements, with all conditions, are the bar.</p>
+      <h1 data-i18n="flashTitle">Flashcards</h1>
+      <p class="sub" data-i18n="flashSub">Definitions and theorems extracted from the lecture notes. The real exam allows no formula sheet — exact statements, with all conditions, are the bar.</p>
       <div class="filters" id="flashFilters"></div>
       <div class="deckmeta" id="deckMeta"></div>
       <div class="progressbar"><div id="flashProg" style="width:0%"></div></div>
@@ -300,8 +320,8 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     </section>
 
     <section id="view-memo">
-      <h1>Know these cold</h1>
-      <p class="sub" id="memoSub">The curated list of theorems, formulas, and canonical examples worth hard memorization — with the exact statement, when to reach for it, and where past exams used it. Tick what you already know; it saves in this browser.</p>
+      <h1 data-i18n="memoTitle">Know these cold</h1>
+      <p class="sub" data-i18n="memoSub">The exam allows no aid material. This is the curated list of theorems, formulas, and canonical examples worth hard memorization — with the exact statement, when to reach for it, and where past exams used it. Tick what you already know; it saves in this browser.</p>
       <div class="card" style="padding:14px 18px;margin-bottom:6px">
         <div class="deckmeta" id="memoStats" style="margin:0"></div>
         <div class="progressbar" style="margin:10px 0 2px"><div id="memoProg" style="width:0%;background:var(--good)"></div></div>
@@ -310,12 +330,12 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
     </section>
 
     <section id="view-quiz">
-      <h1>Quiz — real exam questions</h1>
-      <p class="sub">A random past-exam question. Solve it on paper like the real thing, then reveal the hint or full solution and grade yourself honestly.</p>
+      <h1 data-i18n="quizTitle">Quiz — real exam questions</h1>
+      <p class="sub" data-i18n="quizSub">A random past-exam question. Solve it on paper like the real thing, then reveal the sketch and grade yourself honestly.</p>
       <div class="filters" id="quizFilters"></div>
       <div id="quizArea"></div>
-      <h2>Weak spots <span class="pts">(from your self-grades)</span></h2>
-      <div class="card" id="weakList"><div class="empty">Answer a few questions and your weak topics will show up here.</div></div>
+      <h2><span data-i18n="hWeak">Weak spots</span> <span class="pts" data-i18n="hWeakNote">(from your self-grades)</span></h2>
+      <div class="card" id="weakList"><div class="empty" data-i18n="weakEmpty">Answer a few questions and your weak topics will show up here.</div></div>
     </section>
     <section id="view-qset">
       <button class="backbtn" id="qsetBack" type="button">← Back</button>
@@ -335,13 +355,22 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 "use strict";
 const CONFIG = JSON.parse(document.getElementById("config").textContent);
 const DATA = JSON.parse(document.getElementById("data").textContent);
+// Phase 6 (RTL/i18n): direction, language, and every UI string come from CONFIG
+// with English fallbacks in code, so this template stays course-agnostic.
+document.documentElement.dir = CONFIG.dir || "ltr";
+document.documentElement.lang = CONFIG.lang || "en";
+const BIDI = CONFIG.dir || "ltr";  // base direction for rendered content (not per-block auto)
+const UI = CONFIG.ui || {};
+const tr = (k, fb) => (UI[k] != null ? UI[k] : fb);
+const slotLabel = s => (CONFIG.slotLabels && CONFIG.slotLabels[s] != null) ? CONFIG.slotLabels[s] : s;
+const SEC_I18N = { "About": "secAbout", "Key definitions": "secKeyDefs", "Key theorems & results": "secKeyThms", "Outline": "secOutline", "Methods & recipes": "secMethods", "Worked examples from class": "secExamples", "Exam traps": "secTraps" };
+const secLabel = h => SEC_I18N[h] ? tr(SEC_I18N[h], h) : h;
+function applyStaticI18n(){ document.querySelectorAll("[data-i18n]").forEach(el => { const v = UI[el.dataset.i18n]; if (v != null) el.textContent = v; }); const ai = document.getElementById("askInput"); if (ai && UI.askPlaceholder) ai.setAttribute("placeholder", UI.askPlaceholder); }
 const $ = (s, el) => (el || document).querySelector(s);
-// Categories come from SITE_CONFIG.json ("slots", single-word names). A slot is a
-// primary pillar (hero card, template bar, filters) iff it has a slotRole; any extra
-// slot with no role is the misc/catch-all bucket. So a course can have 3 or 4 pillars
-// just by how many slotRoles it defines. Colors map to the four fixed slot palettes via
-// a generated stylesheet, so any names work.
-const _primary = CONFIG.slots.filter(s => (CONFIG.slotRoles || {})[s]);
+// Categories come from SITE_CONFIG.json ("slots", single-word names); the first
+// three are the primary categories, the last is the misc bucket. Colors map to
+// the four fixed slot palettes via a generated stylesheet, so any names work.
+const _primary = CONFIG.slots.filter(sl => (CONFIG.slotRoles || {})[sl]);
 const PILLARS = _primary.length ? _primary : CONFIG.slots.slice(0, 3);
 (() => {
   const vars = ["--exp", "--opt", "--gen", "--prac"];
@@ -356,6 +385,7 @@ const PILLARS = _primary.length ? _primary : CONFIG.slots.slice(0, 3);
     (CONFIG.courseSubtitle ? "<small>" + CONFIG.courseSubtitle + "</small>" : "");
   document.getElementById("heroTitle").textContent = CONFIG.heroTitle;
   document.getElementById("heroSub").textContent = CONFIG.heroSub;
+  applyStaticI18n();
 })();
 const ICONS = {
   dash: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1"/><rect x="9" y="9" width="5.5" height="5.5" rx="1"/></svg>',
@@ -366,7 +396,11 @@ const ICONS = {
   ask: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>',
   memo: '<svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 4.5 4 6l2.5-2.5M2.5 9.5 4 11l2.5-2.5"/><path d="M9 5h5M9 10h5"/></svg>'
 };
-const ILLOS = {};
+const ILLOS = {
+  Expressiveness: '<svg width="72" height="34" viewBox="0 0 72 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polyline points="2,30 12,4 22,30 32,4 42,30 52,4 62,30 70,12"/></svg>',
+  Optimization: '<svg width="72" height="34" viewBox="0 0 72 34" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4 C 22 6, 26 24, 46 28 S 66 30, 70 30"/><circle cx="63" cy="29.4" r="3.4" fill="currentColor" stroke="none"/></svg>',
+  Generalization: '<svg width="72" height="34" viewBox="0 0 72 34" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6 C 24 8, 40 22, 70 24"/><path d="M2 32 C 24 30, 40 26, 70 25" stroke-dasharray="4 3"/></svg>'
+};
 const PILLAR_ROLE = CONFIG.slotRoles || {};
 
 /* ---------- storage ---------- */
@@ -383,6 +417,9 @@ function md(src) {
   const stash = [];
   let s = src.replace(/\$\$[\s\S]+?\$\$/g, m => (stash.push(m), "" + (stash.length - 1) + ""));
   s = s.replace(/\$[^\n$]+?\$/g, m => (stash.push(m), "" + (stash.length - 1) + ""));
+  // step leads (**a.** / **ב.** / **iv.**) separated by a single newline merge into one
+  // <p> under marked's default breaks:false — promote each step to its own paragraph
+  s = s.replace(/([^\n])\n(?=\*\*(?:[a-z]{1,3}|[א-ת]|\d{1,2})[.)][\s*])/gi, "$1\n\n");
   let html = marked.parse(s);
   html = html.replace(/(\d+)/g, (_, i) => stash[+i]
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
@@ -400,7 +437,7 @@ function mathify(el) {
   });
 }
 function setMd(el, src) {
-  el.innerHTML = md(src); el.classList.add("md"); mathify(el);
+  el.innerHTML = md(src); el.classList.add("md"); el.setAttribute("dir", BIDI); mathify(el);
   // takeaway callouts: bullets/paragraphs opening with the trick/warn markers
   el.querySelectorAll("li, p").forEach(n => {
     const s = n.querySelector("strong");
@@ -412,7 +449,7 @@ function setMd(el, src) {
 }
 
 /* ---------- nav ---------- */
-const VIEWS = [["dash", "Overview"], ["topics", "Topics"], ["ask", "Ask"], ["exams", "Exams"], ["memo", "Memorize"], ["flash", "Flashcards"], ["quiz", "Quiz"]];
+const VIEWS = [["dash", tr("navOverview","Overview")], ["topics", tr("navTopics","Topics")], ["ask", tr("navAsk","Ask")], ["exams", tr("navExams","Exams")], ["memo", tr("navMemo","Memorize")], ["flash", tr("navFlash","Flashcards")], ["quiz", tr("navQuiz","Quiz")]];
 const nav = $("#nav");
 VIEWS.forEach(([id, label]) => {
   const b = document.createElement("button");
@@ -434,29 +471,30 @@ function questionCard(e, q) {
   const c = document.createElement("div");
   c.className = "card qcard p-" + q.pillar;
   c.innerHTML =
-    "<div class='qhead'><h3>Q" + q.n + " · " + q.title + "</h3>" +
-    "<span class='pill'><span class='dot'></span>" + q.pillar + "</span>" +
-    "<span class='pts'>" + q.pts + " pts · <button type='button' class='srcbtn examjump'>" + examLabel(e) + "</button></span>" +
+    "<div class='qhead'><h3 dir='" + BIDI + "'>Q" + q.n + " · " + q.title + "</h3>" +
+    "<span class='pill'><span class='dot'></span>" + slotLabel(q.pillar) + "</span>" +
+    "<span class='pts'>" + q.pts + " " + tr("pts","pts") + " · <button type='button' class='srcbtn examjump'>" + examLabel(e) + "</button></span>" +
     (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
     "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
     "<div class='qbody mdslot'></div>" +
-    (q.hint ? "<details class='sketch hintfold'><summary>Hint — try it yourself first</summary><div class='inner hintslot'></div></details>" : "") +
-    "<details class='sketch'><summary>Full solution" + (q.hint ? "" : " — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>";
+    (q.hint ? "<details class='sketch hintfold'><summary>" + tr("hintTry","Hint — try it yourself first") + "</summary><div class='inner hintslot'></div></details>" : "") +
+      (q.hint ? "<details class='sketch'><summary>" + tr("fullSolution","Full solution") + "</summary><div class='inner sketchslot'></div></details>"
+              : "<details class='sketch'><summary>" + tr("sketchSummary","Solution sketch — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>");
   $(".examjump", c).onclick = () => { show("exams"); renderExamDetail(e); };
   mathify($(".qhead", c)); // titles contain inline math
+  const tn0 = tmplNode(e, q); if (tn0) c.insertBefore(tn0, $(".qbody", c));
   setMd($(".mdslot", c), q.statement);
-  if (q.hint) setMd($(".hintslot", c), q.hint);
   const sk = $(".sketchslot", c);
-  if (q.sketch) setMd(sk, q.sketch); else sk.innerHTML = "<p class='sub'>No solution available.</p>";
-  if (CONFIG.figures && q.sketch) figsForSolution(q).slice(0, 1).forEach(id => sk.appendChild(figNode(id)));
+  if (q.hint) setMd($(".hintslot", c), q.hint);
+  if (q.sketch) { setMd(sk, q.sketch); if (CONFIG.figures) figsForSolution(q).slice(0, 1).forEach(id => sk.appendChild(figNode(id))); } else sk.innerHTML = "<p class='sub'>" + tr("noSketch","No sketch available.") + "</p>";
   return c;
 }
 function collapsedQuestion(e, q) {
   // tree node: closed by default, the full card builds lazily on first open
   const d = document.createElement("details");
   d.className = "note qwrap p-" + q.pillar;
-  d.innerHTML = "<summary><span class='pts' style='margin-right:8px'>" + examLabel(e) +
-    " · Q" + q.n + " (" + q.pts + " pts)</span> " + q.title + "</summary><div class='qslot' style='padding:0 14px 14px'></div>";
+  d.innerHTML = "<summary dir='" + BIDI + "'><span class='pts' style='margin-inline-end:8px'>" + examLabel(e) +
+    " · Q" + q.n + " (" + q.pts + " " + tr("pts","pts") + ")</span> " + q.title + "</summary><div class='qslot' style='padding:0 14px 14px'></div>";
   mathify($("summary", d));
   let built = false;
   d.addEventListener("toggle", () => {
@@ -479,11 +517,37 @@ function parseRefs(text) {
   while ((m = re.exec(text))) out.push([m[1] ? m[1].toLowerCase() + "_" + m[2] : "example", +m[3]]);
   return [...new Map(out.map(r => [r.join("#"), r])).values()];
 }
+/* archetype template box (שבלונה): map every exam ref inside each archetype's
+   desc back to its question, so a question can show which recurring pattern it is */
+const ARCH_BY_Q = {};
+(DATA.archetypes || []).forEach(a => parseRefs(a.desc).forEach(([eid, qn]) => {
+  (ARCH_BY_Q[eid + "_Q" + qn] = ARCH_BY_Q[eid + "_Q" + qn] || []).push(a);
+}));
+function tmplNode(e, q) {
+  const hits = ARCH_BY_Q[e.id + "_Q" + q.n];
+  if (!hits || !hits.length) return null;
+  const a = hits[0];
+  const d = document.createElement("details");
+  d.className = "tmpl p-" + q.pillar;
+  d.innerHTML = "<summary dir='" + BIDI + "'>🧩 " + tr("tmplLabel","Question template") + " — <span class='tname'></span></summary><div class='tmplbody'></div>";
+  $(".tname", d).textContent = a.name;
+  mathify($("summary", d)); // archetype names may contain math
+  let built = false;
+  d.addEventListener("toggle", () => {
+    if (!d.open || built) return;
+    built = true;
+    // body = the archetype prose, minus the leading bold name and the trailing refs list
+    const body = a.desc.replace(/^\*\*[\s\S]*?\*\*\s*[—–-]\s*/, "")
+      .replace(/\s*[—–-]?\s*\*{0,2}(?:הופיעה ב|appeared in)\*{0,2}\s*[:：][\s\S]*$/i, "");
+    setMd($(".tmplbody", d), body);
+  });
+  return d;
+}
 function showQset(title, sub, refs) {
   $("#qsetTitle").textContent = title;
   const list = $("#qsetList"); list.innerHTML = "";
   const n = renderQuestionCards(refs, list);
-  $("#qsetSub").textContent = n + " past-exam question" + (n === 1 ? "" : "s") + " of this pattern, newest first — " + sub;
+  $("#qsetSub").textContent = n + " " + tr("qsetPattern","past-exam questions of this pattern, newest first —") + " " + sub;
   show("qset");
   window.scrollTo(0, 0);
 }
@@ -517,8 +581,8 @@ function renderDash() {
     const d = document.createElement("div");
     d.className = "card pillarcard p-" + pillar;
     d.innerHTML = (CONFIG.figures && ILLOS[pillar] ? ILLOS[pillar] : "") +
-      "<h3>" + pillar + "</h3><div class='role'>" + (PILLAR_ROLE[pillar] || "") + "</div>" +
-      "<div class='avg'>" + avg + "<small>avg pts · " + n + " past questions</small></div>";
+      "<h3>" + slotLabel(pillar) + "</h3><div class='role'>" + (PILLAR_ROLE[pillar] || "") + "</div>" +
+      "<div class='avg'>" + avg + "<small>" + tr("avgPts","avg pts") + " · " + n + " " + tr("pastQuestions","past questions") + "</small></div>";
     pc.appendChild(d);
   });
   const total = avgs.reduce((a, b) => a + b.avg, 0);
@@ -531,20 +595,16 @@ function renderDash() {
     bar.appendChild(seg);
     const l = document.createElement("span");
     l.className = "p-" + pillar;
-    l.innerHTML = "<span class='dot' style='display:inline-block;vertical-align:-1px;margin-right:5px'></span><b>" + pillar + "</b> ≈" + avg + " pts";
+    l.innerHTML = "<span class='dot' style='display:inline-block;vertical-align:-1px;margin-inline-end:5px'></span><b>" + slotLabel(pillar) + "</b> ≈" + avg + " " + tr("pts","pts") + "";
     leg.appendChild(l);
   });
   const tc = $("#tmplBar").closest(".card");
   if (tc && !tc.nextElementSibling?.classList?.contains("figd")) tc.after(figNode("pillars"));
   const al = $("#archList"); al.innerHTML = "";
-  // colour each archetype row by the pillar of the first past-exam question it cites
-  const refPillar = {};
-  DATA.exams.forEach(e => e.questions.forEach(q => { refPillar[e.id.replace(/_/g, "") + "_Q" + q.n] = q.pillar; }));
   DATA.archetypes.forEach((a, i) => {
     const row = document.createElement("button");
     row.type = "button";
-    const refm = (a.desc || "").match(/\b(?:[abc]\d{4}|example)_Q\d/);
-    const pillar = (refm && refPillar[refm[0]]) || PILLARS[0];
+    const pillar = i < 4 ? PILLARS[0] : i < 8 ? PILLARS[1] : (PILLARS[2] || PILLARS[0]);
     row.className = "arch p-" + pillar;
     row.innerHTML = "<span class='n'>" + (i + 1) + "</span><span class='mdslot'></span>" +
       "<span class='freq'>" + "●".repeat(Math.max(1, a.count)) + "</span><span class='go'>›</span>";
@@ -561,9 +621,9 @@ function renderDash() {
 }
 function renderCountdown() {
   const el = $("#daysLeft");
-  if (!store.data.examDate) { el.textContent = "Set your exam date →"; return; }
+  if (!store.data.examDate) { el.textContent = tr("setExamDate","Set your exam date →"); return; }
   const days = Math.ceil((new Date(store.data.examDate) - Date.now()) / 864e5);
-  el.innerHTML = days >= 0 ? "<b>" + days + "</b> days to the exam" : "Exam date passed — update it →";
+  el.innerHTML = days >= 0 ? "<b>" + days + "</b> " + tr("daysToExam","days to the exam") : tr("examDatePassed","Exam date passed — update it →");
 }
 function renderStats() {
   const cardStats = Object.values(store.data.cards);
@@ -593,7 +653,7 @@ function renderTopicFilters() {
   PILLARS.forEach(p => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "chipbtn p-" + p + (topicPillar === p ? " on" : "");
-    b.textContent = p;
+    b.textContent = slotLabel(p);
     b.onclick = () => { topicPillar = p; renderTopicFilters(); renderTopics(); };
     f.appendChild(b);
   });
@@ -607,7 +667,7 @@ function renderTopics() {
     d.className = "topicrow click p-" + t.pillar;
     d.tabIndex = 0; d.setAttribute("role", "button");
     d.innerHTML = "<div class='stripe'></div><div class='t mdslot'></div>" +
-      "<div class='meta'>Taught: " + t.taught + " · Examined: " + t.examined + "</div>" +
+      "<div class='meta' dir='" + BIDI + "'>" + tr("taughtLabel","Taught:") + " " + t.taught + " · " + tr("examinedLabel","Examined:") + " " + t.examined + "</div>" +
       "<div class='go'>›</div>";
     const open = () => renderTopicDetail(t);
     d.onclick = open;
@@ -617,7 +677,7 @@ function renderTopics() {
     setMd(slot, t.topic);
     const badge = document.createElement("span");
     badge.className = "prio " + t.priority;
-    badge.textContent = t.priority === "core" ? "core — every exam" : t.priority === "frequent" ? "frequent" : "appeared";
+    badge.textContent = t.priority === "core" ? tr("prioCore","core — every exam") : t.priority === "frequent" ? tr("prioFreq","frequent") : tr("prioSeen","appeared");
     (slot.firstElementChild || slot).appendChild(badge);
   });
 }
@@ -626,21 +686,21 @@ const noteByName = {};
 const examById = {};
 [...DATA.exams, ...(DATA.mocks || [])].forEach(e => examById[e.id] = e);
 function noteLabel(n) {
-  const prefix = n.kind === "recitation" ? "Recitation — " : n.kind === "homework" ? "Homework — " : "";
+  const prefix = n.kind === "recitation" ? tr("recitationPfx","Recitation — ") : n.kind === "homework" ? tr("homeworkPfx","Homework — ") : "";
   return n.title.toLowerCase().startsWith(n.kind) ? n.title : prefix + n.title;
 }
 function renderTopicDetail(t) {
   $("#topicHome").style.display = "none";
   const det = $("#topicDetail"); det.style.display = "block"; det.innerHTML = "";
   const back = document.createElement("button");
-  back.type = "button"; back.className = "backbtn"; back.textContent = "← All topics";
+  back.type = "button"; back.className = "backbtn"; back.textContent = tr("backTopics","← All topics");
   back.onclick = () => { det.style.display = "none"; $("#topicHome").style.display = "block"; };
   det.appendChild(back);
   const head = document.createElement("div");
   head.className = "p-" + t.pillar;
   head.innerHTML = "<h1 class='mdslot' style='display:inline'></h1>" +
-    "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + t.pillar + "</span> " +
-    "<span class='prio " + t.priority + "'>" + (t.priority === "core" ? "core — appears essentially every exam" : t.priority === "frequent" ? "frequent variant" : "appeared 1–3 times") + "</span></p>";
+    "<p class='sub' style='margin-top:8px'><span class='pill'><span class='dot'></span>" + slotLabel(t.pillar) + "</span> " +
+    "<span class='prio " + t.priority + "'>" + (t.priority === "core" ? tr("prioCoreLong","core — appears essentially every exam") : t.priority === "frequent" ? tr("prioFreqLong","frequent variant") : tr("prioSeenLong","appeared 1–3 times")) + "</span></p>";
   det.appendChild(head);
   setMd($(".mdslot", head), t.topic);
 
@@ -649,7 +709,7 @@ function renderTopicDetail(t) {
   const nq = (t.exam_refs || []).length;
   if (nq) {
     const b = document.createElement("button"); b.type = "button"; b.className = "btn primary";
-    b.textContent = "Quiz me on this topic (" + nq + " past questions)";
+    b.textContent = tr("quizMeOnTopic","Quiz me on this topic") + " (" + nq + ")";
     b.onclick = () => { setQuizScope(t); show("quiz"); };
     act.appendChild(b);
   }
@@ -657,32 +717,32 @@ function renderTopicDetail(t) {
   const nCards = DATA.cards.filter(c => lecRefs.includes(c.lecture)).length;
   if (nCards) {
     const b = document.createElement("button"); b.type = "button"; b.className = "btn";
-    b.textContent = "Flashcards from these lectures (" + nCards + ")";
+    b.textContent = tr("flashFromLectures","Flashcards from these lectures") + " (" + nCards + ")";
     b.onclick = () => { setFlashScope(t, lecRefs); show("flash"); };
     act.appendChild(b);
   }
   det.appendChild(act);
 
   // material from class
-  const h2m = document.createElement("h2"); h2m.textContent = "Material from class"; det.appendChild(h2m);
+  const h2m = document.createElement("h2"); h2m.textContent = tr("hMaterial","Material from class"); det.appendChild(h2m);
   figsForText(t.topic, FIG_TOPIC_MAP).forEach(id => det.appendChild(figNode(id)));
   const refs = (t.taught_refs || []).filter(r => noteByName[r]);
   if (!refs.length) {
     const p = document.createElement("p"); p.className = "sub";
-    p.textContent = "Source: " + t.taught; det.appendChild(p);
+    p.textContent = tr("sourceLabel","Source: ") + t.taught; p.setAttribute("dir", BIDI); det.appendChild(p);
   }
   refs.forEach((r, i) => {
     const n = noteByName[r];
     const dt = document.createElement("details");
     dt.className = "note p-" + t.pillar; if (i === 0) dt.open = true;
-    dt.innerHTML = "<summary>" + noteLabel(n) + "</summary><div class='notebody'></div>";
+    dt.innerHTML = "<summary dir='" + BIDI + "'>" + noteLabel(n) + "</summary><div class='notebody'></div>";
     const body = $(".notebody", dt);
     // Wikipedia-style tree: each section is a collapsed heading; content (and its
     // math) renders lazily on first expand — keeps topic pages short and fast.
     n.sections.forEach(sec => {
       const sd = document.createElement("details");
       sd.className = "notesec-d p-" + t.pillar;
-      sd.innerHTML = "<summary>" + sec.h + "</summary><div class='secbody mdslot'></div>";
+      sd.innerHTML = "<summary dir='" + BIDI + "'>" + secLabel(sec.h) + "</summary><div class='secbody mdslot'></div>";
       let rendered = false;
       sd.addEventListener("toggle", () => {
         if (sd.open && !rendered) { rendered = true; setMd($(".mdslot", sd), sec.b); }
@@ -695,10 +755,10 @@ function renderTopicDetail(t) {
   // the actual past-exam questions on this topic, inline, sketches sealed
   if (nq) {
     const h2e = document.createElement("h2");
-    h2e.textContent = "The past-exam questions on this topic";
+    h2e.textContent = tr("hTopicQuestions","The past-exam questions on this topic");
     det.appendChild(h2e);
     const pe = document.createElement("p"); pe.className = "sub";
-    pe.textContent = "Full statements below; solutions stay sealed until you open them. Click an exam name to open the whole exam.";
+    pe.textContent = tr("topicQSub","Full statements below; solutions stay sealed until you open them. Click an exam name to open the whole exam.");
     det.appendChild(pe);
     renderQuestionCards(t.exam_refs || [], det);
   }
@@ -717,8 +777,8 @@ function examCardButton(e) {
   b.innerHTML = "<h3>" + examLabel(e) + (e.mock ? " <span class='pill' style='--pc:var(--exp);vertical-align:2px'>new</span>" : "") + "</h3>" +
     e.questions.map(q =>
       "<div class='qrow p-" + q.pillar + "'><span class='dot'></span>Q" + q.n + " · " + q.pillar +
-      "<span style='margin-left:auto' class='pts'>" + q.pts + " pts</span></div>").join("") +
-    "<div class='pts' style='margin-top:8px'>" + (e.total || "?") + " pts total</div>";
+      "<span style='margin-inline-start:auto' class='pts'>" + q.pts + " " + tr("pts","pts") + "</span></div>").join("") +
+    "<div class='pts' style='margin-top:8px'>" + (e.total || "?") + " " + tr("ptsTotal","pts total") + "</div>";
   b.onclick = () => renderExamDetail(e);
   return b;
 }
@@ -735,30 +795,34 @@ function renderExamDetail(e) {
   $("#examHome").style.display = "none";
   const det = $("#examDetail"); det.style.display = "block"; det.innerHTML = "";
   const back = document.createElement("button");
-  back.type = "button"; back.className = "backbtn"; back.textContent = "← All exams";
+  back.type = "button"; back.className = "backbtn"; back.textContent = tr("backExams","← All exams");
   back.onclick = () => { det.style.display = "none"; $("#examHome").style.display = "block"; };
   det.appendChild(back);
   const h = document.createElement("h1"); h.textContent = examLabel(e); det.appendChild(h);
   const sub = document.createElement("p"); sub.className = "sub";
-  sub.textContent = (e.date || "") + (e.total ? " · " + e.total + " points · " + CONFIG.examFormatLine : "");
+  sub.textContent = (e.date || "") + (e.total ? " · " + e.total + " " + tr("points","points") + " · " + CONFIG.examFormatLine : "");
   det.appendChild(sub);
   e.questions.forEach(q => {
     const c = document.createElement("div");
     c.className = "card qcard p-" + q.pillar;
+    c.id = "q-" + e.id + "-" + q.n;  // anchor so search results can land on this exact question
     c.innerHTML =
-      "<div class='qhead'><h3>Q" + q.n + " · " + q.title + "</h3>" +
-      "<span class='pill'><span class='dot'></span>" + q.pillar + "</span>" +
-      "<span class='pts'>" + q.pts + " pts</span>" +
+      "<div class='qhead'><h3 dir='" + BIDI + "'>Q" + q.n + " · " + q.title + "</h3>" +
+      "<span class='pill'><span class='dot'></span>" + slotLabel(q.pillar) + "</span>" +
+      "<span class='pts'>" + q.pts + " " + tr("pts","pts") + "</span>" +
       (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
       "<div style='padding:8px 18px 0'>" + q.topics.map(t => "<span class='chip'>" + t + "</span>").join("") + "</div>" +
       "<div class='qbody mdslot'></div>" +
-      (q.hint ? "<details class='sketch hintfold'><summary>Hint — try it yourself first</summary><div class='inner hintslot'></div></details>" : "") +
-      "<details class='sketch'><summary>Full solution" + (q.hint ? "" : " — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>";
+      (q.hint ? "<details class='sketch hintfold'><summary>" + tr("hintTry","Hint — try it yourself first") + "</summary><div class='inner hintslot'></div></details>" : "") +
+      (q.hint ? "<details class='sketch'><summary>" + tr("fullSolution","Full solution") + "</summary><div class='inner sketchslot'></div></details>"
+              : "<details class='sketch'><summary>" + tr("sketchSummary","Solution sketch — try it yourself first") + "</summary><div class='inner sketchslot'></div></details>");
     det.appendChild(c);
     mathify($(".qhead", c));
+    const tn = tmplNode(e, q); if (tn) c.insertBefore(tn, $(".qbody", c));
     setMd($(".mdslot", c), q.statement);
-    if (q.hint) setMd($(".hintslot", c), q.hint);
+    (FIG_EXAM[e.id + "_Q" + q.n] || []).forEach(fid => $(".mdslot", c).appendChild(figNode(fid, true)));
     setMd($(".sketchslot", c), q.sketch);
+    if (q.hint) setMd($(".hintslot", c), q.hint);
     if (CONFIG.figures && q.sketch) figsForSolution(q).slice(0, 1).forEach(id => $(".sketchslot", c).appendChild(figNode(id)));
   });
   mathify(det); // titles and headers contain math too
@@ -766,7 +830,7 @@ function renderExamDetail(e) {
 }
 
 /* ---------- flashcards ---------- */
-let flashPillar = PILLARS[0], flashKind = "all", deck = [], deckPos = 0, revealed = false;
+let flashPillar = PILLARS[0], flashKind = "all", flashMistakes = false, deck = [], deckPos = 0, revealed = false;
 let flashScope = null; // {label, lectures:[...]}
 function setFlashScope(t, lecRefs) {
   flashScope = { label: "topic scope", lectures: lecRefs, pillar: t.pillar };
@@ -777,6 +841,10 @@ function buildDeck() {
   deck = flashScope
     ? DATA.cards.filter(c => flashScope.lectures.includes(c.lecture) && (flashKind === "all" || c.kind === flashKind))
     : DATA.cards.filter(c => c.pillar === flashPillar && (flashKind === "all" || c.kind === flashKind));
+  if (flashMistakes) {
+    // review-mistakes mode: keep only cards you previously graded miss or almost
+    deck = deck.filter(c => { const s = store.data.cards[cardId(c)]; return s && (s.last === "miss" || s.last === "half"); });
+  }
   const rank = c => { const s = store.data.cards[cardId(c)]; return !s ? 1 : s.last === "miss" ? 0 : s.last === "half" ? 2 : 3; };
   deck.sort((a, b) => rank(a) - rank(b) || Math.random() - 0.5);
   deckPos = 0; revealed = false;
@@ -786,56 +854,77 @@ function renderFlashFilters() {
   if (flashScope) {
     const chip = document.createElement("span");
     chip.className = "scopechip p-" + flashScope.pillar;
-    chip.innerHTML = "Deck: " + flashScope.lectures.map(l => (noteByName[l] || { title: l }).title.split(" - ")[0]).join(", ") +
+    chip.setAttribute("dir", BIDI);
+    chip.innerHTML = tr("deckLabel","Deck:") + " " + flashScope.lectures.map(l => (noteByName[l] || { title: l }).title.split(" - ")[0]).join(", ") +
       " <button type='button' aria-label='clear scope'>✕</button>";
     $("button", chip).onclick = () => { flashScope = null; buildDeck(); renderFlashFilters(); renderFlash(); };
     f.appendChild(chip);
   } else PILLARS.forEach(p => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "chipbtn p-" + p + (flashPillar === p ? " on" : "");
-    b.textContent = p + " (" + DATA.cards.filter(c => c.pillar === p).length + ")";
+    b.textContent = slotLabel(p) + " (" + DATA.cards.filter(c => c.pillar === p).length + ")";
     b.onclick = () => { flashPillar = p; buildDeck(); renderFlashFilters(); renderFlash(); };
     f.appendChild(b);
   });
-  [["all", "All"], ["def", "Definitions"], ["thm", "Theorems"]].forEach(([k, label]) => {
+  [["all", tr("kAll","All")], ["def", tr("kDef","Definitions")], ["thm", tr("kThm","Theorems")]].forEach(([k, label]) => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "chipbtn" + (flashKind === k ? " on" : "");
     b.textContent = label;
     b.onclick = () => { flashKind = k; buildDeck(); renderFlashFilters(); renderFlash(); };
     f.appendChild(b);
   });
+  // review-mistakes toggle: restrict the deck to cards you graded miss/almost
+  const mb = document.createElement("button");
+  mb.type = "button"; mb.className = "chipbtn" + (flashMistakes ? " on" : "");
+  mb.textContent = tr("kMistakes", "🔁 My mistakes");
+  mb.onclick = () => { flashMistakes = !flashMistakes; buildDeck(); renderFlashFilters(); renderFlash(); };
+  f.appendChild(mb);
+  // grades persist in this browser; wiping them is the user's call only
+  const rb = document.createElement("button");
+  rb.type = "button"; rb.className = "chipbtn danger";
+  rb.textContent = tr("resetDeckBtn","Reset flashcard progress");
+  rb.onclick = () => {
+    if (!confirm(tr("resetConfirm","Delete ALL saved flashcard grades? This cannot be undone."))) return;
+    store.data.cards = {}; store.save(); buildDeck(); renderFlashFilters(); renderFlash(); renderStats();
+  };
+  f.appendChild(rb);
 }
 function renderFlash() {
   const area = $("#flashArea");
-  $("#deckMeta").textContent = deck.length ? ("Card " + (deckPos + 1) + " of " + deck.length + " — misses come back first") : "";
+  const nGraded = deck.filter(x => store.data.cards[cardId(x)]).length;
+  $("#deckMeta").setAttribute("dir", BIDI);
+  $("#deckMeta").textContent = deck.length ? (tr("card","Card") + " " + (deckPos + 1) + " " + tr("ofN","of") + " " + deck.length + " — " + tr("missesFirst","misses come back first") + (nGraded ? " · " + nGraded + "/" + deck.length + " " + tr("gradedSoFar","graded before") : "")) : "";
   $("#flashProg").style.width = deck.length ? (100 * deckPos / deck.length) + "%" : "0%";
   $("#flashProg").parentElement.className = "progressbar p-" + (flashScope ? flashScope.pillar : flashPillar);
   area.innerHTML = "";
-  if (!deck.length) { area.innerHTML = "<div class='card empty'>No cards match this filter.</div>"; return; }
+  if (!deck.length) { area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + (flashMistakes ? tr("noMistakesYet","No cards graded as a mistake yet — practice a bit and your misses will collect here. 🎉") : tr("noCardsMatch","No cards match this filter.")) + "</div>"; return; }
   if (deckPos >= deck.length) {
-    area.innerHTML = "<div class='card empty'>Deck done 🎉 — misses were logged and will lead the next run.<br><br></div>";
-    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = "Restart deck";
+    area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + tr("deckDone","Deck done 🎉 — misses were logged and will lead the next run.") + "<br><br></div>";
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = tr("restartDeck","Restart deck");
     b.onclick = () => { buildDeck(); renderFlash(); };
     area.firstElementChild.appendChild(b);
     return;
   }
   const c = deck[deckPos];
-  const kindLabel = c.kind === "def" ? "State the definition, with all conditions:" : "State it precisely — assumptions included:";
+  const kindLabel = c.kind === "def" ? tr("promptDef","State the definition, with all conditions:") : tr("promptThm","State it precisely — assumptions included:");
   const el = document.createElement("div");
   el.className = "card bigcard p-" + c.pillar;
-  el.innerHTML = "<div class='pts'>" + kindLabel + "</div><div class='front mdslot'></div>" +
+  const prev = store.data.cards[cardId(c)];
+  const prevBadge = prev ? "<div class='lastgrade " + prev.last + "' dir='" + BIDI + "'>" +
+    (prev.last === "got" ? tr("got","✓ Got it") : prev.last === "half" ? tr("almost","◐ Almost") : tr("miss","✗ Missed")) + "</div>" : "";
+  el.innerHTML = "<div class='kind' dir='" + BIDI + "'>" + kindLabel + "</div>" + prevBadge + "<div class='front mdslot'></div>" +
     (revealed ? "<div class='back backslot'></div>" : "") +
-    "<div class='src'>" + c.lecture_title + "</div>";
+    "<div class='src' dir='" + BIDI + "'>" + c.lecture_title + "</div>";
   area.appendChild(el);
   setMd($(".mdslot", el), c.front);
   if (revealed) setMd($(".backslot", el), c.back);
   const act = document.createElement("div"); act.className = "actions";
   if (!revealed) {
-    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = "Reveal";
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = tr("reveal","Reveal");
     b.onclick = () => { revealed = true; renderFlash(); };
     act.appendChild(b);
   } else {
-    [["miss", "✗ Missed"], ["half", "◐ Almost"], ["got", "✓ Got it"]].forEach(([g, label]) => {
+    [["miss", tr("miss","✗ Missed")], ["half", tr("almost","◐ Almost")], ["got", tr("got","✓ Got it")]].forEach(([g, label]) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "btn " + g; b.textContent = label;
       b.onclick = () => {
         const id = cardId(c);
@@ -856,7 +945,7 @@ function setQuizScope(t) {
   quizScope = { label: "topic scope", refs: t.exam_refs, pillar: t.pillar };
   pickQuiz(); renderQuizFilters(); renderQuiz();
 }
-function pillarOfQuiz() { return quizPillar === "any" ? PILLARS[Math.floor(Math.random() * PILLARS.length)] : quizPillar; }
+function pillarOfQuiz() { return quizPillar === "any" ? PILLARS[Math.floor(Math.random() * 3)] : quizPillar; }
 function pickQuiz() {
   const done = new Set(store.data.quiz.slice(-8).map(q => q.qid));
   const pool = [];
@@ -883,12 +972,12 @@ function renderQuizFilters() {
   if (quizScope) {
     const chip = document.createElement("span");
     chip.className = "scopechip p-" + quizScope.pillar;
-    chip.innerHTML = "Quizzing " + quizScope.refs.length + " questions on this topic <button type='button' aria-label='clear scope'>✕</button>";
+    chip.innerHTML = tr("quizzing","Quizzing") + " " + quizScope.refs.length + " " + tr("questionsOnTopic","questions on this topic") + " <button type='button' aria-label='clear scope'>✕</button>";
     $("button", chip).onclick = () => { quizScope = null; pickQuiz(); renderQuizFilters(); renderQuiz(); };
     f.appendChild(chip);
     return;
   }
-  [["any", "Surprise me"], ...PILLARS.map(p => [p, p])].forEach(([k, label]) => {
+  [["any", tr("surpriseMe","Surprise me")], ...PILLARS.map(p => [p, slotLabel(p)])].forEach(([k, label]) => {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "chipbtn" + (k !== "any" ? " p-" + k : "") + (quizPillar === k ? " on" : "");
@@ -905,24 +994,25 @@ function renderQuiz() {
   const el = document.createElement("div");
   el.className = "card qcard p-" + q.pillar;
   el.innerHTML =
-    "<div class='qhead'><h3>" + q.title + "</h3>" +
-    "<span class='pill'><span class='dot'></span>" + q.pillar + "</span>" +
-    "<span class='pts'>" + q.pts + " pts · " + examLabel(exam) + "</span></div>" +
+    "<div class='qhead'><h3 dir='" + BIDI + "'>" + q.title + "</h3>" +
+    "<span class='pill'><span class='dot'></span>" + slotLabel(q.pillar) + "</span>" +
+    "<span class='pts'>" + q.pts + " " + tr("pts","pts") + " · " + examLabel(exam) + "</span></div>" +
     "<div class='qbody mdslot'></div>" +
     (quizRevealed ? "<div class='qbody sketchslot' style='border-top:1px dashed var(--line)'></div>" : "");
   area.appendChild(el);
   mathify($(".qhead", el));
+  const qtn = tmplNode(exam, q); if (qtn) el.insertBefore(qtn, $(".qbody", el));
   setMd($(".mdslot", el), q.statement);
-  if (quizRevealed) { const s = $(".sketchslot", el); setMd(s, "**Full solution**\n\n" + q.sketch); }
+  if (quizRevealed) { const s = $(".sketchslot", el); setMd(s, "**" + tr("solutionSketch","Solution sketch") + "**\n\n" + q.sketch); }
   const act = document.createElement("div"); act.className = "actions";
   if (!quizRevealed) {
-    const b1 = document.createElement("button"); b1.type = "button"; b1.className = "btn primary"; b1.textContent = "Reveal solution sketch";
+    const b1 = document.createElement("button"); b1.type = "button"; b1.className = "btn primary"; b1.textContent = tr("revealSketch","Reveal solution sketch");
     b1.onclick = () => { quizRevealed = true; renderQuiz(); };
-    const b2 = document.createElement("button"); b2.type = "button"; b2.className = "btn"; b2.textContent = "Skip → another question";
+    const b2 = document.createElement("button"); b2.type = "button"; b2.className = "btn"; b2.textContent = tr("skipQuestion","Skip → another question");
     b2.onclick = () => { pickQuiz(); renderQuiz(); };
     act.append(b1, b2);
   } else {
-    [["miss", "✗ Couldn't do it"], ["half", "◐ Partially"], ["got", "✓ Nailed it"]].forEach(([g, label]) => {
+    [["miss", tr("couldnt","✗ Couldn't do it")], ["half", tr("partially","◐ Partially")], ["got", tr("nailed","✓ Nailed it")]].forEach(([g, label]) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "btn " + g; b.textContent = label;
       b.onclick = () => {
         store.data.quiz.push({ ts: Date.now(), qid: quizQ.qid, pillar: q.pillar, topics: q.topics, grade: g });
@@ -962,14 +1052,13 @@ function renderMemoStats() {
   const cs = DATA.cheatsheet; if (!cs) return;
   const total = cs.sections.reduce((a, s) => a + s.items.length, 0);
   const known = cs.sections.reduce((a, s) => a + s.items.filter(i => store.data.memo[memoId(s, i)]).length, 0);
-  $("#memoStats").textContent = known + " of " + total + " marked as known" + (known === total && total ? " — כל הכבוד, now go take a mock exam" : "");
+  $("#memoStats").textContent = known + " " + tr("ofN","of") + " " + total + " " + tr("markedKnown","marked as known") + (known === total && total ? tr("memoAllKnown"," — כל הכבוד, עכשיו גשו למבחן דמה") : "");
   $("#memoProg").style.width = total ? (100 * known / total) + "%" : "0%";
 }
 function renderMemo() {
   const cs = DATA.cheatsheet;
   const list = $("#memoList");
-  if (!cs) { list.innerHTML = "<div class='card empty'>No cheat sheet in this build.</div>"; return; }
-  if (cs.intro && $("#memoSub")) $("#memoSub").textContent = cs.intro;
+  if (!cs) { list.innerHTML = "<div class='card empty'>" + tr("memoEmpty","No cheat sheet in this build.") + "</div>"; return; }
   list.innerHTML = "";
   cs.sections.forEach(sec => {
     const pillar = memoSecPillar(sec.name);
@@ -978,9 +1067,9 @@ function renderMemo() {
     wrap.className = "note p-" + pillar;
     const known = () => sec.items.filter(i => store.data.memo[memoId(sec, i)]).length;
     wrap.innerHTML = "<summary>" + sec.name +
-      " <span class='pts seccount' style='margin-left:auto'></span></summary><div class='notebody secslot'></div>";
+      " <span class='pts seccount' style='margin-inline-start:auto'></span></summary><div class='notebody secslot'></div>";
     const countEl = $(".seccount", wrap);
-    const refreshCount = () => countEl.textContent = known() + "/" + sec.items.length + " known";
+    const refreshCount = () => countEl.textContent = known() + "/" + sec.items.length + " " + tr("knownWord","known");
     refreshCount();
     wrap.dataset.refresh = "1";
     wrap.refreshCount = refreshCount;
@@ -1000,9 +1089,9 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
       const el = document.createElement("div");
       el.className = "card memoitem p-" + pillar + (store.data.memo[id] ? " known" : "");
       el.innerHTML = "<input type='checkbox' aria-label='I know this'" + (store.data.memo[id] ? " checked" : "") + ">" +
-        "<div class='iname'>" + item.name + "</div>" +
+        "<div class='iname' dir='" + BIDI + "'>" + item.name + "</div>" +
         "<div class='ibody'><div class='stmt mdslot'></div>" +
-        (item.use ? "<div class='use'><b>Use it when:</b> <span class='useslot'></span></div>" : "") +
+        (item.use ? "<div class='use'><b>" + tr("useWhen","Use it when:") + "</b> <span class='useslot'></span></div>" : "") +
         (item.watch ? "<div class='watch'>⚠ <span class='watchslot'></span></div>" : "") +
         "<div class='seen seenslot'></div></div>";
       list.appendChild(el);
@@ -1027,9 +1116,9 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
           b.onclick = () => openExam(eid);
           seenEl.appendChild(b);
         });
-        if (any) seenEl.insertAdjacentHTML("afterbegin", "<span class='pts'>seen in: </span>");
-        else seenEl.innerHTML = "<span class='pts'>" + item.seen + "</span>";
-      } else if (item.seen) seenEl.innerHTML = "<span class='pts'>" + item.seen + "</span>";
+        if (any) seenEl.insertAdjacentHTML("afterbegin", "<span class='slbl' dir='" + BIDI + "'>" + tr("seenIn","seen in: ") + "</span>");
+        else seenEl.innerHTML = "<span class='slbl' dir='" + BIDI + "'>" + item.seen + "</span>";
+      } else if (item.seen) seenEl.innerHTML = "<span class='slbl' dir='" + BIDI + "'>" + item.seen + "</span>";
       const cb = $("input", el);
       cb.onchange = () => {
         if (cb.checked) store.data.memo[id] = true; else delete store.data.memo[id];
@@ -1049,208 +1138,135 @@ function figCanvas(el, w, h) {
   ctx.clearRect(0, 0, w, h);
   return ctx;
 }
-const FIGS = {
-  vi_contraction: {
-    title: "Value iteration is a γ-contraction",
-    pillar: "Planning",
-    caption: "Computed: value iteration on a fixed 3-state, 2-action MDP (γ=0.9). The max-norm error ‖Vₖ−V*‖∞ (purple) stays under the γᵏ‖V₀−V*‖∞ envelope (dashed) at every step — the contraction that makes VI converge geometrically (Lecture 4).",
-    draw(cv) {
-      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const col = cssVar("--exp"), muted = cssVar("--muted"), ink = cssVar("--ink");
-      const g = 0.9, R = [[5,0,1],[2,3,0]];
-      const P = [[[0.7,0.3,0],[0.2,0.8,0],[0,0.5,0.5]],[[0.9,0.1,0],[0,0.6,0.4],[0.3,0,0.7]]];
-      const back = V => [0,1,2].map(s => Math.max(
-        R[0][s]+g*P[0][s].reduce((x,p,sp)=>x+p*V[sp],0),
-        R[1][s]+g*P[1][s].reduce((x,p,sp)=>x+p*V[sp],0)));
-      let Vs=[0,0,0]; for(let i=0;i<400;i++) Vs=back(Vs);
-      let V=[0,0,0]; const errs=[];
-      for(let k=0;k<24;k++){ errs.push(Math.max(Math.abs(V[0]-Vs[0]),Math.abs(V[1]-Vs[1]),Math.abs(V[2]-Vs[2]))); V=back(V); }
-      const e0=errs[0], N=errs.length, x0=48,y0=16,w=W-72,h=H-52;
-      const sx=k=>x0+k/(N-1)*w, sy=e=>y0+h-(e/e0)*h;
-      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
-      ctx.setLineDash([5,4]); ctx.strokeStyle=muted; ctx.lineWidth=1.5; ctx.beginPath();
-      for(let k=0;k<N;k++){ const px=sx(k),py=sy(e0*Math.pow(g,k)); k?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke();
-      ctx.setLineDash([]); ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
-      for(let k=0;k<N;k++){ const px=sx(k),py=sy(errs[k]); k?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke();
-      for(let k=0;k<N;k++){ ctx.fillStyle=col; ctx.beginPath(); ctx.arc(sx(k),sy(errs[k]),2.3,0,7); ctx.fill(); }
-      ctx.fillStyle=col; ctx.font="13px "+cssVar("--serif"); ctx.fillText("‖Vₖ − V*‖∞", x0+10, y0+16);
-      ctx.fillStyle=muted; ctx.fillText("γᵏ·‖V₀ − V*‖∞  (contraction bound)", x0+10, y0+34);
-      ctx.fillStyle=ink; ctx.fillText("iteration k →", W-118, H-10);
+/* ---------- exam figure generators (schematic reconstructions) ----------
+   The index stores each exam plot's DESCRIBED shape + exact parameters (a regression
+   line, axis ranges, quantile refs) but not the raw sample points, so these draw
+   faithful SCHEMATIC reconstructions — correct shape / trend / line — captioned as
+   illustrations, not pixel copies of the original exam image. Each generator returns
+   a draw(canvas) closure so a FIGS entry is one config object. */
+function figRng(seed) { let s = (seed || 1) >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function figGauss(R) { return (R() + R() + R() + R() - 2) / 2; } // approx N(0,~0.33)
+function figFrame(ctx, x0, y0, w, h, xlab, ylab) {
+  const muted = cssVar("--muted"), ink = cssVar("--ink");
+  ctx.strokeStyle = muted; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y0 + h); ctx.lineTo(x0 + w, y0 + h); ctx.stroke();
+  ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
+  if (xlab) { ctx.textAlign = "center"; ctx.fillText(xlab, x0 + w / 2, y0 + h + 24); }
+  if (ylab) { ctx.save(); ctx.translate(x0 - 32, y0 + h / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center"; ctx.fillText(ylab, 0, 0); ctx.restore(); }
+  ctx.textAlign = "left";
+}
+function figScatter(cfg) {
+  return function (cv) {
+    const W = cfg.W || 560, H = cfg.H || 320, ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), ink = cssVar("--ink");
+    const x0 = 52, y0 = 16, w = W - 78, h = H - 54;
+    const [xa, xb] = cfg.xr, [ya, yb] = cfg.yr;
+    const sx = x => x0 + (x - xa) / (xb - xa) * w, sy = y => y0 + h - (y - ya) / (yb - ya) * h;
+    figFrame(ctx, x0, y0, w, h, cfg.xlab, cfg.ylab);
+    const b = cfg.slope != null ? cfg.slope : (cfg.dir === "neg" ? -1 : 1) * (yb - ya) / (xb - xa) * 0.78;
+    const a = cfg.intercept != null ? cfg.intercept : (ya + yb) / 2 - b * (xa + xb) / 2;
+    const line = x => a + b * x, R = figRng(cfg.seed || 7), n = cfg.n || 32;
+    const spread = (cfg.spread != null ? cfg.spread : 0.16) * (yb - ya);
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, y0, w, h); ctx.clip();
+    ctx.fillStyle = acc; ctx.globalAlpha = .68;
+    for (let i = 0; i < n; i++) {
+      const x = xa + (i + 0.5) / n * (xb - xa) + (R() - 0.5) * (xb - xa) / n * 1.4;
+      const y = line(x) + figGauss(R) * spread * 2;
+      ctx.beginPath(); ctx.arc(sx(x), sy(y), 3, 0, 7); ctx.fill();
     }
-  },
-  td_learning: {
-    title: "TD(0) learns the value function",
-    pillar: "Learning",
-    caption: "Computed: TD(0) on the 5-state random walk (γ=1, α=0.1, fixed seed). The five estimates V(s) (teal) climb from 0 toward their true values s/6 (dashed) as episodes accumulate — model-free prediction, bootstrapping from sampled transitions (Lectures 6–7).",
-    draw(cv) {
-      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const col = cssVar("--opt"), muted = cssVar("--muted"), ink = cssVar("--ink");
-      let seed = 7; const rnd = () => (seed = (seed*1103515245+12345)&0x7fffffff)/0x7fffffff;
-      const al=0.1, EP=140; const V=[0,0,0,0,0,0,0]; const hist=[[],[],[],[],[]];
-      for(let e=0;e<EP;e++){
-        let s=3;
-        while(s>0 && s<6){ const sp = s + (rnd()<0.5?-1:1); const r = (sp===6)?1:0;
-          V[s]+= al*(r + (sp>0&&sp<6?V[sp]:0) - V[s]); s=sp; }
-        for(let i=1;i<=5;i++) hist[i-1].push(V[i]);
-      }
-      const x0=44,y0=14,w=W-64,h=H-46, sx=e=>x0+e/(EP-1)*w, sy=v=>y0+h-v*h;
-      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
-      ctx.setLineDash([4,4]); ctx.strokeStyle=muted; ctx.lineWidth=1;
-      for(let i=1;i<=5;i++){ const y=sy(i/6); ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x0+w,y); ctx.stroke();
-        ctx.fillStyle=muted; ctx.font="11px "+cssVar("--mono"); ctx.fillText((i)+"/6", x0-30, y+4); }
-      ctx.setLineDash([]);
-      for(let i=0;i<5;i++){ ctx.strokeStyle=col; ctx.globalAlpha=.45+.11*i; ctx.lineWidth=1.8; ctx.beginPath();
-        hist[i].forEach((v,e)=>{ const px=sx(e),py=sy(v); e?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke(); }
-      ctx.globalAlpha=1; ctx.fillStyle=ink; ctx.font="13px "+cssVar("--serif"); ctx.fillText("episodes →", W-104, H-8);
-      ctx.fillStyle=col; ctx.fillText("V(s) estimates", x0+8, y0+16);
-    }
-  },
-  gridworld_policy: {
-    title: "The optimal policy on a GridWorld",
-    pillar: "Planning",
-    caption: "Computed: value iteration on a 5×5 GridWorld (γ=0.9; goal top-right = +1 absorbing; a blocked cell). Cells shaded by V*; arrows are the greedy optimal action argmaxₐ Q*(s,a) — dynamic programming turning values into a policy (Lectures 3–4).",
-    draw(cv) {
-      const W = 340, H = 300, ctx = figCanvas(cv, W, H);
-      const col = cssVar("--exp"), muted = cssVar("--muted"), ink = cssVar("--ink"), good = cssVar("--good");
-      const n=5, g=0.9, goal=[0,4], wall=[2,2];
-      const id=(r,c)=>r*n+c, isW=(r,c)=>r===wall[0]&&c===wall[1], isG=(r,c)=>r===goal[0]&&c===goal[1];
-      const A=[[-1,0],[1,0],[0,-1],[0,1]];
-      const step=(r,c,a)=>{ let nr=r+A[a][0], nc=c+A[a][1]; if(nr<0||nr>=n||nc<0||nc>=n||isW(nr,nc)) return [r,c]; return [nr,nc]; };
-      let V=new Array(n*n).fill(0);
-      for(let it=0;it<120;it++){ const nV=V.slice();
-        for(let r=0;r<n;r++)for(let c=0;c<n;c++){ if(isW(r,c)||isG(r,c)) continue;
-          let best=-1e9; for(let a=0;a<4;a++){ const [nr,nc]=step(r,c,a); const rew=isG(nr,nc)?1:0; best=Math.max(best,rew+g*V[id(nr,nc)]); }
-          nV[id(r,c)]=best; } V=nV; }
-      const vmax=Math.max(...V), cell=Math.min((W-20)/n,(H-20)/n), ox=(W-cell*n)/2, oy=(H-cell*n)/2;
-      for(let r=0;r<n;r++)for(let c=0;c<n;c++){ const x=ox+c*cell, y=oy+r*cell;
-        if(isW(r,c)){ ctx.fillStyle=muted; ctx.globalAlpha=.85; } else { ctx.fillStyle=col; ctx.globalAlpha=isG(r,c)?.9:0.12+0.6*(V[id(r,c)]/(vmax||1)); }
-        ctx.fillRect(x+1,y+1,cell-2,cell-2); ctx.globalAlpha=1;
-        ctx.strokeStyle=muted; ctx.globalAlpha=.4; ctx.strokeRect(x+1,y+1,cell-2,cell-2); ctx.globalAlpha=1;
-        if(isG(r,c)){ ctx.fillStyle=good; ctx.font="bold 15px "+cssVar("--serif"); ctx.fillText("★", x+cell/2-6, y+cell/2+6); continue; }
-        if(isW(r,c)) continue;
-        let best=-1e9, ba=0; for(let a=0;a<4;a++){ const [nr,nc]=step(r,c,a); const rew=isG(nr,nc)?1:0; const q=rew+g*V[id(nr,nc)]; if(q>best){best=q;ba=a;} }
-        const cx=x+cell/2, cy=y+cell/2, L=cell*0.26, dx=A[ba][1]*L, dy=A[ba][0]*L;
-        ctx.strokeStyle=ink; ctx.fillStyle=ink; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx-dx,cy-dy); ctx.lineTo(cx+dx,cy+dy); ctx.stroke();
-        const ang=Math.atan2(dy,dx); ctx.beginPath(); ctx.moveTo(cx+dx,cy+dy);
-        ctx.lineTo(cx+dx-6*Math.cos(ang-0.5),cy+dy-6*Math.sin(ang-0.5)); ctx.lineTo(cx+dx-6*Math.cos(ang+0.5),cy+dy-6*Math.sin(ang+0.5)); ctx.closePath(); ctx.fill();
-      }
-    }
-  },
-  ucb_regret: {
-    title: "UCB regret grows only like log T",
-    pillar: "Bandits",
-    caption: "Computed: UCB1 on 5 Bernoulli arms (means .50/.55/.60/.63/.65, fixed seed). Cumulative regret Σ(μ*−μₐₜ) (orange) is concave — sublinear, ≈ log T — far below the dashed linear 'keep-exploring' reference. Balancing exploration vs exploitation (Lecture 10).",
-    draw(cv) {
-      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const col = cssVar("--gen"), muted = cssVar("--muted"), ink = cssVar("--ink");
-      const mu=[.50,.55,.60,.63,.65], K=mu.length, best=Math.max(...mu), T=1500;
-      let seed=91; const rnd=()=>(seed=(seed*1103515245+12345)&0x7fffffff)/0x7fffffff;
-      const n=new Array(K).fill(0), sum=new Array(K).fill(0); let reg=0; const curve=[];
-      for(let t=1;t<=T;t++){ let a;
-        if(t<=K){ a=t-1; } else { let bi=0,bv=-1e9; for(let i=0;i<K;i++){ const ucb=sum[i]/n[i]+Math.sqrt(2*Math.log(t)/n[i]); if(ucb>bv){bv=ucb;bi=i;} } a=bi; }
-        const r=rnd()<mu[a]?1:0; n[a]++; sum[a]+=r; reg+=best-mu[a]; curve.push(reg);
-      }
-      const x0=44,y0=14,w=W-64,h=H-46, rmax=curve[T-1], sx=t=>x0+t/(T-1)*w, sy=v=>y0+h-(v/rmax)*h;
-      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
-      // dashed reference: regret if you kept pulling a fixed sub-optimal arm (linear in t)
-      const slope=best-mu[2];
-      ctx.setLineDash([5,4]); ctx.strokeStyle=muted; ctx.lineWidth=1.4; ctx.beginPath();
-      ctx.moveTo(sx(0),sy(0)); ctx.lineTo(sx(T-1), sy(Math.min(rmax, slope*T))); ctx.stroke(); ctx.setLineDash([]);
-      ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
-      curve.forEach((v,t)=>{ const px=sx(t),py=sy(v); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke();
-      ctx.fillStyle=col; ctx.font="13px "+cssVar("--serif"); ctx.fillText("UCB regret (≈ log T)", x0+10, y0+h-10);
-      ctx.fillStyle=muted; ctx.fillText("linear reference", x0+w-118, y0+16);
-      ctx.fillStyle=ink; ctx.fillText("round t →", W-96, H-8);
-    }
-  },
-  mdp_diagram: {
-    title: "An MDP as a transition diagram",
-    pillar: "Planning",
-    caption: "The objects a Markov decision process is built from: states (circles), actions (colored edges), each edge labeled with its transition probability and immediate reward P(s'|s,a) / r. From state s₁ action a (purple) splits 0.8/0.2; action b (orange) is a sure move. s₂ is absorbing. Every planning method — Bellman operators, value & policy iteration — runs on exactly this structure (Lectures 2–3).",
-    draw(cv) {
-      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const ink = cssVar("--ink"), muted = cssVar("--muted"), a1 = cssVar("--exp"), a2 = cssVar("--gen"), good = cssVar("--good");
-      const N = { s0:[120,150], s1:[330,150], s2:[540,110] };
-      const rad = 30;
-      function edge(p, q, col, off, lab, curve){
-        const dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy), ux=dx/L, uy=dy/L, nx=-uy, ny=ux;
-        const sx=p[0]+ux*rad+nx*off, sy=p[1]+uy*rad+ny*off, ex=q[0]-ux*rad+nx*off, ey=q[1]-uy*rad+ny*off;
-        const mx=(sx+ex)/2+nx*(curve||0), my=(sy+ey)/2+ny*(curve||0);
-        ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=2.2;
-        ctx.beginPath(); ctx.moveTo(sx,sy); ctx.quadraticCurveTo(mx,my,ex,ey); ctx.stroke();
-        const ang=Math.atan2(ey-my,ex-mx);
-        ctx.beginPath(); ctx.moveTo(ex,ey);
-        ctx.lineTo(ex-9*Math.cos(ang-0.4),ey-9*Math.sin(ang-0.4));
-        ctx.lineTo(ex-9*Math.cos(ang+0.4),ey-9*Math.sin(ang+0.4)); ctx.closePath(); ctx.fill();
-        ctx.font="12px "+cssVar("--mono"); ctx.fillStyle=col;
-        ctx.fillText(lab, mx-ctx.measureText(lab).width/2, my + (curve<0?-6:16));
-      }
-      function selfLoop(p, col, lab){
-        ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=2.2;
-        ctx.beginPath(); ctx.arc(p[0], p[1]-rad-14, 15, 0.6, Math.PI*2-0.2); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(p[0]+11,p[1]-rad-6);
-        ctx.lineTo(p[0]+6,p[1]-rad-14); ctx.lineTo(p[0]+16,p[1]-rad-15); ctx.closePath(); ctx.fill();
-        ctx.font="12px "+cssVar("--mono"); ctx.fillText(lab, p[0]-ctx.measureText(lab).width/2, p[1]-rad-34);
-      }
-      edge(N.s0, N.s1, a2, 0, "b: p=1, r=0", -34);
-      edge(N.s1, N.s2, a1, 0, "a: p=.8, r=+1", -26);
-      edge(N.s1, N.s0, a1, -16, "a: p=.2, r=0", -40);
-      selfLoop(N.s2, good, "p=1, r=0");
-      for (const [k,[x,y]] of Object.entries(N)){
-        ctx.beginPath(); ctx.arc(x,y,rad,0,7);
-        if(k==="s2"){ ctx.globalAlpha=.18; ctx.fillStyle=good; ctx.fill(); ctx.globalAlpha=1; }
-        else { ctx.fillStyle=cssVar("--surface2"); ctx.fill(); }
-        ctx.lineWidth=2; ctx.strokeStyle=k==="s2"?good:muted; ctx.stroke();
-        ctx.fillStyle=ink; ctx.font="15px "+cssVar("--serif");
-        const t="s"+k[1]; ctx.fillText(t, x-ctx.measureText(t).width/2, y+5);
-      }
-      ctx.fillStyle=muted; ctx.font="12px "+cssVar("--sans"); ctx.fillText("s₂ absorbing (terminal)", 452, 200);
-    }
-  },
-  policy_gradient: {
-    title: "Policy gradient climbs the expected return",
-    pillar: "Approximation",
-    caption: "Computed: gradient ascent on a softmax policy over two actions (rewards 1.0 vs 0.3), following the policy-gradient theorem ∇J = E[r·∇log π]. Expected return J(θ) (orange) rises monotonically to the optimum (dashed) as the policy shifts probability onto the better action — no model, just the score-function estimator (Lecture 9, REINFORCE / actor-critic).",
-    draw(cv) {
-      const W = 640, H = 300, ctx = figCanvas(cv, W, H);
-      const col = cssVar("--gen"), muted = cssVar("--muted"), ink = cssVar("--ink"), opt = cssVar("--opt");
-      const r = [1.0, 0.3], lr = 0.9, IT = 60;
-      let th = [0, 0]; const J = [], p0 = [];
-      for (let k=0;k<IT;k++){
-        const e0=Math.exp(th[0]), e1=Math.exp(th[1]), z=e0+e1, pi=[e0/z, e1/z];
-        const j = pi[0]*r[0]+pi[1]*r[1]; J.push(j); p0.push(pi[0]);
-        const grad = [pi[0]*(r[0]-j), pi[1]*(r[1]-j)];
-        th = [th[0]+lr*grad[0], th[1]+lr*grad[1]];
-      }
-      const x0=44,y0=16,w=W-72,h=H-48, jmin=J[0], jmax=r[0];
-      const sx=k=>x0+k/(IT-1)*w, sy=v=>y0+h-((v-jmin)/(jmax-jmin))*h;
-      ctx.strokeStyle=muted; ctx.globalAlpha=.5; ctx.strokeRect(x0,y0,w,h); ctx.globalAlpha=1;
-      ctx.setLineDash([5,4]); ctx.strokeStyle=muted; ctx.lineWidth=1.4;
-      ctx.beginPath(); ctx.moveTo(x0,sy(jmax)); ctx.lineTo(x0+w,sy(jmax)); ctx.stroke(); ctx.setLineDash([]);
-      // probability of the optimal action, faint, on same panel (0..1 → panel)
-      ctx.strokeStyle=opt; ctx.globalAlpha=.5; ctx.lineWidth=1.8; ctx.beginPath();
-      p0.forEach((v,k)=>{ const px=sx(k),py=y0+h-v*h; k?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke(); ctx.globalAlpha=1;
-      ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
-      J.forEach((v,k)=>{ const px=sx(k),py=sy(v); k?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke();
-      for(let k=0;k<IT;k+=6){ ctx.fillStyle=col; ctx.beginPath(); ctx.arc(sx(k),sy(J[k]),2.4,0,7); ctx.fill(); }
-      ctx.fillStyle=col; ctx.font="13px "+cssVar("--serif"); ctx.fillText("J(θ) = expected return", x0+10, y0+h-12);
-      ctx.fillStyle=muted; ctx.fillText("optimum r* = 1.0", x0+w-116, sy(jmax)-6);
-      ctx.fillStyle=opt; ctx.globalAlpha=.8; ctx.fillText("π(best action) →1", x0+10, y0+16); ctx.globalAlpha=1;
-      ctx.fillStyle=ink; ctx.fillText("gradient step →", W-128, H-8);
-    }
-  }
-};
-const MOUNTED_FIGS = [];
-function figNode(id) {
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = cssVar("--bad") || "#c0392b"; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(sx(xa), sy(line(xa))); ctx.lineTo(sx(xb), sy(line(xb))); ctx.stroke();
+    ctx.restore();
+    if (cfg.eqn) { ctx.fillStyle = ink; ctx.font = "12.5px " + cssVar("--mono"); ctx.fillText(cfg.eqn, x0 + 10, y0 + 15); }
+  };
+}
+function figHist(cfg) {
+  const shapeH = (shape, t) => { // t in [0,1] across bins -> relative height
+    if (shape === "sym") return Math.exp(-Math.pow((t - 0.5) * 3.1, 2));
+    if (shape === "rskew") return Math.pow(Math.max(0, 1 - t), 0.6) * Math.exp(-Math.pow((t - 0.12) * 3.0, 2)) + 0.75 * Math.exp(-Math.pow((t - 0.14) * 4.2, 2));
+    if (shape === "lskew") return shapeH("rskew", 1 - t);
+    return Math.exp(-Math.pow((t - 0.5) * 3.1, 2));
+  };
+  return function (cv) {
+    const panels = cfg.panels, W = cfg.W || (panels.length > 1 ? 640 : 520), H = cfg.H || 260;
+    const ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), ink = cssVar("--ink");
+    const gap = 30, pw = (W - 40 - gap * (panels.length - 1)) / panels.length, y0 = 14, h = H - 52;
+    panels.forEach((p, pi) => {
+      const x0 = 30 + pi * (pw + gap), nb = p.bins || 13, pwi = pw - 8;
+      figFrame(ctx, x0, y0 + 14, pwi, h - 14, "", pi === 0 ? (cfg.ylab || "שכיחות") : "");
+      let hs = []; for (let i = 0; i < nb; i++) hs.push(shapeH(p.shape, (i + 0.5) / nb));
+      const mx = Math.max(...hs), bw = pwi / nb, base = y0 + h;
+      ctx.fillStyle = acc; ctx.globalAlpha = .78;
+      hs.forEach((v, i) => { const bh = v / mx * (h - 22); ctx.fillRect(x0 + i * bw + 1, base - bh, bw - 2, bh); });
+      ctx.globalAlpha = 1;
+      ctx.textAlign = "center";
+      if (p.label) { ctx.fillStyle = ink; ctx.font = "600 13px " + cssVar("--sans"); ctx.fillText(p.label, x0 + pwi / 2, y0 + 10); }
+      if (p.range) { ctx.fillStyle = cssVar("--muted"); ctx.font = "11px " + cssVar("--sans"); ctx.fillText(p.range, x0 + pwi / 2, y0 + h + 20); }
+      ctx.textAlign = "left";
+    });
+  };
+}
+function figQQ(cfg) {
+  const mapq = (pat, t) => { // t = theoretical (normal) quantile -> sample quantile
+    if (pat === "heavy") return t * (1 + 0.42 * t * t);
+    if (pat === "light") return Math.sign(t) * Math.pow(Math.abs(t), 0.62) * 1.15;
+    if (pat === "rskew") return t + 0.34 * (t * t - 1);
+    if (pat === "lskew") return t - 0.34 * (t * t - 1);
+    return t;
+  };
+  return function (cv) {
+    const W = cfg.W || 380, H = cfg.H || 320, ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), muted = cssVar("--muted");
+    const x0 = 46, y0 = 16, w = W - 66, h = H - 54, R = 2.9;
+    const sx = v => x0 + (v + R) / (2 * R) * w, sy = v => y0 + h - (v + R) / (2 * R) * h;
+    figFrame(ctx, x0, y0, w, h, cfg.xlab || "שברוני הנורמלית", cfg.ylab || "שברוני המדגם");
+    ctx.strokeStyle = muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(sx(-R), sy(-R)); ctx.lineTo(sx(R), sy(R)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, y0, w, h); ctx.clip();
+    ctx.fillStyle = acc; ctx.globalAlpha = .8;
+    const n = cfg.n || 22;
+    for (let i = 0; i < n; i++) { const t = -2.3 + (i + 0.5) / n * 4.6, s = mapq(cfg.pattern, t); ctx.beginPath(); ctx.arc(sx(t), sy(s), 3, 0, 7); ctx.fill(); }
+    ctx.globalAlpha = 1; ctx.restore();
+  };
+}
+function figBox(cfg) {
+  const q = { sym: [.5, .28, .72, .12, .88], rskew: [.32, .2, .52, .1, .86], lskew: [.68, .48, .8, .14, .9], rskewX: [.22, .13, .38, .06, .8] };
+  return function (cv) {
+    const boxes = cfg.boxes, W = cfg.W || Math.max(300, boxes.length * 120 + 60), H = cfg.H || 300;
+    const ctx = figCanvas(cv, W, H); ctx.direction = "ltr";
+    const acc = cssVar("--pc") || cssVar("--opt"), ink = cssVar("--ink"), muted = cssVar("--muted");
+    const x0 = 40, y0 = 16, h = H - 52, slot = (W - x0 - 20) / boxes.length;
+    figFrame(ctx, x0, y0, W - x0 - 20, h, "", cfg.ylab || "");
+    boxes.forEach((bx, i) => {
+      const p = q[bx.shape] || q.sym, cx = x0 + slot * (i + 0.5), bw = Math.min(46, slot * 0.5);
+      const Y = v => y0 + h - v * h;
+      ctx.strokeStyle = ink; ctx.fillStyle = acc; ctx.globalAlpha = .5; ctx.lineWidth = 1.4;
+      ctx.fillRect(cx - bw / 2, Y(p[2]), bw, Y(p[1]) - Y(p[2])); ctx.globalAlpha = 1;
+      ctx.strokeRect(cx - bw / 2, Y(p[2]), bw, Y(p[1]) - Y(p[2]));
+      ctx.beginPath(); ctx.moveTo(cx - bw / 2, Y(p[0])); ctx.lineTo(cx + bw / 2, Y(p[0])); ctx.stroke(); // median
+      ctx.strokeStyle = muted; ctx.beginPath();
+      ctx.moveTo(cx, Y(p[1])); ctx.lineTo(cx, Y(p[3])); ctx.moveTo(cx, Y(p[2])); ctx.lineTo(cx, Y(p[4])); ctx.stroke();
+      ctx.moveTo(cx - bw / 4, Y(p[3])); ctx.lineTo(cx + bw / 4, Y(p[3])); ctx.moveTo(cx - bw / 4, Y(p[4])); ctx.lineTo(cx + bw / 4, Y(p[4])); ctx.stroke();
+      if (bx.out) bx.out.forEach(o => { ctx.strokeStyle = cssVar("--bad"); ctx.beginPath(); ctx.arc(cx, Y(o), 2.4, 0, 7); ctx.stroke(); });
+      if (bx.label) { ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans"); ctx.textAlign = "center"; ctx.fillText(bx.label, cx, y0 + h + 22); ctx.textAlign = "left"; }
+    });
+  };
+}
+/* course figure registries — build_site.py injects <index>/figures.js here
+   (must define const FIGS, FIG_EXAM, FIG_TOPIC_MAP, FIG_MEMO_MAP); empty defaults otherwise */
+__FIGS__
+function figNode(id, open) {
   const f = FIGS[id]; if (!f || !CONFIG.figures) return document.createDocumentFragment();
   const d = document.createElement("details");
   d.className = "note figd p-" + (f.pillar || "Practices");
-  d.innerHTML = "<summary>📈 Figure — " + f.title + "</summary>" +
+  d.innerHTML = "<summary>📈 " + tr("figLabel","Figure") + " — " + f.title + "</summary>" +
     "<div class='figbody'><canvas></canvas><p class='figcap'>" + f.caption + "</p></div>";
   const cv = $("canvas", d);
-  let drawn = false;
-  d.addEventListener("toggle", () => { if (d.open) { f.draw(cv); drawn = true; } });
+  d.addEventListener("toggle", () => { if (d.open) f.draw(cv); });
   MOUNTED_FIGS.push({ d, cv, f });
+  if (open) { d.open = true; requestAnimationFrame(() => f.draw(cv)); }
   return d;
 }
 function figsForText(text, map) {
@@ -1258,28 +1274,9 @@ function figsForText(text, map) {
   map.forEach(([re, id]) => { if (re.test(text) && !out.includes(id)) out.push(id); });
   return out;
 }
-const FIG_TOPIC_MAP = [
-  [/value iteration|contraction|bellman operator/i, "vi_contraction"],
-  [/temporal difference|td\(|monte.?carlo|model-free|q-learning/i, "td_learning"],
-  [/mdp formal|optimal policy|policy iteration|grid|dynamic programming/i, "gridworld_policy"],
-  [/bandit|ucb|regret|exploration|best.?arm/i, "ucb_regret"],
-  [/mdp|markov decision|transition|state.?space|reward function/i, "mdp_diagram"],
-  [/policy gradient|reinforce|actor.?critic|score function|function approximation/i, "policy_gradient"],
-];
-const FIG_MEMO_MAP = [
-  [/value iteration|policy iteration/i, "vi_contraction"],
-  [/bellman optimality operator/i, "vi_contraction"],
-  [/td\(0\)|temporal difference|monte-carlo|q-learning/i, "td_learning"],
-  [/discounted mdp|optimal policy/i, "gridworld_policy"],
-  [/ucb|regret|best-arm/i, "ucb_regret"],
-  [/mdp|markov decision|transition/i, "mdp_diagram"],
-  [/policy gradient|reinforce|actor-critic|score function/i, "policy_gradient"],
-];
-// Solutions get a folded concept figure when the question's topic matches one.
 function figsForSolution(q) {
   return figsForText((q.title || "") + " " + (q.topics || []).join(" ") + " " + (q.pillar || ""), FIG_TOPIC_MAP);
 }
-
 /* ---------- ask (client-side retrieval, verbatim quotes) ---------- */
 let CHUNKS = null, DF = null;
 const STOP = new Set(["the","a","an","of","in","on","for","to","and","or","is","are","that","with","we","it","as","by","be","at","this","from","does","do","did","appear","appears","appearing","any","there","where","which","when","how","why","what","can","could","would","give","me","show","have","has","was","were","will","if","not","also","about","them","they","you","i","straight","answer","example","examples",
@@ -1304,9 +1301,9 @@ function pushSplit(text, meta) {
 function buildChunks() {
   CHUNKS = [];
   (DATA.notes || []).forEach(n => n.sections.forEach(sec =>
-    pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + sec.h, pillar: n.pillar })));
+    pushSplit(sec.b, { srcLabel: noteLabel(n), sec: "§" + secLabel(sec.h), pillar: n.pillar })));
   [...DATA.exams, ...(DATA.mocks || [])].forEach(e => e.questions.forEach(q => {
-    const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " pts)";
+    const label = examLabel(e) + " · Q" + q.n + " (" + q.pts + " " + tr("pts","pts") + ")";
     pushSplit(q.statement || "", { srcLabel: label, sec: "question statement", pillar: q.pillar, exam: e.id, qn: q.n });
     pushSplit(q.sketch || "", { srcLabel: label, sec: "solution sketch", pillar: q.pillar, exam: e.id, qn: q.n });
   }));
@@ -1371,9 +1368,19 @@ function ask(query) {
   }).filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 6);
   return { resolved, hits };
 }
-function openExam(examId) {
+function openExam(examId, qn) {
   const e = examById[examId];
-  if (e) { show("exams"); renderExamDetail(e); }
+  if (!e) return;
+  show("exams"); renderExamDetail(e);
+  // land on the specific question the search hit referenced, not the top of the exam
+  if (qn != null) {
+    const target = document.getElementById("q-" + examId + "-" + qn);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.classList.remove("qflash"); void target.offsetWidth; // restart the flash
+      target.classList.add("qflash");
+    }
+  }
 }
 function termSummary(term) {
   // where does this term appear? exams (by question, statement vs sketch) + notes
@@ -1407,41 +1414,41 @@ function renderAsk() {
       let head = "<b>" + r.term + "</b>";
       if (r.fuzzy) head += " <span class='pts'>(matched from “" + r.from + "”)</span>";
       head += s.exams.length
-        ? " <span class='pts'>— in " + s.exams.length + " exam question" + (s.exams.length > 1 ? "s" : "") + ":</span>"
-        : " <span class='pts'>— not found in any exam; in notes:</span>";
+        ? " <span class='pts'>— " + tr("inExamQ","in") + " " + s.exams.length + " " + tr("examQuestions","exam questions") + ":</span>"
+        : " <span class='pts'>— " + tr("notInExam","not found in any exam; in notes:") + "</span>";
       row.innerHTML = head;
       s.exams.slice(0, 12).forEach(x => {
         const b = document.createElement("button");
         b.type = "button"; b.className = "chipbtn"; b.style.padding = "2px 10px";
-        b.textContent = x.label + (x.sk && x.st ? " (statement + solution)" : x.sk ? " (solution)" : " (statement)");
-        b.onclick = () => openExam(x.exam);
+        b.textContent = x.label + (x.sk && x.st ? " " + tr("stmtSol","(statement + solution)") : x.sk ? " " + tr("solOnly","(solution)") : " " + tr("stmtOnly","(statement)"));
+        b.onclick = () => openExam(x.exam, x.qn);
         row.appendChild(b);
       });
-      if (s.exams.length > 12) row.insertAdjacentHTML("beforeend", "<span class='pts'>+" + (s.exams.length - 12) + " more</span>");
+      if (s.exams.length > 12) row.insertAdjacentHTML("beforeend", "<span class='pts'>+" + (s.exams.length - 12) + " " + tr("more","more") + "</span>");
       if (s.notes.length) row.insertAdjacentHTML("beforeend",
-        "<span class='pts' style='flex-basis:100%'>also in notes: " + s.notes.slice(0, 5).join(" · ") + (s.notes.length > 5 ? " +" + (s.notes.length - 5) + " more" : "") + "</span>");
+        "<span class='pts' style='flex-basis:100%'>" + tr("alsoNotes","also in notes: ") + s.notes.slice(0, 5).join(" · ") + (s.notes.length > 5 ? " +" + (s.notes.length - 5) + " " + tr("more","more") : "") + "</span>");
       card.appendChild(row);
     });
     out.appendChild(card);
   }
   if (!hits.length) {
-    out.insertAdjacentHTML("beforeend", "<div class='card empty'>Nothing matched — try different terms (the notes are in English).</div>");
+    out.insertAdjacentHTML("beforeend", "<div class='card empty'>" + tr("noMatch","Nothing matched — try different terms.") + "</div>");
     return;
   }
   hits.forEach(({ c }) => {
     const d = document.createElement("div");
     d.className = "card hit p-" + (c.pillar || "Practices");
     const srcHtml = c.exam
-      ? "<button type='button' class='srcbtn'>" + c.srcLabel + "</button> <span class='sec'>· " + c.sec + " — click to open the exam</span>"
+      ? "<button type='button' class='srcbtn'>" + c.srcLabel + "</button> <span class='sec'>· " + c.sec + " — " + tr("clickOpenQ","click to jump to this question") + "</span>"
       : c.srcLabel + " <span class='sec'>· " + c.sec + "</span>";
     d.innerHTML = "<div class='src'>" + srcHtml + "</div><div class='mdslot'></div>";
-    if (c.exam) $(".srcbtn", d).onclick = () => openExam(c.exam);
+    if (c.exam) $(".srcbtn", d).onclick = () => openExam(c.exam, c.qn);
     out.appendChild(d);
     setMd($(".mdslot", d), c.text);
   });
   const note = document.createElement("p");
   note.className = "sub"; note.style.marginTop = "14px";
-  note.textContent = "Quotes are verbatim from the study notes and translated exams. For a worked explanation, bring the question to your tutor session.";
+  note.textContent = tr("askFooter","Quotes are verbatim from the study notes and translated exams. For a worked explanation, bring the question to your tutor session.");
   out.appendChild(note);
 }
 
@@ -1458,9 +1465,9 @@ $("#askInput").addEventListener("keydown", ev => { if (ev.key === "Enter") rende
 buildChunks();
 (() => {
   const by = {};
-  CHUNKS.forEach(c => { const k = c.exam ? "exam passages" : c.srcLabel.startsWith("Cheat sheet") ? "cheat-sheet items" : c.srcLabel.startsWith("Topic map") ? "topic entries" : "note passages"; by[k] = (by[k] || 0) + 1; });
-  $("#askCorpus").textContent = "Search index (rebuilt from this page on every load): " +
-    Object.entries(by).map(([k, v]) => v + " " + k).join(" · ") + " — " + CHUNKS.length + " passages total.";
+  CHUNKS.forEach(c => { const k = c.exam ? tr("catExam","exam passages") : c.srcLabel.startsWith("Cheat sheet") ? tr("catCheat","cheat-sheet items") : c.srcLabel.startsWith("Topic map") ? tr("catTopic","topic entries") : tr("catNote","note passages"); by[k] = (by[k] || 0) + 1; });
+  $("#askCorpus").textContent = tr("corpusPrefix","Search index (rebuilt from this page on every load): ") +
+    Object.entries(by).map(([k, v]) => v + " " + k).join(" · ") + " — " + CHUNKS.length + " " + tr("passagesTotal","passages total.") + "";
 })();
 (CONFIG.askSuggestions || []).forEach(sug => {
   const b = document.createElement("button");
