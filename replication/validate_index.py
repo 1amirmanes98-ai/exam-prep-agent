@@ -38,7 +38,7 @@ def main(index_dir):
         exam_ids.add(eid.replace("_", ""))
         t = open(f).read()
         total_m = re.search(r"\*\*Total points:\*\*\s*(\d+)", t)
-        qs = re.findall(r"^## Q(\d+)\s*\((\d+)\s*pts?\)\s*[—-]\s*(.+)$", t, re.M)
+        qs = re.findall(r"^## Q(\d+)\s*\((\d+)\s*pts?[^)]*\)\s*[—-]\s*(.+)$", t, re.M)
         if not qs:
             errors.append(f"{eid}: no `## Q<n> (<pts> pts) — title` questions parsed")
             continue
