@@ -522,7 +522,7 @@ function tmplNode(e, q) {
   const a = hits[0];
   const d = document.createElement("details");
   d.className = "tmpl p-" + q.pillar;
-  d.innerHTML = "<summary dir='" + BIDI + "'>🧩 " + tr("tmplLabel","Question template") + " — <span class='tname'></span></summary><div class='tmplbody mdslot'></div>";
+  d.innerHTML = "<summary dir='" + BIDI + "'>🧩 " + tr("tmplLabel","Question template") + " — <span class='tname'></span></summary><div class='tmplbody'></div>";
   $(".tname", d).textContent = a.name;
   mathify($("summary", d)); // archetype names may contain math
   let built = false;
@@ -532,7 +532,7 @@ function tmplNode(e, q) {
     // body = the archetype prose, minus the leading bold name and the trailing refs list
     const body = a.desc.replace(/^\*\*[\s\S]*?\*\*\s*[—–-]\s*/, "")
       .replace(/\s*[—–-]?\s*\*{0,2}(?:הופיעה ב|appeared in)\*{0,2}\s*[:：][\s\S]*$/i, "");
-    setMd($(".mdslot", d), body);
+    setMd($(".tmplbody", d), body);
   });
   return d;
 }
