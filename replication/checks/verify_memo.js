@@ -32,10 +32,13 @@ const F = 'file://' + process.argv[2], SHOT = process.argv[3];
   await p.screenshot({ path: SHOT + '/memo-tab.png' });
   await b.close();
   const fails = [];
-  if (info.sections !== 4) fails.push('expected 4 sections, got ' + info.sections);
+  // Sections: 3 or 4 (one per hero pillar) — courses have 3 or 4 pillars.
+  if (info.sections < 3 || info.sections > 4) fails.push('expected 3–4 memo sections, got ' + info.sections);
   if (!info.itemsBuilt) fails.push('no memo items rendered');
-  if (!/מתי להשתמש/.test(info.useLabelSample)) fails.push('use-label not Hebrew: ' + info.useLabelSample);
-  if (!/ידועים/.test(info.countSample)) fails.push('count label not Hebrew: ' + info.countSample);
+  // Language-agnostic: a "use it when" label must be present and non-empty, and the
+  // per-section count must read "n/m" (the surrounding word is Hebrew or English by course).
+  if (!info.useLabelSample || info.useLabelSample === '(none)') fails.push('use-when label missing on memo items');
+  if (!/\d+\s*\/\s*\d+/.test(info.countSample)) fails.push('section count not "n/m": ' + info.countSample);
   console.log('console errors:', errs.length ? errs : 'none');
   console.log(fails.length ? 'FAIL: ' + fails.join('; ') : 'MEMO OK');
 })();
