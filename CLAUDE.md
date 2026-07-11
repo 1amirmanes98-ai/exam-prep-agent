@@ -41,17 +41,16 @@ them at length in public-facing artifacts. The built sites (`docs/index.html`,
 
 ## Site changes
 
-Never edit the `docs/**/*.html` sites by hand — they are built. Change the relevant
-agent's `scripts/site_template.html` / `build_site.py` / `index/SITE_CONFIG.json`,
-rebuild (see that agent's README "The Study Hub website"), verify in headless Chromium
-(zero console errors; KaTeX renders in quirks mode; no horizontal scroll at 390px),
-and commit the rebuilt HTML. Pages deploys from main on every push touching `docs/`.
-The `scripts/build_site.py` and `scripts/site_template.html` are course-agnostic — put
-course specifics in `SITE_CONFIG.json`. When starting a new agent, copy the scripts from
-the most up-to-date agent: `rl-exam-agent/scripts/` currently has the newest engine
-(config-driven pillar count — a slot is a hero pillar iff it has a `slotRole`, so 3 or 4
-pillars work; per-question **Hint** + **Full solution** folds; mock total derived from its
-questions). The `dl-` and `stats-` copies additionally carry the **Hebrew RTL** UI patch
-(`contrib/hebrew-rtl.patch`) that a Hebrew-language *site* needs but the English RL site
-does not — so the templates have legitimately diverged; reconcile (RTL + the newer engine)
-into one shared template when a Hebrew course next needs the newer features.
+Never edit the `docs/**/*.html` sites by hand — they are built. The canonical engine
+(`site_template.html` + `build_site.py`) lives in **`replication/engine/`**; every
+course's `scripts/` copy is a byte-identical sync. To change the site: edit the engine,
+run `bash replication/engine/sync.sh`, rebuild the affected course(s) with the 5-arg
+build, run `bash replication/checks/run_all.sh <site> [--rtl --figs --examfigs --memo]`
+(zero console errors is the pass bar), and commit the rebuilt HTML. Pages deploys from
+main on every push touching `docs/`. Course specifics live ONLY in
+`index/SITE_CONFIG.json` (config/UI strings) and `index/figures.js` (figure registries,
+injected at the `__FIGS__` placeholder). All engine features — RTL/i18n, config-driven
+pillar count via `slotRoles`, Hint/Full solution folds, callouts, figures, the flashcard
+mistakes mode, search jump-to-question — are shared by every course. A new course copies
+nothing by hand: see REPLICATION.md; end every build session with
+`replication/SESSION_CHECKLIST.md`.

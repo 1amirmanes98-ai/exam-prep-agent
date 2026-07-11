@@ -6,19 +6,25 @@ it on the one irreducible task: reading YOUR course's PDFs. Everything else is
 copying, not creating.
 
 **The golden rule: COPY the code, GENERATE only the content.**
-`dl-exam-agent/scripts/build_site.py`, `scripts/site_template.html`,
-`scripts/restore_content.sh`, and `.github/workflows/pages.yml` are
-**course-agnostic — copy them byte-for-byte and do not edit them.** All
-course-specific values live in one small file you write: `index/SITE_CONFIG.json`.
-If you find yourself editing the template HTML or the build script, you are doing
-it wrong (exception: a genuinely new feature).
+The canonical engine lives in **`replication/engine/`** (`site_template.html` +
+`build_site.py`); `replication/engine/sync.sh` copies it byte-identically into every
+course's `scripts/` dir (and `sync.sh --check` detects drift). `scripts/restore_content.sh`
+and `.github/workflows/pages.yml` are likewise course-agnostic. All course-specific
+values live in TWO small files you write: `index/SITE_CONFIG.json` (config + UI strings)
+and `index/figures.js` (figure registries; optional). If you find yourself editing the
+template HTML or the build script for a course, you are doing it wrong — a genuinely
+new feature goes into `replication/engine/` and is synced to ALL courses.
 
 **Reusable tooling lives in `replication/`** — use it instead of re-deriving anything:
 `INDEX_FORMAT.md` (the exact output spec to hand every indexing agent — the single biggest
 speedup), `fetch_libs.sh` (fetch the pinned KaTeX/marked/fonts), `make_text_mirrors.py`
 (PDF+PPTX → text mirrors), `validate_index.py` (pre-build format check — run before building),
-and `verify_site.mjs` (the once-per-phase headless-Chromium verification). The phases below
-point at each.
+`checks/` (the full headless-Chromium verification suite — `checks/run_all.sh` per rebuilt
+site) with `verify_site.mjs` as its generic smoke test, `engine/` (the canonical site
+template + build script + sync), `MODELS.md` (which Claude model for which job),
+`SESSION_CHECKLIST.md` (the end-of-session engineering checklist), `FEATURES.md` (everything
+the engine gives a new course for free), and `STUDENT_GUIDE_TEMPLATE.md` (fill-in README for
+the new course). The phases below point at each.
 
 ## Phase 0 — Setup (≈5k tokens)
 
@@ -103,6 +109,8 @@ prompts from the template's index files' structure:
 Copy the template's `CLAUDE.md`, `dl-exam-agent/AGENT.md`, `progress.md`, and
 `.claude/skills/*` and substitute course facts (name, exam format, file counts).
 Do not redesign them.
+For the course README (the student's user guide), fill in
+`replication/STUDENT_GUIDE_TEMPLATE.md` instead of writing one from scratch.
 
 ## Phase 4 — Publish (≈10k tokens)
 
@@ -228,6 +236,34 @@ mirrors so exam statements are *restored* to authentic wording, not back-transla
   zero console errors, no horizontal scroll. Screenshot 2–3 mixed Hebrew+math
   paragraphs and eyeball them — bidi bugs hide from DOM checks.
 
+## English-language course notes (the cheap case)
+
+Phase 6 covers Hebrew; an English course is strictly easier — mostly *omissions*:
+
+- Leave `dir`/`lang`/`ui`/`slotLabels` out of `SITE_CONFIG.json` (or set
+  `"dir":"ltr","lang":"en"` explicitly, as `rl-exam-agent` does). Every UI string
+  falls back to the template's built-in English; the LTR islands are inert.
+- Text mirrors come out clean (no RTL garbling), so Phase 1 agents can index
+  from the cheap mirrors throughout — including exams. Budget accordingly (the
+  "Hebrew exams are the cost center" rule doesn't apply).
+- The build strips a leading `Def (…)`/`Thm (…)` keyword from flashcard fronts
+  automatically; write card items naturally per INDEX_FORMAT.
+- Keyword-based pillar slotting (`slotKeywords`) works unmodified — just supply
+  English keywords.
+
+## Model playbook
+
+Which Claude model to use for which job (planning vs execution vs the Phase-1
+fan-out — the single biggest cost lever) is documented in
+**`replication/MODELS.md`**. Read it before launching any agent fleet.
+
+## Per-session checklist
+
+Before ending any build/engineering session, run the checklist in
+**`replication/SESSION_CHECKLIST.md`** (sync → 5-arg rebuild → checks suite →
+zip regeneration → git/PR hygiene). Its study-side counterpart is the progress
+protocol in each agent's `AGENT.md`.
+
 ## Anti-patterns that burned tokens the first time
 
 - Rewriting/adapting `site_template.html` instead of using SITE_CONFIG. (Biggest sink.)
@@ -252,6 +288,21 @@ mirrors so exam statements are *restored* to authentic wording, not back-transla
   It detaches the figures from the `:root` CSS variables, so `cssVar()` returns empty
   and everything paints black — you chase a "bug" that only exists in the harness.
   Mount the real `figNode()` in the loaded page and screenshot that.
+- `dir="auto"` on rendered blocks — it resolves by FIRST strong character, so any
+  Hebrew block that opens with Latin/digits (`**a.**`, `Q1 ·`) flips whole-block LTR.
+  Base direction must come from config (`const BIDI = CONFIG.dir`); keep `auto` nowhere.
+- Two open PRs both carrying generated `docs/` files: the last merge silently clobbers
+  the first. Stack the second PR on the first branch and say so in the PR body.
+- Points regex anchored as `\((\d+)\s*pts?\)` drops questions titled
+  `(24 pts +7 bonus)` — always `pts?[^)]*\)`, and watch the build's question count.
+- Reusing a generic mount class (`.mdslot`) for a new box: `setMd($(".mdslot"))`
+  grabbed the new box and the question statements vanished. New slots get their own
+  class; `checks/verify_stmt.js` guards this.
+- Bulk content passes via agent fan-out: agents can misclassify Hebrew files as
+  "English" and silently skip them. Diff every file against a backup, and diff the
+  extracted math spans against a baseline — prose may change, math must not.
+- `\text{...}` inside math is user-visible language: Hebraize labels
+  (`\text{עוצמה}`, `\text{סכום שורה}`) but keep Latin identifiers/subscripts.
 
 ## Engine updates & lessons (from the RL replication — the 3rd course)
 
@@ -275,18 +326,18 @@ process. Copy new agents' `scripts/` from the **most up-to-date** agent — curr
   (`border-inline-start`) so it flips in an RTL/Hebrew site untouched, and the labels live in
   content (emoji-detected) so a Hebrew course just writes them in Hebrew.
 - **Mock total** is derived from the sum of the mock's question points (no hard-coded value).
-- **Figures on solutions + full pillar coverage.** The `FIGS` registry now covers every
-  pillar (RL added an MDP transition *diagram* for Planning and a policy-gradient curve for
-  Approximation), and `figsForSolution()` mounts one folded figure next to matching worked
-  solutions — not just on topics/memo. This is the ONE sanctioned course-specific edit to
-  `site_template.html` (the `FIGS` / `FIG_TOPIC_MAP` / `FIG_MEMO_MAP` blocks + the
-  `figsForSolution` mount); everything else in the template still stays verbatim.
+- **Figures on solutions + full pillar coverage.** The `FIGS` registry should cover every
+  pillar, and `figsForSolution()` mounts one folded figure next to matching worked solutions —
+  not just on topics/memo.
 
-Caveat: the `dl-`/`stats-` script copies additionally carry the **Hebrew RTL** UI patch
-(`contrib/hebrew-rtl.patch`) that only a Hebrew-language *site* needs — so the templates have
-legitimately diverged (RTL vs. the newer engine). Reconcile them into one shared template the
-next time a Hebrew course needs the newer features; an English course (like RL) just uses the
-newer engine directly.
+**UPDATE — the engines are unified.** The RTL/i18n line (dl/stats) and the newer engine
+(rl) were merged into ONE canonical template + build in **`replication/engine/`**; every
+course's `scripts/` copy is a byte-identical sync (`replication/engine/sync.sh`). Course
+figure registries (`FIGS` / `FIG_EXAM` / `FIG_TOPIC_MAP` / `FIG_MEMO_MAP`) moved out of the
+template into per-course **`index/figures.js`**, injected by the build at the `__FIGS__`
+placeholder — so there is NO sanctioned course-specific template edit anymore. A new course
+gets RTL, hints, callouts, figures, config-driven pillars, the mistakes flashcard mode, and
+search jump-to-question from the same file. `contrib/hebrew-rtl.patch` is historical.
 
 Process lessons that made this replication cheaper/faster:
 

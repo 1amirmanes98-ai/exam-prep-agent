@@ -51,6 +51,12 @@ phase (`REPLICATION.md` Phase 6).
 | `validate_index.py` | pre-build format check (catches parser-breaking mistakes for free) |
 | `exam_figures.js` | drop-in canvas generators (histogram/scatter/QQ/boxplot/residual) for per-question exam figures — copy in, wire 3 hooks, populate `FIG_EXAM` |
 | `verify_site.mjs` | the once-per-phase headless-Chromium verification (console errors, KaTeX in both modes, localStorage, and every computed figure draws + pillar-coverage warning) |
+| `checks/` | the full headless verification suite (`checks/run_all.sh <site> [--rtl] [--figs] [--examfigs] [--memo]`) — statements, RTL, callouts, flashcard mistakes mode, search jump-to-question, figures, memo |
+| `engine/` | the **canonical** site template + build script; `engine/sync.sh` keeps every course's `scripts/` copy byte-identical |
+| `MODELS.md` | which Claude model for which job (Fable plans, Opus executes, Sonnet runs the indexing fleet) |
+| `SESSION_CHECKLIST.md` | end-of-session engineering checklist (sync → rebuild → checks → zip → git/PR) |
+| `FEATURES.md` | everything the engine gives a new course for free (the feature matrix) |
+| `STUDENT_GUIDE_TEMPLATE.md` | fill-in bilingual README/user-guide for the new course |
 
 Short version: create a repo → open a Claude Code session with your materials +
 past-exams zips → *"Build me an exam-prep agent and study site like
@@ -68,8 +74,9 @@ past-exams zips → *"Build me an exam-prep agent and study site like
 
 - **החליטו מראש (Phase 0):** שפת התוכן (עברית/אנגלית) והפרטיות (האם חומרי הקורס עולים לריפו).
   אינדוקס באנגלית ואז תרגום חזרה לעברית = fan-out שלם מבוזבז (~300–500k טוקנים).
-- **אל תערכו את התבנית.** כל מה שספציפי לקורס יושב ב-`index/SITE_CONFIG.json`. אם אתם עורכים את
-  `site_template.html` או `build_site.py` — כנראה טעות (חריג יחיד: פיצ'ר איורים חדש).
+- **אל תערכו את התבנית של קורס.** המנוע הקנוני יושב ב-`replication/engine/` ומסונכרן לכל הקורסים
+  (`engine/sync.sh`); ספציפי-לקורס = `index/SITE_CONFIG.json` + `index/figures.js` בלבד. פיצ'ר
+  חדש נכנס למנוע פעם אחת וכל הקורסים מקבלים אותו.
 - **איורים מאוד עוזרים ללמידה** — אבל *מחושבים* (מסימולציה/משוואה חיה), לא ידניים; אחד לכל pillar;
   וגם **מקופלים ליד הפתרונות** (עוזר לראות את הקונספט ליד התשובה). מאמתים במסלול האמיתי בדף
   (`figNode`), לא ב-harness שמוחק את ה-`body` — אחרת הצבעים נשברים והכל נצבע שחור.
@@ -77,8 +84,14 @@ past-exams zips → *"Build me an exam-prep agent and study site like
   נקראות זול מ-text mirrors.
 - **git:** אחרי שה-PR מוזג — פותחים **ענף חדש מ-`main`** ל-PR חדש; לא דוחפים עוד על ענף של PR שכבר
   מוזג (זה סתם מבלבל ולא ניתן למיזוג מחדש).
-- **אימות פעם אחת לכל שלב** ב-Chromium (0 שגיאות, KaTeX עובד, localStorage שורד) — לא צילום מסך
-  אחרי כל עריכה קטנה.
+- **אימות פעם אחת לכל שלב** — עכשיו עם סוויטה מוכנה: `replication/checks/run_all.sh` על כל אתר
+  שנבנה מחדש (0 שגיאות קונסול = תנאי מעבר); לא צילום מסך אחרי כל עריכה קטנה.
+- **חלוקת מודלים חוסכת הכי הרבה:** פייבל לתכנון, אופוס לביצוע ותוכן, סונט לצי האינדוקס של שלב 1
+  (מוקד העלות). פירוט ב-`replication/MODELS.md`.
+- **שני PR פתוחים עם `docs/` מיוצר = המיזוג האחרון דורס את הראשון.** מערימים את ה-PR השני על ענף
+  הראשון וכותבים בגוף ה-PR מה למזג ומה לסגור.
+- **בסוף כל סשן בנייה:** לעבור על `replication/SESSION_CHECKLIST.md` (סנכרון, בנייה, בדיקות,
+  ריענון ה-zip אם ה-index השתנה, היגיינת git).
 
 ## Repo layout
 
@@ -95,7 +108,7 @@ rl-exam-agent/
 .claude/skills/         # /teach /quiz /exam /solve /drill /flashcards /progress (shared)
 .github/workflows/      # Pages deploy (docs/ → github.io on every push)
 docs/index.html         # built FODL site   ·   docs/stats/ · docs/rl/  the others
-replication/            # reusable toolkit: INDEX_FORMAT.md + build/validate/verify scripts
+replication/            # reusable toolkit: engine/ (canonical template+build), checks/ (verification suite), INDEX_FORMAT.md, MODELS.md, FEATURES.md, guides
 REPLICATION.md          # how to rebuild this for any course, cheaply
 ```
 
