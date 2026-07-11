@@ -64,10 +64,38 @@ def main(index_dir):
 
     topics = os.path.join(index_dir, "TOPICS.md")
     if os.path.exists(topics):
-        refs = re.findall(r"\b([abc])[_ ]?(\d{4})[_ ]?Q\d", open(topics).read())
+        tt = open(topics).read()
+        refs = re.findall(r"\b([abc])[_ ]?(\d{4})[_ ]?Q\d", tt)
         for a, y in refs:
             if f"{a}{y}" not in exam_ids:
                 warns.append(f"TOPICS.md: examined ref {a}{y}_Q.. has no exam file")
+        for n in re.findall(r"\bhw[_ ]?0?(\d{1,2})[\s_]*Q\d", tt, re.I):
+            if f"hw{int(n):02d}" not in exam_ids:
+                warns.append(f"TOPICS.md: homework ref hw{int(n):02d}_Q.. has no exams/hw_{int(n):02d}.md file")
+
+    exam_map = os.path.join(index_dir, "EXAM_MAP.md")
+    if os.path.exists(exam_map):
+        mt = open(exam_map).read()
+        arch = re.search(r"##[^\n]*archetypes[^\n]*\n(.*?)(?=\n## |\Z)", mt, re.S | re.I)
+        if arch:
+            for a, y in re.findall(r"\b([abc])[_ ]?(\d{4})[_ ]?Q\d", arch.group(1)):
+                if f"{a}{y}" not in exam_ids:
+                    warns.append(f"EXAM_MAP.md: archetype ref {a}{y}_Q.. has no exam file")
+            for n in re.findall(r"\bhw[_ ]?0?(\d{1,2})[\s_]*Q\d", arch.group(1), re.I):
+                if f"hw{int(n):02d}" not in exam_ids:
+                    warns.append(f"EXAM_MAP.md: archetype ref hw{int(n):02d}_Q.. has no exam file")
+        else:
+            warns.append("EXAM_MAP.md: no 'Recurring question archetypes' section found")
+
+    # every exam's **Maps to:** lecture refs should resolve to a lectures/ file
+    lecture_names = {os.path.splitext(os.path.basename(f))[0]
+                     for f in glob.glob(f"{index_dir}/lectures/*.md")}
+    for f in sorted(glob.glob(f"{index_dir}/exams/*.md")):
+        eid = os.path.splitext(os.path.basename(f))[0]
+        for mm in re.finditer(r"\*\*Maps to:\*\*\s*([^\n]+)", open(f).read()):
+            for ref in re.findall(r"\b(?:week|slides|lecture|rec|hw)_\d{1,2}\b", mm.group(1)):
+                if ref not in lecture_names:
+                    warns.append(f"{eid}: Maps-to ref '{ref}' has no lectures/ file")
 
     cheat = os.path.join(index_dir, "CHEATSHEET.md")
     if os.path.exists(cheat):

@@ -210,6 +210,8 @@ def parse_exam_refs(examined: str) -> list:
     for m in re.finditer(r"\b(?:([abc])(\d{4})|example)[_ ]?Q(\d)", examined):
         exam_id = f"{m.group(1)}_{m.group(2)}" if m.group(1) else "example"
         out.append([exam_id, int(m.group(3))])
+    for m in re.finditer(r"\bhw[_ ]?0?(\d{1,2})[\s_]*Q(\d)", examined, re.I):
+        out.append([f"hw_{int(m.group(1)):02d}", int(m.group(2))])
     return out
 
 
@@ -347,6 +349,10 @@ def main():
         CONFIG.update(json.loads(cfg_p.read_text(encoding="utf-8")))
     exams = sorted((parse_exam(p) for p in (index_dir / "exams").glob("*.md")),
                    key=lambda e: (e["id"].split("_")[-1], e["id"]))
+
+    for e in exams:  # homework sets live in exams/ as hw_NN.md, flagged for separate UI
+        if e["id"].startswith("hw_"):
+            e["hw"] = True
     gen_dir = index_dir.parent / "generated_exams"
     mocks = sorted((parse_mock(p) for p in gen_dir.glob("*.md")
                     if not p.stem.endswith("_solutions")),
@@ -411,7 +417,7 @@ def main():
     n_erefs = sum(len(t["exam_refs"]) for t in topics)
     n_cheat = sum(len(s["items"]) for s in cheat["sections"]) if cheat else 0
     print(f"cheatsheet_items={n_cheat}")
-    print(f"exams={len(exams)} mocks={len(mocks)} "
+    print(f"exams={len([e for e in exams if not e.get('hw')])} hw={len([e for e in exams if e.get('hw')])} mocks={len(mocks)} "
           f"mock_questions={sum(len(m['questions']) for m in mocks)} "
           f"questions={n_q} cards={len(cards)} "
           f"topics={len(topics)} taught_refs={n_refs} exam_refs={n_erefs} "

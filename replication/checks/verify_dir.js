@@ -17,7 +17,7 @@ const EXAM_ID = process.argv[4] || '';  // default: first exam in DATA
 
   // a_2025 Q1 solution OPENS with "**a. לא נכון.**" (Latin 'a') — was flipping to LTR.
   const r = await p.evaluate(async (EXAM_ID) => {
-    show('exams'); const _eid = EXAM_ID || DATA.exams[0].id; renderExamDetail(examById[_eid]);
+    show('exams'); const _eid = EXAM_ID || (DATA.exams.find(e => !e.hw) || DATA.exams[0]).id; renderExamDetail(examById[_eid]);
     await new Promise(r => setTimeout(r, 500));
     const sk = document.querySelectorAll('#examDetail details.sketch')[0]; // Q1
     sk.open = true; await new Promise(r => setTimeout(r, 250));
@@ -59,7 +59,7 @@ const EXAM_ID = process.argv[4] || '';  // default: first exam in DATA
   if (t.kindDir !== 'rtl') fails.push('flash prompt not rtl: ' + t.kindDir);
   if (t.frontDir !== 'rtl') fails.push('flash front not rtl: ' + t.frontDir);
 
-  await p.evaluate(async (EXAM_ID) => { show('exams'); const _eid = EXAM_ID || DATA.exams[0].id; renderExamDetail(examById[_eid]);
+  await p.evaluate(async (EXAM_ID) => { show('exams'); const _eid = EXAM_ID || (DATA.exams.find(e => !e.hw) || DATA.exams[0]).id; renderExamDetail(examById[_eid]);
     await new Promise(r => setTimeout(r, 300));
     const sk = document.querySelectorAll('#examDetail details.sketch')[0]; sk.open = true; sk.scrollIntoView({block:'start'}); }, EXAM_ID);
   await p.waitForTimeout(400);
