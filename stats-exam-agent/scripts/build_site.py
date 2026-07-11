@@ -77,7 +77,7 @@ def parse_exam(path: Path) -> dict:
     }
     # question blocks start with "## Q"
     for block in re.split(r"\n(?=## Q)", text):
-        m = re.match(r"## Q(\d+)\s*\((\d+)\s*pts?\)\s*[—-]\s*(.+)", block)
+        m = re.match(r"## Q(\d+)\s*\((\d+)\s*pts?[^)]*\)\s*[—-]\s*(.+)", block)
         if not m:
             continue
         qnum, pts, title = int(m.group(1)), int(m.group(2)), m.group(3).strip()
@@ -247,7 +247,7 @@ def parse_archetypes(path: Path) -> list:
     return out
 
 
-MOCK_Q_RE = re.compile(r"^## Q(?:uestion)?\s*(\d+)\s*\((\d+)\s*pts?\)\s*[—-]\s*(.+)$",
+MOCK_Q_RE = re.compile(r"^## Q(?:uestion)?\s*(\d+)\s*\((\d+)\s*pts?[^)]*\)\s*[—-]\s*(.+)$",
                        re.MULTILINE)
 
 
