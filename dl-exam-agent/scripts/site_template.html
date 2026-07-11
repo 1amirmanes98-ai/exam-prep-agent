@@ -201,7 +201,8 @@ details.note h4{font-family:var(--serif);font-size:1rem;margin:16px 0 6px}
 .katex,.katex-display,code,pre,.pts,.chip,.diff{direction:ltr;unicode-bidi:isolate}
 /* markdown inside cards */
 .md p{margin:.6em 0}
-details.sketch .md p{margin:.85em 0}
+details.sketch .md p{margin:1em 0}
+details.sketch .md p:not(.co-trick):not(.co-warn)>strong:first-child{color:var(--pc,var(--ink))}
 /* per-question archetype template box */
 details.tmpl{border:1px solid color-mix(in srgb,var(--pc,var(--ink)) 28%,transparent);border-inline-start:3px solid var(--pc,var(--ink));border-radius:8px;margin:10px 18px 0;background:color-mix(in srgb,var(--pc,var(--ink)) 6%,transparent)}
 details.tmpl>summary{cursor:pointer;padding:9px 14px;font-weight:650;color:var(--pc,var(--ink));list-style:none;font-size:.9rem}
@@ -354,6 +355,7 @@ const DATA = JSON.parse(document.getElementById("data").textContent);
 // with English fallbacks in code, so this template stays course-agnostic.
 document.documentElement.dir = CONFIG.dir || "ltr";
 document.documentElement.lang = CONFIG.lang || "en";
+const BIDI = CONFIG.dir || "ltr";  // base direction for rendered content (not per-block auto)
 const UI = CONFIG.ui || {};
 const tr = (k, fb) => (UI[k] != null ? UI[k] : fb);
 const slotLabel = s => (CONFIG.slotLabels && CONFIG.slotLabels[s] != null) ? CONFIG.slotLabels[s] : s;
@@ -430,7 +432,7 @@ function mathify(el) {
   });
 }
 function setMd(el, src) {
-  el.innerHTML = md(src); el.classList.add("md"); el.setAttribute("dir", "auto"); mathify(el);
+  el.innerHTML = md(src); el.classList.add("md"); el.setAttribute("dir", BIDI); mathify(el);
   // takeaway callouts: bullets/paragraphs opening with the trick/warn markers
   el.querySelectorAll("li, p").forEach(n => {
     const s = n.querySelector("strong");
@@ -464,7 +466,7 @@ function questionCard(e, q) {
   const c = document.createElement("div");
   c.className = "card qcard p-" + q.pillar;
   c.innerHTML =
-    "<div class='qhead'><h3 dir='auto'>Q" + q.n + " · " + q.title + "</h3>" +
+    "<div class='qhead'><h3 dir='" + BIDI + "'>Q" + q.n + " · " + q.title + "</h3>" +
     "<span class='pill'><span class='dot'></span>" + slotLabel(q.pillar) + "</span>" +
     "<span class='pts'>" + q.pts + " " + tr("pts","pts") + " · <button type='button' class='srcbtn examjump'>" + examLabel(e) + "</button></span>" +
     (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
@@ -484,7 +486,7 @@ function collapsedQuestion(e, q) {
   // tree node: closed by default, the full card builds lazily on first open
   const d = document.createElement("details");
   d.className = "note qwrap p-" + q.pillar;
-  d.innerHTML = "<summary dir='auto'><span class='pts' style='margin-inline-end:8px'>" + examLabel(e) +
+  d.innerHTML = "<summary dir='" + BIDI + "'><span class='pts' style='margin-inline-end:8px'>" + examLabel(e) +
     " · Q" + q.n + " (" + q.pts + " " + tr("pts","pts") + ")</span> " + q.title + "</summary><div class='qslot' style='padding:0 14px 14px'></div>";
   mathify($("summary", d));
   let built = false;
@@ -520,7 +522,7 @@ function tmplNode(e, q) {
   const a = hits[0];
   const d = document.createElement("details");
   d.className = "tmpl p-" + q.pillar;
-  d.innerHTML = "<summary dir='auto'>🧩 " + tr("tmplLabel","Question template") + " — <span class='tname'></span></summary><div class='tmplbody mdslot'></div>";
+  d.innerHTML = "<summary dir='" + BIDI + "'>🧩 " + tr("tmplLabel","Question template") + " — <span class='tname'></span></summary><div class='tmplbody mdslot'></div>";
   $(".tname", d).textContent = a.name;
   mathify($("summary", d)); // archetype names may contain math
   let built = false;
@@ -658,7 +660,7 @@ function renderTopics() {
     d.className = "topicrow click p-" + t.pillar;
     d.tabIndex = 0; d.setAttribute("role", "button");
     d.innerHTML = "<div class='stripe'></div><div class='t mdslot'></div>" +
-      "<div class='meta' dir='auto'>" + tr("taughtLabel","Taught:") + " " + t.taught + " · " + tr("examinedLabel","Examined:") + " " + t.examined + "</div>" +
+      "<div class='meta' dir='" + BIDI + "'>" + tr("taughtLabel","Taught:") + " " + t.taught + " · " + tr("examinedLabel","Examined:") + " " + t.examined + "</div>" +
       "<div class='go'>›</div>";
     const open = () => renderTopicDetail(t);
     d.onclick = open;
@@ -720,20 +722,20 @@ function renderTopicDetail(t) {
   const refs = (t.taught_refs || []).filter(r => noteByName[r]);
   if (!refs.length) {
     const p = document.createElement("p"); p.className = "sub";
-    p.textContent = tr("sourceLabel","Source: ") + t.taught; p.setAttribute("dir", "auto"); det.appendChild(p);
+    p.textContent = tr("sourceLabel","Source: ") + t.taught; p.setAttribute("dir", BIDI); det.appendChild(p);
   }
   refs.forEach((r, i) => {
     const n = noteByName[r];
     const dt = document.createElement("details");
     dt.className = "note p-" + t.pillar; if (i === 0) dt.open = true;
-    dt.innerHTML = "<summary dir='auto'>" + noteLabel(n) + "</summary><div class='notebody'></div>";
+    dt.innerHTML = "<summary dir='" + BIDI + "'>" + noteLabel(n) + "</summary><div class='notebody'></div>";
     const body = $(".notebody", dt);
     // Wikipedia-style tree: each section is a collapsed heading; content (and its
     // math) renders lazily on first expand — keeps topic pages short and fast.
     n.sections.forEach(sec => {
       const sd = document.createElement("details");
       sd.className = "notesec-d p-" + t.pillar;
-      sd.innerHTML = "<summary dir='auto'>" + secLabel(sec.h) + "</summary><div class='secbody mdslot'></div>";
+      sd.innerHTML = "<summary dir='" + BIDI + "'>" + secLabel(sec.h) + "</summary><div class='secbody mdslot'></div>";
       let rendered = false;
       sd.addEventListener("toggle", () => {
         if (sd.open && !rendered) { rendered = true; setMd($(".mdslot", sd), sec.b); }
@@ -797,7 +799,7 @@ function renderExamDetail(e) {
     const c = document.createElement("div");
     c.className = "card qcard p-" + q.pillar;
     c.innerHTML =
-      "<div class='qhead'><h3 dir='auto'>Q" + q.n + " · " + q.title + "</h3>" +
+      "<div class='qhead'><h3 dir='" + BIDI + "'>Q" + q.n + " · " + q.title + "</h3>" +
       "<span class='pill'><span class='dot'></span>" + slotLabel(q.pillar) + "</span>" +
       "<span class='pts'>" + q.pts + " " + tr("pts","pts") + "</span>" +
       (q.difficulty ? "<span class='diff' title='difficulty'>" + "●".repeat(q.difficulty) + "○".repeat(Math.max(0, 5 - q.difficulty)) + "</span>" : "") + "</div>" +
@@ -835,7 +837,7 @@ function renderFlashFilters() {
   if (flashScope) {
     const chip = document.createElement("span");
     chip.className = "scopechip p-" + flashScope.pillar;
-    chip.setAttribute("dir", "auto");
+    chip.setAttribute("dir", BIDI);
     chip.innerHTML = tr("deckLabel","Deck:") + " " + flashScope.lectures.map(l => (noteByName[l] || { title: l }).title.split(" - ")[0]).join(", ") +
       " <button type='button' aria-label='clear scope'>✕</button>";
     $("button", chip).onclick = () => { flashScope = null; buildDeck(); renderFlashFilters(); renderFlash(); };
@@ -867,14 +869,14 @@ function renderFlashFilters() {
 function renderFlash() {
   const area = $("#flashArea");
   const nGraded = deck.filter(x => store.data.cards[cardId(x)]).length;
-  $("#deckMeta").setAttribute("dir", "auto");
+  $("#deckMeta").setAttribute("dir", BIDI);
   $("#deckMeta").textContent = deck.length ? (tr("card","Card") + " " + (deckPos + 1) + " " + tr("ofN","of") + " " + deck.length + " — " + tr("missesFirst","misses come back first") + (nGraded ? " · " + nGraded + "/" + deck.length + " " + tr("gradedSoFar","graded before") : "")) : "";
   $("#flashProg").style.width = deck.length ? (100 * deckPos / deck.length) + "%" : "0%";
   $("#flashProg").parentElement.className = "progressbar p-" + (flashScope ? flashScope.pillar : flashPillar);
   area.innerHTML = "";
-  if (!deck.length) { area.innerHTML = "<div class='card empty' dir='auto'>" + tr("noCardsMatch","No cards match this filter.") + "</div>"; return; }
+  if (!deck.length) { area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + tr("noCardsMatch","No cards match this filter.") + "</div>"; return; }
   if (deckPos >= deck.length) {
-    area.innerHTML = "<div class='card empty' dir='auto'>" + tr("deckDone","Deck done 🎉 — misses were logged and will lead the next run.") + "<br><br></div>";
+    area.innerHTML = "<div class='card empty' dir='" + BIDI + "'>" + tr("deckDone","Deck done 🎉 — misses were logged and will lead the next run.") + "<br><br></div>";
     const b = document.createElement("button"); b.type = "button"; b.className = "btn primary"; b.textContent = tr("restartDeck","Restart deck");
     b.onclick = () => { buildDeck(); renderFlash(); };
     area.firstElementChild.appendChild(b);
@@ -885,11 +887,11 @@ function renderFlash() {
   const el = document.createElement("div");
   el.className = "card bigcard p-" + c.pillar;
   const prev = store.data.cards[cardId(c)];
-  const prevBadge = prev ? "<div class='lastgrade " + prev.last + "' dir='auto'>" +
+  const prevBadge = prev ? "<div class='lastgrade " + prev.last + "' dir='" + BIDI + "'>" +
     (prev.last === "got" ? tr("got","✓ Got it") : prev.last === "half" ? tr("almost","◐ Almost") : tr("miss","✗ Missed")) + "</div>" : "";
-  el.innerHTML = "<div class='kind' dir='auto'>" + kindLabel + "</div>" + prevBadge + "<div class='front mdslot'></div>" +
+  el.innerHTML = "<div class='kind' dir='" + BIDI + "'>" + kindLabel + "</div>" + prevBadge + "<div class='front mdslot'></div>" +
     (revealed ? "<div class='back backslot'></div>" : "") +
-    "<div class='src' dir='auto'>" + c.lecture_title + "</div>";
+    "<div class='src' dir='" + BIDI + "'>" + c.lecture_title + "</div>";
   area.appendChild(el);
   setMd($(".mdslot", el), c.front);
   if (revealed) setMd($(".backslot", el), c.back);
@@ -969,7 +971,7 @@ function renderQuiz() {
   const el = document.createElement("div");
   el.className = "card qcard p-" + q.pillar;
   el.innerHTML =
-    "<div class='qhead'><h3 dir='auto'>" + q.title + "</h3>" +
+    "<div class='qhead'><h3 dir='" + BIDI + "'>" + q.title + "</h3>" +
     "<span class='pill'><span class='dot'></span>" + slotLabel(q.pillar) + "</span>" +
     "<span class='pts'>" + q.pts + " " + tr("pts","pts") + " · " + examLabel(exam) + "</span></div>" +
     "<div class='qbody mdslot'></div>" +
@@ -1064,7 +1066,7 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
       const el = document.createElement("div");
       el.className = "card memoitem p-" + pillar + (store.data.memo[id] ? " known" : "");
       el.innerHTML = "<input type='checkbox' aria-label='I know this'" + (store.data.memo[id] ? " checked" : "") + ">" +
-        "<div class='iname' dir='auto'>" + item.name + "</div>" +
+        "<div class='iname' dir='" + BIDI + "'>" + item.name + "</div>" +
         "<div class='ibody'><div class='stmt mdslot'></div>" +
         (item.use ? "<div class='use'><b>" + tr("useWhen","Use it when:") + "</b> <span class='useslot'></span></div>" : "") +
         (item.watch ? "<div class='watch'>⚠ <span class='watchslot'></span></div>" : "") +
@@ -1091,9 +1093,9 @@ function buildMemoSection(sec, pillar, list, refreshCount) {
           b.onclick = () => openExam(eid);
           seenEl.appendChild(b);
         });
-        if (any) seenEl.insertAdjacentHTML("afterbegin", "<span class='slbl' dir='auto'>" + tr("seenIn","seen in: ") + "</span>");
-        else seenEl.innerHTML = "<span class='slbl' dir='auto'>" + item.seen + "</span>";
-      } else if (item.seen) seenEl.innerHTML = "<span class='slbl' dir='auto'>" + item.seen + "</span>";
+        if (any) seenEl.insertAdjacentHTML("afterbegin", "<span class='slbl' dir='" + BIDI + "'>" + tr("seenIn","seen in: ") + "</span>");
+        else seenEl.innerHTML = "<span class='slbl' dir='" + BIDI + "'>" + item.seen + "</span>";
+      } else if (item.seen) seenEl.innerHTML = "<span class='slbl' dir='" + BIDI + "'>" + item.seen + "</span>";
       const cb = $("input", el);
       cb.onchange = () => {
         if (cb.checked) store.data.memo[id] = true; else delete store.data.memo[id];
