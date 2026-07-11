@@ -20,7 +20,16 @@ const F = 'file://' + process.argv[2], SHOT = process.argv[3];
   const corpus = await p.evaluate(() => document.querySelector('#askCorpus') ? document.querySelector('#askCorpus').textContent : '');
   console.log('corpus:', corpus);
 
-  const queries = (process.argv[4] ? process.argv[4].split(',') : ['וילקוקסון', 'יחס הסיכויים', 'שיטת המומנטים', 'חי-בריבוע']);
+  // Queries: explicit 5th arg wins; otherwise derive high-signal terms from THIS
+  // course's own content (topic + question titles) so the check is course-agnostic
+  // (it used to hardcode Hebrew stats terms, which no other course can match).
+  const queries = process.argv[4] ? process.argv[4].split(',') : await p.evaluate(() => {
+    const terms = [];
+    const push = s => { const w = (s || '').replace(/\$[^$]*\$/g, ' ').split(/[\s,.;:()\/–-]+/).find(x => x.length >= 5); if (w) terms.push(w); };
+    (DATA.topics || []).slice(0, 8).forEach(t => push(t.topic));
+    (DATA.exams || []).forEach(e => (e.questions || []).slice(0, 1).forEach(q => push(q.title)));
+    return [...new Set(terms)].slice(0, 4);
+  });
   for (const qtext of queries) {
     const r = await p.evaluate(async (qt) => {
       show('ask'); await new Promise(r => setTimeout(r, 120));
