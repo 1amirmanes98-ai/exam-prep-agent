@@ -31,14 +31,17 @@ const F = 'file://' + process.argv[2];
     if (c.stmtLen < 30) fails.push(c.q + ' statement EMPTY (' + c.stmtLen + ')');
     if (c.tmplLeak > 0) fails.push(c.q + ' statement leaked into template box');
   });
-  // also check a_2023 shows 4 questions in the exam detail
+  // dropped-question regression guard: the exam detail must render one card per
+  // question in the data (course-agnostic — compares to the actual count, not a
+  // hard-coded number). Uses a_2023 when present.
   const n2023 = await p.evaluate(async () => {
-    if (!examById['a_2023']) return -1; // course-specific regression check (stats)
+    if (!examById['a_2023']) return { rendered: -1, expected: -1 };
     renderExamDetail(examById['a_2023']); await new Promise(r=>setTimeout(r,300));
-    return document.querySelectorAll('#examDetail .qcard').length;
+    return { rendered: document.querySelectorAll('#examDetail .qcard').length, expected: examById['a_2023'].questions.length };
   });
-  console.log('a_2023 question cards:', n2023);
-  if (n2023 !== -1 && n2023 !== 4) fails.push('a_2023 shows ' + n2023 + ' questions, expected 4');
+  console.log('a_2023 question cards:', n2023.rendered, '(data has', n2023.expected + ')');
+  if (n2023.rendered !== -1 && n2023.rendered !== n2023.expected)
+    fails.push('a_2023 renders ' + n2023.rendered + ' cards but data has ' + n2023.expected + ' (dropped question?)');
   await b.close();
   console.log('console errors:', errs.length ? errs : 'none');
   if (errs.length) fails.push(errs.length + ' console errors');
