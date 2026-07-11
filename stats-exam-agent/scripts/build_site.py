@@ -153,6 +153,11 @@ def parse_lecture(path: Path) -> dict:
             # front = the bold lead (name); back = the whole item
             fm = re.match(r"(?:[-*]\s*)?\*\*(.+?)\*\*", item)
             front = fm.group(1).strip().rstrip(".") if fm else item[:80]
+            # the card's kind (def/thm) is already shown by its prompt, so drop the
+            # redundant English marker keyword — leave just the concept name on the front
+            km = re.match(r"^(?:Def|Definition|Thm|Theorem|Lem|Lemma|Prop|Proposition|Cor|Corollary)\s*\((.*)\)\s*$", front, re.I)
+            if km:
+                front = km.group(1).strip()
             cards.append({
                 "kind": kind,
                 "front": front,
