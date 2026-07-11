@@ -8,9 +8,10 @@
 #   --memo      course ships a cheat sheet (Memorize tab): run verify_memo
 #   --shots DIR where screenshots go (default: mktemp -d)
 #
-# Always runs: verify_site.mjs (generic smoke), verify_stmt, verify_callouts*,
-# verify_mistakes, verify_search.   (*callouts asserts document dir=rtl; it is
-# skipped automatically for LTR courses unless --rtl is set.)
+# Always runs: verify_site.mjs (generic smoke), verify_stmt, verify_mathrender
+# (every math span parses in KaTeX), verify_callouts*, verify_mistakes, verify_search.
+# (*callouts asserts document dir=rtl; it is skipped automatically for LTR courses
+# unless --rtl is set.)
 #
 # Requires: `npm i playwright-core` somewhere NODE_PATH can see, and a Chromium
 # at /opt/pw-browsers/chromium-*/ (or set CHROME_BIN).
@@ -30,6 +31,7 @@ run() { echo "=== $1 ==="; if "${@:2}"; then PASS=$((PASS+1)); else FAIL=$((FAIL
 
 [ -f "$HERE/../verify_site.mjs" ] && run verify_site node "$HERE/../verify_site.mjs" "$SITE"
 run verify_stmt      node "$HERE/verify_stmt.js" "$SITE" "$SHOTS"
+run verify_mathrender node "$HERE/verify_mathrender.js" "$SITE"
 [ "$RTL" = 1 ] && run verify_dir      node "$HERE/verify_dir.js" "$SITE" "$SHOTS"
 [ "$RTL" = 1 ] && run verify_callouts node "$HERE/verify_callouts.js" "$SITE" "$SHOTS"
 run verify_mistakes  node "$HERE/verify_mistakes.js" "$SITE" "$SHOTS"

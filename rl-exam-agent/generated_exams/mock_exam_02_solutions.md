@@ -10,20 +10,20 @@ reject doesn't, optimality is a threshold. Solve the fixed point $W=\mathbb{E}_s
 
 **Full solution:**
 **(a)** State = the current offer $s$ (the only payoff-relevant info). Actions: accept / reject.
-$V^\*(s)=\max\{\,s/(1-\gamma),\ \gamma W\,\}$ where $W=\mathbb{E}_{s'}[V^\*(s')]=\tfrac14\sum_{s'} V^\*(s')$
+$V^*(s)=\max\{\,s/(1-\gamma),\ \gamma W\,\}$ where $W=\mathbb{E}_{s'}[V^*(s')]=\tfrac14\sum_{s'} V^*(s')$
 is the value of entering a period before the offer is seen. Fixed point:
 $$W=\tfrac14\sum_{s\in\{10,20,30,40\}}\max\!\Big(\tfrac{s}{1-\gamma},\ \gamma W\Big).$$
 
 **(b)** Accept value $s/(1-\gamma)$ is strictly increasing in $s$; reject value $\gamma W$ is
 constant in $s$. So $\{s:\text{accept optimal}\}=\{s: s/(1-\gamma)\ge\gamma W\}$ is an
-upper interval — a threshold policy, accept iff $s\ge s^\*=(1-\gamma)\gamma W$.
+upper interval — a threshold policy, accept iff $s\ge s^*=(1-\gamma)\gamma W$.
 
 **(c)** With $\gamma=0.9$, $1/(1-\gamma)=10$, so accept value $=10s$. Iterating the fixed point
-gives $\boxed{W^\*=318.18}$. Threshold $s^\*=(1-\gamma)\gamma W=0.09\cdot318.18=28.64$, so she
+gives $\boxed{W^*=318.18}$. Threshold $s^*=(1-\gamma)\gamma W=0.09\cdot318.18=28.64$, so she
 **accepts $s\in\{30,40\}$** and rejects $\{10,20\}$ (reject value $\gamma W=286.36$ exceeds
 $10\cdot10=100$ and $10\cdot20=200$, but is below $10\cdot30=300$).
 
-**(d)** $V^\*(10)=V^\*(20)=\gamma W=286.36$; $V^\*(30)=300$; $V^\*(40)=400$.
+**(d)** $V^*(10)=V^*(20)=\gamma W=286.36$; $V^*(30)=300$; $V^*(40)=400$.
 
 **💡 Trick.** Collapse everything to one scalar $W$ (the pre-offer value); the optimal rule is just the threshold $s\ge(1-\gamma)\gamma W$.
 
