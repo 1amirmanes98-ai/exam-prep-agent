@@ -32,13 +32,15 @@ const F = 'file://' + process.argv[2], SHOT = process.argv[3];
   await p.screenshot({ path: SHOT + '/memo-tab.png' });
   await b.close();
   const fails = [];
-  // Sections: 3 or 4 (one per hero pillar) — courses have 3 or 4 pillars.
-  if (info.sections < 3 || info.sections > 4) fails.push('expected 3–4 memo sections, got ' + info.sections);
+  // course-agnostic: the Memorize tab renders its pillar sections (>=3; a cheat sheet
+  // may add extra toolbox sections — FODL has 6), items, a non-empty "use it when"
+  // label, and an "n/m" section count — with no console errors.
+  if (info.sections < 3) fails.push('too few memo sections: ' + info.sections);
   if (!info.itemsBuilt) fails.push('no memo items rendered');
-  // Language-agnostic: a "use it when" label must be present and non-empty, and the
-  // per-section count must read "n/m" (the surrounding word is Hebrew or English by course).
   if (!info.useLabelSample || info.useLabelSample === '(none)') fails.push('use-when label missing on memo items');
   if (!/\d+\s*\/\s*\d+/.test(info.countSample)) fails.push('section count not "n/m": ' + info.countSample);
+  if (errs.length) fails.push(errs.length + ' console errors');
   console.log('console errors:', errs.length ? errs : 'none');
   console.log(fails.length ? 'FAIL: ' + fails.join('; ') : 'MEMO OK');
+  process.exit(fails.length ? 1 : 0);
 })();
