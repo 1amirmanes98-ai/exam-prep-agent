@@ -19,11 +19,11 @@ actions, and the Bellman optimality equation. Let $W$ denote the value of *enter
 before the offer is revealed*; write the fixed-point equation $W$ satisfies.
 
 **(b) [10 pts]** Argue that the optimal policy is a **threshold** policy (accept iff
-$s \ge s^\*$), and explain briefly why (monotonicity of the accept-vs-reject comparison in $s$).
+$s \ge s^*$), and explain briefly why (monotonicity of the accept-vs-reject comparison in $s$).
 
 **(c) [8 pts]** Solve for $W$ and the acceptance set. Which offers does she accept?
 
-**(d) [4 pts]** Give $V^\*(s)$ for each $s \in \{10,20,30,40\}$.
+**(d) [4 pts]** Give $V^*(s)$ for each $s \in \{10,20,30,40\}$.
 
 ## Question 2 (20 pts) — Q-learning by hand
 
