@@ -10,6 +10,9 @@ self-contained agent:
   site at `docs/stats/index.html`.
 - **`rl-exam-agent/`** — *Reinforcement Learning* (TAU 0368.3075, Prof. Yishay Mansour),
   site at `docs/rl/index.html`.
+- **`rl-he-exam-agent/`** — the same Reinforcement Learning course in **Hebrew (RTL)**,
+  site at `docs/rl-he/index.html`. Content is the English RL index translated to Hebrew;
+  config-only RTL (`index/SITE_CONFIG.json`), same unified engine.
 
 See README.md for layout and REPLICATION.md for building it for other courses.
 
