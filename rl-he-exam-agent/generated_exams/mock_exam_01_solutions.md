@@ -10,30 +10,30 @@
 
 **Full solution:**
 
-**(a)** $S=\{W,B\}$. פעולות: $A(W)=\{\text{run},\text{service}\}$, $A(B)=\{\text{repair}\}$.
-תגמולים: $R(W,\text{run})=10$, $R(W,\text{service})=4$, $R(B,\text{repair})=-3$.
-מעברים: $P(W\mid W,\text{run})=0.7,\ P(B\mid W,\text{run})=0.3$; $P(W\mid W,\text{service})=1$;
-$P(W\mid B,\text{repair})=1$. מטרה: מיקסום $\mathbb{E}\sum_{t\ge0}\gamma^t r_t$, $\gamma=0.9$.
+**(a)** $S=\{W,B\}$. פעולות: $A(W)=\{\text{הפעלה},\text{שירות}\}$, $A(B)=\{\text{תיקון}\}$.
+תגמולים: $R(W,\text{הפעלה})=10$, $R(W,\text{שירות})=4$, $R(B,\text{תיקון})=-3$.
+מעברים: $P(W\mid W,\text{הפעלה})=0.7,\ P(B\mid W,\text{הפעלה})=0.3$; $P(W\mid W,\text{שירות})=1$;
+$P(W\mid B,\text{תיקון})=1$. מטרה: מיקסום $\mathbb{E}\sum_{t\ge0}\gamma^t r_t$, $\gamma=0.9$.
 
 **(b)**
 $$V^*(W)=\max\Big\{\,10+\gamma\big(0.7\,V^*(W)+0.3\,V^*(B)\big),\ \ 4+\gamma V^*(W)\,\Big\},\qquad
 V^*(B)=-3+\gamma V^*(W).$$
 
 **(c)** איטרציית ערך מ-$V_0\equiv0$:
-- **איטרציה 1:** $Q(W,\text{run})=10+0.9(0)=10$, $Q(W,\text{service})=4+0.9(0)=4\Rightarrow V_1(W)=10$ (חמדני = **run**).
-  $Q(B,\text{repair})=-3+0.9(0)=-3\Rightarrow V_1(B)=-3$.
-- **איטרציה 2:** $Q(W,\text{run})=10+0.9(0.7\cdot10+0.3\cdot(-3))=10+0.9(6.1)=15.49$,
-  $Q(W,\text{service})=4+0.9\cdot10=13\Rightarrow V_2(W)=15.49$ (חמדני = **run**).
-  $Q(B,\text{repair})=-3+0.9\cdot10=6\Rightarrow V_2(B)=6$.
+- **איטרציה 1:** $Q(W,\text{הפעלה})=10+0.9(0)=10$, $Q(W,\text{שירות})=4+0.9(0)=4\Rightarrow V_1(W)=10$ (חמדני = **run**).
+  $Q(B,\text{תיקון})=-3+0.9(0)=-3\Rightarrow V_1(B)=-3$.
+- **איטרציה 2:** $Q(W,\text{הפעלה})=10+0.9(0.7\cdot10+0.3\cdot(-3))=10+0.9(6.1)=15.49$,
+  $Q(W,\text{שירות})=4+0.9\cdot10=13\Rightarrow V_2(W)=15.49$ (חמדני = **run**).
+  $Q(B,\text{תיקון})=-3+0.9\cdot10=6\Rightarrow V_2(B)=6$.
 
 (לשם ההשוואה, איטרציה 3 נותנת $V_3(W)=21.38$; הסדרה עולה מונוטונית אל $V^*$.)
 
-**(d)** עם $\pi(W)=\text{run},\ \pi(B)=\text{repair}$ הערך פותר את
+**(d)** עם $\pi(W)=\text{הפעלה},\ \pi(B)=\text{תיקון}$ הערך פותר את
 $$V(W)=10+0.9\big(0.7V(W)+0.3V(B)\big),\qquad V(B)=-3+0.9V(W).$$
 הצבת המשוואה השנייה בראשונה: $V(W)=10+0.63V(W)+0.27(-3+0.9V(W))$, כלומר
 $V(W)(1-0.63-0.243)=10-0.81\Rightarrow 0.127\,V(W)=9.19\Rightarrow \boxed{V^*(W)=72.36}$, וכן
 $\boxed{V^*(B)=-3+0.9\cdot72.36=62.13}$. בדיקה ב-$W$: run $=10+0.9(0.7\cdot72.36+0.3\cdot62.13)=72.36$
-מול service $=4+0.9\cdot72.36=69.13$; run מנצחת, בעקביות עם $\pi^*(W)=\text{run}$.
+מול service $=4+0.9\cdot72.36=69.13$; run מנצחת, בעקביות עם $\pi^*(W)=\text{הפעלה}$.
 
 **💡 טריק.** רק המצב חשוב — MDP עם 2 מצבים הוא מערכת ליניארית $2\times2$; פתרו אותה ישירות במקום להריץ VI עד הגבול.
 
@@ -108,10 +108,10 @@ $\nabla_\theta\log\pi(a_1\mid s)=(1,0)-(0.6225,0.3775)=\mathbf{(0.3775,\,-0.3775
 
 **(b)** יהיו $\hat\mu_1,\hat\mu_2$ התוחלות האמפיריות לאחר $m$ משיכות כל אחת. נתחייב בטעות אם"ם
 התוחלת האמפירית של הזרוע הגרועה יותר עולה על זו של הזרוע הטובה ביותר. ההפרש
-$\hat\mu^\star-\hat\mu_{\text{other}}$ בעל תוחלת $\Delta$ ובהיותו הפרש של שני ממוצעים בלתי-תלויים
+$\hat\mu^\star-\hat\mu_{\text{אחר}}$ בעל תוחלת $\Delta$ ובהיותו הפרש של שני ממוצעים בלתי-תלויים
 $\tfrac12$-תת-גאוסיאניים של $m$ דגימות, הוא $\sqrt{\tfrac{1}{2m}}$-תת-גאוסיאני, כלומר
 פרוקסי שונות $\tfrac{1}{4m}+\tfrac{1}{4m}=\tfrac{1}{2m}$. הופדינג נותן
-$\Pr[\hat\mu^\star-\hat\mu_{\text{other}}\le 0]\le\exp\!\Big(-\dfrac{\Delta^2}{2\cdot(1/(2m))\cdot 2}\Big)
+$\Pr[\hat\mu^\star-\hat\mu_{\text{אחר}}\le 0]\le\exp\!\Big(-\dfrac{\Delta^2}{2\cdot(1/(2m))\cdot 2}\Big)
 =\exp(-m\Delta^2/4)$.
 
 **(c)** אם נתחייב נכון (הסתברות $\ge 1-e^{-m\Delta^2/4}$) שלב ההתחייבות מוסיף $0$ חרטה;

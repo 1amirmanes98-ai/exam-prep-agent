@@ -15,7 +15,7 @@ $V^*(s)=\max\{\,s/(1-\gamma),\ \gamma W\,\}$ כאשר $W=\mathbb{E}_{s'}[V^*(s')
 $$W=\tfrac14\sum_{s\in\{10,20,30,40\}}\max\!\Big(\tfrac{s}{1-\gamma},\ \gamma W\Big).$$
 
 **(b)** ערך הקבלה $s/(1-\gamma)$ עולה ממש ב-$s$; ערך הדחייה $\gamma W$
-קבוע ב-$s$. אז $\{s:\text{accept optimal}\}=\{s: s/(1-\gamma)\ge\gamma W\}$ הוא
+קבוע ב-$s$. אז $\{s:\text{קבלה אופטימלית}\}=\{s: s/(1-\gamma)\ge\gamma W\}$ הוא
 קטע עליון — מדיניות סף, קבלה אם"ם $s\ge s^*=(1-\gamma)\gamma W$.
 
 **(c)** עם $\gamma=0.9$, $1/(1-\gamma)=10$, ולכן ערך הקבלה $=10s$. איטרציה של נקודת השבת
@@ -82,7 +82,7 @@ $\Pr[|\hat\mu-\mu|>\varepsilon/2]\le 2\exp(-2\ell(\varepsilon/2)^2)=2\exp(-\ell\
 
 **(b)** אם הערכת **כל** זרוע נמצאת בתוך $\varepsilon/2$ מתוחלתה, הזרוע הטובה-אמפירית
 נמצאת בתוך $\varepsilon$ מהמיטבית האמיתית (טיעון סטנדרטי דו-צדדי). חסם איחוד:
-$\Pr[\text{some arm off by}>\varepsilon/2]\le 2n\exp(-\ell\varepsilon^2/2)$. קבעו $\le\delta$:
+$\Pr[\text{זרוע כלשהי סוטה ב}>\varepsilon/2]\le 2n\exp(-\ell\varepsilon^2/2)$. קבעו $\le\delta$:
 $$\ell\ge \frac{2}{\varepsilon^2}\ln\frac{2n}{\delta}.$$
 עבור $n=10,\varepsilon=0.1,\delta=0.05$: $\ell=\lceil \tfrac{2}{0.01}\ln(400)\rceil=\lceil 200\cdot5.99\rceil=\mathbf{1199}$
 עם קבוע הופדינג של $\varepsilon/2$, או $\ell=\lceil\tfrac{1}{2\varepsilon^2}\ln\tfrac{2n}{\delta}\rceil=\mathbf{300}$
