@@ -12,7 +12,7 @@ An AI exam-prep system in two parts:
    sheet with tracking, computed concept figures plus per-question exam figures
    (histograms, scatter/regression, QQ, boxplots), and retrieval search over everything.
 
-Currently serving three courses:
+Currently serving three courses (Reinforcement Learning in both English and Hebrew):
 
 - **Foundations of Deep Learning** (TAU 03683080) →
   **https://1amirmanes98-ai.github.io/exam-prep-agent/**
@@ -20,6 +20,7 @@ Currently serving three courses:
   **https://1amirmanes98-ai.github.io/exam-prep-agent/stats/**
 - **Reinforcement Learning** (TAU 0368.3075, Prof. Yishay Mansour) →
   **https://1amirmanes98-ai.github.io/exam-prep-agent/rl/**
+  (עברית: **https://1amirmanes98-ai.github.io/exam-prep-agent/rl-he/**)
 
 ## Study
 

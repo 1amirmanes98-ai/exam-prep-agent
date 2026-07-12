@@ -17,3 +17,7 @@ rl-exam-agent/materials/
 rl-exam-agent/index/
 # ...except the site config, which is code-not-content and needed for replication
 !rl-exam-agent/index/SITE_CONFIG.json
+# Same policy for the Hebrew reinforcement-learning tutor (rl-he-exam-agent):
+rl-he-exam-agent/materials/
+rl-he-exam-agent/index/
+!rl-he-exam-agent/index/SITE_CONFIG.json
