@@ -4,7 +4,7 @@
   "courseName": "Reinforcement Learning Study Hub",
   "courseSubtitle": "למידה מחיזוקים",
   "heroTitle": "The exam has a shape. Learn the shape.",
-  "heroSub": "Every Reinforcement Learning final follows the same template: four questions spanning planning (MDPs & dynamic programming), model-free learning, function approximation & policy gradient, and bandits. Built from your course's 13 lectures, 12 recitations, the RL Foundations book, and all past exams (2018–2023) — translated from Hebrew, tagged, and drillable.",
+  "heroSub": "Every Reinforcement Learning final follows the same template: four questions spanning planning (MDPs & dynamic programming), model-free learning, function approximation & policy gradient, and bandits. Built from your course's 13 lectures, 12 recitations, the RL Foundations book, and all past exams (2018–2025) — translated from Hebrew, tagged, and drillable.",
   "examFormatLine": "3 hours · one A4 double-sided aid sheet + calculator · 4 questions · ~100 points",
   "slots": [
     "Planning",
