@@ -773,6 +773,7 @@ function examLabel(e) {
   if (e.mock) return "Mock Exam " + e.id.split("_")[1].replace(/^0+/, "");
   if (e.hw) return tr("hwLabel","Homework") + " " + (+e.id.split("_")[1]);
   const parts = e.id.split("_");
+  if (parts[0] === "home") { const y = parts[1].slice(0, 4), p = parts[1].slice(4); return tr("homeExam", "Home exam") + " " + y + (p ? " · " + tr("part", "Part") + " " + p.toUpperCase() : ""); }
   return parts.length === 2 ? "Moed " + parts[0].toUpperCase() + " · " + parts[1] : "Example exam";
 }
 function examCardButton(e) {
