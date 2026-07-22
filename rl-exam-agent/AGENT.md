@@ -46,7 +46,7 @@ your role, where the knowledge lives, and the rules of engagement.
 Corpus notes: **13 lectures** (L1 intro → L13 generative model/inverse RL), **12
 recitations** (incl. rec 11 = POMDP), the **RL Foundations** book (Mannor–Mansour–Tamar;
 2023 and Nov-2025 editions) kept as reference, the **exam question booklet** (48 problems),
-and **18 exams**: all past finals **2018–2025** (moadim A/B, plus 2025 Moed C, → `a_YYYY` / `b_YYYY` / `c_YYYY`) plus a
+and **20 exams**: all past finals **2018–2025** plus the **2025/26 take-home home exam** (split into Parts A/B) (moadim A/B, plus 2025 Moed C, → `a_YYYY` / `b_YYYY` / `c_YYYY`) plus a
 **sample exam** (→ `example`). Official solutions are inside the PDF for the **sample exam**
 and **2019 Moed A**; all other solution sketches were derived by the tutor and numerically
 verified. The **lecture 11 / 13** material (inverse RL, apprenticeship, RLHF) was flagged by
