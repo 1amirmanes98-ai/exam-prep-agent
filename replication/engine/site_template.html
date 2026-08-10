@@ -37,6 +37,13 @@ __KATEX_CSS__
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.55}
+/* readability: question statements, solutions and notes breathe more than chrome */
+.qbody,.inner,.notebody{font-size:1.045em;line-height:1.78}
+.qbody p,.inner p,.notebody p{margin-block:0 14px}
+.qbody li,.inner li,.notebody li{margin-block:5px}
+.qbody .katex-display,.inner .katex-display,.notebody .katex-display{margin:14px 0 16px}
+ol.tmplsteps{padding-inline-start:22px;margin:6px 0 4px}
+ol.tmplsteps li{margin-block:7px}
 .app{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -542,7 +549,20 @@ function tmplNode(e, q) {
     // body = the archetype prose, minus the leading bold name and the trailing refs list
     const body = a.desc.replace(/^\*\*[\s\S]*?\*\*\s*[—–-]\s*/, "")
       .replace(/\s*[—–-]?\s*\*{0,2}(?:הופיעה ב|appeared in)\*{0,2}\s*[:：][\s\S]*$/i, "");
-    setMd($(".tmplbody", d), body);
+    // archetype recipes carry inline "1) ... 2) ..." step markers (EXAM_MAP is
+    // whitespace-collapsed, so a markdown list can't survive there) — render
+    // them as a real numbered list; plain prose archetypes fall through as-is.
+    const steps = body.split(/(?=(?:^|\s)\d{1,2}\)\s)/).map(t => t.trim()).filter(Boolean);
+    if (steps.length >= 3 && /^\d{1,2}\)/.test(steps[1] || "")) {
+      const slot = $(".tmplbody", d); slot.innerHTML = "";
+      const lead = /^\d{1,2}\)/.test(steps[0]) ? null : steps.shift();
+      if (lead) { const lp = document.createElement("p"); lp.setAttribute("dir", BIDI); slot.appendChild(lp); setMd(lp, lead); }
+      const ol = document.createElement("ol"); ol.setAttribute("dir", BIDI); ol.className = "tmplsteps";
+      steps.forEach(t => { const li = document.createElement("li"); ol.appendChild(li); setMd(li, t.replace(/^\d{1,2}\)\s*/, "")); });
+      slot.appendChild(ol);
+    } else {
+      setMd($(".tmplbody", d), body);
+    }
   });
   return d;
 }
