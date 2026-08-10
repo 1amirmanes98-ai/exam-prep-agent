@@ -19,7 +19,7 @@ const EXAM_ID = process.argv[4] || '';  // default: first exam in DATA
   const r = await p.evaluate(async (EXAM_ID) => {
     show('exams'); const _eid = EXAM_ID || (DATA.exams.find(e => !e.hw) || DATA.exams[0]).id; renderExamDetail(examById[_eid]);
     await new Promise(r => setTimeout(r, 500));
-    const sk = document.querySelectorAll('#examDetail details.sketch')[0]; // Q1
+    const sk = document.querySelectorAll('#examDetail details.sketch:not(.hintfold)')[0]; // Q1
     sk.open = true; await new Promise(r => setTimeout(r, 250));
     const inner = sk.querySelector('.inner');
     const ps = inner.querySelectorAll('p');
@@ -61,7 +61,7 @@ const EXAM_ID = process.argv[4] || '';  // default: first exam in DATA
 
   await p.evaluate(async (EXAM_ID) => { show('exams'); const _eid = EXAM_ID || (DATA.exams.find(e => !e.hw) || DATA.exams[0]).id; renderExamDetail(examById[_eid]);
     await new Promise(r => setTimeout(r, 300));
-    const sk = document.querySelectorAll('#examDetail details.sketch')[0]; sk.open = true; sk.scrollIntoView({block:'start'}); }, EXAM_ID);
+    const sk = document.querySelectorAll('#examDetail details.sketch:not(.hintfold)')[0]; sk.open = true; sk.scrollIntoView({block:'start'}); }, EXAM_ID);
   await p.waitForTimeout(400);
   await p.screenshot({ path: SHOT + '/dir-sketch.png' });
 

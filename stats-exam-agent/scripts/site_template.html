@@ -835,6 +835,33 @@ function renderExamDetail(e) {
     if (q.hint) setMd($(".hintslot", c), q.hint);
     if (CONFIG.figures && q.sketch) figsForSolution(q).slice(0, 1).forEach(id => $(".sketchslot", c).appendChild(figNode(id)));
   });
+  // formulas-used-in-this-exam recap: invert the cheatsheet's Seen-in refs.
+  // The section name doubles as the course-part tag. Hidden when nothing maps.
+  const recap = [];
+  ((DATA.cheatsheet && DATA.cheatsheet.sections) || []).forEach(sec =>
+    sec.items.forEach(it => {
+      if (parseRefs(it.seen || "").some(r => r[0] === e.id)) recap.push({ name: it.name, statement: it.statement, section: sec.name });
+    }));
+  if (recap.length) {
+    const rc = document.createElement("div");
+    rc.className = "card";  // NOT qcard — question-card checks/counters must not see it
+    rc.innerHTML = "<details class='sketch'><summary>" + tr("hRecap","Formulas used in this exam") +
+      " <span class='pts'>(" + recap.length + ")</span></summary><div class='inner recapslot'></div></details>";
+    const slot = $(".recapslot", rc);
+    recap.forEach(f => {
+      const item = document.createElement("div");
+      item.style.marginBottom = "14px";
+      item.innerHTML = "<p dir='" + BIDI + "'><strong>" + f.name + "</strong> <span class='pill' style='vertical-align:1px'>" + f.section + "</span></p><div class='recapstmt'></div>";
+      slot.appendChild(item);
+      setMd($(".recapstmt", item), f.statement);
+    });
+    const go = document.createElement("button");
+    go.type = "button"; go.className = "btn"; go.style.margin = "4px 0 8px";
+    go.textContent = tr("recapGoMemo","Full cheat sheet →");
+    go.onclick = () => show("memo");
+    slot.appendChild(go);
+    det.appendChild(rc);
+  }
   mathify(det); // titles and headers contain math too
   det.scrollIntoView({ behavior: "auto", block: "start" });
 }
