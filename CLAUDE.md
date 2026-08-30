@@ -13,6 +13,10 @@ self-contained agent:
 - **`rl-he-exam-agent/`** — the same Reinforcement Learning course in **Hebrew (RTL)**,
   site at `docs/rl-he/index.html`. Content is the English RL index translated to Hebrew;
   config-only RTL (`index/SITE_CONFIG.json`), same unified engine.
+- **`dl-he-exam-agent/`** — the same *Foundations of Deep Learning* course in **Hebrew (RTL)**,
+  site at `docs/dl-he/index.html`. Content is the English dl index translated to Hebrew (with
+  Hebrew hints, step-templates, archetype recipes, and "במילים" glosses); config-only RTL
+  (`index/SITE_CONFIG.json`), same unified engine.
 
 See README.md for layout and REPLICATION.md for building it for other courses.
 

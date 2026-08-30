@@ -10,6 +10,8 @@ stats-exam-agent/materials/
 
 # Python bytecode
 __pycache__/
+# Node deps for the headless verification suite (playwright-core) — never committed
+node_modules/
 # Same policy for the reinforcement-learning tutor (rl-exam-agent/README.md):
 rl-exam-agent/materials/
 rl-exam-agent/index/
