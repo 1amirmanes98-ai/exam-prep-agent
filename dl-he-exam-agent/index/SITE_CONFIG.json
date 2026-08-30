@@ -16,7 +16,11 @@
     "expressiveness": "Expressiveness",
     "optimization": "Optimization",
     "generalization": "Generalization",
-    "practices": "Practices"
+    "practices": "Practices",
+    "כושר ביטוי": "Expressiveness",
+    "ביטוי": "Expressiveness",
+    "אופטימיזציה": "Optimization",
+    "הכללה": "Generalization"
   },
   "slotRoles": {
     "Expressiveness": "שאלה 1 · מה הרשת יכולה לייצג",
