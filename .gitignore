@@ -18,3 +18,5 @@ rl-exam-agent/index/
 # Hebrew RL tutor: index text content is now IN git (owner's decision, 2026-08,
 # same as the statistics tutor) — only the raw course materials stay out:
 rl-he-exam-agent/materials/
+# Hebrew FODL tutor: index text content is in git from day one (only raw materials stay out):
+dl-he-exam-agent/materials/
