@@ -6,9 +6,9 @@
 const MOUNTED_FIGS = [];
 const FIGS = {
   linnet: {
-    title: "A deep linear network is a single matrix",
+    title: "רשת לינארית עמוקה היא מטריצה בודדת",
     pillar: "Optimization",
-    caption: "Structure of a depth-3 linear network: every layer applies a weight matrix and there is no nonlinearity between them, so the whole map collapses to the single product W = W₃W₂W₁. Many parameters (the individual Wᵢ) realize one end-to-end matrix W — and gradient descent on the Wᵢ is what implicitly biases which W you reach. This composition-into-one-matrix is the object the course's deep-linear-network results analyse.",
+    caption: "המבנה של רשת לינארית בעומק 3: כל שכבה מפעילה מטריצת משקלים ואין אי-לינאריות ביניהן, ולכן כל ההעתקה קורסת למכפלה הבודדת W = W₃W₂W₁. פרמטרים רבים (ה-Wᵢ הבודדות) מממשים מטריצה אחת מקצה-לקצה W — וירידת הגרדיאנט על ה-Wᵢ היא שמטה במרומז לאיזו W מגיעים. ההרכבה-הזאת-למטריצה-אחת היא האובייקט שאותו מנתחות תוצאות הרשת-הלינארית-העמוקה של הקורס.",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--opt"), serif = cssVar("--serif");
@@ -24,8 +24,8 @@ const FIGS = {
       P.forEach((p, i) => { const edge = i === 0 || i === cols - 1; p.ys.forEach(y => { ctx.beginPath(); ctx.arc(p.x, y, r, 0, 2 * Math.PI); ctx.fillStyle = col; ctx.globalAlpha = edge ? .85 : .16; ctx.fill(); ctx.globalAlpha = 1; ctx.lineWidth = 1.6; ctx.strokeStyle = col; ctx.stroke(); }); });
       ctx.textAlign = "center";
       ctx.fillStyle = muted; ctx.font = "12px " + serif;
-      ctx.fillText("input  x ∈ ℝ³", P[0].x, 26);
-      ctx.fillText("output  y ∈ ℝ²", P[cols - 1].x, 26);
+      ctx.fillText("קלט  x ∈ ℝ³", P[0].x, 26);
+      ctx.fillText("פלט  y ∈ ℝ²", P[cols - 1].x, 26);
       // weight matrix names + shapes between layers
       const wl = ["W₁", "W₂", "W₃"];
       for (let i = 0; i < cols - 1; i++) { const xm = (P[i].x + P[i + 1].x) / 2; ctx.fillStyle = ink; ctx.font = "600 15px " + serif; ctx.fillText(wl[i], xm, 44); ctx.fillStyle = muted; ctx.font = "11px " + serif; ctx.fillText(widths[i + 1] + "×" + widths[i], xm, 60); }
@@ -35,13 +35,13 @@ const FIGS = {
       P.forEach((p, i) => ctx.fillText("d" + "₀₁₂₃"[i] + " = " + widths[i], p.x, yb));
       // the collapse
       ctx.fillStyle = col; ctx.font = "600 16px " + serif;
-      ctx.fillText("end-to-end map:   W = W₃ · W₂ · W₁   ∈ ℝ²ˣ³", W / 2, H - 18);
+      ctx.fillText("העתקה מקצה-לקצה:   W = W₃ · W₂ · W₁   ∈ ℝ²ˣ³", W / 2, H - 18);
     }
   },
   factor: {
-    title: "Symmetric factorization  W = UUᵀ",
+    title: "פקטוריזציה סימטרית  W = UUᵀ",
     pillar: "Optimization",
-    caption: "The object of the matrix-factorization problem: a d×k search matrix U is squared into W = UUᵀ, which is automatically symmetric and positive-semidefinite with rank ≤ k. Gradient descent optimises the factor U, not W directly, and among all factors giving the same fit it is biased toward small-norm, low-rank U — the implicit regularisation these questions probe.",
+    caption: "האובייקט של בעיית פירוק-המטריצות: מטריצת-חיפוש U בגודל d×k מועלית בריבוע ל-W = UUᵀ, שהיא אוטומטית סימטרית וחצי-מוגדרת חיובית עם דרגה ≤ k. ירידת הגרדיאנט ממטבת את הגורם U, ולא את W ישירות, ומבין כל הגורמים שנותנים אותה התאמה היא מוטה לעבר U בעל נורמה קטנה ודרגה נמוכה — הרגולריזציה המרומזת שהשאלות האלה בודקות.",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--opt"), serif = cssVar("--serif");
@@ -62,15 +62,15 @@ const FIGS = {
       ctx.textAlign = "left";
       ctx.fillStyle = col; ctx.font = "600 15px " + serif; ctx.fillText("W = UUᵀ", 80, H - 66);
       ctx.fillStyle = muted; ctx.font = "13px " + serif;
-      ctx.fillText("symmetric   ·   positive-semidefinite  (W ⪰ 0)   ·   rank ≤ k", 172, H - 66);
+      ctx.fillText("סימטרית   ·   חצי-מוגדרת חיובית  (W ⪰ 0)   ·   דרגה ≤ k", 172, H - 66);
       ctx.fillStyle = ink; ctx.font = "13px " + serif;
-      ctx.fillText("=  Σᵢ₌₁ᵏ  uᵢ uᵢᵀ      (a sum of k rank-1 outer products)", 80, H - 36);
+      ctx.fillText("=  Σᵢ₌₁ᵏ  uᵢ uᵢᵀ      (סכום של k מכפלות חיצוניות מדרגה-1)", 80, H - 36);
     }
   },
   tensor: {
-    title: "A tensor as a sum of rank-1 terms (CP)",
+    title: "טנזור כסכום של איברים מדרגה-1 (CP)",
     pillar: "Expressiveness",
-    caption: "The expressiveness pillar arranges a network's computation as a tensor and studies its rank. A CP decomposition writes that tensor as a sum of R rank-1 terms, each an outer product a∘b∘c of three vectors. Shallow nets realise only low CP-rank tensors; deep nets reach tensors of exponentially higher hierarchical (HT) rank — the algebraic source of depth separation (Lecture 2; Kronecker / expressiveness recitation).",
+    caption: "עמוד כושר-הביטוי מסדר את החישוב של רשת כטנזור וחוקר את דרגתו. פירוק CP כותב את הטנזור הזה כסכום של R איברים מדרגה-1, שכל אחד מהם מכפלה חיצונית a∘b∘c של שלושה וקטורים. רשתות רדודות מממשות רק טנזורים בעלי דרגת-CP נמוכה; רשתות עמוקות מגיעות לטנזורים בעלי דרגה היררכית (HT) גבוהה אקספוננציאלית — המקור האלגברי של הפרדת העומק (הרצאה 2; תרגול Kronecker / כושר-ביטוי).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--exp"), serif = cssVar("--serif");
@@ -82,7 +82,7 @@ const FIGS = {
         ctx.globalAlpha = .3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y - dy); ctx.lineTo(x + s + dx, y - dy); ctx.lineTo(x + s, y); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
         ctx.globalAlpha = .09; ctx.beginPath(); ctx.moveTo(x + s, y); ctx.lineTo(x + s + dx, y - dy); ctx.lineTo(x + s + dx, y + s - dy); ctx.lineTo(x + s, y + s); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
       })(52, cy - 30, 60);
-      ctx.fillStyle = ink; ctx.font = "600 15px " + serif; ctx.textAlign = "center"; ctx.fillText("tensor 𝒯", 92, cy + 62);
+      ctx.fillStyle = ink; ctx.font = "600 15px " + serif; ctx.textAlign = "center"; ctx.fillText("טנזור 𝒯", 92, cy + 62);
       ctx.font = "600 22px " + serif; ctx.fillText("=", 168, cy + 4);
       function tripod(x, label) {
         const L = 30, arms = [[0, -L], [L * .88, L * .5], [-L * .8, L * .48]];
@@ -103,13 +103,13 @@ const FIGS = {
       ctx.fillStyle = ink; ctx.font = "600 20px " + serif; ctx.fillText("+  ⋯  +", 424, cy + 4);
       tripod(504, "aᵣ∘bᵣ∘cᵣ");
       ctx.fillStyle = col; ctx.font = "600 14px " + serif; ctx.textAlign = "center";
-      ctx.fillText("CP rank = smallest number R of rank-1 terms", W / 2, H - 16);
+      ctx.fillText("דרגת CP = המספר R הקטן ביותר של איברים מדרגה-1", W / 2, H - 16);
     }
   },
   sawtooth: {
-    title: "Depth doubles the sawtooth",
+    title: "העומק מכפיל את ה-sawtooth",
     pillar: "Expressiveness",
-    caption: "Computed: the width-3 tent map g and its self-compositions. Pieces double with every composition (2 → 4 → 8): an L-layer net oscillates ~2^L times while a shallow net needs width ~2^L to keep up (Telgarsky, Lecture 2).",
+    caption: "מחושב: מפת האוהל g ברוחב-3 וההרכבות-העצמיות שלה. מספר החלקים מוכפל בכל הרכבה (2 → 4 → 8): רשת בעלת L שכבות מתנדנדת ~2^L פעמים, בעוד רשת רדודה זקוקה לרוחב ~2^L כדי לעמוד בקצב (Telgarsky, הרצאה 2).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const ink = cssVar("--ink"), muted = cssVar("--muted"), col = cssVar("--exp");
@@ -127,14 +127,14 @@ const FIGS = {
         }
         ctx.stroke();
         ctx.fillStyle = ink; ctx.font = "13px " + cssVar("--serif");
-        ctx.fillText(k === 1 ? "g — 2 pieces" : k === 2 ? "g∘g — 4 pieces" : "g∘g∘g — 8 pieces", x0 + 6, y0 + 14);
+        ctx.fillText(k === 1 ? "g — 2 חלקים" : k === 2 ? "g∘g — 4 חלקים" : "g∘g∘g — 8 חלקים", x0 + 6, y0 + 14);
       }
     }
   },
   phase: {
-    title: "Gradient flow rides the conserved hyperbolas",
+    title: "gradient flow רוכב על ההיפרבולות הנשמרות",
     pillar: "Optimization",
-    caption: "Computed trajectories (RK4) of gradient flow on L(w₁,w₂)=½(w₁w₂−1)². Solid teal paths are the real flow; dashed curves are the level sets w₁²−w₂²=const — balancedness (Lecture 4) says the flow can never leave its hyperbola. Green curve: the minima set w₁w₂=1.",
+    caption: "מסלולים מחושבים (RK4) של gradient flow על L(w₁,w₂)=½(w₁w₂−1)². המסלולים הטורקיזים המלאים הם הזרימה האמיתית; העקומות המקווקוות הן קבוצות הרמה w₁²−w₂²=const — balancedness (הרצאה 4) אומרת שהזרימה לעולם אינה יכולה לעזוב את ההיפרבולה שלה. העקומה הירוקה: קבוצת המינימות w₁w₂=1.",
     draw(cv) {
       const W = 640, H = 340, ctx = figCanvas(cv, W, H);
       const muted = cssVar("--muted"), opt = cssVar("--opt"), good = cssVar("--good"), ink = cssVar("--ink");
@@ -190,9 +190,9 @@ const FIGS = {
     }
   },
   sigma: {
-    title: "Rich get richer: singular-value dynamics",
+    title: "העשיר מתעשר: דינמיקת ערכים סינגולריים",
     pillar: "Optimization",
-    caption: "Computed σᵣ(t) for the depth-3 dynamics σ̇ᵣ = −3(σᵣ²)^(2/3)(σᵣ−σᵣ*) from tiny init σᵣ(0)=0.01, targets σ*=3, 2, 1, 0.4. Modes with large targets take off first and sequentially; small ones stall near zero — the implicit low-rank bias of deep matrix factorization (Lecture 8).",
+    caption: "σᵣ(t) מחושב עבור הדינמיקה בעומק 3 σ̇ᵣ = −3(σᵣ²)^(2/3)(σᵣ−σᵣ*) מאתחול זעיר σᵣ(0)=0.01, יעדים σ*=3, 2, 1, 0.4. מודים בעלי יעדים גדולים ממריאים ראשונים ובזה אחר זה; הקטנים נתקעים סמוך לאפס — ההטיה המרומזת לדרגה נמוכה של פירוק מטריצות עמוק (הרצאה 8).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const muted = cssVar("--muted"), ink = cssVar("--ink");
@@ -217,9 +217,9 @@ const FIGS = {
     }
   },
   minnorm: {
-    title: "GD finds the minimum-norm solution",
+    title: "GD מוצא את פתרון הנורמה-המינימלית",
     pillar: "Generalization",
-    caption: "Computed GD iterates (dots) on ½(w·x−y)² for one equation w·x=1, x=(1, 0.6), from w=0. The trajectory never leaves the row space span{x} (dashed ray) and converges to the projection of 0 onto the solution line — the minimum-norm solution (ring). Any other point on the line (×) also fits the data but has larger norm (dotted circle = the min-norm radius). Lecture 7's implicit bias.",
+    caption: "איטרציות GD מחושבות (נקודות) על ½(w·x−y)² עבור משוואה אחת w·x=1, x=(1, 0.6), מ-w=0. המסלול לעולם אינו עוזב את מרחב השורות פרישה{x} (קו מקווקו) ומתכנס להיטל של 0 על ישר הפתרונות — פתרון הנורמה-המינימלית (טבעת). כל נקודה אחרת על הישר (×) מתאימה אף היא לנתונים אך בעלת נורמה גדולה יותר (מעגל מנוקד = רדיוס הנורמה-המינימלית). ההטיה המרומזת של הרצאה 7.",
     draw(cv) {
       const W = 640, H = 320, ctx = figCanvas(cv, W, H);
       const muted = cssVar("--muted"), opt = cssVar("--opt"), good = cssVar("--good"), bad = cssVar("--bad"), ink = cssVar("--ink");
@@ -251,16 +251,16 @@ const FIGS = {
       ctx.beginPath(); ctx.moveTo(sx(other[0]) - 5, sy(other[1]) - 5); ctx.lineTo(sx(other[0]) + 5, sy(other[1]) + 5);
       ctx.moveTo(sx(other[0]) + 5, sy(other[1]) - 5); ctx.lineTo(sx(other[0]) - 5, sy(other[1]) + 5); ctx.stroke();
       ctx.fillStyle = ink; ctx.font = "12px " + cssVar("--sans");
-      ctx.fillText("w·x = 1 (all solutions)", sx(.62), sy(lineW2(.62)) - 8);
-      ctx.fillText("span{x}", sx(.86), sy(.52));
-      ctx.fillStyle = good; ctx.fillText("min-norm", sx(mn[0]) + 9, sy(mn[1]) + 4);
-      ctx.fillStyle = bad; ctx.fillText("fits too, bigger ‖w‖", sx(other[0]) + 8, sy(other[1]) + 4);
+      ctx.fillText("w·x = 1 (כל הפתרונות)", sx(.62), sy(lineW2(.62)) - 8);
+      ctx.fillText("פרישה{x}", sx(.86), sy(.52));
+      ctx.fillStyle = good; ctx.fillText("נורמה-מינימלית", sx(mn[0]) + 9, sy(mn[1]) + 4);
+      ctx.fillStyle = bad; ctx.fillText("מתאים גם, ‖w‖ גדול יותר", sx(other[0]) + 8, sy(other[1]) + 4);
     }
   },
   hoeffding: {
-    title: "Hoeffding concentration, watched live",
+    title: "ריכוזיות Hoeffding, בזמן אמת",
     pillar: "Generalization",
-    caption: "Computed: 40 simulated empirical means of fair coin flips (grey paths) against the Hoeffding envelope p ± √(ln(2/δ)/2N) for δ=0.05 (amber). The paths concentrate at rate 1/√N exactly as the bound promises — the engine inside every Q3 uniform-convergence argument.",
+    caption: "מחושב: 40 ממוצעים אמפיריים מדומים של הטלות מטבע הוגן (מסלולים אפורים) מול מעטפת Hoeffding p ± √(ln(2/δ)/2N) עבור δ=0.05 (ענבר). המסלולים מתרכזים בקצב 1/√N בדיוק כפי שהחסם מבטיח — המנוע שבלב כל טיעון התכנסות-אחידה של שאלה 3.",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const muted = cssVar("--muted"), gen = cssVar("--gen"), ink = cssVar("--ink");
@@ -298,9 +298,9 @@ const FIGS = {
     }
   },
   ntkdecay: {
-    title: "NTK modes decay at their own eigenvalue rates",
+    title: "מודי NTK דועכים בקצבי הערכים העצמיים שלהם",
     pillar: "Optimization",
-    caption: "Computed: |qᵢ(t)| = e^(−λᵢt) on a log scale for eigenvalues λ = 3, 1, 0.3, 0.05 — and λ = 0 (dashed): a singular kernel mode NEVER decays, which is exactly why zero-loss convergence needs H* non-singular (Lecture 5; Moed B 2020 Q2).",
+    caption: "מחושב: |qᵢ(t)| = e^(−λᵢt) בסקאלה לוגריתמית עבור ערכים עצמיים λ = 3, 1, 0.3, 0.05 — ו-λ = 0 (מקווקו): מוד גרעין סינגולרי לעולם אינו דועך, וזו בדיוק הסיבה שהתכנסות לאפס-הפסד דורשת ש-H* יהיה אי-סינגולרי (הרצאה 5; מועד ב 2020 שאלה 2).",
     draw(cv) {
       const W = 640, H = 300, ctx = figCanvas(cv, W, H);
       const muted = cssVar("--muted"), ink = cssVar("--ink"), bad = cssVar("--bad");
@@ -328,9 +328,9 @@ const FIGS = {
     }
   },
   covering: {
-    title: "An ε-cover of the parameter ball",
+    title: "ε-כיסוי של כדור הפרמטרים",
     pillar: "Generalization",
-    caption: "Computed: the ℓ∞ ball [−1,1]² tiled by grid points (ε=0.25), each covering an ε-square. Any parameter w (teal) sits within ε of a cover point, so Hoeffding + union bound over the FINITE cover plus the 2ρε Lipschitz transfer controls the whole continuum — the Moed A 2023 / Moed C 2024 Q3 pattern. In d dimensions |C_ε| is exponential in d.",
+    caption: "מחושב: כדור ה-ℓ∞ [−1,1]² מרוצף בנקודות רשת (ε=0.25), שכל אחת מכסה ε-ריבוע. כל פרמטר w (טורקיז) יושב במרחק ε מנקודת כיסוי, ולכן Hoeffding + חסם איחוד על הכיסוי הסופי בתוספת העברת Lipschitz בגודל 2ρε שולטים ברצף כולו — התבנית של מועד א 2023 / מועד ג 2024 שאלה 3. ב-d ממדים |C_ε| הוא אקספוננציאלי ב-d.",
     draw(cv) {
       const W = 640, H = 320, ctx = figCanvas(cv, W, H);
       const muted = cssVar("--muted"), gen = cssVar("--gen"), opt = cssVar("--opt"), ink = cssVar("--ink");
@@ -358,12 +358,12 @@ const FIGS = {
     }
   },
   pillars: {
-    title: "The three-pillar decomposition",
+    title: "פירוק שלושת העמודים",
     pillar: "Practices",
-    caption: "The course's organizing identity (Lecture 1): the population loss of the learned predictor splits into training error (Optimization: did we minimize L_S?), estimation error (Generalization: does L_S track L_D?), and approximation error (Expressiveness: can the class express a good predictor at all?).",
+    caption: "הזהות המארגנת של הקורס (הרצאה 1): הפסד האוכלוסייה של המנבא הנלמד מתפרק לשגיאת אימון (Optimization: האם מיזערנו את L_S?), שגיאת הערכה (Generalization: האם L_S עוקב אחר L_D?), ושגיאת קירוב (Expressiveness: האם המחלקה יכולה בכלל לבטא מנבא טוב?).",
     draw(cv) {
       const W = 640, H = 170, ctx = figCanvas(cv, W, H);
-      const ink = cssVar("--ink"), segs = [["Training error", cssVar("--opt"), .24], ["Estimation error", cssVar("--gen"), .33], ["Approximation error", cssVar("--exp"), .43]];
+      const ink = cssVar("--ink"), segs = [["שגיאת אימון", cssVar("--opt"), .24], ["שגיאת הערכה", cssVar("--gen"), .33], ["שגיאת קירוב", cssVar("--exp"), .43]];
       let x = 40; const y0 = 62, h = 30, w = W - 80;
       ctx.font = "13px " + cssVar("--sans");
       segs.forEach(([label, col, frac]) => {
@@ -372,38 +372,38 @@ const FIGS = {
         ctx.fillStyle = col;
         ctx.fillText(label, x + 4, y0 + h + 18);
         ctx.font = "11px " + cssVar("--sans"); ctx.fillStyle = cssVar("--muted");
-        ctx.fillText(label === "Training error" ? "Optimization" : label === "Estimation error" ? "Generalization" : "Expressiveness", x + 4, y0 + h + 34);
+        ctx.fillText(label === "שגיאת אימון" ? "Optimization" : label === "שגיאת הערכה" ? "Generalization" : "Expressiveness", x + 4, y0 + h + 34);
         ctx.font = "13px " + cssVar("--sans");
         x += w * frac;
       });
       ctx.fillStyle = ink; ctx.font = "14px " + cssVar("--serif");
-      ctx.fillText("L_D(ĥ)  —  population loss of the learned predictor", 40, 30);
+      ctx.fillText("L_D(ĥ)  —  הפסד האוכלוסייה של המנבא הנלמד", 40, 30);
       ctx.strokeStyle = ink; ctx.beginPath(); ctx.moveTo(40, 40); ctx.lineTo(40 + w, 40); ctx.stroke();
     }
   }
 };
 const FIG_EXAM = {};
 const FIG_TOPIC_MAP = [
-  [/deep linear|linear network|linear-nn|end-to-end/i, "linnet"],
-  [/matrix.?factoriz|symmetric.*matrix|positive.semidefinite|low-rank|\bUU/i, "factor"],
-  [/tensor|cp.?decomp|hierarchical.?tucker|kronecker|matriciz/i, "tensor"],
-  [/depth separation|piecewise-linear\/constant/i, "sawtooth"],
-  [/balancedness|scalar linear|conservation/i, "phase"],
-  [/singular.value|eigenvalue dynamics|matrix factorization/i, "sigma"],
-  [/min-norm/i, "minnorm"],
-  [/hoeffding/i, "hoeffding"],
-  [/ntk/i, "ntkdecay"],
-  [/covering|discretization/i, "covering"],
+  [/deep linear|linear network|linear-nn|end-to-end|רשת לינארית|רשתות לינאריות/i, "linnet"],
+  [/matrix.?factoriz|symmetric.*matrix|positive.semidefinite|low-rank|\bUU|פירוק מטריצות|פירוק מטריצה|פקטוריזציה|דרגה נמוכה/i, "factor"],
+  [/tensor|cp.?decomp|hierarchical.?tucker|kronecker|matriciz|טנזור|פירוקי? CP|מטריציזציה/i, "tensor"],
+  [/depth separation|piecewise-linear\/constant|הפרדת עומק|יעילות ביטוי|למקוטעין|sawtooth/i, "sawtooth"],
+  [/balancedness|scalar linear|conservation|חוקי שימור|שימור|סקלרי/i, "phase"],
+  [/singular.value|eigenvalue dynamics|matrix factorization|ערכים סינגולריים|ערכים עצמיים|פירוק מטריצות/i, "sigma"],
+  [/min-norm|נורמה[- ]מינימלית|הנורמה-המינימלית/i, "minnorm"],
+  [/hoeffding|ריכוזיות/i, "hoeffding"],
+  [/ntk|רגרסיית גרעין/i, "ntkdecay"],
+  [/covering|discretization|כיסוי|דיסקרטיזציה/i, "covering"],
 ];
 const FIG_MEMO_MAP = [
-  [/sawtooth/i, "sawtooth"],
-  [/balancedness conservation/i, "phase"],
-  [/singular-value \/ eigenvalue dynamics/i, "sigma"],
-  [/matrix factorization|symmetric.*factoriz|positive semidefinite/i, "factor"],
-  [/tensor|cp decomposition|hierarchical tucker/i, "tensor"],
-  [/min-norm implicit bias/i, "minnorm"],
-  [/three-pillar/i, "pillars"],
-  [/hoeffding's inequality/i, "hoeffding"],
-  [/ntk prediction dynamics/i, "ntkdecay"],
-  [/covering \+ lipschitz/i, "covering"],
+  [/sawtooth|הרכבה מכפילה חלקים/i, "sawtooth"],
+  [/balancedness conservation|שימור balancedness/i, "phase"],
+  [/singular-value \/ eigenvalue dynamics|דינמיקת ערכים סינגולריים|ערכים סינגולריים|ערכים עצמיים/i, "sigma"],
+  [/matrix factorization|symmetric.*factoriz|positive semidefinite|פירוק מטריצות|פקטוריזציה/i, "factor"],
+  [/tensor|cp decomposition|hierarchical tucker|טנזור|פירוקי? CP|מטריציזציה/i, "tensor"],
+  [/min-norm implicit bias|נורמה[- ]מינימלית|הנורמה-המינימלית/i, "minnorm"],
+  [/three-pillar|שלושת העמודים/i, "pillars"],
+  [/hoeffding's inequality|אי-שוויון Hoeffding|ריכוזיות/i, "hoeffding"],
+  [/ntk prediction dynamics|דינמיקת ניבוי NTK|ניבוי NTK/i, "ntkdecay"],
+  [/covering \+ lipschitz|כיסוי/i, "covering"],
 ];
