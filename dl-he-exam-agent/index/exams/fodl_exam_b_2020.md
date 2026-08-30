@@ -5,6 +5,13 @@
 ## Q1 (45 pts) — טנזורים כפונקציות על רשת, פירוק CP כרשת, והאילוץ הסימטרי
 **Topics:** שיטות טנזוריות, אוניברסליות, מחלקת השערות, פירוק CP, טנזורים סימטריים, שיתוף משקלים | **Pillar:** Expressiveness | **Difficulty:** 3
 **Maps to:** lecture_02_expressiveness, fodl_recitation_kronecker_expressiveness
+**Hint:**
+- i) איך פונקציה על הרשת מתאימה לטבלת חיפוש של טנזור, ומהם סדר הטנזור וממדו?
+- ii) איזו רשת רדודה מחשבת מכפלה של הטלות לינאריות בכל מוד, ומה תפקידם של Z ושל מקדמי הפלט?
+- iii) כמה איברים מדרגה-1 של הבסיס הסטנדרטי דרושים כדי לשחזר כל טנזור, ומה זה אומר על גודל Z?
+- iv) כשכל הווקטורים בענף שווים זה לזה, איזו תופעה מוכרת מקונבולוציות זו — ומה היא כופה על הרשת?
+- v) איזו סימטריה יש לכל איבר מאולץ, והאם סכום של טנזורים סימטריים יכול לצאת א-סימטרי?
+- vi) עבור N=2 כתבו כל איבר מאולץ כמטריצה; איזה משפט ספקטרלי נותן את הכיוון ההפוך של ההכלה?
 **Statement (English translation):**
 יהיו $M, N \in \mathbb{N}$, ושקלו את מרחב הפונקציות מ-$[M]^N$ ל-$\mathbb{R}$.
 
@@ -24,17 +31,17 @@ $$A = \sum_{z=1}^{Z} a_z \cdot \underline{a}^{z,1} \otimes \underline{a}^{z,2} \
 - **(10 pts)** עבור $N = 2$, אפיינו את מחלקת הטנזורים שניתן לבטא על ידי הפירוק המאולץ (עם $Z$ גדול כרצוננו). הוכיחו את תשובתכם.
 
 **Solution sketch:**
-**i.** התאמה חד-חד-ערכית ועל $f \leftrightarrow A$ באמצעות $A_{d_1, \ldots, d_N} = f(d_1, \ldots, d_N)$: טנזור מסדר $N$ וממד $M$ הוא בדיוק טבלת החיפוש של פונקציה על הרשת $[M]^N$.
+**i.** **שלב 1 — מה צריך לייצג ומה המשפחה:** התאמה חד-חד-ערכית ועל $f \leftrightarrow A$ באמצעות $A_{d_1, \ldots, d_N} = f(d_1, \ldots, d_N)$: טנזור מסדר $N$ וממד $M$ הוא בדיוק טבלת החיפוש של פונקציה על הרשת $[M]^N$.
 
-**ii.** "רשת CP" רדודה: $N$ ענפי קלט (קידודי one-hot של $d_1,\ldots,d_N$); שכבה חבויה ברוחב $Z$, כאשר יחידה $z$ מחשבת את המכפלה $\prod_{i=1}^N \langle \underline a^{z,i}, e_{d_i}\rangle$ (מאגם-מכפלה של ההעתקות הלינאריות לכל מוד $\underline a^{z,i}$); שכבת פלט לינארית עם משקלים $\{a_z\}$. $Z$ = רוחב חבוי = חסם דרגת CP.
+**ii.** **שלב 1 — בנייה מפורשת של הרשת:** "רשת CP" רדודה: $N$ ענפי קלט (קידודי one-hot של $d_1,\ldots,d_N$); שכבה חבויה ברוחב $Z$, כאשר יחידה $z$ מחשבת את המכפלה $\prod_{i=1}^N \langle \underline a^{z,i}, e_{d_i}\rangle$ (מאגם-מכפלה של ההעתקות הלינאריות לכל מוד $\underline a^{z,i}$); שכבת פלט לינארית עם משקלים $\{a_z\}$. $Z$ = רוחב חבוי = חסם דרגת CP.
 
-**iii.** אוניברסליות: עם $Z = M^N$, מנו את כל צירופי האינדקסים וקחו את האיברים $A_{d_1 \ldots d_N}\, e_{d_1} \otimes \cdots \otimes e_{d_N}$ (וקטורי בסיס סטנדרטי, $a_z$ = הרכיב המתאים). הסכום משחזר כל $A$ מבוקש.
+**iii.** **שלב 1 — בנייה מפורשת: הוכחת אוניברסליות:** אוניברסליות: עם $Z = M^N$, מנו את כל צירופי האינדקסים וקחו את האיברים $A_{d_1 \ldots d_N}\, e_{d_1} \otimes \cdots \otimes e_{d_N}$ (וקטורי בסיס סטנדרטי, $a_z$ = הרכיב המתאים). הסכום משחזר כל $A$ מבוקש.
 
-**iv.** האילוץ הוא שיתוף משקלים: אותו וקטור $\underline a^{z}$ משמש בכל $N$ ענפי הקלט של יחידה חבויה $z$ (בדומה לשיתוף משקלים קונבולוציוני על פני המודים).
+**iv.** **שלב 1 — זיהוי האילוץ כשיתוף משקלים:** האילוץ הוא שיתוף משקלים: אותו וקטור $\underline a^{z}$ משמש בכל $N$ ענפי הקלט של יחידה חבויה $z$ (בדומה לשיתוף משקלים קונבולוציוני על פני המודים).
 
-**v.** אין $M, N \geq 2$ כאלה: כל איבר מאולץ $a_z (\underline a^z)^{\otimes N}$ הוא טנזור סימטרי (אינווריאנטי תחת כל תמורה של האינדקסים), וסכומים של טנזורים סימטריים הם סימטריים. מכיוון שקיימים טנזורים לא-סימטריים בכל פעם ש-$M, N \geq 2$ (למשל $A_{1,2,\ldots} \neq A_{2,1,\ldots}$), הפירוק המאולץ לעולם אינו אוניברסלי.
+**v.** **שלב 1 — דוגמה נגדית ומסקנה:** אין $M, N \geq 2$ כאלה: כל איבר מאולץ $a_z (\underline a^z)^{\otimes N}$ הוא טנזור סימטרי (אינווריאנטי תחת כל תמורה של האינדקסים), וסכומים של טנזורים סימטריים הם סימטריים. מכיוון שקיימים טנזורים לא-סימטריים בכל פעם ש-$M, N \geq 2$ (למשל $A_{1,2,\ldots} \neq A_{2,1,\ldots}$), הפירוק המאולץ לעולם אינו אוניברסלי.
 
-**vi.** $N = 2$: המחלקה הניתנת לביטוי היא בדיוק המטריצות הסימטריות $M \times M$. ($\subseteq$) כל איבר $a_z\, \underline a^z (\underline a^z)^\top$ סימטרי. ($\supseteq$) לפי המשפט הספקטרלי, כל מטריצה סימטרית מקיימת $A = \sum_{z=1}^{M} \lambda_z\, \underline v_z \underline v_z^\top$ — קחו $Z = M$, $a_z = \lambda_z$ (הסימנים נבלעים על ידי $a_z$), $\underline a^z = \underline v_z$.
+**vi.** **שלב 1 — אפיון המחלקה ומסקנה:** $N = 2$: המחלקה הניתנת לביטוי היא בדיוק המטריצות הסימטריות $M \times M$. ($\subseteq$) כל איבר $a_z\, \underline a^z (\underline a^z)^\top$ סימטרי. ($\supseteq$) לפי המשפט הספקטרלי, כל מטריצה סימטרית מקיימת $A = \sum_{z=1}^{M} \lambda_z\, \underline v_z \underline v_z^\top$ — קחו $Z = M$, $a_z = \lambda_z$ (הסימנים נבלעים על ידי $a_z$), $\underline a^z = \underline v_z$.
 
 **💡 טריקים שימושיים:** פונקציה על הרשת ↔ טנזור (טבלת חיפוש); CP = רשת מאגם-מכפלה רדודה עם רוחב $Z$ = דרגה; אוניברסליות על ידי מניית $M^N$ האיברים מדרגה-1 של הבסיס הסטנדרטי; האילוץ הסימטרי הוא *שיתוף משקלים* על פני המודים; עבור $N=2$ המשפט הספקטרלי נותן בדיוק את המטריצות הסימטריות (הסקלר $a_z$ בולע סימן, ולכן ערכים עצמיים שליליים בסדר).
 
@@ -43,6 +50,11 @@ $$A = \sum_{z=1}^{Z} a_z \cdot \underline{a}^{z,1} \otimes \underline{a}^{z,2} \
 ## Q2 (35 pts) — דינמיקת ניבוי של gradient flow ($\dot{u} = -H(u-y)$) והתכנסות תחת גרעין קבוע
 **Topics:** gradient flow, NTK, פרמטריזציית יתר, קצב התכנסות, התכנסות לינארית | **Pillar:** Optimization | **Difficulty:** 4
 **Maps to:** lecture_05_optimization_3, fodl_recitation_gradient_flow
+**Hint:**
+- i) הפעילו את כלל השרשרת על הניבוי כפונקציה של המשקלים, והציבו את דינמיקת gradient flow של המשקלים — איזו מטריצת גרם צצה?
+- ii) כתבו את השארית בבסיס העצמי של H הקבועה; כמה מהר דועך כל רכיב, ואיך מחלקים את תקציב השגיאה בין m המחוברים?
+- iii) כתבו את H כמכפלת יעקוביאן בשחלוף שלו — מה חוסמת דרגת היעקוביאן כאשר k קטן מ-m?
+- iv) אילו רכיבים של השארית חיים במרחב האפס של H ולכן אינם דועכים, ומה משתנה כאשר הרוחב גדול בהרבה ממספר הדוגמאות?
 **Statement (English translation):**
 עבור $k, d \in \mathbb{N}$, תהי $f : \mathbb{R}^k \times \mathbb{R}^d \to \mathbb{R}$ פונקציה גזירה ברציפות המייצגת רשת נוירונים, כך ש-$f(\underline{w}, \underline{x})$ מייצג את פלט הרשת כאשר המשקלים $= \underline{w}$ והקלט $= \underline{x}$. בהינתן קבוצת אימון $\{(\underline{x}_i, y_i)\}_{i=1}^m \subseteq \mathbb{R}^d \times \mathbb{R}$, נניח שאנו מאמנים על ידי הרצת gradient flow על הפסד $\ell_2$:
 
@@ -61,7 +73,7 @@ $$\underline{\dot{u}}(t) := \tfrac{d}{dt}\underline{u}(t) = -H(t)\,(\underline{u
 - **(7 pts)** הסבירו (איכותית) מדוע התכנסות להפסד אפס אינה סבירה במשטר זה ($k < m$), אך סבירה תחת פרמטריזציית יתר, כלומר כאשר $k \gg m$.
 
 **Solution sketch:**
-**i.** gradient flow:
+**i.** **שלב 1 — הגדרת הדינמיקה (gradient flow):** gradient flow:
 
 $$\begin{aligned} \underline{\dot w} &= -\nabla\ell(\underline w) \\ &= -\sum_j (u_j - y_j)\, \frac{\partial f(\underline w, \underline x_j)}{\partial \underline w} \end{aligned}$$
 
@@ -69,7 +81,7 @@ $$\begin{aligned} \underline{\dot w} &= -\nabla\ell(\underline w) \\ &= -\sum_j 
 
 $$\begin{aligned} \dot u_i &= \big\langle \frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}, \underline{\dot w}\big\rangle \\ &= -\sum_j H_{ij}(t)(u_j - y_j) \end{aligned}$$
 
-**ii.** יהי $\underline e := \underline u - \underline y$. עם $H$ קבועה סימטרית וחיובית-למחצה:
+**ii.** **שלב 2 — בחירת הכלי וחישוב הקצב:** בוחרים לעבוד בבסיס העצמי של H משום ש-H קבועה וחיובית-למחצה, ולכן כל מוד של השארית דועך בנפרד בקצב הנקבע מהערך העצמי שלו. יהי $\underline e := \underline u - \underline y$. עם $H$ קבועה סימטרית וחיובית-למחצה:
 
 $$\underline{\dot e} = -H\underline e \Rightarrow \underline e(t) = e^{-Ht}\underline e(0)$$
 
@@ -79,13 +91,13 @@ $$\begin{aligned} \ell(\underline w(t)) &= \frac12\|\underline e(t)\|^2 \\ &= \f
 
 כל מחובר הוא $\leq \epsilon/m$ ברגע ש-$t \geq \frac{1}{2\lambda_i}\log\big(\frac{m\,\|\underline e(0)\|^2}{2\epsilon}\big)$ (בשימוש ב-$\langle \underline e(0), \underline v_i\rangle^2 \leq \|\underline e(0)\|^2$). קחו את המקסימום על $i$ וסכמו — ה-$m$ בתוך הלוג משלם עבור $m$ המחוברים.
 
-**iii.** $H = JJ^\top$ כאשר $J \in \mathbb{R}^{m \times k}$ הוא היעקוביאן עם שורות $\frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}^\top$. לכן
+**iii.** **שלב 3 — חישוב הדרגה וערך עצמי אפס:** $H = JJ^\top$ כאשר $J \in \mathbb{R}^{m \times k}$ הוא היעקוביאן עם שורות $\frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}^\top$. לכן
 
 $$\mathrm{rank}(H) \leq \mathrm{rank}(J) \leq k < m$$
 
 ולכן המטריצה הסימטרית חיובית-למחצה $H$ סינגולרית — ערך עצמי כלשהו שווה 0.
 
-**iv.** כאשר $k < m$: רכיבי השארית הנמצאים במרחב האפס של $H$ אינם דועכים, ובאופן גנרי לא ניתן להתאים את כל $m$ התוויות על ידי $k < m$ פרמטרים — הפסד האימון נתקע מעל 0. כאשר $k \gg m$: באופן גנרי ל-$J$ יש דרגת שורות מלאה ולכן $H \succ 0$ ($\lambda_{\min} > 0$), הנותן התכנסות אקספוננציאלית להפסד אפס. יתר על כן, במשטר האולטרה-רחב (NTK) $H(t)$ אכן נשארת קרובה ל-$H(0)$, מה שמצדיק את הנחת הגרעין הקבוע.
+**iv.** **שלב 4 — מסקנה והנחות:** כאשר $k < m$: רכיבי השארית הנמצאים במרחב האפס של $H$ אינם דועכים, ובאופן גנרי לא ניתן להתאים את כל $m$ התוויות על ידי $k < m$ פרמטרים — הפסד האימון נתקע מעל 0. כאשר $k \gg m$: באופן גנרי ל-$J$ יש דרגת שורות מלאה ולכן $H \succ 0$ ($\lambda_{\min} > 0$), הנותן התכנסות אקספוננציאלית להפסד אפס. יתר על כן, במשטר האולטרה-רחב (NTK) $H(t)$ אכן נשארת קרובה ל-$H(0)$, מה שמצדיק את הנחת הגרעין הקבוע.
 
 **💡 טריקים שימושיים:** הדינמיקה נובעת מכלל השרשרת: $\dot u_i=\langle\partial_{\underline w}f_i,\dot{\underline w}\rangle$ עם $\dot{\underline w}=-\nabla\ell$; $H$ חיובית-למחצה וקבועה ⇒ $\underline e(t)=e^{-Ht}\underline e(0)$, ולכן עבדו בבסיס העצמי של $H$; הגורם $m$ בתוך הלוג משלם עבור $m$ המחוברים העצמיים; $H=JJ^\top$ ⇒ $\mathrm{rank}(H)\leq k$.
 
@@ -94,6 +106,9 @@ $$\mathrm{rank}(H) \leq \mathrm{rank}(J) \leq k < m$$
 ## Q3 (20 pts) — חסם הכללה לכל המשקלים ממחלקות של קואורדינטה-מאופסת (Lipschitz + חסם איחוד)
 **Topics:** התכנסות במידה שווה, כלים הסתברותיים, חסמי נורמה, Lipschitz, מזעור סיכון מבני | **Pillar:** Generalization | **Difficulty:** 3
 **Maps to:** lecture_06_generalization_1, lecture_07_generalization_2
+**Hint:**
+- i) הטילו כל וקטור משקל למחלקה שבה הקואורדינטה הנבחרת מאופסת; מה המרחק בין השניים, ואיך תכונת Lipschitz של הרשת ושל ההפסד מעבירה את הפער?
+- ii) הפעילו את הטיעון מהסעיף הקודם לכל קואורדינטה בנפרד עם תקציב ביטחון מוקטן; מדוע רק לאחר האיחוד מותר לקחת את המינימום על הקואורדינטות?
 **Statement (English translation):**
 עבור $k, d \in \mathbb{N}$, תהי $f : \mathbb{R}^k \times \mathbb{R}^d \to \mathbb{R}$ פונקציה המייצגת רשת נוירונים, כך ש-$f(\underline{w}, \underline{x})$ מייצג את פלט הרשת כאשר המשקלים $= \underline{w}$ והקלט $= \underline{x}$. הניחו שעבור $\rho > 0$ כלשהו, $f(\cdot, \cdot)$ הוא $\rho$-Lipschitz בארגומנט הראשון שלו, כלומר $|f(\underline{w}_1, \underline{x}) - f(\underline{w}_2, \underline{x})| \leq \rho \cdot |\underline{w}_1 - \underline{w}_2|$, $\forall \underline{w}_1, \underline{w}_2 \in \mathbb{R}^k$, $\underline{x} \in \mathbb{R}^d$ (כאן $|\cdot|$ מציין את הנורמה האוקלידית). תהי $\mathcal{D}$ התפלגות מעל $\mathbb{R}^d \times \mathbb{R}$, $S = \{(\underline{x}_i, y_i)\}_{i=1}^m$ קבוצת אימון שנדגמה i.i.d. לפי $\mathcal{D}$, וגם
 
@@ -110,7 +125,7 @@ $$\forall \underline{w} \in \mathbb{R}^k : L_{\mathcal{D}}(\underline{w}) - L_S(
 $$\forall \underline{w} \in \mathbb{R}^k : L_{\mathcal{D}}(\underline{w}) - L_S(\underline{w}) \leq \min_{r \in [k]}\left\{\Delta_r\left(m, \tfrac{\delta}{k}\right) + 2\rho \cdot |(\underline{w})_r|\right\}$$
 
 **Solution sketch:**
-**i.** עבור $\underline w$ שרירותי, הגדירו $\tilde{\underline w} \in W_r$ על ידי איפוס קואורדינטה $r$. אז
+**i.** **שלב 1 — הטלה למחלקת האיפוס והעברת Lipschitz:** עבור $\underline w$ שרירותי, הגדירו $\tilde{\underline w} \in W_r$ על ידי איפוס קואורדינטה $r$. אז
 
 $$\|\underline w - \tilde{\underline w}\| = |(\underline w)_r|$$
 
@@ -134,7 +149,7 @@ $$|L_{\mathcal D}(\underline w) - L_{\mathcal D}(\tilde{\underline w})| \leq \rh
 
 $$\begin{aligned} L_{\mathcal D}(\underline w) - L_S(\underline w) &\leq \big[L_{\mathcal D}(\tilde{\underline w}) - L_S(\tilde{\underline w})\big] + 2\rho|(\underline w)_r| \\ &\leq \Delta_r(m,\delta) + 2\rho|(\underline w)_r| \end{aligned}$$
 
-**ii.** הפעילו את חלק (i) עבור כל $r \in [k]$ עם פרמטר ביטחון $\delta/k$. לפי חסם איחוד כל $k$ המאורעות מתקיימים בו-זמנית בהסתברות $\geq 1 - \delta$. על המאורע המשותף הזה חסם (i) מתקיים עבור *כל* $r$ בו-זמנית ועבור כל $\underline w$, ולכן ניתן לקחת את המינימום על $r \in [k]$ — הנותן את החסם המבוקש (בטעם SRM/למידה לא-אחידה: הקואורדינטה הטובה ביותר לאיפוס לכל השערה).
+**ii.** **שלב 2 — בחירת מסגרת האיחוד ומסקנה:** בוחרים באיחוד על k מחלקות הקואורדינטה משום שכל מחלקה נותנת חסם תקף בנפרד, ולכן המינימום עליהן בוחר לכל השערה את הקואורדינטה המשתלמת ביותר לאיפוס. הפעילו את חלק (i) עבור כל $r \in [k]$ עם פרמטר ביטחון $\delta/k$. לפי חסם איחוד כל $k$ המאורעות מתקיימים בו-זמנית בהסתברות $\geq 1 - \delta$. על המאורע המשותף הזה חסם (i) מתקיים עבור *כל* $r$ בו-זמנית ועבור כל $\underline w$, ולכן ניתן לקחת את המינימום על $r \in [k]$ — הנותן את החסם המבוקש (בטעם SRM/למידה לא-אחידה: הקואורדינטה הטובה ביותר לאיפוס לכל השערה).
 
 **💡 טריקים שימושיים:** הטילו את $\underline w$ לתוך $W_r$ על ידי איפוס קואורדינטה $r$ (מרחק $=|(\underline w)_r|$), ואז העבירו Lipschitz; הפסד $\ell_1$ הוא $1$-Lipschitz בניבוי (אי-שוויון המשולש ההפוך), ולכן הוא מתרכב עם תכונת ה-$\rho$-Lipschitz של הרשת ונותן $2\rho|(\underline w)_r|$; איחוד על $k$ מחלקות-הקואורדינטה עם $\delta/k$ לכל אחת ⇒ קחו $\min_r$.
 
