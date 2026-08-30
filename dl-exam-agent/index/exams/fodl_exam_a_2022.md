@@ -33,11 +33,47 @@ In words, $\mathcal{V}$ is the tensor holding the outputs of $h$ over every poss
 *Hint:* Use sub-part b. That is, find vectors $v^{(1)},\dots,v^{(D)} \in \mathbb{R}^D$ such that the tensor $\mathcal{V}$ corresponding to them equals $\mathcal{A}$.
 
 **Solution sketch:**
-**a.** Let $R := \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$ and write a rank decomposition $\mathrm{mat}(\mathcal{A};I) = \sum_{r=1}^R u_r \bar u_r^\top$. Define $g_r((x^{(i)})_{i\in I}) := \sum_{d_1,\dots,d_{|I|}} \big(\prod_{i\le|I|} x^{(i)}_{d_i}\big)(u_r)_{\mathrm{row}(d_1,\dots,d_{|I|})}$ and $\bar g_r$ analogously with $\bar u_r$ and column indices. Expanding $f$ entrywise and substituting $\mathcal{A}_{d_1,\dots,d_N} = \sum_r (u_r)_{\mathrm{row}(\cdot)}(\bar u_r)_{\mathrm{col}(\cdot)}$ splits the sum into $\sum_{r=1}^R g_r \cdot \bar g_r$, so $\mathrm{sep}(f;I)\le R$.
+**a.** Let $R := \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$ and write a rank decomposition $\mathrm{mat}(\mathcal{A};I) = \sum_{r=1}^R u_r \bar u_r^\top$. Define
 
-**b.** If $\mathrm{sep}(h;I) = R'$ with $h = \sum_{r=1}^{R'} g_r\bar g_r$, define $(\mathcal{Z}_r)_{k_1,\dots,k_{|I|}} := g_r(v^{(k_1)},\dots,v^{(k_{|I|})})$ and $(\bar{\mathcal{Z}}_r)_{k_{|I|+1},\dots,k_N} := \bar g_r(v^{(k_{|I|+1})},\dots,v^{(k_N)})$. Evaluating $h$ on the grid gives $\mathcal{V} = \sum_{r=1}^{R'} \mathcal{Z}_r \otimes \bar{\mathcal{Z}}_r$ (the hint). Matricizing is linear and $\mathrm{mat}(\mathcal{Z}_r\otimes\bar{\mathcal{Z}}_r;I) = \mathrm{vec}(\mathcal{Z}_r)\,\mathrm{vec}(\bar{\mathcal{Z}}_r)^\top$ is rank $\le 1$, so $\mathrm{rank}\,\mathrm{mat}(\mathcal{V};I) \le R' = \mathrm{sep}(h;I)$ (sub-additivity of rank).
+$$g_r((x^{(i)})_{i\in I}) := \sum_{d_1,\dots,d_{|I|}} \big(\prod_{i\le|I|} x^{(i)}_{d_i}\big)(u_r)_{\mathrm{row}(d_1,\dots,d_{|I|})}$$
 
-**c.** Choose $K = D$ and $v^{(k)} := e_k$ (standard basis). By multilinearity, $f(e_{d_1},\dots,e_{d_N}) = \mathcal{A}_{d_1,\dots,d_N}$, so $\mathcal{V} = \mathcal{A}$. Apply (b) with $h = f$ to get $\mathrm{sep}(f;I) \ge \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$. Together with (a), this yields the classic identity $\mathrm{sep}(f;I) = \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$ used in depth-separation analyses of tensor/convolutional models.
+and $\bar g_r$ analogously with $\bar u_r$ and column indices. Expanding $f$ entrywise and substituting $\mathcal{A}_{d_1,\dots,d_N} = \sum_r (u_r)_{\mathrm{row}(\cdot)}(\bar u_r)_{\mathrm{col}(\cdot)}$ splits the sum into $\sum_{r=1}^R g_r \cdot \bar g_r$, so $\mathrm{sep}(f;I)\le R$.
+
+**b.** If $\mathrm{sep}(h;I) = R'$ with $h = \sum_{r=1}^{R'} g_r\bar g_r$, define
+
+$$(\mathcal{Z}_r)_{k_1,\dots,k_{|I|}} := g_r(v^{(k_1)},\dots,v^{(k_{|I|})})$$
+
+and
+
+$$(\bar{\mathcal{Z}}_r)_{k_{|I|+1},\dots,k_N} := \bar g_r(v^{(k_{|I|+1})},\dots,v^{(k_N)})$$
+
+Evaluating $h$ on the grid gives
+
+$$\mathcal{V} = \sum_{r=1}^{R'} \mathcal{Z}_r \otimes \bar{\mathcal{Z}}_r$$
+
+(the hint). Matricizing is linear and
+
+$$\mathrm{mat}(\mathcal{Z}_r\otimes\bar{\mathcal{Z}}_r;I) = \mathrm{vec}(\mathcal{Z}_r)\,\mathrm{vec}(\bar{\mathcal{Z}}_r)^\top$$
+
+is rank $\le 1$, so
+
+$$\mathrm{rank}\,\mathrm{mat}(\mathcal{V};I) \le R' = \mathrm{sep}(h;I)$$
+
+(sub-additivity of rank).
+
+**c.** Choose $K = D$ and $v^{(k)} := e_k$ (standard basis). By multilinearity,
+
+$$f(e_{d_1},\dots,e_{d_N}) = \mathcal{A}_{d_1,\dots,d_N}$$
+
+so $\mathcal{V} = \mathcal{A}$. Apply (b) with $h = f$ to get
+
+$$\mathrm{sep}(f;I) \ge \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$$
+
+Together with (a), this yields the classic identity
+
+$$\boxed{\,\mathrm{sep}(f;I) = \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)\,}$$
+
+used in depth-separation analyses of tensor/convolutional models.
 
 **💡 Useful tricks:** Upper bound: a rank decomposition of $\mathrm{mat}(\mathcal A;I)$ *is* a separating sum; lower bound: evaluate $h$ on a grid to get $\mathcal V=\sum_r\mathcal Z_r\otimes\bar{\mathcal Z}_r$, and $\mathrm{mat}(\mathcal Z\otimes\bar{\mathcal Z})=\mathrm{vec}(\mathcal Z)\mathrm{vec}(\bar{\mathcal Z})^\top$ is rank $\leq1$; close the gap with $v^{(k)}=e_k$ so $\mathcal V=\mathcal A$ (multilinearity).
 
@@ -70,13 +106,23 @@ Now assume $L(\theta) = (h_\theta(x) - y)^2$ for $x \in \mathbb{R}^D,\ y \in \ma
 *Hint:* Look at regions of parameter space where the ReLU activation zeroes out all the neurons in the hidden layer.
 
 **Solution sketch:**
-**a.** Gradient flow: $\dot v_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,\sigma(\langle w_m,x_n\rangle)$ and $\dot w_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,v_m\,\sigma'(\langle w_m,x_n\rangle)x_n$ ($\ell'$ = derivative in first argument). Then $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$ and $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$. The 1-homogeneity identity $z\,\sigma'(z) = \sigma(z)$ (valid at $z=0$ under the convention) makes both equal $-2\sum_n \ell'(\cdot)\,v_m\,\sigma(\langle w_m,x_n\rangle)$. This is the balancedness conservation law: $v_m(t)^2 - \|w_m(t)\|^2$ is constant.
+**a.** Gradient flow:
+
+$$\dot v_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,\sigma(\langle w_m,x_n\rangle)$$
+
+and
+
+$$\dot w_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,v_m\,\sigma'(\langle w_m,x_n\rangle)x_n$$
+
+($\ell'$ = derivative in first argument). Then $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$ and $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$. The 1-homogeneity identity $z\,\sigma'(z) = \sigma(z)$ (valid at $z=0$ under the convention) makes both equal $-2\sum_n \ell'(\cdot)\,v_m\,\sigma(\langle w_m,x_n\rangle)$. This is the balancedness conservation law: $v_m(t)^2 - \|w_m(t)\|^2$ is constant.
 
 **b.** At $\theta=0$: $\partial L/\partial v_m \propto \sigma(\langle 0,x\rangle) = 0$ and $\partial L/\partial w_m \propto v_m = 0$, so $\nabla L(0)=0$. Note $L(0) = y^2$.
 
 **c.** Take $u := x/\|x\|$ and the perturbation with only $w_1 = \tfrac{\epsilon}{2}u$, $v_1 = \pm\tfrac{\epsilon}{2}$: then $h_\theta(x) = \pm\tfrac{\epsilon^2}{4}\|x\|=: \pm c$. With $v_1<0$: $L = (y+c)^2 > y^2$ (gives $\theta_1$). With $v_1>0$ and $\epsilon$ small enough that $c < 2y$: $L = (y-c)^2 < y^2$ (gives $\theta_2$). Both have norm $<\epsilon$.
 
-**d.** Take $\bar\theta$ with $w_m := -x$ for all $m$ (so $\langle w_m,x\rangle = -\|x\|^2 < 0$) and arbitrary $v$ (e.g. $v=0$). For any small perturbation, $\langle w_m',x\rangle$ stays negative, so all ReLUs output $0$, $h\equiv 0$ on the neighborhood, and $L \equiv y^2$: $\bar\theta$ is a local minimum. It is "bad": $\theta^*$ with $w_1 = x$, $v_1 = y/\|x\|^2$ (rest zero) gives $h_{\theta^*}(x) = y$, i.e. $L(\theta^*) = 0 < y^2 = L(\bar\theta)$.
+**d.** Take $\bar\theta$ with $w_m := -x$ for all $m$ (so $\langle w_m,x\rangle = -\|x\|^2 < 0$) and arbitrary $v$ (e.g. $v=0$). For any small perturbation, $\langle w_m',x\rangle$ stays negative, so all ReLUs output $0$, $h\equiv 0$ on the neighborhood, and $L \equiv y^2$: $\bar\theta$ is a local minimum. It is "bad": $\theta^*$ with $w_1 = x$, $v_1 = y/\|x\|^2$ (rest zero) gives $h_{\theta^*}(x) = y$, i.e.
+
+$$L(\theta^*) = 0 < y^2 = L(\bar\theta)$$
 
 **💡 Useful tricks:** The homogeneity identity $z\,\sigma'(z)=\sigma(z)$ drives balancedness $v_m^2-\|w_m\|^2=\mathrm{const}$; $\theta=0$ is critical because both partial gradients carry a $\sigma(0)$ or a $v_m=0$ factor; build a saddle with a rank-1 bump giving $h=\pm c$ (pick the sign); a "bad" local min lives in the *all-ReLUs-off* region ($w_m=-x$) where $h\equiv0$ locally so $L\equiv y^2$ while the global is $0$.
 
@@ -107,11 +153,23 @@ $$L_D(h_m) - L_S(h_m) \le \sqrt{\frac{\ln(2N/\delta_m)}{2(N-1)}}$$
 **d. (8 pts)** "Suppose I use my favorite learning algorithm to learn a hypothesis for the CIFAR10 dataset. I get back a hypothesis $h$ with low empirical 0-1 loss. I wish to estimate how well my hypothesis generalizes without using a validation set. To that end, I use the PAC-Bayes bound from the reminder and choose distributions $P$ and $Q$ that assign probability $1$ to $h$ and $0$ to all other hypotheses. I observe that the bound is small with high probability. Is my estimation method valid? If not, justify."
 
 **Solution sketch:**
-**a.** For each $m$, invoke the PAC-Bayes reminder with prior $P := \delta_{h_m}$ (point mass) and confidence parameter $\delta_m$, then pick $Q := \delta_{h_m}$: the KL term vanishes and the expectations collapse, giving $L_D(h_m)-L_S(h_m) \le \sqrt{\ln(2N/\delta_m)/(2(N-1))}$ with failure probability $\le \delta_m$. Union bound over $m \in \mathbb{N}$: total failure probability $\le \sum_m \delta_m = \delta$, so all bounds hold simultaneously w.p. $\ge 1-\delta$. (Alternative single-shot proof: prior $P(h_m) = \delta_m/\delta$, $Q = \delta_{h_m}$, so $KL = \ln(\delta/\delta_m)$ and $\ln(\delta/\delta_m) + \ln(2N/\delta) = \ln(2N/\delta_m)$.)
+**a.** For each $m$, invoke the PAC-Bayes reminder with prior $P := \delta_{h_m}$ (point mass) and confidence parameter $\delta_m$, then pick $Q := \delta_{h_m}$: the KL term vanishes and the expectations collapse, giving
 
-**b.** Allocate the confidence budget only to $\mathcal{H}'$: $\delta_m := \delta/|\mathcal{H}'|$ for $h_m \in \mathcal{H}'$ and $\delta_m := 0$ otherwise (interpreting the bound as vacuous/$+\infty$ outside $\mathcal{H}'$). Result: w.p. $\ge 1-\delta$, $\forall h \in \mathcal{H}'$: $L_D(h)-L_S(h) \le \sqrt{\ln(2N|\mathcal{H}'|/\delta)/(2(N-1))}$ — the finite-class uniform bound. Nothing is promised outside $\mathcal{H}'$. (If strict positivity of all $\delta_m$ is insisted on, give $\mathcal{H}'$ budget $(1-\lambda)\delta$ and spread $\lambda\delta$ geometrically outside, $\lambda$ small.)
+$$L_D(h_m)-L_S(h_m) \le \sqrt{\ln(2N/\delta_m)/(2(N-1))}$$
 
-**c.** Choose a decreasing positive schedule, e.g. $\delta_m := \delta\,2^{-m}$: bound $\sqrt{(\ln(2N/\delta) + m\ln 2)/(2(N-1))}$, monotonically increasing in $m$, hence tighter for low-index (algorithm-preferred) hypotheses. Any summable decreasing schedule (e.g. $\delta\frac{6}{\pi^2 m^2}$) works.
+with failure probability $\le \delta_m$. Union bound over $m \in \mathbb{N}$: total failure probability $\le \sum_m \delta_m = \delta$, so all bounds hold simultaneously w.p. $\ge 1-\delta$. (Alternative single-shot proof: prior $P(h_m) = \delta_m/\delta$, $Q = \delta_{h_m}$, so $KL = \ln(\delta/\delta_m)$ and $\ln(\delta/\delta_m) + \ln(2N/\delta) = \ln(2N/\delta_m)$.)
+
+**b.** Allocate the confidence budget only to $\mathcal{H}'$: $\delta_m := \delta/|\mathcal{H}'|$ for $h_m \in \mathcal{H}'$ and $\delta_m := 0$ otherwise (interpreting the bound as vacuous/$+\infty$ outside $\mathcal{H}'$). Result: w.p. $\ge 1-\delta$, $\forall h \in \mathcal{H}'$:
+
+$$L_D(h)-L_S(h) \le \sqrt{\ln(2N|\mathcal{H}'|/\delta)/(2(N-1))}$$
+
+— the finite-class uniform bound. Nothing is promised outside $\mathcal{H}'$. (If strict positivity of all $\delta_m$ is insisted on, give $\mathcal{H}'$ budget $(1-\lambda)\delta$ and spread $\lambda\delta$ geometrically outside, $\lambda$ small.)
+
+**c.** Choose a decreasing positive schedule, e.g. $\delta_m := \delta\,2^{-m}$: bound
+
+$$\sqrt{(\ln(2N/\delta) + m\ln 2)/(2(N-1))}$$
+
+monotonically increasing in $m$, hence tighter for low-index (algorithm-preferred) hypotheses. Any summable decreasing schedule (e.g. $\delta\frac{6}{\pi^2 m^2}$) works.
 
 **d.** The method is invalid. In PAC-Bayes the prior $P$ must be fixed **before** seeing the sample $S$. Here $h$ is the output of a learning algorithm trained on $S$, so $P$ (and $Q$) depend on $S$. The theorem's probabilistic guarantee (over draws of $S$ for a fixed $P$) therefore does not apply. The $KL=0$ "free lunch" is exactly the illegal data-dependent prior. Correct alternatives: fix a prior in advance and pay $KL$/$\ln(1/\delta_m)$ as in (a)-(c), or estimate generalization with held-out (validation) data.
 

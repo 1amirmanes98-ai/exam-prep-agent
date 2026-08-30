@@ -24,10 +24,13 @@
 **Def (compression distance).** עבור $h\in H$ ומחלקה קטנה יותר $H'$: $d(h,H'):=\min_{h'\in H'}\sup_{x\in X}\|h(x)-h'(x)\|$ (גודל שארית הדחיסה).
 
 **Def 1 (Rademacher complexity).** עבור $\ell\circ H\circ S:=\{(\ell(y_1,h(x_1)),\dots,\ell(y_m,h(x_m))) : h\in H\}\subseteq\mathbb{R}^m$,
+
 $$R(\ell\circ H\circ S):=\frac{1}{m}\,\mathbb{E}_{\xi}\Big[\sup_{v\in \ell\circ H\circ S}\sum_{i=1}^m \xi_i v_i\Big],$$
+
 כאשר $\xi_1,\dots,\xi_m$ הם i.i.d. עם $\Pr(\xi_i=1)=0.5=\Pr(\xi_i=-1)$. פרשנות: יכולתה של $H$ להתאים (הפסד נמוך) תת-קבוצה אקראית של $S$ תוך "אנטי-התאמה" (הפסד גבוה) של השארית.
 
 **Def (norm-bounded subclass $H_c$).** עבור רשת ReLU מחוברת-לחלוטין הזנה-קדימה $H=\{x\mapsto W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots))\}$ עם $x\in\mathbb{R}^d$, $y\in\mathbb{R}$, $W_1\in\mathbb{R}^{d',d}$, $W_2,\dots,W_{N-1}\in\mathbb{R}^{d',d'}$, $W_N\in\mathbb{R}^{1,d'}$, $\sigma(z)=\max\{z,0\}$, ללא הטיות: עבור $c>0$,
+
 $$H_c:=\Big\{h\in H : \exists\, W_1,\dots,W_N \text{ s.t. } \prod_{n=1}^N\|W_n\|_F\le c \,\wedge\, h(x)\equiv W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots))\Big\}.$$
 
 **Def (losses of a distribution over hypotheses).** עבור התפלגות $Q$ על $H$: $L_D(Q):=\mathbb{E}_{h\sim Q}[L_D(h)]$, $L_S(Q):=\mathbb{E}_{h\sim Q}[L_S(h)]$.
@@ -36,55 +39,85 @@ $$H_c:=\Big\{h\in H : \exists\, W_1,\dots,W_N \text{ s.t. } \prod_{n=1}^N\|W_n\|
 
 ## Key theorems & results
 **Empirical phenomena (Zhang et al. [7]).** (1) רשתות נוירונים סטנדרטיות (למשל, AlexNet) המאומנות באלגוריתמים סטנדרטיים (SGD+momentum) על נתונים סטנדרטיים (CIFAR-10) מכלילות היטב **ללא כל רגולריזציה מפורשת**, אפילו עם מספר-פרמטרים $\gg$ מספר-דוגמאות. (2) במשטר זה שגיאת האימון $\approx 0$, וזה מתמיד עבור למעשה **כל** קבוצת אימון באותו גודל — אפילו מופעים ו/או תוויות אקראיים מותאמים באופן מושלם. (3) אם **מחצית** מקבוצת האימון מוחלפת בנתונים אקראיים (מופעים ותוויות אקראיים), שגיאת הבדיקה של ההשערה הנלמדת (שגיאת אימון $\approx 0$) היא **טובה בהרבה מטריוויאלית**. (4) מניפולציה **עוינת** של מחצית תוויות האימון יכולה להדרדר משמעותית את שגיאת הבדיקה (שגיאת האימון עדיין $\approx 0$). (תרגיל: שחזרו ניסויית.)
-רלוונטיות למבחן: אלה אמות המידה; דעו איזה חסם נכשל באיזו תופעה.
+
+**רלוונטיות למבחן:** אלה אמות המידה; דעו איזה חסם נכשל באיזו תופעה.
 
 **Fact (validation bound; Hoeffding).** כיוון ש-$\ell\in[0,1]$: $\Pr\big(|L_V(\hat h)-L_D(\hat h)|\ge\epsilon\big)\le 2\exp(-m\epsilon^2)$, ומכאן עבור כל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$: $L_D(\hat h)-L_V(\hat h)\le\sqrt{\ln\frac{2}{\delta}\cdot\frac{1}{m}}$.
-רעיון ההוכחה: Hoeffding על $m/2$ ההפסדים המופרשים ה-i.i.d.; $\hat h$ בלתי-תלויה בהם.
-רלוונטיות למבחן: אב-טיפוס של "הדוק אך לא-מלמד."
+
+**רעיון ההוכחה:** Hoeffding על $m/2$ ההפסדים המופרשים ה-i.i.d.; $\hat h$ בלתי-תלויה בהם.
+
+**רלוונטיות למבחן:** אב-טיפוס של "הדוק אך לא-מלמד."
 
 **Prop 1 (finite-class / discretization UC bound).** אם $|H|\le 2^b$ ($b$ = מספר-הביטים לייצוג המשקלים) אזי עבור כל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$ על פני $S\sim D^m$:
+
 $$L_D(\hat h)-L_S(\hat h)\le\sqrt{\frac{(b+1)\ln(2)+\ln\big(\frac{1}{\delta}\big)}{2m}}.$$
-רעיון ההוכחה: עבור $h$ קבוע, Hoeffding נותן $\Pr(|L_D(h)-L_S(h)|\ge\epsilon)\le 2e^{-2m\epsilon^2}$; חסם איחוד על פני $|H|$ השערות; פתרו $2|H|e^{-2m\epsilon^2}=\delta$, השתמשו ב-$|H|\le 2^b$. למעשה מוכיח את הדו-צדדי $\forall h\in H: |L_D(h)-L_S(h)|\le\sqrt{\frac{1}{2m}\ln\frac{2|H|}{\delta}}$.
-רלוונטיות למבחן: דעו את הקבועים $(b+1)\ln 2$ ומדוע אי-ריקנות זקוקה ל-$m\gtrsim b$ (בפרקטיקה $b\gg m$).
+
+**רעיון ההוכחה:** עבור $h$ קבוע, Hoeffding נותן $\Pr(|L_D(h)-L_S(h)|\ge\epsilon)\le 2e^{-2m\epsilon^2}$; חסם איחוד על פני $|H|$ השערות; פתרו $2|H|e^{-2m\epsilon^2}=\delta$, השתמשו ב-$|H|\le 2^b$. למעשה מוכיח את הדו-צדדי $\forall h\in H: |L_D(h)-L_S(h)|\le\sqrt{\frac{1}{2m}\ln\frac{2|H|}{\delta}}$.
+
+**רלוונטיות למבחן:** דעו את הקבועים $(b+1)\ln 2$ ומדוע אי-ריקנות זקוקה ל-$m\gtrsim b$ (בפרקטיקה $b\gg m$).
 
 **Prop 2 (compression bound).** אם $|H'|\le 2^b$ אזי עבור כל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$ על פני $S\sim D^m$:
+
 $$L_D(\hat h)-L_S(\hat h)\le\sqrt{\frac{(b+1)\ln(2)+\ln\big(\frac{1}{\delta}\big)}{2m}}+2\rho\cdot d(\hat h,H'),$$
+
 $\rho$ = קבוע ה-Lipschitz של $\ell$. רעיון ההוכחה: יישמו את Prop 1 על $H'$; קחו $\hat h'\in\arg\min_{h'\in H'}\sup_x\|\hat h(x)-h'(x)\|$; חִסמו $L_S(\hat h)-L_S(\hat h')\le\rho\, d(\hat h,H')$ באמצעות Lipschitz-יות, וכן $L_D(\hat h)-L_D(\hat h')\le\rho\, d(\hat h,H')$ באמצעות Jensen + Lipschitz-יות; פרקו $L_D(\hat h)-L_S(\hat h)\le [L_D(\hat h')-L_S(\hat h')]+2\rho\, d(\hat h,H')$.
-רלוונטיות למבחן: גורם $2\rho$ (אחד $\rho d$ מצד האימון, אחד מצד האוכלוסייה); הנחת יסוד = זיקוק ידע.
+
+**רלוונטיות למבחן:** גורם $2\rho$ (אחד $\rho d$ מצד האימון, אחד מצד האוכלוסייה); הנחת יסוד = זיקוק ידע.
 
 **Example (rank-1 compression of an FC network).** $H=\{x\mapsto W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots)) : W_n\in\mathbb{R}^{d,d}\}$ (כל הממדים $=d$, ללא הטיות), $\sigma$ נקודתית $\gamma$-Lipschitz עם $\sigma(0)=0$, $X=\{x:\|x\|\le 1\}$; $H'$ = אותה רשת עם כל $W_n$ מוגבלת לדרגה 1 ($W_n=u_nv_n^\top$): $2Nd$ לעומת $Nd^2$ פרמטרים. עם $W_n'$ הקירוב הטוב ביותר מדרגה 1 של $W_n$ ושגיאות $e_n(x)$ המוגדרות שכבתית, מקבלים $e_1(x)\le\|W_1-W_1'\|_{\mathrm{spectral}}\|x\|$ ואת הרקורסיה
+
 $$e_n(x)\le \|W_n-W_n'\|_{\mathrm{spectral}}\cdot\gamma^{n-1}\prod_{j=1}^{n-1}\|W_j\|_{\mathrm{spectral}} + \|W_n\|_{\mathrm{spectral}}\cdot\gamma\cdot e_{n-1}(x),$$
+
 (בשימוש ב-$\|W_n'\|_{\mathrm{spectral}}=\|W_n\|_{\mathrm{spectral}}$, כיוון שהקירוב הטוב ביותר מדרגה 1 משמר את הנורמה הספקטרלית), אשר באינדוקציה נותן
+
 $$d(h,H')\le\sup_{x:\|x\|\le1} e_N(x)\le \gamma^{N-1}\sum_{n=1}^{N}\ \prod_{j\in[N]\setminus\{n\}}\|W_j\|_{\mathrm{spectral}}\cdot\|W_n-W_n'\|_{\mathrm{spectral}}.$$
-רעיון ההוכחה: אי-שוויון המשולש המפצל את ההפרש של שכבה $n$ ל"שינוי $W_n$" + "הפצת שגיאת שכבה-נמוכה"; $\|\sigma(v)\|\le\gamma\|v\|$ מ-$\sigma(0)=0$.
-רלוונטיות למבחן: לימוד מטריצות כמעט-דרגה-1 ⇒ איבר דחיסה קטן ⇒ חסם הכללה קטן.
+
+**רעיון ההוכחה:** אי-שוויון המשולש המפצל את ההפרש של שכבה $n$ ל"שינוי $W_n$" + "הפצת שגיאת שכבה-נמוכה"; $\|\sigma(v)\|\le\gamma\|v\|$ מ-$\sigma(0)=0$.
+
+**רלוונטיות למבחן:** לימוד מטריצות כמעט-דרגה-1 ⇒ איבר דחיסה קטן ⇒ חסם הכללה קטן.
 
 **Thm 1 (Rademacher generalization bound; Thm 26.5 in Shalev-Shwartz–Ben-David [6]).** עבור כל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$ על פני $S\sim D^m$:
+
 $$\forall h\in H:\quad L_D(h)-L_S(h)\le 2\,R(\ell\circ H\circ S)+4\sqrt{\frac{2\ln\big(\frac{4}{\delta}\big)}{m}}.$$
-רעיון ההוכחה: בתרגול (לא בסיכומים אלה).
-רלוונטיות למבחן: הצורה החשופה אינה מספיקה — לפי תופעה (2), $H$ בעלת פרמטריזציית-יתר מתאימה תוויות שרירותיות ⇒ $R(\ell\circ H\circ S)$ גבוה; יש לחסום את $R$ על תת-מחלקות משמעותיות.
+
+**רעיון ההוכחה:** בתרגול (לא בסיכומים אלה).
+
+**רלוונטיות למבחן:** הצורה החשופה אינה מספיקה — לפי תופעה (2), $H$ בעלת פרמטריזציית-יתר מתאימה תוויות שרירותיות ⇒ $R(\ell\circ H\circ S)$ גבוה; יש לחסום את $R$ על תת-מחלקות משמעותיות.
 
 **Prop 3 (union over nested subclasses).** יהיו $H_1\subseteq H_2\subseteq\cdots$ עם $\bigcup_{k=1}^\infty H_k=H$. אזי עבור כל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$:
+
 $$\forall k\in\mathbb{N},\ \forall h\in H_k:\quad L_D(h)-L_S(h)\le 2\,R(\ell\circ H_k\circ S)+4\sqrt{\frac{2\ln\big(\frac{2\pi^2}{3}\cdot k^2\cdot\frac{1}{\delta}\big)}{m}}.$$
-רעיון ההוכחה: קבעו $\delta_k':=\frac{6}{\pi^2}\cdot\frac{1}{k^2}\cdot\delta$; יישמו את Thm 1 לכל $k$ עם $\delta_k'$; $\sum_k \delta_k'=\delta$ (Basel: $\sum_k\frac{6}{\pi^2 k^2}=1$); חסם איחוד. שימו לב $\frac{4}{\delta_k'}=\frac{2\pi^2}{3}\cdot\frac{k^2}{\delta}$.
+
+**רעיון ההוכחה:** קבעו $\delta_k':=\frac{6}{\pi^2}\cdot\frac{1}{k^2}\cdot\delta$; יישמו את Thm 1 לכל $k$ עם $\delta_k'$; $\sum_k \delta_k'=\delta$ (Basel: $\sum_k\frac{6}{\pi^2 k^2}=1$); חסם איחוד. שימו לב $\frac{4}{\delta_k'}=\frac{2\pi^2}{3}\cdot\frac{k^2}{\delta}$.
 
 **Example (norm-based bound; Neyshabur et al. [4]).** עבור $H_c$ כמוגדר לעיל, ניתן להראות ש-
+
 $$R(\ell\circ H_c\circ S)\le\frac{c\cdot\rho\cdot 2^{N-1}\cdot\max_{i\in[m]}\|x_i\|}{\sqrt{2m}}.$$
+
 בשילוב עם Prop 3 (תת-מחלקות $H_k$, $k\in\mathbb{N}$), בהסתברות $\ge 1-\delta$:
+
 $$L_D(\hat h)-L_S(\hat h)\le\frac{\sqrt{2}\cdot 2^{N-1}\cdot\rho\cdot\max_{i\in[m]}\|x_i\|\cdot k+\sqrt{2\ln\big(\frac{2\pi^2}{3}\cdot k^2\cdot\frac{1}{\delta}\big)}}{\sqrt{m}},$$
+
 כאשר $k:=\min\{k'\in\mathbb{N}: \exists W_1,\dots,W_N \text{ s.t. } \prod_{n=1}^N\|W_n\|_F\le k' \wedge \hat h(x)\equiv W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots))\}$. (כפי שמודפס בסיכומים; הצבה מילולית של Prop 3 הייתה נושאת גורם 4 לפני הרדיקל השני.) חסרונות: (i) גדל אקספוננציאלית עם העומק $N$ (מחסם ה-$R$; מוקל על ידי Golowich et al. [2]); (ii) תלוי ב-$S$ רק דרך $\max_i\|x_i\|$ ⇒ **אינו יכול להסביר את תופעה (3)**.
 
 **Thm 2 (PAC-Bayes; Thm 31.1 in Shalev-Shwartz–Ben-David [6]).** יהי $P$ prior על $H$ (נבחר בלתי-תלוי ב-$S$), $\delta\in(0,1)$. אזי בהסתברות $\ge 1-\delta$ על פני $S\sim D^m$, **עבור כל** ההתפלגויות $Q$ על $H$ (אפילו תלויות-$S$):
+
 $$L_D(Q)-L_S(Q)\le\sqrt{\frac{\mathrm{KL}(Q\|P)+\ln\big(\frac{2m}{\delta}\big)}{2(m-1)}}.$$
-רעיון ההוכחה: הגדירו $f(S):=\sup_{Q}\big[2(m-1)\mathbb{E}_{h\sim Q}[\Delta(h)^2]-\mathrm{KL}(Q\|P)\big]$ עם $\Delta(h):=L_D(h)-L_S(h)$; החלפת מידה + Jensen נותנים $f(S)\le\ln\mathbb{E}_{h\sim P}[e^{2(m-1)\Delta(h)^2}]$; החלפת $\mathbb{E}_S,\mathbb{E}_{h\sim P}$ (אי-תלות) וזנב Hoeffding + נוסחת סכום-הזנב נותנים $\mathbb{E}_S[e^{2(m-1)\Delta(h)^2}]\le 2m$; Markov על $e^{f(S)}$ עם $\delta=2m/e^\epsilon$; סיימו עם Jensen $(\mathbb{E}_Q[\Delta])^2\le\mathbb{E}_Q[\Delta^2]$.
-רלוונטיות למבחן: ההוכחה המלאה ניתנה בכיתה — מועמד מוביל לשאלת הוכחה; דעו מדוע $P$ אסור שיהיה תלוי ב-$S$ אך $Q$ מותר.
+
+**רעיון ההוכחה:** הגדירו $f(S):=\sup_{Q}\big[2(m-1)\mathbb{E}_{h\sim Q}[\Delta(h)^2]-\mathrm{KL}(Q\|P)\big]$ עם $\Delta(h):=L_D(h)-L_S(h)$; החלפת מידה + Jensen נותנים $f(S)\le\ln\mathbb{E}_{h\sim P}[e^{2(m-1)\Delta(h)^2}]$; החלפת $\mathbb{E}_S,\mathbb{E}_{h\sim P}$ (אי-תלות) וזנב Hoeffding + נוסחת סכום-הזנב נותנים $\mathbb{E}_S[e^{2(m-1)\Delta(h)^2}]\le 2m$; Markov על $e^{f(S)}$ עם $\delta=2m/e^\epsilon$; סיימו עם Jensen $(\mathbb{E}_Q[\Delta])^2\le\mathbb{E}_Q[\Delta^2]$.
+
+**רלוונטיות למבחן:** ההוכחה המלאה ניתנה בכיתה — מועמד מוביל לשאלת הוכחה; דעו מדוע $P$ אסור שיהיה תלוי ב-$S$ אך $Q$ מותר.
 
 **Lem 1 (KL between multivariate Gaussians).** עבור $\Sigma_0,\Sigma_1$ לא-סינגולריות (PD) על $\mathbb{R}^r$:
+
 $$\mathrm{KL}\big(N(\mu_0,\Sigma_0)\,\|\,N(\mu_1,\Sigma_1)\big)=\frac{1}{2}\Big(\mathrm{Tr}(\Sigma_1^{-1}\Sigma_0)+(\mu_1-\mu_0)^\top\Sigma_1^{-1}(\mu_1-\mu_0)-r+\ln\frac{\det(\Sigma_1)}{\det(\Sigma_0)}\Big).$$
+
 (תרגיל: הוכיחו.)
 
 **Example (PAC-Bayes for NNs; Dziugaite–Roy [1], Neyshabur et al. [5]).** $\Theta=\mathbb{R}^r$; prior $P=N(0,\sigma^2 I)$ (תואם אתחול אקראי מקובל); posterior $Q=N(\hat\theta,\bar\sigma^2 I)$, $\hat\theta$ = הפרמטרים המאומנים. לפי Lem 1: $\mathrm{KL}(Q\|P)=\frac{1}{2}\big(r\frac{\bar\sigma^2}{\sigma^2}+\frac{1}{\sigma^2}\|\hat\theta\|^2-r+r\ln(\sigma^2)-r\ln(\bar\sigma^2)\big)$, ממוזער על פני $\bar\sigma^2$ ב-$\bar\sigma^2=\sigma^2$, ונותן $\mathrm{KL}(Q\|P)=\frac{1}{2\sigma^2}\|\hat\theta\|^2$. בהצבה ב-Thm 2:
+
 $$L_D(Q)\le \mathbb{E}_{\theta\sim N(\hat\theta,\sigma^2 I)}[L_S(h_\theta)]+\sqrt{\frac{\frac{1}{2\sigma^2}\|\hat\theta\|^2+\ln\big(\frac{2m}{\delta}\big)}{2(m-1)}}.$$
+
 פרשנות: חסם נמוך אם ורק אם הפתרון (1) הוא **מינימום שטוח** (הפסד האימון הממוצע על פני סביבה גאוסיאנית של $\hat\theta$ נמוך — השוו Keskar et al. [3]) ו-(2) בעל **נורמה נמוכה** $\|\hat\theta\|$. הערובה חלה על ההתפלגות $Q$ (רשת סטוכסטית הדוגמת משקלים מ-$Q$ לכל ניבוי), לא על $\hat\theta$ עצמה, אלא אם חוסמים בנוסף את $L_D(h_{\hat\theta})-\mathbb{E}_{\theta\sim N(\hat\theta,\sigma^2 I)}[L_S(h_\theta)]$. הסתייגויות: איבר הסביבה לא-אנליטי (ניתן לאמידה רק על ידי דגימה); הערכים על רשתות אמיתיות רחוקים מלהיות הדוקים (כמו בכל החסמים הידועים).
 
 ## טכניקות וטריקים

@@ -24,9 +24,15 @@ In other words, $f$ is a function implemented by a network with a single hidden 
 *Hint:* use the fact that the VC dimension of homogeneous (bias-free) $d$-dimensional linear separators is $d$ (no need to prove this). Do so while treating the rows of $W$ as a given set of inputs, and the set of all inputs $X=\mathbb{R}^d$ as a class of linear separators.
 
 **Solution sketch:**
-**1.** Course definition (lecture-2 formalization; exact phrasing unverified): $\{H_B\}$ is exponentially expressively efficient w.r.t. $\{H'_C\}$ if (i) every $H'_C$ is contained in some $H_B$ with $B$ polynomial (e.g., linear) in $C$, while (ii) containing $H_B$ inside $H'_C$ forces $C$ exponential in $B$, i.e., $\min\{C:\,H_B\subseteq H'_C\}=2^{\Omega(B)}$.
+**1.** Course definition (lecture-2 formalization; exact phrasing unverified): $\{H_B\}$ is exponentially expressively efficient w.r.t. $\{H'_C\}$ if (i) every $H'_C$ is contained in some $H_B$ with $B$ polynomial (e.g., linear) in $C$, while (ii) containing $H_B$ inside $H'_C$ forces $C$ exponential in $B$, i.e.,
 
-**2.** Condition (i): by assumption $H'_C\subseteq H_B$ already with $B=C$ (linear). Condition (ii): VC dimension is monotone under inclusion. So $H_B\subseteq H'_C$ implies $\exp(B)=VC(H_B)\le VC(H'_C)=C$. Thus any $C$ realizing the containment satisfies $C\ge e^B$ — exponential in $B$. Both conditions hold, giving exponential expressive efficiency.
+$$\min\{C:\,H_B\subseteq H'_C\}=2^{\Omega(B)}$$
+
+**2.** Condition (i): by assumption $H'_C\subseteq H_B$ already with $B=C$ (linear). Condition (ii): VC dimension is monotone under inclusion. So $H_B\subseteq H'_C$ implies
+
+$$\exp(B)=VC(H_B)\le VC(H'_C)=C$$
+
+Thus any $C$ realizing the containment satisfies $C\ge e^B$ — exponential in $B$. Both conditions hold, giving exponential expressive efficiency.
 
 **3.** Yes, the claim still holds: replacing $B\ge C$ by $B\ge 5C$ keeps requirement (i) with $B=5C$, still linear (in particular polynomial) in $C$. Expressive efficiency is defined up to polynomial overhead, and requirement (ii) is unaffected.
 
@@ -68,15 +74,35 @@ i.e., the loss function converges to $0$ at an exponential rate.
 *Hint:* first show that $\frac{d}{dt}L(w(t))\le-2Nc^{\,2-\frac{2}{N}}\cdot L(w(t))$.
 
 **Solution sketch:**
-**1.** Entry-wise chain rule: $w_i=\prod_n (u_n)_i$. So $\frac{\partial\phi}{\partial (u_j)_i}=(\nabla L(w))_i\cdot\frac{\partial w_i}{\partial (u_j)_i}=(\nabla L(w))_i\prod_{n\ne j}(u_n)_i$. Stacking coordinates gives $(\odot_{n\ne j}u_n)\odot\nabla L(w)$.
+**1.** Entry-wise chain rule: $w_i=\prod_n (u_n)_i$. So
 
-**2.** At the origin $(0,\dots,0)$, every block gradient contains a Hadamard product of $N-1\ge1$ zero vectors. Hence $\nabla\phi=0$: the origin is a critical point. But $\phi(0)=L(0)>L(w^*)=\phi(w^*,\mathbf1,\dots,\mathbf1)$. So the origin is not a global minimum. A differentiable convex function has every critical point a global minimum. Therefore $\phi$ is not convex.
+$$\frac{\partial\phi}{\partial (u_j)_i}=(\nabla L(w))_i\cdot\frac{\partial w_i}{\partial (u_j)_i}=(\nabla L(w))_i\prod_{n\ne j}(u_n)_i$$
 
-**3.** $\frac{d}{dt}u_j^2=2\,u_j\odot\dot u_j=-2\,u_j\odot\big(\odot_{n\ne j}u_n\big)\odot\nabla L(w)=-2\,w\odot\nabla L(w)$ — the same expression for every $j$ (this is the balancedness conservation law: $u_i^2(t)-u_j^2(t)$ is invariant under gradient flow).
+Stacking coordinates gives $(\odot_{n\ne j}u_n)\odot\nabla L(w)$.
 
-**4.** By (3) and the balanced positive initialization, $u_i^2(t)-u_j^2(t)\equiv0$, and by continuity the entries stay of the same sign. So $u_1(t)=\cdots=u_N(t)=:u(t)$ for all $t$. Then $w=u^{\,N}$ (entry-wise), and $\dot w=N\,u^{N-1}\odot\dot u=-N\,u^{2N-2}\odot\nabla L(w)=-N\,w^{2-\frac2N}\odot\nabla L(w)$.
+**2.** At the origin $(0,\dots,0)$, every block gradient contains a Hadamard product of $N-1\ge1$ zero vectors. Hence $\nabla\phi=0$: the origin is a critical point. But
 
-**5.** $\frac{d}{dt}L(w(t))=\langle\nabla L(w),\dot w\rangle=-N\sum_i w_i^{2-\frac2N}\,(\nabla L(w))_i^2\le-N\,c^{2-\frac2N}\,\|\nabla L(w)\|^2$, using $w_i(t)\ge c>0$ and $2-\frac2N\ge1>0$. For $L(w)=\frac12\|w-\mathbf1\|^2$: $\nabla L(w)=w-\mathbf1$ and $\|\nabla L(w)\|^2=2L(w)$. Hence $\frac{d}{dt}L\le-2Nc^{2-\frac2N}L$. Grönwall's inequality then yields $L(w(t))\le L(w(0))e^{-2Nc^{2-2/N}t}$.
+$$\phi(0)=L(0)>L(w^*)=\phi(w^*,\mathbf1,\dots,\mathbf1)$$
+
+So the origin is not a global minimum. A differentiable convex function has every critical point a global minimum. Therefore $\phi$ is not convex.
+
+**3.**
+
+$$\frac{d}{dt}u_j^2=2\,u_j\odot\dot u_j=-2\,u_j\odot\big(\odot_{n\ne j}u_n\big)\odot\nabla L(w)=-2\,w\odot\nabla L(w)$$
+
+— the same expression for every $j$ (this is the balancedness conservation law: $u_i^2(t)-u_j^2(t)$ is invariant under gradient flow).
+
+**4.** By (3) and the balanced positive initialization, $u_i^2(t)-u_j^2(t)\equiv0$, and by continuity the entries stay of the same sign. So $u_1(t)=\cdots=u_N(t)=:u(t)$ for all $t$. Then $w=u^{\,N}$ (entry-wise), and
+
+$$\dot w=N\,u^{N-1}\odot\dot u=-N\,u^{2N-2}\odot\nabla L(w)=-N\,w^{2-\frac2N}\odot\nabla L(w)$$
+
+**5.**
+
+$$\frac{d}{dt}L(w(t))=\langle\nabla L(w),\dot w\rangle=-N\sum_i w_i^{2-\frac2N}\,(\nabla L(w))_i^2\le-N\,c^{2-\frac2N}\,\|\nabla L(w)\|^2$$
+
+using $w_i(t)\ge c>0$ and $2-\frac2N\ge1>0$. For $L(w)=\frac12\|w-\mathbf1\|^2$: $\nabla L(w)=w-\mathbf1$ and $\|\nabla L(w)\|^2=2L(w)$. Hence $\frac{d}{dt}L\le-2Nc^{2-\frac2N}L$. Grönwall's inequality then yields
+
+$$\boxed{\,L(w(t))\le L(w(0))e^{-2Nc^{2-2/N}t}\,}$$
 
 **💡 Useful tricks:** Entry-wise chain rule for each block gradient; the origin is critical because every block gradient hides a product of $N-1$ zero vectors ⇒ non-convex via "critical but not global"; balancedness $u_i^2-u_j^2$ is conserved *entry-wise*; balanced positive init ⇒ all $u_n$ stay equal ⇒ $w=u^N$ ⇒ the $-N\,\nabla L\odot w^{2-2/N}$ dynamics; then $\|\nabla L\|^2=2L$ closes the Grönwall.
 
@@ -104,13 +130,23 @@ Assume now that $X=\mathbb{R}^d$ and $Y=\{0,1\}$, and that the network can corre
 5. **(6 pts)** Show that there exists a distribution $D$ over $X\times Y$, and a way to return a hypothesis $h\in H$ that correctly classifies every training sample drawn from $D$ (i.e., for which $h(x_1)=y_1,\dots,h(x_m)=y_m$ holds), such that the generalization error of $h$ is zero, i.e., $L_D(h)=0$.
 
 **Solution sketch:**
-**1.** $b$ bits represent all parameters. So $|H|\le2^b$. For a fixed $h$, Hoeffding on the i.i.d. losses gives tail $2e^{-2m\epsilon^2}$. A union bound with confidence $\delta/|H|$ per hypothesis gives $\sqrt{\ln(2|H|/\delta)/(2m)}\le\sqrt{(\ln(2/\delta)+b\ln2)/(2m)}$.
+**1.** $b$ bits represent all parameters. So $|H|\le2^b$. For a fixed $h$, Hoeffding on the i.i.d. losses gives tail $2e^{-2m\epsilon^2}$. A union bound with confidence $\delta/|H|$ per hypothesis gives
+
+$$\sqrt{\ln(2|H|/\delta)/(2m)}\le\sqrt{(\ln(2/\delta)+b\ln2)/(2m)}$$
 
 **2.** Fix any $m$ distinct inputs. The interpolation property realizes all $2^m$ labelings, and distinct labelings require distinct hypotheses. So $2^b\ge|H|\ge2^m$, hence $b\ge m$.
 
-**3.** Plugging $b\ge m$ into the bound gives at least $\sqrt{(m\ln2)/(2m)}=\sqrt{\ln2/2}\approx0.59$ — a constant that does not shrink as $m$ grows. Since the loss lies in $[0,1]$, a guaranteed gap of $\approx0.59$ is essentially vacuous (trivial).
+**3.** Plugging $b\ge m$ into the bound gives at least
 
-**4.** Choose any marginal over $x$ (e.g., a point mass at some $x_0$) with $y\sim\mathrm{Bernoulli}(1/2)$ independent of $x$: for the 0–1 loss, $L_D(h)=\mathbb{E}_x\big[\tfrac12\ell(h(x),0)+\tfrac12\ell(h(x),1)\big]=\tfrac12$ for every $h$ — the label is pure noise.
+$$\sqrt{(m\ln2)/(2m)}=\sqrt{\ln2/2}\approx0.59$$
+
+— a constant that does not shrink as $m$ grows. Since the loss lies in $[0,1]$, a guaranteed gap of $\approx0.59$ is essentially vacuous (trivial).
+
+**4.** Choose any marginal over $x$ (e.g., a point mass at some $x_0$) with $y\sim\mathrm{Bernoulli}(1/2)$ independent of $x$: for the 0–1 loss,
+
+$$L_D(h)=\mathbb{E}_x\big[\tfrac12\ell(h(x),0)+\tfrac12\ell(h(x),1)\big]=\tfrac12$$
+
+for every $h$ — the label is pure noise.
 
 **5.** Let $D$ be a point mass on a single pair $(x_0,y_0)$. Every sample consists of copies of $(x_0,y_0)$. The interpolation property yields some $h$ with $h(x_0)=y_0$ (e.g., apply it to $m$ distinct inputs that include $x_0$ with label $y_0$). Returning it classifies the sample correctly, and $L_D(h)=\ell(y_0,y_0)=0$.
 

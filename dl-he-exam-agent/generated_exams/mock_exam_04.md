@@ -62,7 +62,8 @@ $x \in \mathbb{R}^L$.
    $\mathcal{H}_2^{anti} \subseteq \mathcal{H}_2$ את תת-המחלקה של השערות שמטריצת
    המעבר שלהן אנטי-סימטרית, $A^\top = -A$, וב-
    $\mathcal{S}_2^{anti}$ את קבוצת סדרות המקדמים המתאימה. יהי
-   $J := \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$.
+
+   $$J := \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$$
 
    a. **(3 pts)** הראו שכל $A \in \mathbb{R}^{2 \times 2}$ אנטי-סימטרית
       שווה ל-$\omega J$ עבור $\omega \in \mathbb{R}$ כלשהו, והוכיחו שעבור כל

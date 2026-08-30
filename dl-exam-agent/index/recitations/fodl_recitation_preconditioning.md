@@ -12,17 +12,43 @@
 - Example: Newton-preconditioned GD on linear regression converges in one step; link to whitening
 
 ## Worked problems / derivations
-**P1.** Eigen-stretching interpretation: with orthogonal EVD $P_t = \sum_{i=1}^d \lambda_i u_i u_i^\top$ and $\nabla f(w_t) = \sum_{i=1}^d \alpha_i u_i$, show what $P_t \nabla f(w_t)$ does.
-Technique: expand and use orthonormality, $P_t \nabla f(w_t) = \sum_{i,j} \lambda_i \alpha_j u_i u_i^\top u_j = \sum_{i=1}^d \lambda_i \alpha_i u_i$ — each gradient component along $u_i$ is scaled by the eigenvalue $\lambda_i$.
+**P1.** Eigen-stretching interpretation: with orthogonal EVD
+
+$$P_t = \sum_{i=1}^d \lambda_i u_i u_i^\top$$
+
+and
+
+$$\nabla f(w_t) = \sum_{i=1}^d \alpha_i u_i$$
+
+, show what $P_t \nabla f(w_t)$ does.
+Technique: expand and use orthonormality,
+
+$$P_t \nabla f(w_t) = \sum_{i,j} \lambda_i \alpha_j u_i u_i^\top u_j = \sum_{i=1}^d \lambda_i \alpha_i u_i$$
+
+— each gradient component along $u_i$ is scaled by the eigenvalue $\lambda_i$.
 
 **P2.** Space-rescaling interpretation: show GD on $g(\theta) = f(Q\theta)$, $Q \in \mathbb{R}^{d,d}$, equals preconditioned GD on $f$ with $P = QQ^\top$.
-Technique: chain rule gives $\theta_{t+1} = \theta_t - \eta Q^\top \nabla f(Q\theta_t)$; left-multiply by $Q$ and set $w_t := Q\theta_t$ to get $w_{t+1} = w_t - \eta\, QQ^\top \nabla f(w_t)$.
+Technique: chain rule gives
+
+$$\theta_{t+1} = \theta_t - \eta Q^\top \nabla f(Q\theta_t)$$
+
+; left-multiply by $Q$ and set $w_t := Q\theta_t$ to get
+
+$$w_{t+1} = w_t - \eta\, QQ^\top \nabla f(w_t)$$
 
 **P3.** Monotonicity theorem: under preconditioned GF, $f(w(t))$ is non-increasing.
-Technique: $\frac{d}{dt} f(w(t)) = \nabla f(w(t))^\top \dot w(t) = -\nabla f(w(t))^\top P_t \nabla f(w(t)) \le 0$ since $P_t$ is PSD (quadratic form nonnegative).
+Technique:
+
+$$\frac{d}{dt} f(w(t)) = \nabla f(w(t))^\top \dot w(t) = -\nabla f(w(t))^\top P_t \nabla f(w(t)) \le 0$$
+
+since $P_t$ is PSD (quadratic form nonnegative).
 
 **P4.** Linear regression $f(w) = \tfrac12\|X^\top w - y\|_2^2$, $X \in \mathbb{R}^{d,n}$, $n \ge d$, $\operatorname{rank}(XX^\top) = d$; run preconditioned GD with $\eta = 1$, $P_t = (\nabla^2 f(w_t))^{-1}$ (Newton).
-Technique: $\nabla f(w) = XX^\top w - Xy$, $\nabla^2 f(w) = XX^\top$; then $w_1 = w_0 - (XX^\top)^{-1}(XX^\top w_0 - Xy) = (XX^\top)^{-1}Xy$ — the unique minimizer, reached in one step regardless of $w_0$.
+Technique: $\nabla f(w) = XX^\top w - Xy$, $\nabla^2 f(w) = XX^\top$; then
+
+$$w_1 = w_0 - (XX^\top)^{-1}(XX^\top w_0 - Xy) = (XX^\top)^{-1}Xy$$
+
+— the unique minimizer, reached in one step regardless of $w_0$.
 
 ## Key formulas & facts
 - Preconditioned GD: $w_{t+1} = w_t - \eta P_t \nabla f(w_t)$; preconditioned GF: $\dot w(t) = -P_t \nabla f(w(t))$, with $P_t$ PSD.

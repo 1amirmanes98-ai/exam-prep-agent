@@ -61,7 +61,9 @@ $$A\odot B:=\begin{pmatrix}a_{11}B & a_{12}B & \cdots\\ a_{21}B & a_{22}B & \cdo
 
 **Def 5 (matricization; canonical matricization).** עבור טנזור $\mathcal T\in\mathbb R^{m_1,\dots,m_n}$ ותת-קבוצת מודים מסודרת $I=\{i_1,\dots,i_{|I|}\}\subseteq[n]$ ($1\le i_1\le\dots\le i_{|I|}\le n$), עם משלים $I^c:=[n]\setminus I=\{j_1,\dots,j_{|I^c|}\}$: המטריציזציה $[\![\mathcal T]\!]_I\in\mathbb R^{\prod_{t=1}^{|I|}m_{i_t},\ \prod_{t=1}^{|I^c|}m_{j_t}}$ פורשת את מודי $I$ כשורות ואת אלו של $I^c$ כעמודות:
 $$\big([\![\mathcal T]\!]_I\big)_{\,1+\sum_{t=1}^{|I|}(d_{i_t}-1)\prod_{s=t+1}^{|I|}m_{i_s},\ \ 1+\sum_{t=1}^{|I^c|}(d_{j_t}-1)\prod_{s=t+1}^{|I^c|}m_{j_s}}:=\mathcal T_{d_1,\dots,d_n}.$$
-אם $n$ זוגי, $[\![\mathcal T]\!]$ (ללא מציין תחתי) מציין את ה**מטריציזציה הקנונית** $[\![\mathcal T]\!]_I$ עם $I=\{1,3,\dots,n-1\}$ (מודים אי-זוגיים לעומת זוגיים). המטריציזציה היא אופרטור **לינארי**: $[\![\sum_k\alpha_k\mathcal T_k]\!]_I=\sum_k\alpha_k[\![\mathcal T_k]\!]_I$.
+אם $n$ זוגי, $[\![\mathcal T]\!]$ (ללא מציין תחתי) מציין את ה**מטריציזציה הקנונית** $[\![\mathcal T]\!]_I$ עם $I=\{1,3,\dots,n-1\}$ (מודים אי-זוגיים לעומת זוגיים). המטריציזציה היא אופרטור **לינארי**:
+
+$$[\![\sum_k\alpha_k\mathcal T_k]\!]_I=\sum_k\alpha_k[\![\mathcal T_k]\!]_I$$
 
 **Def 6 (distance $D$ for CAC inapproximability).** עבור $f,\bar f:[M]^N\to\mathbb R$:
 $$D(f,\bar f):=\sqrt{\sum_{d_1,\dots,d_N=1}^M\big(f(d_1,\dots,d_N)-\bar f(d_1,\dots,d_N)\big)^2}\,;\qquad D(f,\bar f)=\big\|[\![\mathcal A]\!]-[\![\bar{\mathcal A}]\!]\big\|_F=:\|\mathcal A-\bar{\mathcal A}\|_F,$$
@@ -75,83 +77,136 @@ $$\mathrm{sep}[f;I]:=\min\Big\{R\in\mathbb N\cup\{0\}:\exists g_1,\dots,g_R:[M]^
 
 ## Key theorems & results
 **Prop 1 (shallow ReLU ↔ piecewise linear).** רשת רדודה ברוחב $B\ge2$ יכולה לממש כל פונקציה לינארית למקוטעין עם $\le B$ מקטעים: עבור כל $g$ כזו קיימת $h\in\mathcal H_B$ עם $g\equiv h$. הפוך, כל פונקציה הניתנת למימוש על ידי רשת רדודה ברוחב $B\ge2$ היא לינארית למקוטעין עם $\le B+1$ מקטעים: עבור כל $h\in\mathcal H_B$ קיימת $g$ לינארית למקוטעין עם $\le B+1$ מקטעים כך ש-$h\equiv g$.
-רעיון ההוכחה: נדחה לשיעורי בית 2 (כל נוירון ReLU תורם נקודת שבירה אחת; הפוך, סכומים של $B$ ReLU-ים בתוספת אפיני נותנים $\le B+1$ מקטעים).
-רלוונטיות למבחן: ספירות המקטעים המדויקות ($\le B$ ניתנות למימוש לעומת $\le B+1$ עבור פונקציות ממומשות) מניעות הן את האוניברסליות והן את החסם התחתון של Prop 2.
+
+**רעיון ההוכחה:** נדחה לשיעורי בית 2 (כל נוירון ReLU תורם נקודת שבירה אחת; הפוך, סכומים של $B$ ReLU-ים בתוספת אפיני נותנים $\le B+1$ מקטעים).
+
+**רלוונטיות למבחן:** ספירות המקטעים המדויקות ($\le B$ ניתנות למימוש לעומת $\le B+1$ עבור פונקציות ממומשות) מניעות הן את האוניברסליות והן את החסם התחתון של Prop 2.
 
 **Lemma 1 (piecewise linear approximation of continuous functions).** עבור כל $\epsilon>0$ וכל $f\in\mathcal F$ (רציפה), קיימת $g$ לינארית למקוטעין עם $d(f,g)=\int_0^1|f(x)-g(x)|dx<\epsilon$.
-רעיון ההוכחה: $f$ רציפה במידה שווה על $[0,1]$ (Heine–Cantor); ניקח דיסקרטיזציה $0=:c_0<c_1<\dots<c_N:=1$ עם רשת $<\delta$ ותהי $g$ אינטרפולציה של $f$ בנקודות $c_i$; על כל $[c_i,c_{i+1}]$, $g(x)$ נמצאת בין $g(c_i)=f(c_i)$ ל-$g(c_{i+1})=f(c_{i+1})$, שתיהן $\epsilon$-קרובות ל-$f(x)$; בצעו אינטגרציה.
-רלוונטיות למבחן: בשילוב עם Prop 1 נותן $\mathcal F$-אוניברסליות של $\mathcal H_B$ במובן של $d(\cdot,\cdot)$; אוניברסליות של $\bar{\mathcal H}_{\bar B}$ נובעת כיוון ש-$\mathcal H_B\subset\bar{\mathcal H}_{\bar B=B}$.
+
+**רעיון ההוכחה:** $f$ רציפה במידה שווה על $[0,1]$ (Heine–Cantor); ניקח דיסקרטיזציה $0=:c_0<c_1<\dots<c_N:=1$ עם רשת $<\delta$ ותהי $g$ אינטרפולציה של $f$ בנקודות $c_i$; על כל $[c_i,c_{i+1}]$, $g(x)$ נמצאת בין $g(c_i)=f(c_i)$ ל-$g(c_{i+1})=f(c_{i+1})$, שתיהן $\epsilon$-קרובות ל-$f(x)$; בצעו אינטגרציה.
+
+**רלוונטיות למבחן:** בשילוב עם Prop 1 נותן $\mathcal F$-אוניברסליות של $\mathcal H_B$ במובן של $d(\cdot,\cdot)$; אוניברסליות של $\bar{\mathcal H}_{\bar B}$ נובעת כיוון ש-$\mathcal H_B\subset\bar{\mathcal H}_{\bar B=B}$.
 
 **Prop 2 (exponential expressive efficiency of deep ReLU nets).** (1) עבור כל $B\in\mathbb N$ קיים $\bar B\in O(B)$ כך ש-$\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$; (2) קיימים $\bar B\in\mathbb N$ (למעשה $\bar B\in O(1)$, כלומר רוחב 3) ו-$\bar h\in\bar{\mathcal H}_{\bar B}$ כך ש-$\bar h\notin\mathcal H_B$ אלא אם $B\in\exp(L)$ ($L$ = מספר שכבות הרשת העמוקה).
-רעיון ההוכחה: (1) שכבות מעבר. (2) רשת בעלת $L$ שכבות ורוחב 3 מממשת $\bar h=g^{\circ L-1}$ (פעולות אפיניות רציפות מתמזגות בעת הרכבת הבלוק ברוחב 3), פונקציה לינארית למקוטעין עם $2+2\cdot2^{L-2}=2+2^{L-1}$ מקטעים לינאריים; לפי Prop 1 רשת רדודה המממשת אותה זקוקה לרוחב $\ge2^{L-1}+1$.
-רלוונטיות למבחן: הוכחת הפרדת-עומק קנונית; דעו את ספירת המקטעים $2+2^{L-1}$ ומהיכן מגיע כל גורם.
+
+**רעיון ההוכחה:** (1) שכבות מעבר. (2) רשת בעלת $L$ שכבות ורוחב 3 מממשת $\bar h=g^{\circ L-1}$ (פעולות אפיניות רציפות מתמזגות בעת הרכבת הבלוק ברוחב 3), פונקציה לינארית למקוטעין עם $2+2\cdot2^{L-2}=2+2^{L-1}$ מקטעים לינאריים; לפי Prop 1 רשת רדודה המממשת אותה זקוקה לרוחב $\ge2^{L-1}+1$.
+
+**רלוונטיות למבחן:** הוכחת הפרדת-עומק קנונית; דעו את ספירת המקטעים $2+2^{L-1}$ ומהיכן מגיע כל גורם.
 
 **Result (inapproximability of the sawtooth; Section 1.4).** יהי $h\in\mathcal H_B$. על פני כל $2^{L-1}+1$ הקטעים של $S_>$ ו-$S_<$, $h$ יכולה להימנע מהחטאה של לא יותר מ-$\big\lceil\frac12(2^{L-1}+1)+\frac12(B+1)\big\rceil$ קטעים, כלומר מחטיאה לפחות $\big\lfloor\frac12(2^{L-1}+1)-\frac12(B+1)\big\rfloor$ קטעים (הוכחת טענת הספירה: תרגיל; שימו לב שטקסט התרגיל בסיכומים מדפיס בטעות את ספירת הקטעים כ-"$2^{L+1}+1$"). לכל הקטעים המוחטאים פרט לכל היותר שניים יש אורך $2^{-L+1}$, ומכאן
 $$d\big(g^{\circ L-1},h\big)=\int_0^1\big|g^{\circ L-1}(x)-h(x)\big|dx\ \ge\ \Big(\Big\lfloor\tfrac12(2^{L-1}+1)-\tfrac12(B+1)\Big\rfloor-2\Big)\cdot2^{-L+1}\cdot\tfrac14\ \ge\ \tfrac18-B\cdot2^{-L-2}-3\cdot2^{-L-1}.$$
 דרישת מרחק $<\epsilon$ מכריחה
 $$B>2^{L+2}\Big(\tfrac18-\epsilon\Big)-6.$$
-רעיון ההוכחה: פונקציה לינארית למקוטעין $h$ עם $\le B+1$ מקטעים יכולה לחצות את רמת $\frac12$ רק מספר מוגבל של פעמים, ולכן היא חייבת "להחטיא" את רוב הקטעים המתחלפים הרבים אקספוננציאלית; כל החטאה עולה $\ge\text{length}\cdot\frac14$ ב-$L^1$.
-רלוונטיות למבחן: משדרג את Prop 2 מאי-מימוש ל**אי-קריבות** (הצורה החזקה יותר של יעילות ביטוי מהרצאה 1, הערה 2); הרוחב הרדוד חייב להיות אקספוננציאלי ב-$L$ כדי להגיע בתוך $\epsilon$ קבוע.
+
+**רעיון ההוכחה:** פונקציה לינארית למקוטעין $h$ עם $\le B+1$ מקטעים יכולה לחצות את רמת $\frac12$ רק מספר מוגבל של פעמים, ולכן היא חייבת "להחטיא" את רוב הקטעים המתחלפים הרבים אקספוננציאלית; כל החטאה עולה $\ge\text{length}\cdot\frac14$ ב-$L^1$.
+
+**רלוונטיות למבחן:** משדרג את Prop 2 מאי-מימוש ל**אי-קריבות** (הצורה החזקה יותר של יעילות ביטוי מהרצאה 1, הערה 2); הרוחב הרדוד חייב להיות אקספוננציאלי ב-$L$ כדי להגיע בתוך $\epsilon$ קבוע.
 
 **Prop 3 (shallow CAC ≡ CP decomposition).** הטנזור הנוצר על ידי הרשת הרדודה הוא
 $$\mathcal A=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot\mathbf a^{z,1}\otimes\mathbf a^{z,2}\otimes\cdots\otimes\mathbf a^{z,N}$$
 — פירוק CANDECOMP/PARAFAC (CP).
-רעיון ההוכחה: על קלט $(d_1,\dots,d_N)$: $\mathrm{conv}(i,z)=\langle\mathbf a^{z,i},\mathbf e^{d_i}\rangle=a^{z,i}_{d_i}$; $\mathrm{pool}(z)=\prod_i a^{z,i}_{d_i}$; $\mathrm{out}=\sum_z a^{\mathrm{out}}_z\prod_i a^{z,i}_{d_i}$, שהוא הרכיב $(d_1,\dots,d_N)$ של סכום ה-CP (Def 2).
-רלוונטיות למבחן: הגשר מהארכיטקטורה לאנליזת טנזורים; $\mathcal H_B$ = טנזורים בעלי ייצוג CP-דרגה $\le B$.
+
+**רעיון ההוכחה:** על קלט $(d_1,\dots,d_N)$: $\mathrm{conv}(i,z)=\langle\mathbf a^{z,i},\mathbf e^{d_i}\rangle=a^{z,i}_{d_i}$; $\mathrm{pool}(z)=\prod_i a^{z,i}_{d_i}$; $\mathrm{out}=\sum_z a^{\mathrm{out}}_z\prod_i a^{z,i}_{d_i}$, שהוא הרכיב $(d_1,\dots,d_N)$ של סכום ה-CP (Def 2).
+
+**רלוונטיות למבחן:** הגשר מהארכיטקטורה לאנליזת טנזורים; $\mathcal H_B$ = טנזורים בעלי ייצוג CP-דרגה $\le B$.
 
 **Prop 4 (deep CAC ≡ Hierarchical Tucker (HT) decomposition).** הטנזור הנוצר על ידי הרשת העמוקה נתון רקורסיבית על ידי
 $$\Phi^{1,j,\gamma}=\sum_{\alpha=1}^{r_0}a^{1,j,\gamma}_\alpha\cdot\mathbf a^{0,2j-1,\alpha}\otimes\mathbf a^{0,2j,\alpha},\qquad j\in[\tfrac N2],\ \gamma\in[r_1]$$
 $$\Phi^{l,j,\gamma}=\sum_{\alpha=1}^{r_{l-1}}a^{l,j,\gamma}_\alpha\cdot\underbrace{\Phi^{l-1,2j-1,\alpha}}_{\text{order }2^{l-1}}\otimes\underbrace{\Phi^{l-1,2j,\alpha}}_{\text{order }2^{l-1}},\qquad j\in[\tfrac N{2^l}],\ \gamma\in[r_l]$$
 $$\mathcal A=\sum_{\alpha=1}^{r_{L-1}}a^L_\alpha\cdot\underbrace{\Phi^{L-1,1,\alpha}}_{\text{order }\frac N2}\otimes\underbrace{\Phi^{L-1,2,\alpha}}_{\text{order }\frac N2}.$$
-רעיון ההוכחה: אינדוקציה על $l\in[L-1]$: הנוירון $\mathrm{conv}_l(j,\gamma)$ (התלוי באיברי הקלט $(j-1)2^l+1$ עד $j\cdot2^l$) מתאים לטנזור מסדר $2^l$ $\Phi^{l,j,\gamma}$; מקרה הבסיס הוא רשת רדודה על 2 קלטים (Prop 3); הצעד משתמש ב-$\mathrm{conv}_l(j,\gamma)=\sum_{\alpha}a^{l,j,\gamma}_\alpha\,\mathrm{conv}_{l-1}(2j-1,\alpha)\,\mathrm{conv}_{l-1}(2j,\alpha)$ וב-Def 3.
-רלוונטיות למבחן: דעו את הרקורסיה, טווחי האינדקסים, ואילו חצאים של הקלט כל גורם מכסה.
+
+**רעיון ההוכחה:** אינדוקציה על $l\in[L-1]$: הנוירון $\mathrm{conv}_l(j,\gamma)$ (התלוי באיברי הקלט $(j-1)2^l+1$ עד $j\cdot2^l$) מתאים לטנזור מסדר $2^l$ $\Phi^{l,j,\gamma}$; מקרה הבסיס הוא רשת רדודה על 2 קלטים (Prop 3); הצעד משתמש ב-$\mathrm{conv}_l(j,\gamma)=\sum_{\alpha}a^{l,j,\gamma}_\alpha\,\mathrm{conv}_{l-1}(2j-1,\alpha)\,\mathrm{conv}_{l-1}(2j,\alpha)$ וב-Def 3.
+
+**רלוונטיות למבחן:** דעו את הרקורסיה, טווחי האינדקסים, ואילו חצאים של הקלט כל גורם מכסה.
 
 **Prop 5 (universality of CAC).** עבור $\mathcal F=\mathcal Y^{\mathcal X}$ (כל הפונקציות $[M]^N\to\mathbb R$), $\mathcal H_B$ היא $\mathcal F$-אוניברסלית: עם $B=M^N$ היא יכולה לממש **כל** פונקציה/טנזור. ($\mathcal F$-אוניברסליות של $\bar{\mathcal H}_{\bar B}$ נובעת מיעילות הביטוי שלה ביחס ל-$\mathcal H_B$, תנאי (1).)
-רעיון ההוכחה: אנדקסו $z\in[M^N]$ באמצעות $(d_1,\dots,d_N)\in[M]^N$ בסדר לקסיקוגרפי; קבעו $\mathbf a^{z,i}=\mathbf e^{d_i}$, מה שהופך את $\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}=\mathbb 1[d_1,\dots,d_N]$ (טנזור one-hot); קבעו $a^{\mathrm{out}}_z=\mathcal T_{d_1,\dots,d_N}$ כדי לשחזר כל מטרה $\mathcal T$.
-רלוונטיות למבחן: אוניברסליות כאן היא *מימוש מדויק* (תחום סופי), לא קירוב; זקוקה לרוחב אקספוננציאלי $M^N$.
 
-**Lemma 2 (Kronecker rank multiplicativity).** עבור כל $A\in\mathbb R^{m_1,m_2}$, $B\in\mathbb R^{n_1,n_2}$: $\mathrm{rank}(A\odot B)=\mathrm{rank}(A)\cdot\mathrm{rank}(B)$.
-רעיון ההוכחה: בסיכומי התרגול (באמצעות SVD של הגורמים).
+**רעיון ההוכחה:** אנדקסו $z\in[M^N]$ באמצעות $(d_1,\dots,d_N)\in[M]^N$ בסדר לקסיקוגרפי; קבעו $\mathbf a^{z,i}=\mathbf e^{d_i}$, מה שהופך את $\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}=\mathbb 1[d_1,\dots,d_N]$ (טנזור one-hot); קבעו $a^{\mathrm{out}}_z=\mathcal T_{d_1,\dots,d_N}$ כדי לשחזר כל מטרה $\mathcal T$.
+
+**רלוונטיות למבחן:** אוניברסליות כאן היא *מימוש מדויק* (תחום סופי), לא קירוב; זקוקה לרוחב אקספוננציאלי $M^N$.
+
+**Lemma 2 (Kronecker rank multiplicativity).** עבור כל $A\in\mathbb R^{m_1,m_2}$, $B\in\mathbb R^{n_1,n_2}$:
+
+$$\mathrm{rank}(A\odot B)=\mathrm{rank}(A)\cdot\mathrm{rank}(B)$$
+
+**רעיון ההוכחה:** בסיכומי התרגול (באמצעות SVD של הגורמים).
 
 **Lemma 3 (matricization of tensor outer product).** עבור טנזורים $\mathcal T,\bar{\mathcal T}$ מסדרים $n,\bar n$ ו-$I\subseteq[n+\bar n]$:
 $$[\![\mathcal T\otimes\bar{\mathcal T}]\!]_I=[\![\mathcal T]\!]_{I\cap[n]}\odot[\![\bar{\mathcal T}]\!]_{(I-n)\cap[\bar n]}$$
-($I-n$ = חיסור $n$ מכל איברי $I$). בפרט, עבור $n,\bar n$ זוגיים: $[\![\mathcal T\otimes\bar{\mathcal T}]\!]=[\![\mathcal T]\!]\odot[\![\bar{\mathcal T}]\!]$.
-רעיון ההוכחה: שיעורי בית 2 (ניהול אינדקסים ב-Def 5).
-רלוונטיות למבחן: סוס העבודה של כל חישוב דרגה בחלק 2 (בשימוש עם לינאריות המטריציזציה).
+($I-n$ = חיסור $n$ מכל איברי $I$). בפרט, עבור $n,\bar n$ זוגיים:
+
+$$[\![\mathcal T\otimes\bar{\mathcal T}]\!]=[\![\mathcal T]\!]\odot[\![\bar{\mathcal T}]\!]$$
+
+**רעיון ההוכחה:** שיעורי בית 2 (ניהול אינדקסים ב-Def 5).
+
+**רלוונטיות למבחן:** סוס העבודה של כל חישוב דרגה בחלק 2 (בשימוש עם לינאריות המטריציזציה).
 
 **Prop 6 (exponential expressive efficiency of deep CAC).** (1) עבור כל $B\in\mathbb N$ קיים $\bar B\in O(B)$ כך ש-$\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$. (2) קיימים $\bar B\in\mathbb N$ עם $\bar B\in O(M)$ ו-$\bar h\in\bar{\mathcal H}_{\bar B}$ כך ש-$\bar h\notin\mathcal H_B$ אלא אם $B\in\exp(N)$.
-רעיון ההוכחה: (1) עם $r_0=\dots=r_{L-1}=B=\bar B$ ומסננים $\mathbf a^{l,j,\gamma}=\mathbf e^\gamma$ עבור $l\in[L-1]$, הקונבולוציות החבויות 1..$L-1$ הן מעבר והמיזוגים הזוגיים מתחברים ל-pooling גלובלי — ומשחזרים את הרשת הרדודה. (2) מטריציזציה קנונית של CP: $[\![\mathcal A^{\mathrm{CP}}]\!]=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}\otimes\mathbf a^{z,2}]\!]\odot\cdots\odot[\![\mathbf a^{z,N-1}\otimes\mathbf a^{z,N}]\!]$, כל גורם מטריצה מדרגה 1, ולכן $\mathrm{rank}[\![\mathcal A^{\mathrm{CP}}]\!]\le Z$. עבור הרשת העמוקה, הניחו $r_0\ge M$ והשימו: $\mathbf a^{0,j,\alpha}=\mathbf e^\alpha$ אם $\alpha\in[M]$, אחרת $\mathbf 0$; $\mathbf a^{1,j,\gamma}=\mathbf 1$ (כולו אחדות) אם $\gamma=1$, אחרת $\mathbf 0$; עבור $l=2,\dots,L-1$: $\mathbf a^{l,j,\gamma}=\mathbf e^1$ אם $\gamma=1$, אחרת $\mathbf 0$; $\mathbf a^L=\mathbf e^1$. אז $[\![\Phi^{1,j,\gamma}]\!]=I_M$ עבור $\gamma=1$ (אחרת $0$), ובפריסת הרקורסיה, $[\![\mathcal A^{\mathrm{HT}}]\!]=\underbrace{I_M\odot\cdots\odot I_M}_{N/2\text{ times}}=I_{M^{N/2}}$, מדרגה $M^{N/2}$.
-רלוונטיות למבחן: משפט הפרדת-העומק המרכזי עבור CAC-ים — עמוקה ברוחב $O(M)$ לעומת רדודה $\exp(N)$; היו מסוגלים לשחזר הן את חסם הדרגה $\le Z$ והן את השמת מטריציזציית-הזהות.
 
-**Thm 1 (Eckart–Young–Mirsky).** יהי $A\in\mathbb R^{m_1,m_2}$ עם ערכים סינגולריים $\sigma_1(A)\ge\sigma_2(A)\ge\dots\ge\sigma_{\min\{m_1,m_2\}}(A)\ge0$. עבור כל $r\in\{0,\dots,\min\{m_1,m_2\}\}$:
+**רעיון ההוכחה:** (1) עם $r_0=\dots=r_{L-1}=B=\bar B$ ומסננים $\mathbf a^{l,j,\gamma}=\mathbf e^\gamma$ עבור $l\in[L-1]$, הקונבולוציות החבויות 1..$L-1$ הן מעבר והמיזוגים הזוגיים מתחברים ל-pooling גלובלי — ומשחזרים את הרשת הרדודה. (2) מטריציזציה קנונית של CP:
+
+$$[\![\mathcal A^{\mathrm{CP}}]\!]=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}\otimes\mathbf a^{z,2}]\!]\odot\cdots\odot[\![\mathbf a^{z,N-1}\otimes\mathbf a^{z,N}]\!]$$
+
+כל גורם מטריצה מדרגה 1, ולכן $\mathrm{rank}[\![\mathcal A^{\mathrm{CP}}]\!]\le Z$. עבור הרשת העמוקה, הניחו $r_0\ge M$ והשימו: $\mathbf a^{0,j,\alpha}=\mathbf e^\alpha$ אם $\alpha\in[M]$, אחרת $\mathbf 0$; $\mathbf a^{1,j,\gamma}=\mathbf 1$ (כולו אחדות) אם $\gamma=1$, אחרת $\mathbf 0$; עבור $l=2,\dots,L-1$: $\mathbf a^{l,j,\gamma}=\mathbf e^1$ אם $\gamma=1$, אחרת $\mathbf 0$; $\mathbf a^L=\mathbf e^1$. אז $[\![\Phi^{1,j,\gamma}]\!]=I_M$ עבור $\gamma=1$ (אחרת $0$), ובפריסת הרקורסיה,
+
+$$[\![\mathcal A^{\mathrm{HT}}]\!]=\underbrace{I_M\odot\cdots\odot I_M}_{N/2\text{ times}}=I_{M^{N/2}}$$
+
+מדרגה $M^{N/2}$.
+
+**רלוונטיות למבחן:** משפט הפרדת-העומק המרכזי עבור CAC-ים — עמוקה ברוחב $O(M)$ לעומת רדודה $\exp(N)$; היו מסוגלים לשחזר הן את חסם הדרגה $\le Z$ והן את השמת מטריציזציית-הזהות.
+
+**Thm 1 (Eckart–Young–Mirsky).** יהי $A\in\mathbb R^{m_1,m_2}$ עם ערכים סינגולריים
+
+$$\sigma_1(A)\ge\sigma_2(A)\ge\dots\ge\sigma_{\min\{m_1,m_2\}}(A)\ge0$$
+
+עבור כל $r\in\{0,\dots,\min\{m_1,m_2\}\}$:
 $$\min_{W\in\mathbb R^{m_1,m_2},\ \mathrm{rank}(W)\le r}\|W-A\|_F^2=\sum\nolimits_{i=r+1}^{\min\{m_1,m_2\}}\sigma_i(A)$$
 (כפי שמודפס בסיכומים; הניסוח הקלאסי מכיל $\sigma_i(A)^2$ מימין — השניים מתלכדים ביישום שלהלן, בו כל $\sigma_i\in\{0,1\}$).
-רעיון ההוכחה: תוצאת קירוב מדרגה-נמוכה קלאסית [Eckart–Young 1936]; קטמו את ה-SVD.
+
+**רעיון ההוכחה:** תוצאת קירוב מדרגה-נמוכה קלאסית [Eckart–Young 1936]; קטמו את ה-SVD.
 
 **Result (inapproximability for CACs; Section 2.5).** יהי $h\in\mathcal H_B$ עם טנזור $\mathcal A^{\mathrm{CP}}$, ותהי $\bar h\in\bar{\mathcal H}_{\bar B}$ הפונקציה העמוקה של Prop 6 (מטריציזציה קנונית $I_{M^{N/2}}$). כיוון ש-$\mathrm{rank}[\![\mathcal A^{\mathrm{CP}}]\!]\le B$:
 $$D(h,\bar h)=\big\|[\![\mathcal A^{\mathrm{CP}}]\!]-I_{M^{N/2}}\big\|_F\ \ge\ \sqrt{\min_{W:\,\mathrm{rank}(W)\le B}\|W-I_{M^{N/2}}\|_F^2}=\sqrt{\sum\nolimits_{i=B+1}^{M^{N/2}}\sigma_i\big(I_{M^{N/2}}\big)}=\sqrt{M^{N/2}-B}.$$
 לפיכך עבור כל $\epsilon>0$, $D(h,\bar h)\le\epsilon$ מכריח $B\ge M^{N/2}-\epsilon^2$: גדול אקספוננציאלית.
-רעיון ההוכחה: EYM מיושם עם $A=I_{M^{N/2}}$ (כל הערכים הסינגולריים 1).
-רלוונטיות למבחן: חיזוק אי-קריבות עבור CAC-ים; שימו לב שהמרחק הוא Frobenius/$\ell_2$ על פני כל $M^N$ הקלטים (Def 6).
+
+**רעיון ההוכחה:** EYM מיושם עם $A=I_{M^{N/2}}$ (כל הערכים הסינגולריים 1).
+
+**רלוונטיות למבחן:** חיזוק אי-קריבות עבור CAC-ים; שימו לב שהמרחק הוא Frobenius/$\ell_2$ על פני כל $M^N$ הקלטים (Def 6).
 
 **Thm 2 (zero set of a polynomial; Caron–Traynor).** יהי $p:\mathbb R^n\to\mathbb R$ פולינום. אזי $p^{-1}(0):=\{\mathbf x\in\mathbb R^n:p(\mathbf x)=0\}$ הוא או כל $\mathbb R^n$ או בעל מידה (Lebesgue) אפס.
-רעיון ההוכחה: מצוטט [Caron & Traynor 2005]; אינדוקציה על הממד.
+
+**רעיון ההוכחה:** מצוטט [Caron & Traynor 2005]; אינדוקציה על הממד.
 
 **Result (completeness; Section 2.6).** $\mathrm{rank}\big([\![\mathcal A^{\mathrm{HT}}]\!]\big)=M^{N/2}$ עבור **כמעט כל** השמות הפרמטרים של הרשת העמוקה (עם $r_0\ge M$), ומבססת **יעילות ביטוי (אקספוננציאלית) מלאה** של ה-CAC העמוק ביחס לרדוד.
-רעיון ההוכחה: רכיבי $[\![\mathcal A^{\mathrm{HT}}]\!]$ הם פולינומים בפרמטרים, ולכן גם $\det([\![\mathcal A^{\mathrm{HT}}]\!])$; הוא לא-אפסי בהשמת Prop 6, ולכן אינו פולינום האפס; לפי Thm 2 קבוצת האפסים שלו בעלת מידה אפס. לפיכך פרמטרים הנדגמים מכל התפלגות רציפה נותנים $\det\ne0$ בהסתברות 1.
-רלוונטיות למבחן: טיעון גנריות סטנדרטי — שננו את השרשרת "רכיבים פולינומיים → לא-אפס בנקודה אחת → לא פולינום האפס → קבוצת אפסים בעלת מידה אפס".
+
+**רעיון ההוכחה:** רכיבי $[\![\mathcal A^{\mathrm{HT}}]\!]$ הם פולינומים בפרמטרים, ולכן גם $\det([\![\mathcal A^{\mathrm{HT}}]\!])$; הוא לא-אפסי בהשמת Prop 6, ולכן אינו פולינום האפס; לפי Thm 2 קבוצת האפסים שלו בעלת מידה אפס. לפיכך פרמטרים הנדגמים מכל התפלגות רציפה נותנים $\det\ne0$ בהסתברות 1.
+
+**רלוונטיות למבחן:** טיעון גנריות סטנדרטי — שננו את השרשרת "רכיבים פולינומיים → לא-אפס בנקודה אחת → לא פולינום האפס → קבוצת אפסים בעלת מידה אפס".
 
 **Prop 7 (separation rank = matricization rank).** עבור $f:[M]^N\to\mathbb R$ עם טנזור $\mathcal A$ וכל $I\subseteq[N]$:
 $$\mathrm{sep}[f;I]=\mathrm{rank}\big([\![\mathcal A]\!]_I\big).$$
-רעיון ההוכחה: בה"כ $I=[|I|]$ (תמורה משמרת את שני האגפים). ($\le$): סכום של $R$ איברים הניתנים להפרדה נותן $\mathcal A=\sum_{\nu=1}^R\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$; מטריציזציה עם לינאריות + Lemma 3 נותנת $[\![\mathcal A]\!]_I=\sum_\nu\mathrm{vec}[\mathcal B^\nu]\,\mathrm{vec}[\bar{\mathcal B}^\nu]^\top$, ולכן דרגה $\le R$. ($\ge$): פירוק מדרגה $r$ $[\![\mathcal A]\!]_I=\sum_{\nu=1}^r\mathbf v^\nu(\bar{\mathbf v}^\nu)^\top$ מתקפל בחזרה ל-$\mathcal A=\sum_\nu\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$, כלומר $r$ מחוברים הניתנים להפרדה — סתירה אם $r<R$.
-רלוונטיות למבחן: ההוכחה הדו-כיוונית (שני האי-שוויונות) היא שאלת מבחן סבירה; היא ממירה שאלות הטיה-אינדוקטיבית לחישובי דרגה.
+
+**רעיון ההוכחה:** בה"כ $I=[|I|]$ (תמורה משמרת את שני האגפים). ($\le$): סכום של $R$ איברים הניתנים להפרדה נותן $\mathcal A=\sum_{\nu=1}^R\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$; מטריציזציה עם לינאריות + Lemma 3 נותנת $[\![\mathcal A]\!]_I=\sum_\nu\mathrm{vec}[\mathcal B^\nu]\,\mathrm{vec}[\bar{\mathcal B}^\nu]^\top$, ולכן דרגה $\le R$. ($\ge$): פירוק מדרגה $r$ $[\![\mathcal A]\!]_I=\sum_{\nu=1}^r\mathbf v^\nu(\bar{\mathbf v}^\nu)^\top$ מתקפל בחזרה ל-$\mathcal A=\sum_\nu\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$, כלומר $r$ מחוברים הניתנים להפרדה — סתירה אם $r<R$.
+
+**רלוונטיות למבחן:** ההוכחה הדו-כיוונית (שני האי-שוויונות) היא שאלת מבחן סבירה; היא ממירה שאלות הטיה-אינדוקטיבית לחישובי דרגה.
 
 **Result (dependencies modeled; Section 2.7.1).**
-- רדודה: מטריציזציה של פירוק ה-CP ביחס ל**כל** $I\subseteq[N]$ (Lemma 3 רקורסיבי) נותנת $[\![\mathcal A^{\mathrm{CP}}]\!]_I=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}]\!]_{I\cap\{1\}}\odot[\![\mathbf a^{z,2}]\!]_{(I-1)\cap\{1\}}\odot\cdots\odot[\![\mathbf a^{z,N}]\!]_{(I-(N-1))\cap\{1\}}$ (כל גורם וקטור שורה/עמודה), סכום של $Z$ איברים מדרגה 1, ומכאן $\mathrm{rank}([\![\mathcal A^{\mathrm{CP}}]\!]_I)\le Z$: הרשת הרדודה אינה יכולה לדגמן דרגת הפרדה מעבר לרוחבה **תחת כל חלוקה**.
+- רדודה: מטריציזציה של פירוק ה-CP ביחס ל**כל** $I\subseteq[N]$ (Lemma 3 רקורסיבי) נותנת
+
+$$[\![\mathcal A^{\mathrm{CP}}]\!]_I=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}]\!]_{I\cap\{1\}}\odot[\![\mathbf a^{z,2}]\!]_{(I-1)\cap\{1\}}\odot\cdots\odot[\![\mathbf a^{z,N}]\!]_{(I-(N-1))\cap\{1\}}$$
+
+(כל גורם וקטור שורה/עמודה), סכום של $Z$ איברים מדרגה 1, ומכאן $\mathrm{rank}([\![\mathcal A^{\mathrm{CP}}]\!]_I)\le Z$: הרשת הרדודה אינה יכולה לדגמן דרגת הפרדה מעבר לרוחבה **תחת כל חלוקה**.
 - עמוקה, לוח-שחמט: עם $r_0\ge M$, $\mathrm{rank}([\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{check}}})=M^{N/2}$ (מקסימלית) עבור כמעט כל השמות הפרמטרים ⟹ $\mathrm{sep}[\,\cdot\,;I_{\mathrm{check}}]$ אקספוננציאלית (מקסימלית) עבור כמעט כל הפונקציות הממומשות.
-- עמוקה, חצייה: מטריציזציה של שורת ה-HT האחרונה ביחס ל-$I_{\mathrm{half}}$ ובהבחנה כי $I_{\mathrm{half}}\cap[\frac N2]=[\frac N2]$, $(I_{\mathrm{half}}-\frac N2)\cap[\frac N2]=\emptyset$, נותנת $[\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}}=\sum_{\alpha=1}^{r_{L-1}}a^L_\alpha\cdot\mathrm{vec}[\Phi^{L-1,1,\alpha}]\,\mathrm{vec}[\Phi^{L-1,2,\alpha}]^\top$, ומכאן $\mathrm{rank}([\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}})\le r_{L-1}$ וכן $\mathrm{sep}[\,\cdot\,;I_{\mathrm{half}}]\le$ רוחב השכבה החבויה $L-1$, עבור **כל** הפונקציות הניתנות למימוש.
-רעיון ההוכחה: לינאריות המטריציזציה + Lemma 3 לכל אורך הדרך.
-רלוונטיות למבחן: שורת המחץ על הטיה אינדוקטיבית — CAC-ים עמוקים מעדיפים **תלויות מקומיות (משולבות)** על פני תלויות ארוכות-טווח; CAC-ים רדודים אינם מעדיפים דבר (חלשים באופן אחיד).
+- עמוקה, חצייה: מטריציזציה של שורת ה-HT האחרונה ביחס ל-$I_{\mathrm{half}}$ ובהבחנה כי $I_{\mathrm{half}}\cap[\frac N2]=[\frac N2]$, $(I_{\mathrm{half}}-\frac N2)\cap[\frac N2]=\emptyset$, נותנת
+
+$$[\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}}=\sum_{\alpha=1}^{r_{L-1}}a^L_\alpha\cdot\mathrm{vec}[\Phi^{L-1,1,\alpha}]\,\mathrm{vec}[\Phi^{L-1,2,\alpha}]^\top$$
+
+ומכאן $\mathrm{rank}([\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}})\le r_{L-1}$ וכן $\mathrm{sep}[\,\cdot\,;I_{\mathrm{half}}]\le$ רוחב השכבה החבויה $L-1$, עבור **כל** הפונקציות הניתנות למימוש.
+
+**רעיון ההוכחה:** לינאריות המטריציזציה + Lemma 3 לכל אורך הדרך.
+
+**רלוונטיות למבחן:** שורת המחץ על הטיה אינדוקטיבית — CAC-ים עמוקים מעדיפים **תלויות מקומיות (משולבות)** על פני תלויות ארוכות-טווח; CAC-ים רדודים אינם מעדיפים דבר (חלשים באופן אחיד).
 
 ## טכניקות וטריקים
 - **בנייות מעבר** להוכחת ההכלה $\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$: מטריצות משקל זהות + הטיות אפס עבור רשתות ReLU; מסנני בסיס-סטנדרטי $\mathbf a^{l,j,\gamma}=\mathbf e^\gamma$ עבור CAC-ים (המיזוגים הזוגיים אז מתחברים ל-pooling גלובלי). מונוטוניות ברוחב: איפוס משקלי נוירונים/מפות-מאפיינים עודפים.

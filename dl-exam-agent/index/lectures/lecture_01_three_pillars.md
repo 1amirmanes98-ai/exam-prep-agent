@@ -22,13 +22,21 @@
 $$\mathcal L_{\mathcal D}(\bar h)=\underbrace{\mathcal L_{\mathcal D}(\bar h)-\mathcal L_{\mathcal D}(h_S^*)}_{\text{training error}}+\underbrace{\mathcal L_{\mathcal D}(h_S^*)-\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{estimation error}}+\underbrace{\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{approximation error}}.$$
 Optimization ↔ training error, Generalization ↔ estimation error, Expressiveness ↔ approximation error.
 
-**Def (Projected Gradient Descent, PGD).** Receive learning rate $\eta>0$; initialize $\mathbf w^{(1)}=\mathbf 0$; for $t=0,2,\dots,T-1$ (as printed in the notes; the loop runs $T$ gradient steps): gradient update $\mathbf w^{(t+\frac12)}=\mathbf w^{(t)}-\eta\nabla\mathcal L_S(\mathbf w^{(t)})$; projection
+**Def (Projected Gradient Descent, PGD).** Receive learning rate $\eta>0$; initialize $\mathbf w^{(1)}=\mathbf 0$; for $t=0,2,\dots,T-1$ (as printed in the notes; the loop runs $T$ gradient steps): gradient update
+
+$$\mathbf w^{(t+\frac12)}=\mathbf w^{(t)}-\eta\nabla\mathcal L_S(\mathbf w^{(t)})$$
+
+projection
 $$\mathbf w^{(t+1)}=\operatorname*{argmin}_{\mathbf w\in\mathbb R^d,\|\mathbf w\|_2\le B}\big\|\mathbf w-\mathbf w^{(t+\frac12)}\big\|_2=\begin{cases}\mathbf w^{(t+\frac12)}, & \|\mathbf w^{(t+\frac12)}\|_2\le B\\[2pt] \mathbf w^{(t+\frac12)}\cdot\frac{B}{\|\mathbf w^{(t+\frac12)}\|_2}, & \text{otherwise}\end{cases}$$
 Return $\bar{\mathbf w}:=\frac1T\sum_{t=1}^T\mathbf w^{(t)}$ (average of iterates, not last iterate).
 
 **Def (classical fixes for expressiveness).** *Feature engineering*: each coordinate of $\mathbf x$ holds a measurement designed by domain experts. *Kernelizing*: off-the-shelf non-linear map $\phi:\mathbb R^d\to\mathbb R^{d'}$ (typically $d'\gg d$) applied to all instances at train and test time. Conventional view: **with DL the representation is learned**.
 
-**Def (monotone size-parameterized hypotheses space).** $\mathcal H_B\subseteq\mathcal Y^{\mathcal X}$ parameterized by $B\in\mathbb R_{\ge0}$, required to be monotonic w.r.t. $B$: $B_1<B_2\implies\mathcal H_{B_1}\subseteq\mathcal H_{B_2}$; $B$ is called the "size" of $\mathcal H_B$. Examples:
+**Def (monotone size-parameterized hypotheses space).** $\mathcal H_B\subseteq\mathcal Y^{\mathcal X}$ parameterized by $B\in\mathbb R_{\ge0}$, required to be monotonic w.r.t. $B$:
+
+$$B_1<B_2\implies\mathcal H_{B_1}\subseteq\mathcal H_{B_2}$$
+
+$B$ is called the "size" of $\mathcal H_B$. Examples:
 - Linear, norm bounded: $\mathcal H_B=\{\mathbf x\mapsto\langle\mathbf w,\mathbf x\rangle:\mathbf w\in\mathbb R^d,\|\mathbf w\|_2\le B\}$.
 - Shallow (2-layer) FCNN, hidden width $B\in\mathbb N$: $\mathcal H_B=\{\mathbf x\mapsto W_2\,\sigma(W_1\mathbf x):W_1\in\mathbb R^{B,d},\,W_2\in\mathbb R^{k,B}\}$.
 - Deep ($L$-layer) FCNN, hidden width $B\in\mathbb N$: $\mathcal H_B=\{\mathbf x\mapsto W_L\,\sigma(W_{L-1}\cdots\sigma(W_1\mathbf x)\cdots):W_1\in\mathbb R^{B,d},\ \forall l\in\{2,\dots,L-1\},W_l\in\mathbb R^{B,B},\ W_L\in\mathbb R^{k,B}\}$.
@@ -56,34 +64,50 @@ where $\mathcal D$ = unknown distribution, $S$ = training set of size $m$, $\mat
 **Def (volume hypothesis).** The conjecture that generalizing hypotheses have large "volume" within the hypotheses that fit the training data, i.e., most hypotheses fitting the training data generalize well; if true, convergence to generalizing solutions is due to architecture + data distribution (generalization likely under *any* non-adversarial fitting method), not special properties of the algorithm.
 
 ## Key theorems & results
-**Prop 1.** $\mathcal L_S(\mathbf w):\mathbb R^d\to\mathbb R$ (hinge-loss empirical objective of soft-SVM) is convex and 1-Lipschitz: $|\mathcal L_S(\mathbf w_1)-\mathcal L_S(\mathbf w_2)|\le\|\mathbf w_1-\mathbf w_2\|_2$ for all $\mathbf w_1,\mathbf w_2\in\mathbb R^d$.
-Proof idea: hinge loss is convex and, with $\|\mathbf x_i\|_2\le1$, 1-Lipschitz in $\mathbf w$; both properties survive max, composition with linear maps, and averaging.
-Exam relevance: supplies exactly the hypotheses of Thm 1 with $\rho=1$.
+**Prop 1.** $\mathcal L_S(\mathbf w):\mathbb R^d\to\mathbb R$ (hinge-loss empirical objective of soft-SVM) is convex and 1-Lipschitz:
+
+$$|\mathcal L_S(\mathbf w_1)-\mathcal L_S(\mathbf w_2)|\le\|\mathbf w_1-\mathbf w_2\|_2$$
+
+for all $\mathbf w_1,\mathbf w_2\in\mathbb R^d$.
+
+**Proof idea:** hinge loss is convex and, with $\|\mathbf x_i\|_2\le1$, 1-Lipschitz in $\mathbf w$; both properties survive max, composition with linear maps, and averaging.
+
+**Exam relevance:** supplies exactly the hypotheses of Thm 1 with $\rho=1$.
 
 **Thm 1 (projected GD on convex Lipschitz functions).** Let $f$ be convex and $\rho$-Lipschitz, and $\mathbf w^*\in\operatorname{argmin}_{\mathbf w\in\mathbb R^d,\|\mathbf w\|_2\le B}f(\mathbf w)$. Running projected GD on $f$ for $T$ steps with $\eta=\sqrt{\frac{B^2}{\rho^2T}}$ yields
 $$f(\bar{\mathbf w})-f(\mathbf w^*)\le\frac{B\rho}{\sqrt T}.$$
-Proof idea: standard convex-optimization telescoping of $\|\mathbf w^{(t)}-\mathbf w^*\|^2$; projection onto the convex ball only shrinks distance; see SSBD [2] ch. 14.
-Exam relevance: with Prop 1 it shows training error of soft-SVM can be made arbitrarily small ⟹ "Optimization ≈ solved" in classical ML.
+
+**Proof idea:** standard convex-optimization telescoping of $\|\mathbf w^{(t)}-\mathbf w^*\|^2$; projection onto the convex ball only shrinks distance; see SSBD [2] ch. 14.
+
+**Exam relevance:** with Prop 1 it shows training error of soft-SVM can be made arbitrarily small ⟹ "Optimization ≈ solved" in classical ML.
 
 **Thm 2 (Rademacher-complexity generalization bounds for soft-SVM).** For any $\delta\in(0,1)$, w.p. $\ge1-\delta$ over $S$:
 $$\forall h\in\mathcal H_B,\quad \mathcal L_{\mathcal D}(h)-\mathcal L_S(h)\le\frac{2B}{\sqrt m}+(B+1)\sqrt{\frac{2\ln(2/\delta)}{m}}\qquad\text{(Uniform convergence)}$$
 and, w.p. $\ge1-\delta$ over $S$:
 $$\mathcal L_{\mathcal D}(h_S^*)-\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)\le\frac{2B}{\sqrt m}+5(B+1)\sqrt{\frac{2\ln(8/\delta)}{m}}\qquad\text{(Bound on estimation error)}$$
-Proof idea: bound the Rademacher complexity of norm-bounded linear class composed with 1-Lipschitz hinge loss; see SSBD [2] ch. 26.
-Exam relevance: holds for **any** distribution $\mathcal D$; uniform convergence holds for all $h$ **jointly**; exhibits the **bias–variance trade-off**: increasing $B$ (expanding $\mathcal H_B$) enlarges the estimation-error bound, decreasing $B$ shrinks it.
+
+**Proof idea:** bound the Rademacher complexity of norm-bounded linear class composed with 1-Lipschitz hinge loss; see SSBD [2] ch. 26.
+
+**Exam relevance:** holds for **any** distribution $\mathcal D$; uniform convergence holds for all $h$ **jointly**; exhibits the **bias–variance trade-off**: increasing $B$ (expanding $\mathcal H_B$) enlarges the estimation-error bound, decreasing $B$ shrinks it.
 
 **Result (benign landscapes; cf. Ge et al. 2015, Lee et al. 2016 — from the figure box in 2.2.2).** If (1) there are no poor local minima, and (2) all saddle points are strict, then GD converges to a global minimum (also applies to SGD).
-Proof idea: not proven in course; cited as the motivation for the critical-point-characterization research program.
-Exam relevance: the approach **cannot** apply to $\ge3$-layer NNs: for an FCNN with no biases at the all-zero weights, both gradient and Hessian vanish, so (excluding the trivial global-min case) that point is either a bad local minimum or a **non-strict saddle** — violating the conditions. Hence benign-landscape analysis is no longer viewed as a promising avenue for DL optimization.
+
+**Proof idea:** not proven in course; cited as the motivation for the critical-point-characterization research program.
+
+**Exam relevance:** the approach **cannot** apply to $\ge3$-layer NNs: for an FCNN with no biases at the all-zero weights, both gradient and Hessian vanish, so (excluding the trivial global-min case) that point is either a bad local minimum or a **non-strict saddle** — violating the conditions. Hence benign-landscape analysis is no longer viewed as a promising avenue for DL optimization.
 
 **Result (naive uniform-convergence bound for any NN).** If $b$ is the number of bits required to store the weights, then $|\mathcal H|\le 2^b$ and, by the classic finite-class uniform convergence bound, w.p. $\ge1-\delta$:
 $$\mathcal L_{\mathcal D}(h)-\mathcal L_S(h)\le\sqrt{\frac{b+\log(2/\delta)}{2m}}.$$
-Proof idea: union bound (Hoeffding + $|\mathcal H|\le2^b$).
-Exam relevance: meaningful only when $m\gtrsim b$ (∼# weights); in practice nets train with far fewer examples than weights, and increasing net size often *shrinks* the observed generalization gap while this bound *grows*.
+
+**Proof idea:** union bound (Hoeffding + $|\mathcal H|\le2^b$).
+
+**Exam relevance:** meaningful only when $m\gtrsim b$ (∼# weights); in practice nets train with far fewer examples than weights, and increasing net size often *shrinks* the observed generalization gap while this bound *grows*.
 
 **Result (Zhang et al. [3], empirical).** (i) Explicit regularization is not necessary for overparameterized NNs (trained via SGD or variants) to generalize well; (ii) overparameterized NNs can easily fit random data and/or random labels.
-Proof idea: systematic experiments (train on true vs. randomized labels/inputs).
-Exam relevance: implies some low-empirical-loss hypotheses generalize and others don't ⟹ $\Delta$ must depend on $h$; the same $h$ can have small gap on one task and large gap on another (e.g., training data supplemented with pure noise) ⟹ $\Delta$ should depend on $S$ too. Kills purely uniform-convergence, data-independent bounds for DL.
+
+**Proof idea:** systematic experiments (train on true vs. randomized labels/inputs).
+
+**Exam relevance:** implies some low-empirical-loss hypotheses generalize and others don't ⟹ $\Delta$ must depend on $h$; the same $h$ can have small gap on one task and large gap on another (e.g., training data supplemented with pure noise) ⟹ $\Delta$ should depend on $S$ too. Kills purely uniform-convergence, data-independent bounds for DL.
 
 ## Techniques & tricks
 - **Add-and-subtract decomposition** of the population loss into training + estimation + approximation errors — the template for the whole course.

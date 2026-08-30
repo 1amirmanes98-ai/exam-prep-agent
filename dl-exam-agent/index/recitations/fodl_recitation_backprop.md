@@ -14,13 +14,33 @@
 
 ## Worked problems / derivations
 **P1.** Compute Jacobians of elementary maps: $f(w)=Aw$ and $f(w)=\sigma(w)$ (elementwise).
-Technique: apply the entrywise definition $[J_f(w)]_{ij}=\frac{\partial}{\partial w_j}f_i(w)$; get $J_f=A$ for linear maps and $J_f(w)=\mathrm{diag}(\sigma'(w_1),\dots,\sigma'(w_n))$ for elementwise activations.
+Technique: apply the entrywise definition
+
+$$[J_f(w)]_{ij}=\frac{\partial}{\partial w_j}f_i(w)$$
+
+; get $J_f=A$ for linear maps and
+
+$$J_f(w)=\mathrm{diag}(\sigma'(w_1),\dots,\sigma'(w_n))$$
+
+for elementwise activations.
 
 **P2.** Express a 4-layer FFNN with loss ($h_0=x$, $h_1=W_1h_0$, $h_2=\sigma(h_1)$, $h_3=W_3h_2$, $h_4=\ell_y(h_3)$) as a composition and derive the backward recursion for $\delta_t := J_{F_t}(h_t)$ where $F_t := f_{T+1}\circ\cdots\circ f_{t+1}$.
-Technique: chain rule on the suffix composition: $\delta_t = J_{F_{t+1}\circ f_{t+1}}(h_t) = J_{F_{t+1}}(h_{t+1})\,J_{f_{t+1}}(h_t) = \delta_{t+1}J_{f_{t+1}}(h_t)$; the layer Jacobian is $W_{t+1}$ (linear) or $\mathrm{diag}(\sigma'(h_t))$ (activation).
+Technique: chain rule on the suffix composition:
+
+$$\delta_t = J_{F_{t+1}\circ f_{t+1}}(h_t) = J_{F_{t+1}}(h_{t+1})\,J_{f_{t+1}}(h_t) = \delta_{t+1}J_{f_{t+1}}(h_t)$$
+
+; the layer Jacobian is $W_{t+1}$ (linear) or $\mathrm{diag}(\sigma'(h_t))$ (activation).
 
 **P3.** Gradient of the loss w.r.t. a weight matrix $W_t$.
-Technique: treat $W_t$ as a concatenation of its rows; the Jacobian $J_{Wh_{t-1}}(W_t)$ is block-diagonal with blocks $h_{t-1}^\top$, so $J_{\ell}(W_t) = \delta_t\,\mathrm{blockdiag}(h_{t-1}^\top,\dots,h_{t-1}^\top)$; rearranging into matrix form gives $\nabla_{W_t}\ell(W;x,y) = \delta_t^\top h_{t-1}^\top$ (rank-1 outer product).
+Technique: treat $W_t$ as a concatenation of its rows; the Jacobian $J_{Wh_{t-1}}(W_t)$ is block-diagonal with blocks $h_{t-1}^\top$, so
+
+$$J_{\ell}(W_t) = \delta_t\,\mathrm{blockdiag}(h_{t-1}^\top,\dots,h_{t-1}^\top)$$
+
+; rearranging into matrix form gives
+
+$$\nabla_{W_t}\ell(W;x,y) = \delta_t^\top h_{t-1}^\top$$
+
+(rank-1 outer product).
 
 **P4.** Backpropagation pseudocode.
 Technique: forward pass stores all $h_t$; backward pass initializes $\delta_T = J_{\ell_y}(h_T)$ and recurses $\delta_t = \delta_{t+1}\cdot(W_{t+1}$ or $\mathrm{diag}(\sigma'(h_t)))$; weight gradients read off as $\delta_t^\top h_{t-1}^\top$.

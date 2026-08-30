@@ -15,13 +15,21 @@
 - **(15 pts)** הוכיחו שאוניברסליות זו מתקיימת.
 
 **Solution sketch:**
-**a.** ביטוי מפורש: $\mathcal{H}_B=\big\{x\mapsto\sum_{i=1}^B v_i\,\sigma(w_ix+b_i)+c\ :\ w_i,b_i,v_i,c\in\mathbb{R}\big\}$ עם $\sigma(z)=z$ עבור $z>0$ ו-$\alpha z$ אחרת (האם הטיית הפלט $c$ נכללת תלוי במוסכמת הקורס — לא מאומת; קבועים ניתנים למימוש דרך נוירון $w_i=0$ ממילא).
+**a.** ביטוי מפורש:
+
+$$\mathcal{H}_B=\big\{x\mapsto\sum_{i=1}^B v_i\,\sigma(w_ix+b_i)+c\ :\ w_i,b_i,v_i,c\in\mathbb{R}\big\}$$
+
+עם $\sigma(z)=z$ עבור $z>0$ ו-$\alpha z$ אחרת (האם הטיית הפלט $c$ נכללת תלוי במוסכמת הקורס — לא מאומת; קבועים ניתנים למימוש דרך נוירון $w_i=0$ ממילא).
 
 **b.** הגדרת אוניברסליות: לכל $f\in\mathcal{F}$ ולכל $\epsilon>0$ קיימים $B\in\mathbb{N}$ ו-$h\in\mathcal{H}_B$ עם $d(f,h)\le\epsilon$ (באופן שקול, $\bigcup_{B\in\mathbb{N}}\mathcal{H}_B$ צפופה ב-$\mathcal{F}$ ביחס ל-$d$).
 
 **c.** זהויות מפתח: $\sigma(z)-\sigma(-z)=(1+\alpha)z$ וגם $\sigma(z)+\sigma(-z)=(1-\alpha)|z|$. לכן שני נוירוני leaky-ReLU מממשים את העתקת הזהות ואת $|z|$. לפיכך $\mathrm{ReLU}(z)=\tfrac{z+|z|}{2}$ ניתן למימוש בעזרת 2 נוירוני leaky-ReLU.
 
-**d.** כל $f$ לינארית למקוטעין עם מספר סופי של נקודות שבירה $t_1<\dots<t_k$ ניתנת לכתיבה $f(x)=ax+b+\sum_{i=1}^k c_i\,\mathrm{ReLU}(x-t_i)$ (השיפועים קובעים את ה-$c_i$-ים).
+**d.** כל $f$ לינארית למקוטעין עם מספר סופי של נקודות שבירה $t_1<\dots<t_k$ ניתנת לכתיבה
+
+$$f(x)=ax+b+\sum_{i=1}^k c_i\,\mathrm{ReLU}(x-t_i)$$
+
+(השיפועים קובעים את ה-$c_i$-ים).
 
 **e.** ממשו כל איבר באמצעות הזהויות לעיל: רוחב $B=O(k)$ מספיק לייצוג מדויק, כלומר $d(f,h)=0\le\epsilon$. האוניברסליות מתקיימת (למעשה באופן מדויק, לא רק בקירוב) עבור פונקציות לינאריות למקוטעין עם מספר סופי של חלקים.
 
@@ -48,13 +56,29 @@
 - **(8 pts)** הוכיחו שכל הנקודות הקריטיות הללו הן מינימות גלובליות.
 
 **Solution sketch:**
-**a.** חלקות-$\beta$: $\nabla f$ הוא $\beta$-Lipschitz, כלומר $\|\nabla f(w)-\nabla f(w')\|\le\beta\|w-w'\|$ לכל $w,w'$ (צורת החסם-העליון-הריבועי השקולה: $f(w')\le f(w)+\nabla f(w)^\top(w'-w)+\frac\beta2\|w'-w\|^2$).
+**a.** חלקות-$\beta$: $\nabla f$ הוא $\beta$-Lipschitz, כלומר
 
-**b.** $\nabla f(w)=Qw$ (עבור $Q$ סימטרית), ולכן $\|\nabla f(w)-\nabla f(w')\|=\|Q(w-w')\|\le\|Q\|_2\|w-w'\|=\lambda_{max}\|w-w'\|$. לפיכך בעלת חלקות-$\beta$ לכל $\beta\ge\lambda_{max}$.
+$$\|\nabla f(w)-\nabla f(w')\|\le\beta\|w-w'\|$$
 
-**c.** עבור $\beta<\lambda_{max}$: בחרו $w-w'=v$, וקטור עצמי עליון. אזי $\|Q(w-w')\|=\lambda_{max}\|w-w'\|>\beta\|w-w'\|$, בסתירה לתנאי ה-Lipschitz.
+לכל $w,w'$ (צורת החסם-העליון-הריבועי השקולה: $f(w')\le f(w)+\nabla f(w)^\top(w'-w)+\frac\beta2\|w'-w\|^2$).
 
-**d.** פרמטריזציית-יתר ברוחב חבוי 1: וקטור end-to-end $w=w_2\,w_1$ עם $w_1\in\mathbb{R}^d$, $w_2\in\mathbb{R}$. פונקציית המטרה $g(w_1,w_2)=f(w_2w_1)=\frac12 w_2^2\,w_1^\top Qw_1$. גרדיאנט: $\nabla_{w_1}g=w_2^2\,Qw_1$ וגם $\frac{\partial g}{\partial w_2}=w_2\,w_1^\top Qw_1$ (איזה גורם הוא הסקלר הוא בחירת סימון — סימטרי כך או כך).
+**b.** $\nabla f(w)=Qw$ (עבור $Q$ סימטרית), ולכן
+
+$$\|\nabla f(w)-\nabla f(w')\|=\|Q(w-w')\|\le\|Q\|_2\|w-w'\|=\lambda_{max}\|w-w'\|$$
+
+לפיכך בעלת חלקות-$\beta$ לכל $\beta\ge\lambda_{max}$.
+
+**c.** עבור $\beta<\lambda_{max}$: בחרו $w-w'=v$, וקטור עצמי עליון. אזי
+
+$$\|Q(w-w')\|=\lambda_{max}\|w-w'\|>\beta\|w-w'\|$$
+
+בסתירה לתנאי ה-Lipschitz.
+
+**d.** פרמטריזציית-יתר ברוחב חבוי 1: וקטור end-to-end $w=w_2\,w_1$ עם $w_1\in\mathbb{R}^d$, $w_2\in\mathbb{R}$. פונקציית המטרה
+
+$$g(w_1,w_2)=f(w_2w_1)=\frac12 w_2^2\,w_1^\top Qw_1$$
+
+גרדיאנט: $\nabla_{w_1}g=w_2^2\,Qw_1$ וגם $\frac{\partial g}{\partial w_2}=w_2\,w_1^\top Qw_1$ (איזה גורם הוא הסקלר הוא בחירת סימון — סימטרי כך או כך).
 
 **e.** נקודה קריטית: זוג $(w_1,w_2)$ שבו הגרדיאנט כולו מתאפס, $\nabla_{w_1}g=0$ וגם $\frac{\partial g}{\partial w_2}=0$.
 
@@ -80,11 +104,29 @@
 - **(11 pts)** גזרו חסם הכללה המביא בחשבון רגולריזציה מרומזת זו, כלומר שבו להשערות בעלות אינדקס נמוך יותר יש ערובה הדוקה יותר לפער בין ההפסד האוכלוסייתי לאמפירי.
 
 **Solution sketch:**
-**a.** עבור $h$ קבוע, הפסדי המדגם הם i.i.d. ב-$[0,1]$, ולכן Hoeffding נותן $P(L_D(h)-L_S(h)\ge\epsilon)\le e^{-2m\epsilon^2}$ (פקטור 2 אם דו-צדדי). חסם איחוד על $\mathcal{H}$ עם $\delta/|\mathcal{H}|$ לכל אחד נותן: בהסתברות $\ge1-\delta$, $\forall h\in\mathcal{H}:\ L_D(h)-L_S(h)\le\sqrt{\ln(|\mathcal{H}|/\delta)/(2m)}$.
+**a.** עבור $h$ קבוע, הפסדי המדגם הם i.i.d. ב-$[0,1]$, ולכן Hoeffding נותן
 
-**b.** PAC-Bayes עם prior אחיד $P(h)=1/|\mathcal{H}|$ ו-posterior דטרמיניסטי $Q=\delta_{h}$: $KL(Q\|P)=\sum_{h'}Q(h')\ln\frac{Q(h')}{P(h')}=\ln|\mathcal{H}|$ (בשימוש ב-$0\cdot\ln0=0$). הצבה במשפט ה-PAC-Bayes של הקורס (הרצאה 6, משפט 2: $\ln(2m/\delta)$ במונה) נותנת $L_D(h)\le L_S(h)+\sqrt{\big(\ln|\mathcal{H}|+\ln(2m/\delta)\big)/(2(m-1))}$ — אותה סיבוכיות $\ln|\mathcal{H}|$ כמו ב-(a) עד כדי קבועים (נבדק מול ניסוח הקורס).
+$$P(L_D(h)-L_S(h)\ge\epsilon)\le e^{-2m\epsilon^2}$$
 
-**c.** חסם לא-אחיד המיושר עם ההטיה המרומזת: הניחו "prior" על האינדקסים $p_k$ עם $\sum_k p_k\le1$ המעדיף $k$ קטן, למשל $p_k=2^{-k}$. החילו את Hoeffding על כל $h_k$ עם ביטחון $\delta p_k$ וחסם איחוד על $k$. תוצאה: בהסתברות $\ge1-\delta$, $\forall k\in\mathbb{N}:\ L_D(h_k)-L_S(h_k)\le\sqrt{\big(k\ln2+\ln(1/\delta)\big)/(2m)}$ — הערובה הדוקה יותר עבור אינדקסים נמוכים יותר, בהתאמה לרגולריזציה המרומזת של האופטימייזר. באופן שקול דרך PAC-Bayes: השתמשו ב-prior $P(h_k)=2^{-k}$ (תקף מעל $\mathcal{H}$ בת-מנייה) ו-posterior דטרמיניסטי על ה-$h_k$ הנלמד, מה שנותן $KL=k\ln2$ בתוך אותו חסם שורש.
+(פקטור 2 אם דו-צדדי). חסם איחוד על $\mathcal{H}$ עם $\delta/|\mathcal{H}|$ לכל אחד נותן: בהסתברות $\ge1-\delta$,
+
+$$\boxed{\,\forall h\in\mathcal{H}:\ L_D(h)-L_S(h)\le\sqrt{\ln(|\mathcal{H}|/\delta)/(2m)}\,}$$
+
+**b.** PAC-Bayes עם prior אחיד $P(h)=1/|\mathcal{H}|$ ו-posterior דטרמיניסטי $Q=\delta_{h}$:
+
+$$KL(Q\|P)=\sum_{h'}Q(h')\ln\frac{Q(h')}{P(h')}=\ln|\mathcal{H}|$$
+
+(בשימוש ב-$0\cdot\ln0=0$). הצבה במשפט ה-PAC-Bayes של הקורס (הרצאה 6, משפט 2: $\ln(2m/\delta)$ במונה) נותנת
+
+$$L_D(h)\le L_S(h)+\sqrt{\big(\ln|\mathcal{H}|+\ln(2m/\delta)\big)/(2(m-1))}$$
+
+— אותה סיבוכיות $\ln|\mathcal{H}|$ כמו ב-(a) עד כדי קבועים (נבדק מול ניסוח הקורס).
+
+**c.** חסם לא-אחיד המיושר עם ההטיה המרומזת: הניחו "prior" על האינדקסים $p_k$ עם $\sum_k p_k\le1$ המעדיף $k$ קטן, למשל $p_k=2^{-k}$. החילו את Hoeffding על כל $h_k$ עם ביטחון $\delta p_k$ וחסם איחוד על $k$. תוצאה: בהסתברות $\ge1-\delta$,
+
+$$\boxed{\,\forall k\in\mathbb{N}:\ L_D(h_k)-L_S(h_k)\le\sqrt{\big(k\ln2+\ln(1/\delta)\big)/(2m)}\,}$$
+
+— הערובה הדוקה יותר עבור אינדקסים נמוכים יותר, בהתאמה לרגולריזציה המרומזת של האופטימייזר. באופן שקול דרך PAC-Bayes: השתמשו ב-prior $P(h_k)=2^{-k}$ (תקף מעל $\mathcal{H}$ בת-מנייה) ו-posterior דטרמיניסטי על ה-$h_k$ הנלמד, מה שנותן $KL=k\ln2$ בתוך אותו חסם שורש.
 
 **💡 טריקים שימושיים:** מחלקה סופית: Hoeffding ל-$h$ קבוע + חסם איחוד בביטחון $\delta/|\mathcal{H}|$ (הרצאה 6); posterior דטרמיניסטי מכווץ את $KL(Q\|P)$ ל-$\ln(1/P(h))$; "הדוק יותר עבור אינדקס נמוך" מרמז על פיצול ביטחון לא-אחיד $\delta p_k$ עם $\sum_k p_k\le1$ (למשל $p_k=2^{-k}$).
 

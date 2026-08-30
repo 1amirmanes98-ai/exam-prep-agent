@@ -24,10 +24,13 @@
 **Def (compression distance).** For $h\in H$ and a smaller class $H'$: $d(h,H'):=\min_{h'\in H'}\sup_{x\in X}\|h(x)-h'(x)\|$ (magnitude of the compression residual).
 
 **Def 1 (Rademacher complexity).** For $\ell\circ H\circ S:=\{(\ell(y_1,h(x_1)),\dots,\ell(y_m,h(x_m))) : h\in H\}\subseteq\mathbb{R}^m$,
+
 $$R(\ell\circ H\circ S):=\frac{1}{m}\,\mathbb{E}_{\xi}\Big[\sup_{v\in \ell\circ H\circ S}\sum_{i=1}^m \xi_i v_i\Big],$$
+
 where $\xi_1,\dots,\xi_m$ are i.i.d. with $\Pr(\xi_i=1)=0.5=\Pr(\xi_i=-1)$. Interpretation: ability of $H$ to fit (low loss) a random subset of $S$ while "anti-fitting" (high loss) the remainder.
 
 **Def (norm-bounded subclass $H_c$).** For the feed-forward fully connected ReLU net $H=\{x\mapsto W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots))\}$ with $x\in\mathbb{R}^d$, $y\in\mathbb{R}$, $W_1\in\mathbb{R}^{d',d}$, $W_2,\dots,W_{N-1}\in\mathbb{R}^{d',d'}$, $W_N\in\mathbb{R}^{1,d'}$, $\sigma(z)=\max\{z,0\}$, no biases: for $c>0$,
+
 $$H_c:=\Big\{h\in H : \exists\, W_1,\dots,W_N \text{ s.t. } \prod_{n=1}^N\|W_n\|_F\le c \,\wedge\, h(x)\equiv W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots))\Big\}.$$
 
 **Def (losses of a distribution over hypotheses).** For a distribution $Q$ over $H$: $L_D(Q):=\mathbb{E}_{h\sim Q}[L_D(h)]$, $L_S(Q):=\mathbb{E}_{h\sim Q}[L_S(h)]$.
@@ -36,55 +39,85 @@ $$H_c:=\Big\{h\in H : \exists\, W_1,\dots,W_N \text{ s.t. } \prod_{n=1}^N\|W_n\|
 
 ## Key theorems & results
 **Empirical phenomena (Zhang et al. [7]).** (1) Standard NNs (e.g., AlexNet) trained by standard algorithms (SGD+momentum) on standard data (CIFAR-10) generalize well **without any explicit regularization**, even with #parameters $\gg$ #examples. (2) In that regime training error $\approx 0$, and this persists for essentially **any** training set of the same size — even random instances and/or labels are perfectly fit. (3) If **half** the training set is replaced by random data (random instances and labels), test error of the learned hypothesis (train error $\approx 0$) is **far better than trivial**. (4) **Adversarially** manipulating half the training labels can significantly deteriorate test error (train error still $\approx 0$). (Exercise: reproduce experimentally.)
-Exam relevance: these are the yardsticks; know which bound fails which phenomenon.
+
+**Exam relevance:** these are the yardsticks; know which bound fails which phenomenon.
 
 **Fact (validation bound; Hoeffding).** Since $\ell\in[0,1]$: $\Pr\big(|L_V(\hat h)-L_D(\hat h)|\ge\epsilon\big)\le 2\exp(-m\epsilon^2)$, hence for any $\delta\in(0,1)$, w.p. $\ge 1-\delta$: $L_D(\hat h)-L_V(\hat h)\le\sqrt{\ln\frac{2}{\delta}\cdot\frac{1}{m}}$.
-Proof idea: Hoeffding on the $m/2$ held-out i.i.d. losses; $\hat h$ is independent of them.
-Exam relevance: prototype of "tight but uninsightful."
+
+**Proof idea:** Hoeffding on the $m/2$ held-out i.i.d. losses; $\hat h$ is independent of them.
+
+**Exam relevance:** prototype of "tight but uninsightful."
 
 **Prop 1 (finite-class / discretization UC bound).** If $|H|\le 2^b$ ($b$ = #bits to represent the weights) then for any $\delta\in(0,1)$, w.p. $\ge 1-\delta$ over $S\sim D^m$:
+
 $$L_D(\hat h)-L_S(\hat h)\le\sqrt{\frac{(b+1)\ln(2)+\ln\big(\frac{1}{\delta}\big)}{2m}}.$$
-Proof idea: for fixed $h$, Hoeffding gives $\Pr(|L_D(h)-L_S(h)|\ge\epsilon)\le 2e^{-2m\epsilon^2}$; union bound over $|H|$ hypotheses; solve $2|H|e^{-2m\epsilon^2}=\delta$, use $|H|\le 2^b$. Actually proves the two-sided $\forall h\in H: |L_D(h)-L_S(h)|\le\sqrt{\frac{1}{2m}\ln\frac{2|H|}{\delta}}$.
-Exam relevance: know the constants $(b+1)\ln 2$ and why non-vacuity needs $m\gtrsim b$ (practice has $b\gg m$).
+
+**Proof idea:** for fixed $h$, Hoeffding gives $\Pr(|L_D(h)-L_S(h)|\ge\epsilon)\le 2e^{-2m\epsilon^2}$; union bound over $|H|$ hypotheses; solve $2|H|e^{-2m\epsilon^2}=\delta$, use $|H|\le 2^b$. Actually proves the two-sided $\forall h\in H: |L_D(h)-L_S(h)|\le\sqrt{\frac{1}{2m}\ln\frac{2|H|}{\delta}}$.
+
+**Exam relevance:** know the constants $(b+1)\ln 2$ and why non-vacuity needs $m\gtrsim b$ (practice has $b\gg m$).
 
 **Prop 2 (compression bound).** If $|H'|\le 2^b$ then for any $\delta\in(0,1)$, w.p. $\ge 1-\delta$ over $S\sim D^m$:
+
 $$L_D(\hat h)-L_S(\hat h)\le\sqrt{\frac{(b+1)\ln(2)+\ln\big(\frac{1}{\delta}\big)}{2m}}+2\rho\cdot d(\hat h,H'),$$
+
 $\rho$ = Lipschitz constant of $\ell$. Proof idea: apply Prop 1 to $H'$; take $\hat h'\in\arg\min_{h'\in H'}\sup_x\|\hat h(x)-h'(x)\|$; bound $L_S(\hat h)-L_S(\hat h')\le\rho\, d(\hat h,H')$ via Lipschitzness, and $L_D(\hat h)-L_D(\hat h')\le\rho\, d(\hat h,H')$ via Jensen + Lipschitzness; decompose $L_D(\hat h)-L_S(\hat h)\le [L_D(\hat h')-L_S(\hat h')]+2\rho\, d(\hat h,H')$.
-Exam relevance: factor $2\rho$ (one $\rho d$ from the train side, one from the population side); premise = knowledge distillation.
+
+**Exam relevance:** factor $2\rho$ (one $\rho d$ from the train side, one from the population side); premise = knowledge distillation.
 
 **Example (rank-1 compression of an FC network).** $H=\{x\mapsto W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots)) : W_n\in\mathbb{R}^{d,d}\}$ (all dims $=d$, no biases), $\sigma$ pointwise $\gamma$-Lipschitz with $\sigma(0)=0$, $X=\{x:\|x\|\le 1\}$; $H'$ = same net with all $W_n$ constrained to rank 1 ($W_n=u_nv_n^\top$): $2Nd$ vs $Nd^2$ parameters. With $W_n'$ the best rank-1 approximation of $W_n$ and errors $e_n(x)$ defined layer-wise, one gets $e_1(x)\le\|W_1-W_1'\|_{\mathrm{spectral}}\|x\|$ and the recursion
+
 $$e_n(x)\le \|W_n-W_n'\|_{\mathrm{spectral}}\cdot\gamma^{n-1}\prod_{j=1}^{n-1}\|W_j\|_{\mathrm{spectral}} + \|W_n\|_{\mathrm{spectral}}\cdot\gamma\cdot e_{n-1}(x),$$
+
 (using $\|W_n'\|_{\mathrm{spectral}}=\|W_n\|_{\mathrm{spectral}}$, since best rank-1 approximation preserves spectral norm), which by induction gives
+
 $$d(h,H')\le\sup_{x:\|x\|\le1} e_N(x)\le \gamma^{N-1}\sum_{n=1}^{N}\ \prod_{j\in[N]\setminus\{n\}}\|W_j\|_{\mathrm{spectral}}\cdot\|W_n-W_n'\|_{\mathrm{spectral}}.$$
-Proof idea: triangle inequality splitting layer $n$'s difference into "change $W_n$" + "propagate lower-layer error"; $\|\sigma(v)\|\le\gamma\|v\|$ from $\sigma(0)=0$.
-Exam relevance: learning near-rank-1 matrices ⇒ small compression term ⇒ small generalization bound.
+
+**Proof idea:** triangle inequality splitting layer $n$'s difference into "change $W_n$" + "propagate lower-layer error"; $\|\sigma(v)\|\le\gamma\|v\|$ from $\sigma(0)=0$.
+
+**Exam relevance:** learning near-rank-1 matrices ⇒ small compression term ⇒ small generalization bound.
 
 **Thm 1 (Rademacher generalization bound; Thm 26.5 in Shalev-Shwartz–Ben-David [6]).** For any $\delta\in(0,1)$, w.p. $\ge 1-\delta$ over $S\sim D^m$:
+
 $$\forall h\in H:\quad L_D(h)-L_S(h)\le 2\,R(\ell\circ H\circ S)+4\sqrt{\frac{2\ln\big(\frac{4}{\delta}\big)}{m}}.$$
-Proof idea: in recitation (not in these notes).
-Exam relevance: bare form insufficient — by phenomenon (2), overparametrized $H$ fits arbitrary labels ⇒ $R(\ell\circ H\circ S)$ high; must bound $R$ on meaningful subclasses.
+
+**Proof idea:** in recitation (not in these notes).
+
+**Exam relevance:** bare form insufficient — by phenomenon (2), overparametrized $H$ fits arbitrary labels ⇒ $R(\ell\circ H\circ S)$ high; must bound $R$ on meaningful subclasses.
 
 **Prop 3 (union over nested subclasses).** Let $H_1\subseteq H_2\subseteq\cdots$ with $\bigcup_{k=1}^\infty H_k=H$. Then for any $\delta\in(0,1)$, w.p. $\ge 1-\delta$:
+
 $$\forall k\in\mathbb{N},\ \forall h\in H_k:\quad L_D(h)-L_S(h)\le 2\,R(\ell\circ H_k\circ S)+4\sqrt{\frac{2\ln\big(\frac{2\pi^2}{3}\cdot k^2\cdot\frac{1}{\delta}\big)}{m}}.$$
-Proof idea: set $\delta_k':=\frac{6}{\pi^2}\cdot\frac{1}{k^2}\cdot\delta$; apply Thm 1 per $k$ with $\delta_k'$; $\sum_k \delta_k'=\delta$ (Basel: $\sum_k\frac{6}{\pi^2 k^2}=1$); union bound. Note $\frac{4}{\delta_k'}=\frac{2\pi^2}{3}\cdot\frac{k^2}{\delta}$.
+
+**Proof idea:** set $\delta_k':=\frac{6}{\pi^2}\cdot\frac{1}{k^2}\cdot\delta$; apply Thm 1 per $k$ with $\delta_k'$; $\sum_k \delta_k'=\delta$ (Basel: $\sum_k\frac{6}{\pi^2 k^2}=1$); union bound. Note $\frac{4}{\delta_k'}=\frac{2\pi^2}{3}\cdot\frac{k^2}{\delta}$.
 
 **Example (norm-based bound; Neyshabur et al. [4]).** For $H_c$ as defined above, it can be shown that
+
 $$R(\ell\circ H_c\circ S)\le\frac{c\cdot\rho\cdot 2^{N-1}\cdot\max_{i\in[m]}\|x_i\|}{\sqrt{2m}}.$$
+
 Combining with Prop 3 (subclasses $H_k$, $k\in\mathbb{N}$), w.p. $\ge 1-\delta$:
+
 $$L_D(\hat h)-L_S(\hat h)\le\frac{\sqrt{2}\cdot 2^{N-1}\cdot\rho\cdot\max_{i\in[m]}\|x_i\|\cdot k+\sqrt{2\ln\big(\frac{2\pi^2}{3}\cdot k^2\cdot\frac{1}{\delta}\big)}}{\sqrt{m}},$$
+
 where $k:=\min\{k'\in\mathbb{N}: \exists W_1,\dots,W_N \text{ s.t. } \prod_{n=1}^N\|W_n\|_F\le k' \wedge \hat h(x)\equiv W_N\sigma(W_{N-1}(\cdots\sigma(W_1x)\cdots))\}$. (As printed in the notes; a literal substitution of Prop 3 would carry a factor 4 before the second radical.) Shortcomings: (i) grows exponentially with depth $N$ (from the $R$ bound; alleviated by Golowich et al. [2]); (ii) depends on $S$ only through $\max_i\|x_i\|$ ⇒ **cannot explain phenomenon (3)**.
 
 **Thm 2 (PAC-Bayes; Thm 31.1 in Shalev-Shwartz–Ben-David [6]).** Let $P$ be a prior over $H$ (chosen independently of $S$), $\delta\in(0,1)$. Then w.p. $\ge 1-\delta$ over $S\sim D^m$, **for all** distributions $Q$ over $H$ (even $S$-dependent):
+
 $$L_D(Q)-L_S(Q)\le\sqrt{\frac{\mathrm{KL}(Q\|P)+\ln\big(\frac{2m}{\delta}\big)}{2(m-1)}}.$$
-Proof idea: define $f(S):=\sup_{Q}\big[2(m-1)\mathbb{E}_{h\sim Q}[\Delta(h)^2]-\mathrm{KL}(Q\|P)\big]$ with $\Delta(h):=L_D(h)-L_S(h)$; change of measure + Jensen give $f(S)\le\ln\mathbb{E}_{h\sim P}[e^{2(m-1)\Delta(h)^2}]$; swapping $\mathbb{E}_S,\mathbb{E}_{h\sim P}$ (independence) and Hoeffding tail + tail-sum formula give $\mathbb{E}_S[e^{2(m-1)\Delta(h)^2}]\le 2m$; Markov on $e^{f(S)}$ with $\delta=2m/e^\epsilon$; finish with Jensen $(\mathbb{E}_Q[\Delta])^2\le\mathbb{E}_Q[\Delta^2]$.
-Exam relevance: the full proof was given in class — a prime candidate for a proof question; know why $P$ must not depend on $S$ but $Q$ may.
+
+**Proof idea:** define $f(S):=\sup_{Q}\big[2(m-1)\mathbb{E}_{h\sim Q}[\Delta(h)^2]-\mathrm{KL}(Q\|P)\big]$ with $\Delta(h):=L_D(h)-L_S(h)$; change of measure + Jensen give $f(S)\le\ln\mathbb{E}_{h\sim P}[e^{2(m-1)\Delta(h)^2}]$; swapping $\mathbb{E}_S,\mathbb{E}_{h\sim P}$ (independence) and Hoeffding tail + tail-sum formula give $\mathbb{E}_S[e^{2(m-1)\Delta(h)^2}]\le 2m$; Markov on $e^{f(S)}$ with $\delta=2m/e^\epsilon$; finish with Jensen $(\mathbb{E}_Q[\Delta])^2\le\mathbb{E}_Q[\Delta^2]$.
+
+**Exam relevance:** the full proof was given in class — a prime candidate for a proof question; know why $P$ must not depend on $S$ but $Q$ may.
 
 **Lem 1 (KL between multivariate Gaussians).** For non-singular (PD) $\Sigma_0,\Sigma_1$ over $\mathbb{R}^r$:
+
 $$\mathrm{KL}\big(N(\mu_0,\Sigma_0)\,\|\,N(\mu_1,\Sigma_1)\big)=\frac{1}{2}\Big(\mathrm{Tr}(\Sigma_1^{-1}\Sigma_0)+(\mu_1-\mu_0)^\top\Sigma_1^{-1}(\mu_1-\mu_0)-r+\ln\frac{\det(\Sigma_1)}{\det(\Sigma_0)}\Big).$$
+
 (Exercise: prove.)
 
 **Example (PAC-Bayes for NNs; Dziugaite–Roy [1], Neyshabur et al. [5]).** $\Theta=\mathbb{R}^r$; prior $P=N(0,\sigma^2 I)$ (matches conventional random init); posterior $Q=N(\hat\theta,\bar\sigma^2 I)$, $\hat\theta$ = trained parameters. By Lem 1: $\mathrm{KL}(Q\|P)=\frac{1}{2}\big(r\frac{\bar\sigma^2}{\sigma^2}+\frac{1}{\sigma^2}\|\hat\theta\|^2-r+r\ln(\sigma^2)-r\ln(\bar\sigma^2)\big)$, minimized over $\bar\sigma^2$ at $\bar\sigma^2=\sigma^2$, giving $\mathrm{KL}(Q\|P)=\frac{1}{2\sigma^2}\|\hat\theta\|^2$. Plugging into Thm 2:
+
 $$L_D(Q)\le \mathbb{E}_{\theta\sim N(\hat\theta,\sigma^2 I)}[L_S(h_\theta)]+\sqrt{\frac{\frac{1}{2\sigma^2}\|\hat\theta\|^2+\ln\big(\frac{2m}{\delta}\big)}{2(m-1)}}.$$
+
 Interpretation: low bound iff the solution (1) is a **flat minimum** (average training loss over a Gaussian neighborhood of $\hat\theta$ is low — cf. Keskar et al. [3]) and (2) has **low norm** $\|\hat\theta\|$. Guarantee applies to the distribution $Q$ (a stochastic network sampling weights from $Q$ per prediction), not to $\hat\theta$ itself, unless one additionally bounds $L_D(h_{\hat\theta})-\mathbb{E}_{\theta\sim N(\hat\theta,\sigma^2 I)}[L_S(h_\theta)]$. Caveats: neighborhood term non-analytic (estimable only by sampling); values on real networks far from tight (as with all known bounds).
 
 ## Techniques & tricks

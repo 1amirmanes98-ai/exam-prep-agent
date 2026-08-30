@@ -23,9 +23,23 @@ $$H_M^d=\Big\{x\mapsto \textstyle\sum_{i=1}^M v_i\,\sigma(w_i^\top x)\ :\ w_1,\d
 3. **(13 pts)** Assume that $M\ge d$ (the network's width is not smaller than the input dimension). Prove or disprove the following claim: there exists $h\in H_M^d$ for which $|A_h|\ge 2^d$.
 
 **Solution sketch:**
-**1.** With no biases, each neuron $x\mapsto v_i\sigma(w_i x)$ is linear separately on $x>0$ and on $x<0$ (only possible breakpoint is $x=0$). Around any $x>0$: $h(x')=\big(\sum_{i:\,w_i>0}v_iw_i\big)x'$. Around any $x<0$: $h(x')=\big(\sum_{i:\,w_i<0}v_iw_i\big)x'$. Hence every local-linearity coefficient equals $a_+=\sum_{i:w_i>0}v_iw_i$ or $a_-=\sum_{i:w_i<0}v_iw_i$. Linearity around $x=0$ (if it holds) forces the coefficient to coincide with these, so $A_h\subseteq\{a_+,a_-\}$ and $|A_h|\le2$.
+**1.** With no biases, each neuron $x\mapsto v_i\sigma(w_i x)$ is linear separately on $x>0$ and on $x<0$ (only possible breakpoint is $x=0$). Around any $x>0$:
 
-**2.** Set $\epsilon=\min_{i:\,w_i\ne0}\,|w_i^\top x|/\|w_i\|>0$. For $\|x'-x\|\le\epsilon$, each $w_i^\top x'$ has the same sign as $w_i^\top x$ (Cauchy–Schwarz). So on this ball $h(x')=\sum_{i\in I_+}v_i\,w_i^\top x'$ with $I_+=\{i:\,w_i^\top x>0\}$, i.e., $h$ is linear around $x$ with $a=\sum_{i\in I_+}v_i w_i$.
+$$h(x')=\big(\sum_{i:\,w_i>0}v_iw_i\big)x'$$
+
+Around any $x<0$:
+
+$$h(x')=\big(\sum_{i:\,w_i<0}v_iw_i\big)x'$$
+
+Hence every local-linearity coefficient equals $a_+=\sum_{i:w_i>0}v_iw_i$ or $a_-=\sum_{i:w_i<0}v_iw_i$. Linearity around $x=0$ (if it holds) forces the coefficient to coincide with these, so $A_h\subseteq\{a_+,a_-\}$ and $|A_h|\le2$.
+
+**2.** Set
+
+$$\epsilon=\min_{i:\,w_i\ne0}\,|w_i^\top x|/\|w_i\|>0$$
+
+For $\|x'-x\|\le\epsilon$, each $w_i^\top x'$ has the same sign as $w_i^\top x$ (Cauchy–Schwarz). So on this ball $h(x')=\sum_{i\in I_+}v_i\,w_i^\top x'$ with $I_+=\{i:\,w_i^\top x>0\}$, i.e., $h$ is linear around $x$ with
+
+$$\boxed{\,a=\sum_{i\in I_+}v_i w_i\,}$$
 
 **3.** The claim is TRUE. Take $w_i=e_i$ (standard basis) and $v_i=1$ for $i=1,\dots,d$, and $v_i=0$ (or $w_i=0$) for the remaining $M-d$ neurons, i.e., $h(x)=\sum_{i=1}^d\sigma(x_i)$. For every sign pattern $s\in\{+,-\}^d$, pick $x$ in the corresponding open orthant (all $w_i^\top x=x_i\ne0$). By sub-part 2, $h$ is linear around $x$ with $a_s=\sum_{i:\,s_i=+}e_i$. These are the indicator vectors of all $2^d$ subsets of $\{1,\dots,d\}$ — pairwise distinct — hence $|A_h|\ge2^d$.
 
@@ -65,13 +79,27 @@ where $\mathbf{1}\in\mathbb{R}^{d\times d}$ denotes the matrix all of whose entr
 5. **(5 pts)** If we were to run gradient flow with respect to all of the network's parameters, that is, over the function $\psi(\theta):=\ell\big(S(h_\theta(x)),y\big)$, would $\langle W_L(t),\mathbf{1}\rangle=\langle W_L(0),\mathbf{1}\rangle$ still hold for every time $t\ge0$? Prove your answer.
 
 **Solution sketch:**
-**1.** Under gradient flow $\dot w(t)=-\nabla f(w(t))$: $\frac{d}{dt}\big(f(w(t))-f(w^*)\big)=-\|\nabla f(w(t))\|^2\le-\big(f(w(t))-f(w^*)\big)$ by the assumed PL-type inequality. Grönwall (or integrating $\frac{d}{dt}\ln(\cdot)\le-1$, handling the case where the gap hits $0$) gives the $e^{-t}$ decay.
+**1.** Under gradient flow $\dot w(t)=-\nabla f(w(t))$:
+
+$$\frac{d}{dt}\big(f(w(t))-f(w^*)\big)=-\|\nabla f(w(t))\|^2\le-\big(f(w(t))-f(w^*)\big)$$
+
+by the assumed PL-type inequality. Grönwall (or integrating $\frac{d}{dt}\ln(\cdot)\le-1$, handling the case where the gap hits $0$) gives the $e^{-t}$ decay.
 
 **2.** $g(c)=f(w+cv)$ is constant and differentiable, so $0=g'(0)=\nabla f(w)^\top v$. Since $w$ was arbitrary, this holds everywhere.
 
-**3.** Both numerator and denominator gain a factor $e^c$: $S(z+c\mathbf1)_i=\frac{e^{c}e^{z_i}}{e^{c}\sum_j e^{z_j}}=S(z)_i$.
+**3.** Both numerator and denominator gain a factor $e^c$:
 
-**4.** Write $u:=\sigma(W_{L-1}\sigma(\cdots\sigma(W_1x)))$ so $\phi(W_L)=\ell(S(W_Lu),y)$. Since $(W_L+c\,\mathbf1_{d\times d})u=W_Lu+c\,(\mathbf1^\top u)\,\mathbf1_d$, sub-part 3 gives $\phi(W_L+c\,\mathbf1_{d\times d})=\phi(W_L)$ for all $c$. By sub-part 2 (applied in $\mathbb{R}^{d\times d}$ with direction $v=\mathbf1_{d\times d}$): $\langle\nabla\phi(W_L),\mathbf1\rangle=0$ for every $W_L$. Hence $\frac{d}{dt}\langle W_L(t),\mathbf1\rangle=\langle-\nabla\phi(W_L(t)),\mathbf1\rangle=0$, so the inner product is conserved.
+$$S(z+c\mathbf1)_i=\frac{e^{c}e^{z_i}}{e^{c}\sum_j e^{z_j}}=S(z)_i$$
+
+**4.** Write $u:=\sigma(W_{L-1}\sigma(\cdots\sigma(W_1x)))$ so $\phi(W_L)=\ell(S(W_Lu),y)$. Since
+
+$$(W_L+c\,\mathbf1_{d\times d})u=W_Lu+c\,(\mathbf1^\top u)\,\mathbf1_d$$
+
+sub-part 3 gives $\phi(W_L+c\,\mathbf1_{d\times d})=\phi(W_L)$ for all $c$. By sub-part 2 (applied in $\mathbb{R}^{d\times d}$ with direction $v=\mathbf1_{d\times d}$): $\langle\nabla\phi(W_L),\mathbf1\rangle=0$ for every $W_L$. Hence
+
+$$\frac{d}{dt}\langle W_L(t),\mathbf1\rangle=\langle-\nabla\phi(W_L(t)),\mathbf1\rangle=0$$
+
+so the inner product is conserved.
 
 **5.** Yes, it still holds: under full-network gradient flow $\dot W_L(t)=-\nabla_{W_L}\psi(\theta(t))$, and for *any* fixed values of $W_1,\dots,W_{L-1}$ the map $W_L\mapsto\psi(\theta)$ has the same invariance to adding $c\,\mathbf1_{d\times d}$. Therefore $\langle\nabla_{W_L}\psi(\theta),\mathbf1\rangle=0$ at every $\theta$, and $\langle W_L(t),\mathbf1\rangle$ remains constant.
 
@@ -100,11 +128,25 @@ $$\forall h\in H:\quad L_D(h)-L_S(h)\le\Delta(N,\delta)+2\rho\epsilon.$$
 3. **(11 pts)** Denote by $F_1,\dots,F_R\subseteq F$ an arbitrary partition of $F$ into disjoint subsets. That is, $F_i\cap F_j=\emptyset$ for every $i\neq j\in\{1,\dots,R\}$, and $F_1\cup\cdots\cup F_R=F$. Suppose we possess a learning algorithm which tends to return hypotheses $h\in H$ for which $f\in\operatorname{argmin}_{f\in F}\|h-f\|_\infty$ lies in a subset $F_i$ with relatively small index $i$. Derive a generalization bound similar to the bound from sub-part 2, but suited to the use of this algorithm. That is, for $h\in H$, the smaller the index $i$ of the subset $F_i$ in which the hypothesis of $F$ closest to $h$ lies, the smaller the bound for $h$ should be.
 
 **Solution sketch:**
-**1.** Fix $f\in F$: the variables $A_n=\ell(f(x_n),y_n)$ are i.i.d. in $[0,1]$ with mean $L_D(f)$. Hoeffding gives tail $2e^{-2N\epsilon^2}$. Union bound over the finite $F$ with per-hypothesis confidence $\delta/|F|$ yields $\Delta(N,\delta)=\sqrt{\ln(2|F|/\delta)/(2N)}\to0$.
+**1.** Fix $f\in F$: the variables $A_n=\ell(f(x_n),y_n)$ are i.i.d. in $[0,1]$ with mean $L_D(f)$. Hoeffding gives tail $2e^{-2N\epsilon^2}$. Union bound over the finite $F$ with per-hypothesis confidence $\delta/|F|$ yields
 
-**2.** Given $h\in H$, choose a cover element $f$ with $\|h-f\|_\infty\le\epsilon$. The $\rho$-Lipschitz property gives pointwise $|\ell(h(x),y)-\ell(f(x),y)|\le\rho\epsilon$. Hence $|L_D(h)-L_D(f)|\le\rho\epsilon$ and $|L_S(h)-L_S(f)|\le\rho\epsilon$. On the event of sub-part 1: $L_D(h)-L_S(h)\le\big(L_D(f)-L_S(f)\big)+2\rho\epsilon\le\Delta(N,\delta)+2\rho\epsilon$, simultaneously for all $h\in H$.
+$$\Delta(N,\delta)=\sqrt{\ln(2|F|/\delta)/(2N)}\to0$$
 
-**3.** Non-uniform (SRM-style) confidence allocation: set $\delta_i:=\delta\cdot2^{-i}$ (any summable split such as $\delta/(i(i+1))$ works, so $\sum_i\delta_i\le\delta$). Apply the sub-part-1 bound to each $F_i$ with confidence $\delta_i$ and take a union bound over $i$. W.p. $\ge1-\delta$, simultaneously for every $i$ and every $f\in F_i$: $L_D(f)-L_S(f)\le\Delta_i:=\sqrt{\big(\ln(2|F|/\delta)+i\ln2\big)/(2N)}$. (Bound $|F_i|\le|F|$ inside the log so $\Delta_i$ is genuinely increasing in $i$; keeping $\ln|F_i|$ can violate the required monotonicity since the partition sizes $|F_i|$ are arbitrary.) Combining with the covering step as in (2): every $h\in H$ whose nearest cover element lies in $F_i$ satisfies $L_D(h)-L_S(h)\le\Delta_i+2\rho\epsilon$ — a bound increasing with $i$, i.e., tighter for the low-index hypotheses the algorithm implicitly prefers.
+**2.** Given $h\in H$, choose a cover element $f$ with $\|h-f\|_\infty\le\epsilon$. The $\rho$-Lipschitz property gives pointwise $|\ell(h(x),y)-\ell(f(x),y)|\le\rho\epsilon$. Hence $|L_D(h)-L_D(f)|\le\rho\epsilon$ and $|L_S(h)-L_S(f)|\le\rho\epsilon$. On the event of sub-part 1:
+
+$$L_D(h)-L_S(h)\le\big(L_D(f)-L_S(f)\big)+2\rho\epsilon\le\Delta(N,\delta)+2\rho\epsilon$$
+
+simultaneously for all $h\in H$.
+
+**3.** Non-uniform (SRM-style) confidence allocation: set $\delta_i:=\delta\cdot2^{-i}$ (any summable split such as $\delta/(i(i+1))$ works, so $\sum_i\delta_i\le\delta$). Apply the sub-part-1 bound to each $F_i$ with confidence $\delta_i$ and take a union bound over $i$. W.p. $\ge1-\delta$, simultaneously for every $i$ and every $f\in F_i$:
+
+$$L_D(f)-L_S(f)\le\Delta_i:=\sqrt{\big(\ln(2|F|/\delta)+i\ln2\big)/(2N)}$$
+
+(Bound $|F_i|\le|F|$ inside the log so $\Delta_i$ is genuinely increasing in $i$; keeping $\ln|F_i|$ can violate the required monotonicity since the partition sizes $|F_i|$ are arbitrary.) Combining with the covering step as in (2): every $h\in H$ whose nearest cover element lies in $F_i$ satisfies
+
+$$L_D(h)-L_S(h)\le\Delta_i+2\rho\epsilon$$
+
+— a bound increasing with $i$, i.e., tighter for the low-index hypotheses the algorithm implicitly prefers.
 
 **💡 Useful tricks:** Cover ⇒ Hoeffding + union on the finite $F$ only; bridge to all of $H$ with the $2\rho\epsilon$ Lipschitz transfer; "algorithm prefers small-index cells" ⇒ SRM weights $\delta_i=\delta 2^{-i}$ (or any summable split) per cell.
 

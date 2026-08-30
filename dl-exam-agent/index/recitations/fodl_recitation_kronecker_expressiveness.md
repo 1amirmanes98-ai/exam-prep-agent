@@ -12,22 +12,38 @@
 
 ## Worked problems / derivations
 **P1.** Prove $(A \odot B)^{-1} = A^{-1} \odot B^{-1}$ for invertible $A, B$.
-Technique: mixed product property: $(A\odot B)(A^{-1}\odot B^{-1}) = (AA^{-1})\odot(BB^{-1}) = I \odot I = I$.
+Technique: mixed product property:
 
-**P2.** SVD and rank of a Kronecker product: given SVDs $A = U_A\Sigma_A V_A^\top$, $B = U_B\Sigma_B V_B^\top$, show the SVD of $A\odot B$ is $U = U_A \odot U_B$, $\Sigma = \Sigma_A \odot \Sigma_B$, $V = V_A \odot V_B$, and deduce $\operatorname{rank}(A\odot B) = \operatorname{rank}(A)\cdot\operatorname{rank}(B)$.
+$$(A\odot B)(A^{-1}\odot B^{-1}) = (AA^{-1})\odot(BB^{-1}) = I \odot I = I$$
+
+**P2.** SVD and rank of a Kronecker product: given SVDs $A = U_A\Sigma_A V_A^\top$, $B = U_B\Sigma_B V_B^\top$, show the SVD of $A\odot B$ is $U = U_A \odot U_B$, $\Sigma = \Sigma_A \odot \Sigma_B$, $V = V_A \odot V_B$, and deduce
+
+$$\operatorname{rank}(A\odot B) = \operatorname{rank}(A)\cdot\operatorname{rank}(B)$$
+
 Technique: mixed product shows $U, V$ are orthogonal and the factorization holds; singular values are all products $\sigma_i(A)\sigma_j(B)$, so counting nonzero singular values gives the rank identity.
 
 **P3.** Express a LeakyReLU neuron by ReLU neurons: for $f(x) = \sigma_a(\langle w,x\rangle + b)$, with $g_1(x) = \sigma(\langle w,x\rangle+b)$ and $g_2(x) = \sigma(-(\langle w,x\rangle+b))$, show $f = g_1 - a\, g_2$.
 Technique: case analysis on the sign of $z = \langle w,x\rangle + b$ ($z>0$: $g_1 = z, g_2 = 0$; $z<0$: $g_1 = 0, -a g_2 = az$; $z=0$: both zero).
 
-**P4.** Express a ReLU neuron by LeakyReLU neurons: with $g_1(x)=\sigma_a(\langle w,x\rangle+b)$, $g_2(x)=\sigma_a(-(\langle w,x\rangle+b))$, find $\beta,\gamma$ with $\sigma(\langle w,x\rangle+b) = \beta g_1 + \gamma g_2$.
-Technique: matching coefficients on $z>0$ gives $\beta - \gamma a = 1$; on $z<0$ gives $\beta a - \gamma = 0$; solving yields $\gamma = \frac{a}{1-a^2}$, $\beta = 1 + \frac{a^2}{1-a^2} = \frac{1}{1-a^2}$. (The slide's printed $\beta$ has a sign typo; these values satisfy both equations.)
+**P4.** Express a ReLU neuron by LeakyReLU neurons: with $g_1(x)=\sigma_a(\langle w,x\rangle+b)$, $g_2(x)=\sigma_a(-(\langle w,x\rangle+b))$, find $\beta,\gamma$ with
+
+$$\sigma(\langle w,x\rangle+b) = \beta g_1 + \gamma g_2$$
+
+Technique: matching coefficients on $z>0$ gives $\beta - \gamma a = 1$; on $z<0$ gives $\beta a - \gamma = 0$; solving yields $\gamma = \frac{a}{1-a^2}$,
+
+$$\beta = 1 + \frac{a^2}{1-a^2} = \frac{1}{1-a^2}$$
+
+. (The slide's printed $\beta$ has a sign typo; these values satisfy both equations.)
 
 **P5.** CP decomposition $\mathcal{A} = \sum_{z=1}^{Z} a_z \cdot \otimes_{n=1}^{N} a^{z,n}$ under the constraint $a^{z,1} = \dots = a^{z,N}$ for all $z$:
 - (Q1) Effect on the corresponding network: the (1×1 conv) layers have weight sharing — filters in the same channel are equal.
 - (Q2) Universality: fails for every $M, N \ge 2$; only tensors invariant under mode permutations ($\mathcal{A}_{i_1,\dots,i_N} = \mathcal{A}_{\pi(i_1),\dots,\pi(i_N)}$) are expressible, so e.g. $e_2 \otimes e_1 \otimes \dots \otimes e_1$ cannot be represented or approximated.
 - (Q3) For $N=2$ and unconstrained $Z$: the expressible class is exactly the symmetric matrices $\mathcal{S} = \{A \in \mathbb{R}^{M,M} : A = A^\top\}$.
-Technique: symmetry of the summands forces permutation invariance; conversely for $N=2$ use the eigendecomposition $A = UDU^\top = \sum_{i=1}^M \lambda_i U_i \otimes U_i$ (a constrained CP decomposition), and any $\sum_z a_z\, a^z (a^z)^\top$ is symmetric.
+Technique: symmetry of the summands forces permutation invariance; conversely for $N=2$ use the eigendecomposition
+
+$$A = UDU^\top = \sum_{i=1}^M \lambda_i U_i \otimes U_i$$
+
+(a constrained CP decomposition), and any $\sum_z a_z\, a^z (a^z)^\top$ is symmetric.
 
 ## Key formulas & facts
 - Definition: for $A \in \mathbb{R}^{m,n}, B \in \mathbb{R}^{p,q}$: $A \odot B := \begin{pmatrix} a_{11}B & \cdots & a_{1n}B \\ \vdots & \ddots & \vdots \\ a_{m1}B & \cdots & a_{mn}B\end{pmatrix} \in \mathbb{R}^{mp,nq}$.

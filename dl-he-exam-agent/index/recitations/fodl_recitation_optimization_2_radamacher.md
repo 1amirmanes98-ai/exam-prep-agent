@@ -15,25 +15,72 @@
 
 ## בעיות פתורות וגזירות
 **P1.** ביטוי מפורש לפונקציית המטרה בפרמטריזציית-יתר.
-טכניקה: הצבה ישירה: $\phi(w_1,\dots,w_N) = L_S\big(\prod_{i=1}^N w_i\big) = \frac1m\big\|\big(\prod_{i=1}^N w_i\big)x - \mathbf{y}\big\|^2$, עם $x,\mathbf{y}\in\mathbb{R}^m$, $x\ne0$, $\langle x,\mathbf{y}\rangle>0$.
+טכניקה: הצבה ישירה:
+
+$$\phi(w_1,\dots,w_N) = L_S\big(\prod_{i=1}^N w_i\big) = \frac1m\big\|\big(\prod_{i=1}^N w_i\big)x - \mathbf{y}\big\|^2$$
+
+, עם $x,\mathbf{y}\in\mathbb{R}^m$, $x\ne0$, $\langle x,\mathbf{y}\rangle>0$.
 
 **P2.** $\phi$ לא-קמורה.
-טכניקה: הציגו נקודה קריטית שאינה מינימום גלובלי: כלל השרשרת נותן $\frac{\partial\phi}{\partial w_j} = \nabla L_S\big(\prod_i w_i\big)\prod_{k\ne j}w_k$, ולכן $\nabla\phi(0)=0$ (עבור $N\ge2$); אך $L_S$ קמורה עם ממזער יחיד $w^* = \frac{\langle x,\mathbf{y}\rangle}{\|x\|^2} > 0$, ולכן $\phi(0)=L_S(0) > L_S(w^*) = \phi(w^*,1,\dots,1)$.
+טכניקה: הציגו נקודה קריטית שאינה מינימום גלובלי: כלל השרשרת נותן
+
+$$\frac{\partial\phi}{\partial w_j} = \nabla L_S\big(\prod_i w_i\big)\prod_{k\ne j}w_k$$
+
+, ולכן $\nabla\phi(0)=0$ (עבור $N\ge2$); אך $L_S$ קמורה עם ממזער יחיד
+
+$$w^* = \frac{\langle x,\mathbf{y}\rangle}{\|x\|^2} > 0$$
+
+, ולכן
+
+$$\phi(0)=L_S(0) > L_S(w^*) = \phi(w^*,1,\dots,1)$$
 
 **P3.** ל-$\phi$ יש אינסוף מינימות גלובליות.
-טכניקה: סימטריית שינוי-קנה-מידה של פרמטריזציית המכפלה: לכל $c>0$, $\theta_c := (cw^*, \tfrac1c, 1,\dots,1)^\top$ מקיים $\phi(\theta_c) = L_S(w^*)$, ומכאן רצף של ממזערים גלובליים.
+טכניקה: סימטריית שינוי-קנה-מידה של פרמטריזציית המכפלה: לכל $c>0$,
+
+$$\theta_c := (cw^*, \tfrac1c, 1,\dots,1)^\top$$
+
+מקיים $\phi(\theta_c) = L_S(w^*)$, ומכאן רצף של ממזערים גלובליים.
 
 **P4.** עבור $N=2$: אין מינימות מקומיות רעות ואין אוכפים לא-ממש.
-טכניקה: נקודות קריטיות מקיימות $\nabla L_S(w_1w_2)=0$ (ואז $(w_1,w_2)$ הוא מינימום גלובלי כי $w_1w_2$ ממזער את $L_S$) או $w_1=w_2=0$. בנקודה $(0,0)$ חשבו את ההסיאן: $\partial^2_{w_1}\phi(0,0)=\partial^2_{w_2}\phi(0,0)=0$, $\partial^2_{w_1w_2}\phi(0,0) = \nabla L_S(0) = -\frac2m\langle x,\mathbf{y}\rangle$; אזי $\nabla^2\phi(0,0)\binom{1}{1} = -\frac2m\langle x,\mathbf{y}\rangle\binom{1}{1}$ מציג ערך עצמי שלילי $\Rightarrow$ אוכף ממש.
+טכניקה: נקודות קריטיות מקיימות $\nabla L_S(w_1w_2)=0$ (ואז $(w_1,w_2)$ הוא מינימום גלובלי כי $w_1w_2$ ממזער את $L_S$) או $w_1=w_2=0$. בנקודה $(0,0)$ חשבו את ההסיאן:
+
+$$\partial^2_{w_1}\phi(0,0)=\partial^2_{w_2}\phi(0,0)=0$$
+
+$$\partial^2_{w_1w_2}\phi(0,0) = \nabla L_S(0) = -\frac2m\langle x,\mathbf{y}\rangle$$
+
+; אזי
+
+$$\nabla^2\phi(0,0)\binom{1}{1} = -\frac2m\langle x,\mathbf{y}\rangle\binom{1}{1}$$
+
+מציג ערך עצמי שלילי $\Rightarrow$ אוכף ממש.
 
 **P5.** גבול GF עם אתחול לא-מאוזן: $c := w_1(0)^2 - w_2(0)^2 > 0$, בהנחת התכנסות לממזער גלובלי עם $w_1(\infty)>0$; גזרו את הגבול בצורה סגורה.
-טכניקה: חוק שימור — כלל השרשרת נותן $\frac{d}{dt}w_1(t)^2 = -2w_1w_2\nabla L_S(w_1w_2) = \frac{d}{dt}w_2(t)^2$, ולכן $w_1(t)^2 - w_2(t)^2 \equiv c$ ("שימור balancedness"). שלבו עם $w_1(\infty)w_2(\infty) = w^*$: פתרו את המשוואה הריבועית ב-$w_2(\infty)^2$ לקבלת $w_2(\infty) = \sqrt{\tfrac{-c+\sqrt{c^2+4(w^*)^2}}{2}}$, $w_1(\infty) = \sqrt{\tfrac{c+\sqrt{c^2+4(w^*)^2}}{2}}$.
+טכניקה: חוק שימור — כלל השרשרת נותן
+
+$$\frac{d}{dt}w_1(t)^2 = -2w_1w_2\nabla L_S(w_1w_2) = \frac{d}{dt}w_2(t)^2$$
+
+, ולכן $w_1(t)^2 - w_2(t)^2 \equiv c$ ("שימור balancedness"). שלבו עם $w_1(\infty)w_2(\infty) = w^*$: פתרו את המשוואה הריבועית ב-$w_2(\infty)^2$ לקבלת
+
+$$w_2(\infty) = \sqrt{\tfrac{-c+\sqrt{c^2+4(w^*)^2}}{2}}$$
+
+$$w_1(\infty) = \sqrt{\tfrac{c+\sqrt{c^2+4(w^*)^2}}{2}}$$
 
 **P6.** מורכבות Rademacher של קבוצות קיצוניות: (a) $A=\{a'\}\Rightarrow R(A)=0$; (b) $A=\{1,-1\}^m\Rightarrow R(A)=1$.
 טכניקה: (a) לינאריות התוחלת עם $\mathbb{E}[\sigma_i]=0$; (b) חסם עליון $\sum_i\sigma_ia_i\le m$ והשׂגתו עם $a=\sigma\in A$ (כך שהסופרמום שווה ל-$m$ לכל מימוש).
 
-**P7.** משפט 1 (חסם הכללה): לכל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$ מעל $S\sim\mathcal{D}^m$, $\forall h\in\mathcal{H}:\ L_\mathcal{D}(h)-L_S(h) \le 2R(\ell\circ\mathcal{H}\circ S) + 3\sqrt{\frac{2\ln(4/\delta)}{m}}$.
-טכניקה: עבדו עם $\Delta(S) := \sup_{h\in\mathcal{H}}[L_\mathcal{D}(h)-L_S(h)]$. (i) שלב-בתוחלת: $\mathbb{E}_S[\Delta(S)] \le 2\mathbb{E}_S[R(\ell\circ\mathcal{H}\circ S)]$ (למה 26.2, "Understanding ML"). (ii) ריכוזיות: גם $\Delta(S)$ וגם $R(\ell\circ\mathcal{H}\circ S)$ מקיימים את תנאי ההפרשים-החסומים של McDiarmid עם $c=\frac2m$, ונותנים לכל אחד סטיות $\sqrt{\frac2m\ln\frac{2}{\delta'}}$; קחו $\delta'=\delta/2$ וחסם איחוד. (iii) שרשרו את שלושת אי-השוויונים; הקבועים מצטרפים ל-$2R + 3\sqrt{\frac2m\ln\frac4\delta}$.
+**P7.** משפט 1 (חסם הכללה): לכל $\delta\in(0,1)$, בהסתברות $\ge 1-\delta$ מעל $S\sim\mathcal{D}^m$,
+
+$$\forall h\in\mathcal{H}:\ L_\mathcal{D}(h)-L_S(h) \le 2R(\ell\circ\mathcal{H}\circ S) + 3\sqrt{\frac{2\ln(4/\delta)}{m}}$$
+
+טכניקה: עבדו עם
+
+$$\Delta(S) := \sup_{h\in\mathcal{H}}[L_\mathcal{D}(h)-L_S(h)]$$
+
+. (i) שלב-בתוחלת:
+
+$$\mathbb{E}_S[\Delta(S)] \le 2\mathbb{E}_S[R(\ell\circ\mathcal{H}\circ S)]$$
+
+(למה 26.2, "Understanding ML"). (ii) ריכוזיות: גם $\Delta(S)$ וגם $R(\ell\circ\mathcal{H}\circ S)$ מקיימים את תנאי ההפרשים-החסומים של McDiarmid עם $c=\frac2m$, ונותנים לכל אחד סטיות $\sqrt{\frac2m\ln\frac{2}{\delta'}}$; קחו $\delta'=\delta/2$ וחסם איחוד. (iii) שרשרו את שלושת אי-השוויונים; הקבועים מצטרפים ל-$2R + 3\sqrt{\frac2m\ln\frac4\delta}$.
 
 **P8.** אימות הפרשים-חסומים ($c=\frac2m$) עבור $\Delta(S)$ ו-$R(\ell\circ\mathcal{H}\circ S)$.
 טכניקה: החליפו דוגמה אחת $(x_j,y_j)\to(x_j',y_j')$; השתמשו ב-$\sup f - \sup g \le \sup(f-g)$, בטלו את $m-1$ האיברים המשותפים, וחסמו את האיבר הבודד הנותר ב-$\frac2m$ באמצעות $|\ell|\le1$ (וכן $|\sigma_j|=1$ במקרה של Rademacher); סמטרו לקבלת ערך מוחלט.

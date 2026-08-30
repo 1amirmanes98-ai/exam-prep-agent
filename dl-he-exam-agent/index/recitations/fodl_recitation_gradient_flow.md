@@ -16,19 +16,55 @@
 
 ## בעיות פתורות וגזירות
 **P1.** הראו ש-GF הוא גבול הצעד-הקטן של GD.
-טכניקה: התבוננו באיטרציות GD "בדגימה" בכפולות של $\eta$: $\frac{\theta_{t+\eta}-\theta_t}{\eta} = -\nabla f(\theta_t)$; לקיחת $\eta\to 0$ הופכת את מנת ההפרש ל-$\frac{d}{dt}\theta(t) = -\nabla f(\theta(t))$.
+טכניקה: התבוננו באיטרציות GD "בדגימה" בכפולות של $\eta$:
+
+$$\frac{\theta_{t+\eta}-\theta_t}{\eta} = -\nabla f(\theta_t)$$
+
+; לקיחת $\eta\to 0$ הופכת את מנת ההפרש ל-
+
+$$\frac{d}{dt}\theta(t) = -\nabla f(\theta(t))$$
 
 **P2.** הראו ש-GD הוא דיסקרטיזציה מסדר ראשון של GF.
-טכניקה: פרשו את הזרימה בטור טיילור: $\theta(t+\eta) = \theta(t) + \dot\theta(t)\eta + o(\eta) = \theta(t) - \eta\nabla f(\theta(t)) + o(\eta)$; השמטת $o(\eta)$ נותנת את עדכון GD (אוילר קדמי).
+טכניקה: פרשו את הזרימה בטור טיילור:
+
+$$\theta(t+\eta) = \theta(t) + \dot\theta(t)\eta + o(\eta) = \theta(t) - \eta\nabla f(\theta(t)) + o(\eta)$$
+
+; השמטת $o(\eta)$ נותנת את עדכון GD (אוילר קדמי).
 
 **P3.** פתרון GF בצורה סגורה לרגרסיה לינארית חד-ממדית עם דוגמה יחידה $x\in\mathbb{R}\setminus\{0\}$, $f(\theta)=\tfrac12(\theta x-y)^2$ (השקופית מציגה מקדם $\tfrac1x$, אך הגזירה משתמשת ב-$\nabla f(\theta)=(\theta x-y)x$).
-טכניקה: המשוואה הדיפרנציאלית לינארית: $\dot\theta(t) = -\theta(t)x^2 + xy$; הפרידו משתנים $\frac{\dot\theta(t)}{\theta(t)x^2-xy}=-1$, אינטגרציה נותנת $\frac{1}{x^2}\big(\ln|\theta(t)x^2-xy| - \ln|\theta(0)x^2-xy|\big) = -t$, ואקספוננט: $\theta(t) = \frac{y}{x} + \big(\theta(0)-\frac{y}{x}\big)e^{-x^2 t}$ — התכנסות אקספוננציאלית לממזער הגלובלי $y/x$ בקצב $x^2$. (הנוסחה המודפסת בשקופית האחרונה משמיטה את ה-"$+$"; השורה שמעליה נכונה.)
+טכניקה: המשוואה הדיפרנציאלית לינארית:
+
+$$\dot\theta(t) = -\theta(t)x^2 + xy$$
+
+; הפרידו משתנים
+
+$$\frac{\dot\theta(t)}{\theta(t)x^2-xy}=-1$$
+
+, אינטגרציה נותנת
+
+$$\frac{1}{x^2}\big(\ln|\theta(t)x^2-xy| - \ln|\theta(0)x^2-xy|\big) = -t$$
+
+, ואקספוננט:
+
+$$\theta(t) = \frac{y}{x} + \big(\theta(0)-\frac{y}{x}\big)e^{-x^2 t}$$
+
+— התכנסות אקספוננציאלית לממזער הגלובלי $y/x$ בקצב $x^2$. (הנוסחה המודפסת בשקופית האחרונה משמיטה את ה-"$+$"; השורה שמעליה נכונה.)
 
 **P4.** מונוטוניות: $f(\theta(t))$ אינה עולה תחת GF.
-טכניקה: כלל שרשרת בשורה אחת: $\frac{d}{dt}f(\theta(t)) = \nabla f(\theta(t))^\top\dot\theta(t) = -\|\nabla f(\theta(t))\|_2^2 \le 0$.
+טכניקה: כלל שרשרת בשורה אחת:
+
+$$\frac{d}{dt}f(\theta(t)) = \nabla f(\theta(t))^\top\dot\theta(t) = -\|\nabla f(\theta(t))\|_2^2 \le 0$$
 
 **P5.** GF מגיע לנקודה $\epsilon$-סטציונרית עד לזמן $T \ge \frac{f(\theta(0))-f^*}{\epsilon^2}$ (בהנחה $f^*:=\min_\theta f(\theta)\in\mathbb{R}$).
-טכניקה: המשפט היסודי של החשבון: $f(\theta(T))-f(\theta(0)) = -\int_0^T\|\nabla f(\theta(t))\|_2^2\,dt \le -T\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2^2$; סידור מחדש נותן $\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2 \le \sqrt{\frac{f(\theta(0))-f^*}{T}}$ והצבת האגף הימני $\le\epsilon$.
+טכניקה: המשפט היסודי של החשבון:
+
+$$f(\theta(T))-f(\theta(0)) = -\int_0^T\|\nabla f(\theta(t))\|_2^2\,dt \le -T\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2^2$$
+
+; סידור מחדש נותן
+
+$$\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2 \le \sqrt{\frac{f(\theta(0))-f^*}{T}}$$
+
+והצבת האגף הימני $\le\epsilon$.
 
 **P6.** טענה: אם $f\in C^1$ וגם $\lim_{t\to\infty}\theta(t)=\theta^*$, אזי $\theta^*$ היא נקודה קריטית של $f$.
 טכניקה: מנוסחת כאן כתרגיל ("ישיר"); מוכחת במלואה בתרגול 8 (בסתירה, דרך רציפות + המשפט היסודי של החשבון).

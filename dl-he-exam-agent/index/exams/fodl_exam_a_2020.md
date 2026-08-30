@@ -13,7 +13,15 @@
 - **(8 pts)** אם נשמיט את ההטיות משני המודלים, האם היעילות הביטויית עדיין מתקיימת? הוכיחו את תשובתכם.
 
 **Solution sketch:**
-**i.** $\mathcal{H}_B = \{x \mapsto \sum_{i=1}^{B} w^{(2)}_i\, [\,w^{(1)}_i x + b^{(1)}_i\,]_+ + b^{(2)}\}$ עם כל הפרמטרים ממשיים. $\bar{\mathcal{H}}_{\bar B} = \{x \mapsto W_L\,\sigma(W_{L-1}\,\sigma(\cdots \sigma(W_1 x + b_1)\cdots) + b_{L-1}) + b_L\}$ עם רוחבים חבויים $\bar B$ ו-$\sigma = $ ReLU רכיב-רכיב $[\cdot]_+$.
+**i.**
+
+$$\mathcal{H}_B = \{x \mapsto \sum_{i=1}^{B} w^{(2)}_i\, [\,w^{(1)}_i x + b^{(1)}_i\,]_+ + b^{(2)}\}$$
+
+עם כל הפרמטרים ממשיים.
+
+$$\bar{\mathcal{H}}_{\bar B} = \{x \mapsto W_L\,\sigma(W_{L-1}\,\sigma(\cdots \sigma(W_1 x + b_1)\cdots) + b_{L-1}) + b_L\}$$
+
+עם רוחבים חבויים $\bar B$ ו-$\sigma = $ ReLU רכיב-רכיב $[\cdot]_+$.
 
 **ii.** טיעון ספירת מקטעים: רשת ReLU רדודה ברוחב $B$ היא לינארית למקוטעין עם לכל היותר $B + 1$ מקטעים לינאריים (כל יחידה חבויה תורמת נקודת שבירה אחת). בניית ההפרדה: שכבת כובע/משולש $\varphi$ ברוחב קבוע קטן (ניתנת למימוש עם 2–3 יחידות ReLU) מכפילה את מספר התנודות תחת הרכבה. הרכבה על פני $L-1$ שכבות חבויות מניבה פונקציית sawtooth עם $2^{\Omega(L)}$ מקטעים לינאריים (בסגנון Telgarsky). שכפולה במשפחה הרדודה מכריח $B \geq 2^{\Omega(L)}$, כלומר רוחב אקספוננציאלי. אמתו גם את כיוון ההכלה של היעילות הביטויית: כל רשת רדודה ממומשת על ידי רשת בעומק $L$ ברוחב דומה על ידי העברת ערכים קדימה עם טריק הזהות של ReLU $x = [x]_+ - [-x]_+$ (שני ערוצים לכל ערך).
 
@@ -44,17 +52,37 @@ $$L_S : \mathbb{R} \to \mathbb{R}_{\geq 0}\,,\ L_S(w) = \frac{1}{m}\sum\nolimits
 - **(8 pts)** נניח שאנו ממזערים את $\phi(\cdot)$ על ידי הרצת gradient flow החל מאתחול $(w_1(0), w_2(0))$ המקיים $w_1(0)^2 - w_2(0)^2 = c$ עבור $c > 0$ כלשהו. נניח גם ש-gradient flow מתכנס למינימום גלובלי $(w_1(\infty), w_2(\infty))$ שעבורו $w_1(\infty) > 0$. גזרו ביטויים בצורה סגורה עבור $w_1(\infty)$ ו-$w_2(\infty)$.
 
 **Solution sketch:**
-**i.** $\phi : \mathbb{R}^N \to \mathbb{R}_{\geq 0}$, $\phi(w_1, \ldots, w_N) = L_S\big(\prod_{i=1}^N w_i\big) = \frac{1}{m}\big\|\underline{x}\cdot \prod_{i=1}^N w_i - \underline{y}\big\|^2$.
+**i.** $\phi : \mathbb{R}^N \to \mathbb{R}_{\geq 0}$,
 
-**ii.** $L_S$ היא פרבולה קמורה ממש עם ממזער יחיד $w^* = \langle \underline x, \underline y\rangle / \|\underline x\|^2 > 0$. בחרו שני ממזערים גלובליים של $\phi$ עם מכפלה $w^*$, למשל $(2, w^*/2, 1, \ldots, 1)$ ו-$(w^*/2, 2, 1, \ldots, 1)$. לנקודת האמצע שלהם יש מכפלה מקצה-לקצה $\big(\frac{2 + w^*/2}{2}\big)^2 \neq w^*$ (עבור בחירה מתאימה/גנרית), ולכן ערך $\phi$ גדול ממש מהערך המשותף (המינימלי) של הקצוות — Jensen מופר $\Rightarrow$ אי-קמירות. (באופן שקול: קבוצת הממזערים של פונקציה קמורה היא קמורה, ואילו $\{\prod_i w_i = w^*\}$ אינה.)
+$$\phi(w_1, \ldots, w_N) = L_S\big(\prod_{i=1}^N w_i\big) = \frac{1}{m}\big\|\underline{x}\cdot \prod_{i=1}^N w_i - \underline{y}\big\|^2$$
+
+**ii.** $L_S$ היא פרבולה קמורה ממש עם ממזער יחיד
+
+$$w^* = \langle \underline x, \underline y\rangle / \|\underline x\|^2 > 0$$
+
+בחרו שני ממזערים גלובליים של $\phi$ עם מכפלה $w^*$, למשל $(2, w^*/2, 1, \ldots, 1)$ ו-$(w^*/2, 2, 1, \ldots, 1)$. לנקודת האמצע שלהם יש מכפלה מקצה-לקצה $\big(\frac{2 + w^*/2}{2}\big)^2 \neq w^*$ (עבור בחירה מתאימה/גנרית), ולכן ערך $\phi$ גדול ממש מהערך המשותף (המינימלי) של הקצוות — Jensen מופר $\Rightarrow$ אי-קמירות. (באופן שקול: קבוצת הממזערים של פונקציה קמורה היא קמורה, ואילו $\{\prod_i w_i = w^*\}$ אינה.)
 
 **iii.** $\phi \geq L_S(w^*)$ בכל מקום עם שוויון אם"ם $\prod_i w_i = w^*$. קבוצת הפתרונות מכילה את $\{(\alpha, w^*/\alpha, 1, \ldots, 1) : \alpha \neq 0\}$ — אינסוף מינימות גלובליות.
 
-**iv.** $N=2$: $\nabla\phi(w_1,w_2) = L_S'(w_1w_2)\,(w_2, w_1)$. נקודות קריטיות: או $w_1w_2 = w^*$ (מינימות גלובליות) או $(w_1,w_2) = (0,0)$. בראשית ההסיאן הוא $\begin{pmatrix} 0 & L_S'(0) \\ L_S'(0) & 0\end{pmatrix}$ עם $L_S'(0) = -\frac{2}{m}\langle \underline x, \underline y\rangle < 0$, ולכן ערכיו העצמיים הם $\pm\frac{2}{m}\langle\underline x,\underline y\rangle$ — קיים ערך עצמי שלילי ממש $\Rightarrow$ האוכף היחיד ממש.
+**iv.** $N=2$:
+
+$$\nabla\phi(w_1,w_2) = L_S'(w_1w_2)\,(w_2, w_1)$$
+
+נקודות קריטיות: או $w_1w_2 = w^*$ (מינימות גלובליות) או $(w_1,w_2) = (0,0)$. בראשית ההסיאן הוא
+
+$$\begin{pmatrix} 0 & L_S'(0) \\ L_S'(0) & 0\end{pmatrix}$$
+
+עם $L_S'(0) = -\frac{2}{m}\langle \underline x, \underline y\rangle < 0$, ולכן ערכיו העצמיים הם $\pm\frac{2}{m}\langle\underline x,\underline y\rangle$ — קיים ערך עצמי שלילי ממש $\Rightarrow$ האוכף היחיד ממש.
 
 **v.** כל נקודה קריטית היא או הראשית (אוכף ממש, ולכן לא מינימום מקומי) או מקיימת $w_1w_2 = w^*$ (מינימום גלובלי) $\Rightarrow$ כל המינימות המקומיות גלובליות.
 
-**vi.** Balancedness נשמרת תחת gradient flow ($\frac{d}{dt}(w_1^2 - w_2^2) = 0$), ולכן $w_1(\infty)^2 - w_2(\infty)^2 = c$ יחד עם $w_1(\infty)\,w_2(\infty) = w^*$. פתרון עם $w_1(\infty) > 0$: $w_1(\infty) = \sqrt{\tfrac{c + \sqrt{c^2 + 4(w^*)^2}}{2}}$, $w_2(\infty) = w^* / w_1(\infty)$, כאשר $w^* = \langle \underline x, \underline y\rangle/\|\underline x\|^2$.
+**vi.** Balancedness נשמרת תחת gradient flow ($\frac{d}{dt}(w_1^2 - w_2^2) = 0$), ולכן $w_1(\infty)^2 - w_2(\infty)^2 = c$ יחד עם $w_1(\infty)\,w_2(\infty) = w^*$. פתרון עם $w_1(\infty) > 0$:
+
+$$\boxed{\,w_1(\infty) = \sqrt{\tfrac{c + \sqrt{c^2 + 4(w^*)^2}}{2}}\,}$$
+
+$$\boxed{\,w_2(\infty) = w^* / w_1(\infty)\,}$$
+
+כאשר $w^* = \langle \underline x, \underline y\rangle/\|\underline x\|^2$.
 
 **💡 טריקים שימושיים:** אי-קמירות מוכחת בצורה הנקייה ביותר מכך ש*קבוצת הממזערים* $\{\prod_i w_i=w^*\}$ אינה קמורה (או Jensen בנקודת אמצע); אותה קבוצה נותנת אינסוף מינימות $\{(\alpha,w^*/\alpha,1,\dots)\}$; עבור $N=2$ להסיאן בראשית ערכים עצמיים $\pm\frac2m\langle x,y\rangle$; שימור $w_1^2-w_2^2=c$ בתוספת $w_1w_2=w^*$ פותר את נקודת הקצה בצורה סגורה.
 
@@ -78,9 +106,21 @@ $$L_S : \mathbb{R}^d \to \mathbb{R}_{\geq 0}\,,\ L_S(\underline{w}) = \frac{1}{m
 - **(5 pts)** אם $\mathcal{D}$ הייתה כזו שתווית $y_i$ בלתי תלויה בדוגמה שלה $\underline{x}_i$, מה הייתם מצפים מהנורמה האוקלידית של ההשערה הנלמדת? הסבירו את תשובתכם (איכותית).
 
 **Solution sketch:**
-**i.** $\nabla L_S(\underline w) = \frac{1}{m}\sum_i \partial_2\ell(y_i, \langle \underline x_i, \underline w\rangle)\, \underline x_i \in V := \mathrm{span}\{\underline x_i\}$. עם אתחול אפס, כל איטרציית GD — ולכן הגבול $\hat{\underline w}$ — נמצאת ב-$V$. אופטימום גלובלי $\Leftrightarrow$ $L_S = 0$ $\Leftrightarrow$ $\langle \underline x_i, \underline w\rangle = y_i\ \forall i$ (לפי תכונת $\ell = 0$ אם"ם ארגומנטים שווים). ישים כיוון ש-$d > m$ וה-$\underline x_i$ בלתי תלויים לינארית. פירוק אורתוגונלי: כל פתרון $\underline w = \underline w_V + \underline w_\perp$ מקיים את האילוצים דרך $\underline w_V$ בלבד, וגם $\|\underline w\|^2 = \|\underline w_V\|^2 + \|\underline w_\perp\|^2$. הפתרון הנמצא ב-$V$ יחיד (מטריצת Gram $m \times m$ הפיכה מאי-תלות לינארית) ולכן בעל נורמה מינימלית. הגבול של GD הוא פתרון זה.
+**i.**
 
-**ii.** שלבו את חסם Rademacher בסגנון-התזכורת עם אומדן המורכבות הנתון: בהסתברות $\geq 1 - \delta$, $\forall h \in \mathcal{H}_r$: $L_{\mathcal D}(h) - L_S(h) \leq \frac{2\rho\, r\, \max_i \|\underline x_i\|}{\sqrt m} + O\big(\sqrt{\ln(1/\delta)/m}\big)$. הפכו אותו לאדפטיבי-לנורמה באמצעות חסם איחוד על רדיוסים שלמים $r = 1, 2, \ldots$ עם $\delta_r = \frac{6\delta}{\pi^2 r^2}$ והציבו $r = \lceil\|\hat{\underline w}\|\rceil \leq \|\hat{\underline w}\| + 1$, הנותן חסם פער בסקאלה של $\rho(\|\hat{\underline w}\|+1)\max_i\|\underline x_i\|/\sqrt m$ — נורמה נלמדת קטנה יותר $\Rightarrow$ חסם הדוק יותר.
+$$\nabla L_S(\underline w) = \frac{1}{m}\sum_i \partial_2\ell(y_i, \langle \underline x_i, \underline w\rangle)\, \underline x_i \in V := \mathrm{span}\{\underline x_i\}$$
+
+עם אתחול אפס, כל איטרציית GD — ולכן הגבול $\hat{\underline w}$ — נמצאת ב-$V$. אופטימום גלובלי $\Leftrightarrow$ $L_S = 0$ $\Leftrightarrow$ $\langle \underline x_i, \underline w\rangle = y_i\ \forall i$ (לפי תכונת $\ell = 0$ אם"ם ארגומנטים שווים). ישים כיוון ש-$d > m$ וה-$\underline x_i$ בלתי תלויים לינארית. פירוק אורתוגונלי: כל פתרון $\underline w = \underline w_V + \underline w_\perp$ מקיים את האילוצים דרך $\underline w_V$ בלבד, וגם $\|\underline w\|^2 = \|\underline w_V\|^2 + \|\underline w_\perp\|^2$. הפתרון הנמצא ב-$V$ יחיד (מטריצת Gram $m \times m$ הפיכה מאי-תלות לינארית) ולכן בעל נורמה מינימלית. הגבול של GD הוא פתרון זה.
+
+**ii.** שלבו את חסם Rademacher בסגנון-התזכורת עם אומדן המורכבות הנתון: בהסתברות $\geq 1 - \delta$, $\forall h \in \mathcal{H}_r$:
+
+$$L_{\mathcal D}(h) - L_S(h) \leq \frac{2\rho\, r\, \max_i \|\underline x_i\|}{\sqrt m} + O\big(\sqrt{\ln(1/\delta)/m}\big)$$
+
+הפכו אותו לאדפטיבי-לנורמה באמצעות חסם איחוד על רדיוסים שלמים $r = 1, 2, \ldots$ עם $\delta_r = \frac{6\delta}{\pi^2 r^2}$ והציבו
+
+$$r = \lceil\|\hat{\underline w}\|\rceil \leq \|\hat{\underline w}\| + 1$$
+
+הנותן חסם פער בסקאלה של $\rho(\|\hat{\underline w}\|+1)\max_i\|\underline x_i\|/\sqrt m$ — נורמה נלמדת קטנה יותר $\Rightarrow$ חסם הדוק יותר.
 
 **iii.** כאשר התוויות בלתי תלויות בדוגמאות אין כלל לינארי בעל נורמה נמוכה המתאם את $\underline x$ עם $y$. אינטרפולציה של $m$ תוויות אקראיות למעשה מכריחה את האינטרפולנט בעל הנורמה-המינימלית להיות בעל נורמה *גדולה* (הגדלה עם $m$/רעש), ולכן החסם לעיל נעשה רופף — עקבי עם העובדה שאין הכללה אפשרית בהגדרה זו.
 

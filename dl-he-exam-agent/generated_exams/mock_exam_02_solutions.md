@@ -17,7 +17,9 @@ $\le 1$: כל עמודה היא כפולה של $\varphi^r$ (1 pt). לפי הת�
 $u_1, \dots, u_k$ של מרחב העמודות של $F$ ופתחו את עמודה $j$:
 $F_{:,j} = \sum_{i=1}^k \beta_{ij} u_i$. קביעת $\psi^i := (\beta_{i1}, \dots,
 \beta_{iM})^\top$ נותנת, רכיב-רכיב,
-$\big(\sum_{i=1}^k u_i (\psi^i)^\top\big)_{pj} = \sum_i (u_i)_p \beta_{ij} = F_{pj}$,
+
+$$\big(\sum_{i=1}^k u_i (\psi^i)^\top\big)_{pj} = \sum_i (u_i)_p \beta_{ij} = F_{pj}$$
+
 כלומר $F = \sum_{i=1}^k u_i (\psi^i)^\top$. קחו $c_i = 1$, $\varphi^i = u_i$ עבור
 $i \le k$ ו-$c_i = 0$ עבור $k < i \le R$ (ריפוד), כך ש-$F \in \mathcal{H}_R$
 (המקרה $k = 0$ שבו $F = 0$: כל $c_r = 0$). זכות מלאה חלופית: SVD
@@ -49,7 +51,10 @@ $$\min_{F \in \mathcal{H}_R} \|F - I_M\|_F^2
 (ה-EYM המודפס בכיתה כולל $\sigma_i(A)$ במקום שבו הנוסח הקלאסי כולל
 $\sigma_i(A)^2$; כאן כל $\sigma_i = 1$, ולכן שניהם נותנים $M - R$ — ללא קנס לכל
 צד, אך טיפול שגוי ב-$\sigma_i^2$ כללי במקום אחר יהיה שגיאה.)
-ממזער מפורש (2 pts): $F^\star = \sum_{i=1}^R \mathbf{e}^i (\mathbf{e}^i)^\top$
+ממזער מפורש (2 pts):
+
+$$F^\star = \sum_{i=1}^R \mathbf{e}^i (\mathbf{e}^i)^\top$$
+
 (דרגה $R$, ו-$\|F^\star - I_M\|_F^2 = \#\{\text{האחדות שנמחקו}\} = M - R$); כל
 $\sum_{i=1}^R w_i w_i^\top$ עם $w_i$ אורתונורמליים עובד. מסקנה (2 pts): לכל
 $h \in \mathcal{H}_R$ יש $D(h, \mathrm{identity}) = \|F_h - I_M\|_F \ge
@@ -115,13 +120,22 @@ $$\tfrac{d}{dt} \|e(t)\|^2 = 2 \langle e(t), \dot e(t) \rangle
 = -2 \, e(t)^\top H(t) \, e(t).$$
 רצפת PSD (3 pts): $H(t) \succeq \lambda I_N$ פירושו $e^\top (H(t) - \lambda I) e \ge
 0$, כלומר $e^\top H(t) e \ge \lambda \|e\|^2$, ולכן
-$\frac{d}{dt}\|e\|^2 \le -2\lambda \|e\|^2$. גורם אינטגרציה (2 pts):
+
+$$\frac{d}{dt}\|e\|^2 \le -2\lambda \|e\|^2$$
+
+גורם אינטגרציה (2 pts):
 $g(t) := e^{2\lambda t} \|e(t)\|^2$ מקיים $g'(t) = e^{2\lambda t}\big(
 \frac{d}{dt}\|e\|^2 + 2\lambda \|e\|^2 \big) \le 0$, ולכן $g(t) \le g(0)$, כלומר
-$\|e(t)\|^2 \le e^{-2\lambda t} \|e(0)\|^2$. חסם זמן (2 pts): $\ell(t) =
+
+$$\|e(t)\|^2 \le e^{-2\lambda t} \|e(0)\|^2$$
+
+חסם זמן (2 pts): $\ell(t) =
 \frac12 \|e(t)\|^2 \le \frac12 e^{-2\lambda t} \|e(0)\|^2 \le \epsilon$ ברגע ש-
 $e^{2\lambda t} \ge \frac{\|e(0)\|^2}{2\epsilon}$, כלומר לכל
-$t \ge \frac{1}{2\lambda} \ln \frac{\|u(0) - y\|^2}{2 \epsilon}$ (אם
+
+$$\boxed{\,t \ge \frac{1}{2\lambda} \ln \frac{\|u(0) - y\|^2}{2 \epsilon}\,}$$
+
+(אם
 $\|e(0)\|^2 \le 2\epsilon$ אז הלוג הוא $\le 0$ והטענה טריוויאלית). מלכודות: כתיבת
 $e(t) = e^{-\int_0^t H} e(0)$ (לא תקין — $H(t)$ בזמנים שונים אינם בהכרח מתחלפים;
 זו הנקודה של תת-הסעיף); גזירת $\|e\|$ במקום $\|e\|^2$
@@ -180,7 +194,9 @@ $$\Big\| \sum\nolimits_n \sigma_n x_n \Big\|_\infty = \max_{j \in [d]} \Big|
 $\|v^j\|_2^2 = \sum_n x_{n,j}^2 \le N$ כיוון ש-$|x_{n,j}| \le \|x_n\|_\infty \le 1$.
 Massart (1 pt): $\mathbb{E}_\sigma \max_{v \in V} \langle \sigma, v \rangle \le
 \sqrt{N} \cdot \sqrt{2 \ln(2d)}$. שלבו עם סעיף 1 (1 pt):
-$R(\mathcal{H}_B \circ S) \le \frac{B}{N} \sqrt{2 N \ln(2d)} = B \sqrt{2\ln(2d)/N}$.
+
+$$\boxed{\,R(\mathcal{H}_B \circ S) \le \frac{B}{N} \sqrt{2 N \ln(2d)} = B \sqrt{2\ln(2d)/N}\,}$$
+
 מלכודות: החלת Massart על הכדור האינסופי $\{w\}$ ישירות (0 לצעד זה);
 שכחת הכפלת ה-$\pm$ ($\ln d$ במקום $\ln(2d)$: −1); חסם נורמה $N$
 במקום $\sqrt{N}$.

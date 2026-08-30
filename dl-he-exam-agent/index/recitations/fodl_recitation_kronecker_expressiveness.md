@@ -12,22 +12,38 @@
 
 ## בעיות פתורות וגזירות
 **P1.** הוכיחו $(A \odot B)^{-1} = A^{-1} \odot B^{-1}$ עבור $A, B$ הפיכות.
-טכניקה: תכונת המכפלה המעורבת: $(A\odot B)(A^{-1}\odot B^{-1}) = (AA^{-1})\odot(BB^{-1}) = I \odot I = I$.
+טכניקה: תכונת המכפלה המעורבת:
 
-**P2.** SVD ודרגה של מכפלת Kronecker: בהינתן SVD-ים $A = U_A\Sigma_A V_A^\top$, $B = U_B\Sigma_B V_B^\top$, הראו שה-SVD של $A\odot B$ הוא $U = U_A \odot U_B$, $\Sigma = \Sigma_A \odot \Sigma_B$, $V = V_A \odot V_B$, והסיקו $\operatorname{rank}(A\odot B) = \operatorname{rank}(A)\cdot\operatorname{rank}(B)$.
+$$(A\odot B)(A^{-1}\odot B^{-1}) = (AA^{-1})\odot(BB^{-1}) = I \odot I = I$$
+
+**P2.** SVD ודרגה של מכפלת Kronecker: בהינתן SVD-ים $A = U_A\Sigma_A V_A^\top$, $B = U_B\Sigma_B V_B^\top$, הראו שה-SVD של $A\odot B$ הוא $U = U_A \odot U_B$, $\Sigma = \Sigma_A \odot \Sigma_B$, $V = V_A \odot V_B$, והסיקו
+
+$$\operatorname{rank}(A\odot B) = \operatorname{rank}(A)\cdot\operatorname{rank}(B)$$
+
 טכניקה: המכפלה המעורבת מראה ש-$U, V$ אורתוגונליות ושהפירוק מתקיים; הערכים הסינגולריים הם כל המכפלות $\sigma_i(A)\sigma_j(B)$, ולכן ספירת הערכים הסינגולריים השונים מאפס נותנת את זהות הדרגה.
 
 **P3.** הביעו נוירון LeakyReLU באמצעות נוירוני ReLU: עבור $f(x) = \sigma_a(\langle w,x\rangle + b)$, עם $g_1(x) = \sigma(\langle w,x\rangle+b)$ ו-$g_2(x) = \sigma(-(\langle w,x\rangle+b))$, הראו $f = g_1 - a\, g_2$.
 טכניקה: ניתוח מקרים לפי סימן $z = \langle w,x\rangle + b$ ($z>0$: $g_1 = z, g_2 = 0$; $z<0$: $g_1 = 0, -a g_2 = az$; $z=0$: שניהם אפס).
 
-**P4.** הביעו נוירון ReLU באמצעות נוירוני LeakyReLU: עם $g_1(x)=\sigma_a(\langle w,x\rangle+b)$, $g_2(x)=\sigma_a(-(\langle w,x\rangle+b))$, מצאו $\beta,\gamma$ עם $\sigma(\langle w,x\rangle+b) = \beta g_1 + \gamma g_2$.
-טכניקה: התאמת מקדמים על $z>0$ נותנת $\beta - \gamma a = 1$; על $z<0$ נותנת $\beta a - \gamma = 0$; הפתרון מניב $\gamma = \frac{a}{1-a^2}$, $\beta = 1 + \frac{a^2}{1-a^2} = \frac{1}{1-a^2}$. (ל-$\beta$ המודפס בשקופית יש טעות-סימן; ערכים אלה מקיימים את שתי המשוואות.)
+**P4.** הביעו נוירון ReLU באמצעות נוירוני LeakyReLU: עם $g_1(x)=\sigma_a(\langle w,x\rangle+b)$, $g_2(x)=\sigma_a(-(\langle w,x\rangle+b))$, מצאו $\beta,\gamma$ עם
+
+$$\sigma(\langle w,x\rangle+b) = \beta g_1 + \gamma g_2$$
+
+טכניקה: התאמת מקדמים על $z>0$ נותנת $\beta - \gamma a = 1$; על $z<0$ נותנת $\beta a - \gamma = 0$; הפתרון מניב $\gamma = \frac{a}{1-a^2}$,
+
+$$\beta = 1 + \frac{a^2}{1-a^2} = \frac{1}{1-a^2}$$
+
+. (ל-$\beta$ המודפס בשקופית יש טעות-סימן; ערכים אלה מקיימים את שתי המשוואות.)
 
 **P5.** פירוק CP $\mathcal{A} = \sum_{z=1}^{Z} a_z \cdot \otimes_{n=1}^{N} a^{z,n}$ תחת האילוץ $a^{z,1} = \dots = a^{z,N}$ לכל $z$:
 - (Q1) השפעה על הרשת המתאימה: לשכבות (הקונבולוציה 1×1) יש שיתוף משקלים — פילטרים באותו ערוץ שווים.
 - (Q2) אוניברסליות: נכשלת לכל $M, N \ge 2$; רק טנזורים אינוריאנטיים לתמורות מודים ($\mathcal{A}_{i_1,\dots,i_N} = \mathcal{A}_{\pi(i_1),\dots,\pi(i_N)}$) ניתנים לביטוי, כך שלדוגמה $e_2 \otimes e_1 \otimes \dots \otimes e_1$ לא ניתן לייצוג או קירוב.
 - (Q3) עבור $N=2$ ו-$Z$ בלתי-מוגבל: המחלקה בת-הביטוי היא בדיוק המטריצות הסימטריות $\mathcal{S} = \{A \in \mathbb{R}^{M,M} : A = A^\top\}$.
-טכניקה: הסימטריה של המחוברים כופה אינוריאנטיות לתמורות; ובכיוון ההפוך עבור $N=2$ השתמשו בפירוק העצמי $A = UDU^\top = \sum_{i=1}^M \lambda_i U_i \otimes U_i$ (פירוק CP מאולץ), וכל $\sum_z a_z\, a^z (a^z)^\top$ הוא סימטרי.
+טכניקה: הסימטריה של המחוברים כופה אינוריאנטיות לתמורות; ובכיוון ההפוך עבור $N=2$ השתמשו בפירוק העצמי
+
+$$A = UDU^\top = \sum_{i=1}^M \lambda_i U_i \otimes U_i$$
+
+(פירוק CP מאולץ), וכל $\sum_z a_z\, a^z (a^z)^\top$ הוא סימטרי.
 
 ## נוסחאות ועובדות מפתח
 - הגדרה: עבור $A \in \mathbb{R}^{m,n}, B \in \mathbb{R}^{p,q}$: $A \odot B := \begin{pmatrix} a_{11}B & \cdots & a_{1n}B \\ \vdots & \ddots & \vdots \\ a_{m1}B & \cdots & a_{mn}B\end{pmatrix} \in \mathbb{R}^{mp,nq}$.

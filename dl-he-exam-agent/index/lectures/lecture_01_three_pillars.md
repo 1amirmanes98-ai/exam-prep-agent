@@ -22,13 +22,21 @@
 $$\mathcal L_{\mathcal D}(\bar h)=\underbrace{\mathcal L_{\mathcal D}(\bar h)-\mathcal L_{\mathcal D}(h_S^*)}_{\text{training error}}+\underbrace{\mathcal L_{\mathcal D}(h_S^*)-\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{estimation error}}+\underbrace{\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{approximation error}}.$$
 אופטימיזציה ↔ שגיאת אימון, הכללה ↔ שגיאת הערכה, כושר ביטוי ↔ שגיאת קירוב.
 
-**Def (Projected Gradient Descent, PGD).** קבלו קצב למידה $\eta>0$; אתחלו $\mathbf w^{(1)}=\mathbf 0$; עבור $t=0,2,\dots,T-1$ (כפי שמודפס בסיכומים; הלולאה מריצה $T$ צעדי גרדיאנט): עדכון גרדיאנט $\mathbf w^{(t+\frac12)}=\mathbf w^{(t)}-\eta\nabla\mathcal L_S(\mathbf w^{(t)})$; הטלה
+**Def (Projected Gradient Descent, PGD).** קבלו קצב למידה $\eta>0$; אתחלו $\mathbf w^{(1)}=\mathbf 0$; עבור $t=0,2,\dots,T-1$ (כפי שמודפס בסיכומים; הלולאה מריצה $T$ צעדי גרדיאנט): עדכון גרדיאנט
+
+$$\mathbf w^{(t+\frac12)}=\mathbf w^{(t)}-\eta\nabla\mathcal L_S(\mathbf w^{(t)})$$
+
+הטלה
 $$\mathbf w^{(t+1)}=\operatorname*{argmin}_{\mathbf w\in\mathbb R^d,\|\mathbf w\|_2\le B}\big\|\mathbf w-\mathbf w^{(t+\frac12)}\big\|_2=\begin{cases}\mathbf w^{(t+\frac12)}, & \|\mathbf w^{(t+\frac12)}\|_2\le B\\[2pt] \mathbf w^{(t+\frac12)}\cdot\frac{B}{\|\mathbf w^{(t+\frac12)}\|_2}, & \text{otherwise}\end{cases}$$
 החזירו $\bar{\mathbf w}:=\frac1T\sum_{t=1}^T\mathbf w^{(t)}$ (ממוצע האיטרטים, לא האיטרט האחרון).
 
 **Def (classical fixes for expressiveness).** *הנדסת מאפיינים*: כל קואורדינטה של $\mathbf x$ מחזיקה מדידה שתוכננה על ידי מומחי תחום. *קרנול*: העתקה לא-לינארית מן המדף $\phi:\mathbb R^d\to\mathbb R^{d'}$ (בדרך כלל $d'\gg d$) המיושמת על כל המופעים בזמן אימון ובדיקה. התפיסה המקובלת: **בלמידה עמוקה הייצוג נלמד**.
 
-**Def (monotone size-parameterized hypotheses space).** $\mathcal H_B\subseteq\mathcal Y^{\mathcal X}$ מפורמטרת על ידי $B\in\mathbb R_{\ge0}$, ונדרשת להיות מונוטונית ביחס ל-$B$: $B_1<B_2\implies\mathcal H_{B_1}\subseteq\mathcal H_{B_2}$; $B$ נקרא ה"גודל" של $\mathcal H_B$. דוגמאות:
+**Def (monotone size-parameterized hypotheses space).** $\mathcal H_B\subseteq\mathcal Y^{\mathcal X}$ מפורמטרת על ידי $B\in\mathbb R_{\ge0}$, ונדרשת להיות מונוטונית ביחס ל-$B$:
+
+$$B_1<B_2\implies\mathcal H_{B_1}\subseteq\mathcal H_{B_2}$$
+
+$B$ נקרא ה"גודל" של $\mathcal H_B$. דוגמאות:
 - לינארית, חסומת-נורמה: $\mathcal H_B=\{\mathbf x\mapsto\langle\mathbf w,\mathbf x\rangle:\mathbf w\in\mathbb R^d,\|\mathbf w\|_2\le B\}$.
 - FCNN רדודה (2 שכבות), רוחב חבוי $B\in\mathbb N$: $\mathcal H_B=\{\mathbf x\mapsto W_2\,\sigma(W_1\mathbf x):W_1\in\mathbb R^{B,d},\,W_2\in\mathbb R^{k,B}\}$.
 - FCNN עמוקה ($L$ שכבות), רוחב חבוי $B\in\mathbb N$: $\mathcal H_B=\{\mathbf x\mapsto W_L\,\sigma(W_{L-1}\cdots\sigma(W_1\mathbf x)\cdots):W_1\in\mathbb R^{B,d},\ \forall l\in\{2,\dots,L-1\},W_l\in\mathbb R^{B,B},\ W_L\in\mathbb R^{k,B}\}$.
@@ -56,34 +64,50 @@ $$\mathcal L_{\mathcal D}(h)-\mathcal L_S(h)\le\Delta(m,\delta,\mathcal H,h,S),$
 **Def (volume hypothesis).** ההשערה שלהשערות מכלילות יש "נפח" גדול בתוך ההשערות המתאימות את נתוני האימון, כלומר, רוב ההשערות המתאימות את נתוני האימון מכלילות היטב; אם נכון, ההתכנסות לפתרונות מכלילים נובעת מהארכיטקטורה + התפלגות הנתונים (הכללה סבירה תחת *כל* שיטת התאמה לא-יריבית), ולא מתכונות מיוחדות של האלגוריתם.
 
 ## Key theorems & results
-**Prop 1.** $\mathcal L_S(\mathbf w):\mathbb R^d\to\mathbb R$ (מטרת ה-soft-SVM האמפירית של הפסד הציר) היא קמורה ו-1-Lipschitz: $|\mathcal L_S(\mathbf w_1)-\mathcal L_S(\mathbf w_2)|\le\|\mathbf w_1-\mathbf w_2\|_2$ לכל $\mathbf w_1,\mathbf w_2\in\mathbb R^d$.
-רעיון ההוכחה: הפסד הציר קמור, ועם $\|\mathbf x_i\|_2\le1$, הוא 1-Lipschitz ב-$\mathbf w$; שתי התכונות שורדות מקסימום, הרכבה עם העתקות לינאריות, ומיצוע.
-רלוונטיות למבחן: מספק בדיוק את הנחות Thm 1 עם $\rho=1$.
+**Prop 1.** $\mathcal L_S(\mathbf w):\mathbb R^d\to\mathbb R$ (מטרת ה-soft-SVM האמפירית של הפסד הציר) היא קמורה ו-1-Lipschitz:
+
+$$|\mathcal L_S(\mathbf w_1)-\mathcal L_S(\mathbf w_2)|\le\|\mathbf w_1-\mathbf w_2\|_2$$
+
+לכל $\mathbf w_1,\mathbf w_2\in\mathbb R^d$.
+
+**רעיון ההוכחה:** הפסד הציר קמור, ועם $\|\mathbf x_i\|_2\le1$, הוא 1-Lipschitz ב-$\mathbf w$; שתי התכונות שורדות מקסימום, הרכבה עם העתקות לינאריות, ומיצוע.
+
+**רלוונטיות למבחן:** מספק בדיוק את הנחות Thm 1 עם $\rho=1$.
 
 **Thm 1 (projected GD on convex Lipschitz functions).** יהי $f$ קמורה ו-$\rho$-Lipschitz, ו-$\mathbf w^*\in\operatorname{argmin}_{\mathbf w\in\mathbb R^d,\|\mathbf w\|_2\le B}f(\mathbf w)$. הרצת projected GD על $f$ למשך $T$ צעדים עם $\eta=\sqrt{\frac{B^2}{\rho^2T}}$ מניבה
 $$f(\bar{\mathbf w})-f(\mathbf w^*)\le\frac{B\rho}{\sqrt T}.$$
-רעיון ההוכחה: טלסקופ סטנדרטי מאופטימיזציה קמורה של $\|\mathbf w^{(t)}-\mathbf w^*\|^2$; ההטלה על הכדור הקמור רק מקטינה מרחק; ראו SSBD [2] פרק 14.
-רלוונטיות למבחן: יחד עם Prop 1 היא מראה שניתן להקטין את שגיאת האימון של soft-SVM כרצוננו ⟹ "אופטימיזציה ≈ נפתרה" בלמידת מכונה קלאסית.
+
+**רעיון ההוכחה:** טלסקופ סטנדרטי מאופטימיזציה קמורה של $\|\mathbf w^{(t)}-\mathbf w^*\|^2$; ההטלה על הכדור הקמור רק מקטינה מרחק; ראו SSBD [2] פרק 14.
+
+**רלוונטיות למבחן:** יחד עם Prop 1 היא מראה שניתן להקטין את שגיאת האימון של soft-SVM כרצוננו ⟹ "אופטימיזציה ≈ נפתרה" בלמידת מכונה קלאסית.
 
 **Thm 2 (Rademacher-complexity generalization bounds for soft-SVM).** עבור כל $\delta\in(0,1)$, בהסתברות $\ge1-\delta$ מעל $S$:
 $$\forall h\in\mathcal H_B,\quad \mathcal L_{\mathcal D}(h)-\mathcal L_S(h)\le\frac{2B}{\sqrt m}+(B+1)\sqrt{\frac{2\ln(2/\delta)}{m}}\qquad\text{(Uniform convergence)}$$
 וכן, בהסתברות $\ge1-\delta$ מעל $S$:
 $$\mathcal L_{\mathcal D}(h_S^*)-\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)\le\frac{2B}{\sqrt m}+5(B+1)\sqrt{\frac{2\ln(8/\delta)}{m}}\qquad\text{(Bound on estimation error)}$$
-רעיון ההוכחה: חִסמו את מורכבות ה-Rademacher של המחלקה הלינארית חסומת-הנורמה המורכבת עם הפסד ציר 1-Lipschitz; ראו SSBD [2] פרק 26.
-רלוונטיות למבחן: תקף עבור **כל** התפלגות $\mathcal D$; ההתכנסות האחידה תקפה עבור כל $h$ **במשותף**; מציג את **פשרת ההטיה–שונות**: הגדלת $B$ (הרחבת $\mathcal H_B$) מגדילה את חסם שגיאת-ההערכה, הקטנת $B$ מקטינה אותו.
+
+**רעיון ההוכחה:** חִסמו את מורכבות ה-Rademacher של המחלקה הלינארית חסומת-הנורמה המורכבת עם הפסד ציר 1-Lipschitz; ראו SSBD [2] פרק 26.
+
+**רלוונטיות למבחן:** תקף עבור **כל** התפלגות $\mathcal D$; ההתכנסות האחידה תקפה עבור כל $h$ **במשותף**; מציג את **פשרת ההטיה–שונות**: הגדלת $B$ (הרחבת $\mathcal H_B$) מגדילה את חסם שגיאת-ההערכה, הקטנת $B$ מקטינה אותו.
 
 **Result (benign landscapes; cf. Ge et al. 2015, Lee et al. 2016 — from the figure box in 2.2.2).** אם (1) אין מינימות מקומיות גרועות, ו-(2) כל נקודות האוכף הן ממש, אזי GD מתכנס למינימום גלובלי (חל גם על SGD).
-רעיון ההוכחה: לא הוכח בקורס; מצוטט כמוטיבציה לתוכנית המחקר של אפיון נקודות קריטיות.
-רלוונטיות למבחן: הגישה **אינה יכולה** לחול על רשתות נוירונים בעלות $\ge3$ שכבות: עבור FCNN ללא הטיות, בנקודת המשקלים האפסיים, הן הגרדיאנט והן ה-Hessian מתאפסים, כך ש(למעט המקרה הטריוויאלי של מינימום גלובלי) נקודה זו היא או מינימום מקומי גרוע או **אוכף לא-ממש** — המפֵר את התנאים. משום כך ניתוח נופים-שפירים אינו נחשב עוד כיוון מבטיח לאופטימיזציה בלמידה עמוקה.
+
+**רעיון ההוכחה:** לא הוכח בקורס; מצוטט כמוטיבציה לתוכנית המחקר של אפיון נקודות קריטיות.
+
+**רלוונטיות למבחן:** הגישה **אינה יכולה** לחול על רשתות נוירונים בעלות $\ge3$ שכבות: עבור FCNN ללא הטיות, בנקודת המשקלים האפסיים, הן הגרדיאנט והן ה-Hessian מתאפסים, כך ש(למעט המקרה הטריוויאלי של מינימום גלובלי) נקודה זו היא או מינימום מקומי גרוע או **אוכף לא-ממש** — המפֵר את התנאים. משום כך ניתוח נופים-שפירים אינו נחשב עוד כיוון מבטיח לאופטימיזציה בלמידה עמוקה.
 
 **Result (naive uniform-convergence bound for any NN).** אם $b$ הוא מספר הביטים הנדרש לאחסון המשקלים, אזי $|\mathcal H|\le 2^b$ ולפי חסם ההתכנסות האחידה הקלאסי למחלקה סופית, בהסתברות $\ge1-\delta$:
 $$\mathcal L_{\mathcal D}(h)-\mathcal L_S(h)\le\sqrt{\frac{b+\log(2/\delta)}{2m}}.$$
-רעיון ההוכחה: חסם איחוד (Hoeffding + $|\mathcal H|\le2^b$).
-רלוונטיות למבחן: משמעותי רק כאשר $m\gtrsim b$ (∼מספר המשקלים); בפועל רשתות מתאמנות עם הרבה פחות דוגמאות מאשר משקלים, והגדלת גודל הרשת לרוב *מקטינה* את פער ההכללה הנצפה בעוד חסם זה *גדל*.
+
+**רעיון ההוכחה:** חסם איחוד (Hoeffding + $|\mathcal H|\le2^b$).
+
+**רלוונטיות למבחן:** משמעותי רק כאשר $m\gtrsim b$ (∼מספר המשקלים); בפועל רשתות מתאמנות עם הרבה פחות דוגמאות מאשר משקלים, והגדלת גודל הרשת לרוב *מקטינה* את פער ההכללה הנצפה בעוד חסם זה *גדל*.
 
 **Result (Zhang et al. [3], empirical).** (i) רגולריזציה מפורשת אינה הכרחית כדי שרשתות נוירונים בעלות פרמטריזציית-יתר (המאומנות באמצעות SGD או וריאנטים) יכללו היטב; (ii) רשתות נוירונים בעלות פרמטריזציית-יתר יכולות להתאים בקלות נתונים אקראיים ו/או תוויות אקראיות.
-רעיון ההוכחה: ניסויים שיטתיים (אימון על תוויות/קלטים אמיתיים לעומת אקראיים).
-רלוונטיות למבחן: מרמז שחלק מההשערות בעלות הפסד אמפירי נמוך מכלילות ואחרות לא ⟹ $\Delta$ חייב להיות תלוי ב-$h$; אותה $h$ יכולה להיות בעלת פער קטן במשימה אחת ופער גדול באחרת (למשל, נתוני אימון בתוספת רעש טהור) ⟹ $\Delta$ צריך להיות תלוי גם ב-$S$. הורג חסמים בלתי-תלויי-נתונים, מבוססי-התכנסות-אחידה טהורים עבור למידה עמוקה.
+
+**רעיון ההוכחה:** ניסויים שיטתיים (אימון על תוויות/קלטים אמיתיים לעומת אקראיים).
+
+**רלוונטיות למבחן:** מרמז שחלק מההשערות בעלות הפסד אמפירי נמוך מכלילות ואחרות לא ⟹ $\Delta$ חייב להיות תלוי ב-$h$; אותה $h$ יכולה להיות בעלת פער קטן במשימה אחת ופער גדול באחרת (למשל, נתוני אימון בתוספת רעש טהור) ⟹ $\Delta$ צריך להיות תלוי גם ב-$S$. הורג חסמים בלתי-תלויי-נתונים, מבוססי-התכנסות-אחידה טהורים עבור למידה עמוקה.
 
 ## טכניקות וטריקים
 - **פירוק חיבור-וחיסור** של הפסד האוכלוסייה לשגיאות אימון + הערכה + קירוב — התבנית לכל הקורס.

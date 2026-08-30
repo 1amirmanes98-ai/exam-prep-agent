@@ -12,13 +12,33 @@
 
 ## בעיות פתורות וגזירות
 **P1.** מצאו $A \in \mathbb{R}^{d,d}, b \in \mathbb{R}^d$ כך ש-$Y = AX + b$ מקיים $\mathbb{E}[Y]=0$ וכן $\mathbb{E}[YY^\top]=I_d$.
-טכניקה: $0 = A\mu + b \Rightarrow Y = A(X-\mu)$; אזי $I_d = \mathbb{E}[A(X-\mu)(X-\mu)^\top A^\top] = A\Sigma A^\top$. הציבו את ה-EVD $\Sigma = UDU^\top$ (PSD) ובחרו $A_{\mathrm{PCA}} = D^{-1/2}U^\top$.
+טכניקה:
+
+$$0 = A\mu + b \Rightarrow Y = A(X-\mu)$$
+
+; אזי
+
+$$I_d = \mathbb{E}[A(X-\mu)(X-\mu)^\top A^\top] = A\Sigma A^\top$$
+
+. הציבו את ה-EVD $\Sigma = UDU^\top$ (PSD) ובחרו $A_{\mathrm{PCA}} = D^{-1/2}U^\top$.
 
 **P2.** הראו שמטריצת ההלבנה אינה יחידה וגזרו את ZCA.
-טכניקה: אם $A\Sigma A^\top = I$ אזי $(RA)\Sigma(RA)^\top = I$ לכל $R$ אוניטרית. ZCA בוחרת $R = U$: $Y_{\mathrm{ZCA}} = UD^{-1/2}U^\top(X-\mu) = \Sigma^{-1/2}(X-\mu)$ — הלבנת PCA ואחריה ביטול הסיבוב המדה-קורל. ZCA ממזערת את $\mathbb{E}\|Y-(X-\mu)\|_2^2$ על פני כל $Y$ מולבן, כלומר נשארת הקרובה ביותר לנתונים המקוריים (הממורכזים).
+טכניקה: אם $A\Sigma A^\top = I$ אזי $(RA)\Sigma(RA)^\top = I$ לכל $R$ אוניטרית. ZCA בוחרת $R = U$:
+
+$$Y_{\mathrm{ZCA}} = UD^{-1/2}U^\top(X-\mu) = \Sigma^{-1/2}(X-\mu)$$
+
+— הלבנת PCA ואחריה ביטול הסיבוב המדה-קורל. ZCA ממזערת את $\mathbb{E}\|Y-(X-\mu)\|_2^2$ על פני כל $Y$ מולבן, כלומר נשארת הקרובה ביותר לנתונים המקוריים (הממורכזים).
 
 **P3.** רגרסיה לינארית $f(w) = \tfrac{1}{2}\|X^\top w - y\|_2^2$, $X \in \mathbb{R}^{d,n}$, $n \ge d$, $\operatorname{rank}(XX^\top) = d$: כמתו את התכנסות GD ואת השפעת ההלבנה.
-טכניקה: עם גודל צעד $\eta = 1/\lambda_{\max}$, $\|w_t - w^*\|_2^2 \le (1 - \tfrac{1}{K})^t \|w_0 - w^*\|_2^2$ כאשר $K = \lambda_{\max}(XX^\top)/\lambda_{\min}(XX^\top)$. נתונים מולבנים $\Rightarrow XX^\top = (n-1)I_d \Rightarrow K = 1 \Rightarrow$ התכנסות בצעד יחיד.
+טכניקה: עם גודל צעד $\eta = 1/\lambda_{\max}$,
+
+$$\|w_t - w^*\|_2^2 \le (1 - \tfrac{1}{K})^t \|w_0 - w^*\|_2^2$$
+
+כאשר
+
+$$K = \lambda_{\max}(XX^\top)/\lambda_{\min}(XX^\top)$$
+
+. נתונים מולבנים $\Rightarrow XX^\top = (n-1)I_d \Rightarrow K = 1 \Rightarrow$ התכנסות בצעד יחיד.
 
 ## נוסחאות ועובדות מפתח
 - הגדרות: $\mathbb{E}[X] = \mu$, $\mathbb{E}[(X-\mu)(X-\mu)^\top] = \Sigma$; רוצים $Y = A(X-\mu)$ עם $A\Sigma A^\top = I$.

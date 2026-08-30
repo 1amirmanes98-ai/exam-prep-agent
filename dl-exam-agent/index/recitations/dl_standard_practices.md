@@ -28,16 +28,32 @@ Technique: count per layer including biases, $(D+1)M + (M+1)M(L-1) + (M+1)K$ —
 Technique: filter always spans full input depth; output spatial size $= (n - k)/\text{stride} + 1$ per dimension; #output channels $=$ #filters. A $1{\times}1$ conv is a per-pixel dot product across channels (e.g., $56{\times}56{\times}64 \to 56{\times}56{\times}32$ with 32 filters of size $1{\times}1{\times}64$).
 
 **P3.** RNN memorization / vanishing-exploding gradients (scalar case, no activation).
-Technique: unroll to $y_t = w_{hy}\sum_{t'\le t} w_{hh}^{\,t-t'-1} w_{xh}\, x_{t'}$; the coefficient $c_{tt'}$ of $x_{t'}$ for $t'\ll t$ satisfies $w_{hh}>1 \Rightarrow c_{tt'}\to\infty$ (unstable), $w_{hh}<1 \Rightarrow c_{tt'}\to0$ (oblivious), $w_{hh}\approx1 \Rightarrow$ finite (meaningful dependence). Gating (LSTM/GRU) is the architectural fix.
+Technique: unroll to
+
+$$y_t = w_{hy}\sum_{t'\le t} w_{hh}^{\,t-t'-1} w_{xh}\, x_{t'}$$
+
+; the coefficient $c_{tt'}$ of $x_{t'}$ for $t'\ll t$ satisfies $w_{hh}>1 \Rightarrow c_{tt'}\to\infty$ (unstable), $w_{hh}<1 \Rightarrow c_{tt'}\to0$ (oblivious), $w_{hh}\approx1 \Rightarrow$ finite (meaningful dependence). Gating (LSTM/GRU) is the architectural fix.
 
 **P4.** Dropout at test time — why scale activations by $p$ (keep probability), and exactness in the linear case.
-Technique: ideal test-time prediction integrates out the mask noise (Monte-Carlo: average many masked forward passes). Single-pass approximation: keep all neurons, multiply activations by $p$. Linear neuron $a = w_0x + w_1y$ with $p=\tfrac12$: $\mathbb{E}[a] = \tfrac14(0 + w_1y + w_0x + w_0x + w_1y) = \tfrac12(w_0x + w_1y)$ — expectation over the 4 masks equals the $p$-scaled full pass, so the approximation is exact for linear layers.
+Technique: ideal test-time prediction integrates out the mask noise (Monte-Carlo: average many masked forward passes). Single-pass approximation: keep all neurons, multiply activations by $p$. Linear neuron $a = w_0x + w_1y$ with $p=\tfrac12$:
+
+$$\mathbb{E}[a] = \tfrac14(0 + w_1y + w_0x + w_0x + w_1y) = \tfrac12(w_0x + w_1y)$$
+
+— expectation over the 4 masks equals the $p$-scaled full pass, so the approximation is exact for linear layers.
 
 **P5.** What happens with bad weight initialization: all weights $0$ (with ReLU / in general), or all equal?
 Technique: with all-zero weights and ReLU, all activations (and gradients) are zero — no learning ever happens; in general zero/equal initialization makes all hidden neurons compute identical functions and receive identical gradients, so symmetry is never broken. Hence random init; naive $W = 0.01\cdot\mathcal N(0,1)$ causes non-homogeneous activation distributions across layers in deep nets, fixed by Xavier scaling.
 
 **P6.** Weight-decay gradient: show the L2 penalty becomes a decay term in the update.
-Technique: $f = \frac{1}{|S|}\sum_{(X,y)\in S} L(X,y) + \frac{\lambda}{2}\sum_{W}\|W\|_{\mathrm{Fro}}^2$ gives $-\nabla_W f = -\frac{1}{|S|}\sum \nabla_W L(X,y) - \lambda W$ — each step shrinks $W$ by factor proportional to $\lambda$ ("weight decay").
+Technique:
+
+$$f = \frac{1}{|S|}\sum_{(X,y)\in S} L(X,y) + \frac{\lambda}{2}\sum_{W}\|W\|_{\mathrm{Fro}}^2$$
+
+gives
+
+$$-\nabla_W f = -\frac{1}{|S|}\sum \nabla_W L(X,y) - \lambda W$$
+
+— each step shrinks $W$ by factor proportional to $\lambda$ ("weight decay").
 
 ## Key formulas & facts
 - Activations: $\sigma(z) = \frac{1}{1+e^{-z}}$; $\mathrm{ReLU}(z) = \max(0,z)$.

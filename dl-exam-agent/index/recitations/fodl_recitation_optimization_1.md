@@ -12,20 +12,71 @@
 - GF finds critical points: limit of a converging GF trajectory is a critical point
 
 ## Worked problems / derivations
-**P1.** Let $f$ be convex, $C^1$, and $w(t)$ a GF curve. Prove $f(w(T)) - f(w^*) \le \frac{\|w_0-w^*\|^2}{2T}$ for any $T>0,\ w^*\in\mathbb{R}^d$.
-Technique: FTC on the monitored quantity $\frac12\|w(t)-w^*\|^2$; chain rule gives integrand $\langle w(t)-w^*, -\nabla f(w(t))\rangle$; bound it via the convexity inequality $f(w^*)\ge f(w(t)) + \langle\nabla f(w(t)), w^*-w(t)\rangle$ and GF monotonicity ($f(w(t))\ge f(w(T))$); rearrange and drop $-\frac{1}{2T}\|w(T)-w^*\|^2$.
+**P1.** Let $f$ be convex, $C^1$, and $w(t)$ a GF curve. Prove
 
-**P2.** (Deficiency margin) For $\Lambda\in\mathbb{R}^{d,d'}$, $c>0$: $M_c := \min\{\|W-\Lambda\|_F : W\in\mathbb{R}^{d,d'},\ \sigma_{\min}(W)\le c\} = \max\{0,\sigma_{\min}(\Lambda)-c\}$.
-Technique: if $\sigma_{\min}(\Lambda)\le c$ take $W=\Lambda$. Otherwise, achievability by "SVD surgery": from $\Lambda=\sum_{i=1}^k \sigma_i(\Lambda)u_iv_i^\top$ define $W = \sum_{i=1}^{k-1}\sigma_i(\Lambda)u_iv_i^\top + c\,u_kv_k^\top$, so $\sigma_{\min}(W)=c$ and $\|W-\Lambda\|_F = \sigma_{\min}(\Lambda)-c$. Optimality by contradiction: if $\|W'-\Lambda\|_F < \sigma_{\min}(\Lambda)-c$ then $\sigma_{\min}(W') \ge \sigma_{\min}(\Lambda) - \sigma_{\max}(W'-\Lambda) \ge \sigma_{\min}(\Lambda) - \|W'-\Lambda\|_F > c$.
+$$f(w(T)) - f(w^*) \le \frac{\|w_0-w^*\|^2}{2T}$$
+
+for any $T>0,\ w^*\in\mathbb{R}^d$.
+Technique: FTC on the monitored quantity $\frac12\|w(t)-w^*\|^2$; chain rule gives integrand $\langle w(t)-w^*, -\nabla f(w(t))\rangle$; bound it via the convexity inequality
+
+$$f(w^*)\ge f(w(t)) + \langle\nabla f(w(t)), w^*-w(t)\rangle$$
+
+and GF monotonicity ($f(w(t))\ge f(w(T))$); rearrange and drop $-\frac{1}{2T}\|w(T)-w^*\|^2$.
+
+**P2.** (Deficiency margin) For $\Lambda\in\mathbb{R}^{d,d'}$, $c>0$:
+
+$$M_c := \min\{\|W-\Lambda\|_F : W\in\mathbb{R}^{d,d'},\ \sigma_{\min}(W)\le c\} = \max\{0,\sigma_{\min}(\Lambda)-c\}$$
+
+Technique: if $\sigma_{\min}(\Lambda)\le c$ take $W=\Lambda$. Otherwise, achievability by "SVD surgery": from
+
+$$\Lambda=\sum_{i=1}^k \sigma_i(\Lambda)u_iv_i^\top$$
+
+define
+
+$$W = \sum_{i=1}^{k-1}\sigma_i(\Lambda)u_iv_i^\top + c\,u_kv_k^\top$$
+
+, so $\sigma_{\min}(W)=c$ and
+
+$$\|W-\Lambda\|_F = \sigma_{\min}(\Lambda)-c$$
+
+. Optimality by contradiction: if
+
+$$\|W'-\Lambda\|_F < \sigma_{\min}(\Lambda)-c$$
+
+then
+
+$$\sigma_{\min}(W') \ge \sigma_{\min}(\Lambda) - \sigma_{\max}(W'-\Lambda) \ge \sigma_{\min}(\Lambda) - \|W'-\Lambda\|_F > c$$
 
 **P3.** $f(w)=\frac12 w^\top Qw$ with $Q$ PD: (Q1) $f$ is $\beta$-smooth for every $\beta\ge\lambda_{\max}(Q)$; (Q2) not $\beta$-smooth for any $\beta<\lambda_{\max}(Q)$.
-Technique: $\nabla f(w)=Qw$, so $\|\nabla f(w)-\nabla f(w')\| = \|Q(w-w')\| \le \lambda_{\max}(Q)\|w-w'\|$; for tightness take $v$ a unit top eigenvector: $\|\nabla f(v)-\nabla f(0)\| = \lambda_{\max}(Q)\|v\| > \beta\|v-0\|$.
+Technique: $\nabla f(w)=Qw$, so
 
-**P4.** Overparameterize $f$ with a 2-layer linear NN of hidden width 1: $\phi(\mathbf{w},u) := f(u\mathbf{w}) = \frac{u^2}{2}\mathbf{w}^\top Q\mathbf{w}$. (Q3) Compute $\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}$, $\nabla_u\phi = u\,\mathbf{w}^\top Q\mathbf{w}$; (Q4) all critical points of $\phi$ are global minima.
-Technique: from $\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}=0$ and $Q$ PD, either $u=0$ or $\mathbf{w}=0$, i.e. $u\mathbf{w}=0$; then $\phi(\mathbf{w}^*,u^*) = f(0) = 0 \le f(u'\mathbf{w}') = \phi(\mathbf{w}',u')$ since $f\ge0$ ($Q$ PD) — so every critical point attains the global minimum $0$.
+$$\|\nabla f(w)-\nabla f(w')\| = \|Q(w-w')\| \le \lambda_{\max}(Q)\|w-w'\|$$
+
+; for tightness take $v$ a unit top eigenvector:
+
+$$\|\nabla f(v)-\nabla f(0)\| = \lambda_{\max}(Q)\|v\| > \beta\|v-0\|$$
+
+**P4.** Overparameterize $f$ with a 2-layer linear NN of hidden width 1:
+
+$$\phi(\mathbf{w},u) := f(u\mathbf{w}) = \frac{u^2}{2}\mathbf{w}^\top Q\mathbf{w}$$
+
+. (Q3) Compute $\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}$, $\nabla_u\phi = u\,\mathbf{w}^\top Q\mathbf{w}$; (Q4) all critical points of $\phi$ are global minima.
+Technique: from
+
+$$\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}=0$$
+
+and $Q$ PD, either $u=0$ or $\mathbf{w}=0$, i.e. $u\mathbf{w}=0$; then
+
+$$\phi(\mathbf{w}^*,u^*) = f(0) = 0 \le f(u'\mathbf{w}') = \phi(\mathbf{w}',u')$$
+
+since $f\ge0$ ($Q$ PD) — so every critical point attains the global minimum $0$.
 
 **P5.** (GF finds critical points) If $f\in C^1$ and the GF curve satisfies $\lim_{t\to\infty}w(t)=w^*$, then $\nabla f(w^*)=0$.
-Technique: contradiction. If $c:=\nabla f(w^*)_i > 0$ (WLOG), continuity gives an open $U\ni w^*$ with $\nabla f(w)_i \ge c/2$ on $U$; for $t\ge t_0$ the trajectory stays in $U$, so by FTC $w(t)_i - w(t_0)_i = -\int_{t_0}^t \nabla f(w(s))_i\,ds \le -(t-t_0)\frac{c}{2} \to -\infty$, contradicting convergence.
+Technique: contradiction. If $c:=\nabla f(w^*)_i > 0$ (WLOG), continuity gives an open $U\ni w^*$ with $\nabla f(w)_i \ge c/2$ on $U$; for $t\ge t_0$ the trajectory stays in $U$, so by FTC
+
+$$w(t)_i - w(t_0)_i = -\int_{t_0}^t \nabla f(w(s))_i\,ds \le -(t-t_0)\frac{c}{2} \to -\infty$$
+
+, contradicting convergence.
 
 ## Key formulas & facts
 - GF setup: $w(0)=w_0$, $\dot w(t) = -\nabla f(w(t))$

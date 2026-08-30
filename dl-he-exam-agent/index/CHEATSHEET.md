@@ -4,24 +4,42 @@
 ## ארגז כלים להסתברות וריכוזיות
 
 ### אי-שוויון Hoeffding (צורת הקורס)
-**Statement:** יהיו $A_1,\dots,A_N$ משתנים מקריים i.i.d. חסומים ב-$[0,1]$. לכל $\epsilon\ge 0$: $P\big(\big|\tfrac{1}{N}\sum_{i=1}^N A_i-\mathbb{E}[A_1]\big|\ge\epsilon\big)\le 2\exp(-2N\epsilon^2)$. מיושם עם $A_n:=\ell(h(x_n),y_n)\in[0,1]$ עבור השערה **קבועה** (בלתי-תלויה ב-$S$) $h$, כך ש-$\mathbb{E}[A_1]=L_D(h)$.
+**Statement:** יהיו $A_1,\dots,A_N$ משתנים מקריים i.i.d. חסומים ב-$[0,1]$. לכל $\epsilon\ge 0$:
+
+$$P\big(\big|\tfrac{1}{N}\sum_{i=1}^N A_i-\mathbb{E}[A_1]\big|\ge\epsilon\big)\le 2\exp(-2N\epsilon^2)$$
+
+מיושם עם $A_n:=\ell(h(x_n),y_n)\in[0,1]$ עבור השערה **קבועה** (בלתי-תלויה ב-$S$) $h$, כך ש-$\mathbb{E}[A_1]=L_D(h)$.
 **Use it when:** כל שאלת "גזרו חסם הכללה" — קבעו השערה אחת, חסמו $P(|L_S(h)-L_D(h)|\ge\epsilon)$, ואז הפעילו חסם-איחוד.
 **Seen in:** example_Q3, a2021_Q3, a2023_Q3, b2023_Q3, a2024_Q3, b2024_Q3, c2024_Q3
 **Watch out:** הוא דורש ש-$h$ ייקבע לפני ראיית $S$ — לעולם אל תיישמו אותו ישירות על $\hat h$ הנלמד; הפקטור 2 (דו-צדדי) והפקטור 2 ב-$e^{-2N\epsilon^2}$ שניהם חשובים לקבועים.
 
 ### חסם איחוד + מתכון למחלקה סופית
-**Statement:** $P(\bigcup_i E_i)\le\sum_i P(E_i)$. מחלקה סופית: הסתברות הכישלון $\le 2|\mathcal H|e^{-2N\epsilon^2}$; השוואת ביטוי זה ל-$\delta$ ופתרון נותנים $\Delta_1(N,\delta,|\mathcal H|)=\sqrt{\ln(2|\mathcal H|/\delta)/(2N)}$, התקף בו-זמנית $\forall h\in\mathcal H$ בהסתברות $\ge 1-\delta$.
+**Statement:** $P(\bigcup_i E_i)\le\sum_i P(E_i)$. מחלקה סופית: הסתברות הכישלון $\le 2|\mathcal H|e^{-2N\epsilon^2}$; השוואת ביטוי זה ל-$\delta$ ופתרון נותנים
+
+$$\Delta_1(N,\delta,|\mathcal H|)=\sqrt{\ln(2|\mathcal H|/\delta)/(2N)}$$
+
+התקף בו-זמנית $\forall h\in\mathcal H$ בהסתברות $\ge 1-\delta$.
 **Use it when:** כל שאלה על מחלקה סופית/מקוונטטת/מכוסה; וגם לשילוב מאורעות לפי-רמה בבנייות SRM.
 **Seen in:** example_Q3, a2021_Q3, a2023_Q3, b2023_Q3, a2024_Q3, b2024_Q3, c2024_Q3, b2020_Q3
 
 ### הלמה של Massart למחלקה סופית ⧉ external
-**Statement:** עבור $A\subset\mathbb{R}^m$ סופית: $R(A)\le\max_{a\in A}\|a\|_2\cdot\frac{\sqrt{2\ln|A|}}{m}$ (מורכבות Rademacher של קבוצה סופית גדלה רק לוגריתמית ב-$|A|$). **מבוקר: לא נמצא בחומרי הקורס** (אף למת Rademacher לקבוצה סופית אינה מופיעה בהרצאות/תרגולים) — במבחן, צפו שכל חסם Rademacher נחוץ יימסר כתזכורת; אל תצטטו "Massart מהכיתה".
+**Statement:** עבור $A\subset\mathbb{R}^m$ סופית:
+
+$$R(A)\le\max_{a\in A}\|a\|_2\cdot\frac{\sqrt{2\ln|A|}}{m}$$
+
+(מורכבות Rademacher של קבוצה סופית גדלה רק לוגריתמית ב-$|A|$). **מבוקר: לא נמצא בחומרי הקורס** (אף למת Rademacher לקבוצה סופית אינה מופיעה בהרצאות/תרגולים) — במבחן, צפו שכל חסם Rademacher נחוץ יימסר כתזכורת; אל תצטטו "Massart מהכיתה".
 **Use it when:** חסימת $R(\ell\circ\mathcal H\circ S)$ עבור מחלקה סופית/מדוסקרטת בתוך חסם מבוסס-Rademacher — רק אם המבחן מוסר לכם אותו.
 **Seen in:** כלי חיצוני (מבחנים מוסרים את מכונת Rademacher כתזכורות: a2020_Q3, b2021_Q3)
 **Watch out:** עוגנים מאומתי-קורס שמותר לכם תמיד להשתמש בהם: $R(\{a'\})=0$ וגם $R(\{\pm1\}^m)=1$ (תרגול 9, P6).
 
 ### התבדרות KL של גאוסיאנים (וקריסת ה-$\|\hat\theta\|^2/2\sigma^2$)
-**Statement:** עבור $\Sigma_0,\Sigma_1$ מוגדרות-חיובית מעל $\mathbb{R}^r$: $\mathrm{KL}\big(N(\mu_0,\Sigma_0)\,\|\,N(\mu_1,\Sigma_1)\big)=\frac12\big(\mathrm{Tr}(\Sigma_1^{-1}\Sigma_0)+(\mu_1-\mu_0)^\top\Sigma_1^{-1}(\mu_1-\mu_0)-r+\ln\frac{\det\Sigma_1}{\det\Sigma_0}\big)$. עם prior $P=N(0,\sigma^2 I)$, posterior $Q=N(\hat\theta,\bar\sigma^2 I)$: מזעור מעל $\bar\sigma^2$ נותן $\bar\sigma^2=\sigma^2$ וגם $\mathrm{KL}(Q\|P)=\frac{\|\hat\theta\|^2}{2\sigma^2}$.
+**Statement:** עבור $\Sigma_0,\Sigma_1$ מוגדרות-חיובית מעל $\mathbb{R}^r$:
+
+$$\mathrm{KL}\big(N(\mu_0,\Sigma_0)\,\|\,N(\mu_1,\Sigma_1)\big)=\frac12\big(\mathrm{Tr}(\Sigma_1^{-1}\Sigma_0)+(\mu_1-\mu_0)^\top\Sigma_1^{-1}(\mu_1-\mu_0)-r+\ln\frac{\det\Sigma_1}{\det\Sigma_0}\big)$$
+
+עם prior $P=N(0,\sigma^2 I)$, posterior $Q=N(\hat\theta,\bar\sigma^2 I)$: מזעור מעל $\bar\sigma^2$ נותן $\bar\sigma^2=\sigma^2$ וגם
+
+$$\mathrm{KL}(Q\|P)=\frac{\|\hat\theta\|^2}{2\sigma^2}$$
 **Use it when:** מימוש PAC-Bayes עם prior/posterior גאוסי (חסם מינימום-שטוח + נורמה-נמוכה); הוכחת הלמה עצמה היא בסגנון HW3.
 **Seen in:** תיאוריית ליבה (לא נבחן ישירות)
 **Watch out:** ה-$-r$ ויחס ה-$\ln\det$ הם האיברים שאנשים משמיטים; המימושים שהמבחנים באמת השתמשו בהם הם נקודתיים (מסה-נקודתית) ולא גאוסיים.
@@ -38,34 +56,70 @@
 **Seen in:** כלי חיצוני (ספירה ישירה נראתה ב: a2024_Q3, b2024_Q3, b2020_Q3)
 
 ### עובדות על גאוסיאנים ואי-תלות
-**Statement:** (i) לינאריות התוחלת תמיד; לסימני Rademacher יש $\mathbb{E}[\xi_i]=0$. (ii) הטלות של וקטור גאוסי i.i.d. חסר-תוחלת על כיוונים קבועים **אורתוגונליים** הן בלתי-תלויות (מניע את אי-התלות המדויקת בהרצאה 9 בין $L_S$ ל-$L_{gen}$ עבור $W_{iid}$). (iii) עבור $Z_1,\dots,Z_m\sim N(0_d,I_d)$ עם $m\le d$: $P(Z_1,\dots,Z_m\ \text{linearly independent})=1$.
+**Statement:** (i) לינאריות התוחלת תמיד; לסימני Rademacher יש $\mathbb{E}[\xi_i]=0$. (ii) הטלות של וקטור גאוסי i.i.d. חסר-תוחלת על כיוונים קבועים **אורתוגונליים** הן בלתי-תלויות (מניע את אי-התלות המדויקת בהרצאה 9 בין $L_S$ ל-$L_{gen}$ עבור $W_{iid}$). (iii) עבור $Z_1,\dots,Z_m\sim N(0_d,I_d)$ עם $m\le d$:
+
+$$P(Z_1,\dots,Z_m\ \text{linearly independent})=1$$
 **Use it when:** טיעוני השערת-נפח; שאלות שחזור-מדויק ב-$N=d$; כל חישוב תוחלת על פני סימנים מקריים.
 **Seen in:** b2024_Q3, תיאוריית ליבה (הרצאה 9)
 
 ## ארגז כלים לאלגברה לינארית
 
 ### דרגה דרך SVD / מטריצות Gram
-**Statement:** $A=U\Sigma V^\top=\sum_{i=1}^r\sigma_i u_iv_i^\top$ עם $r=\operatorname{rank}(A)$; $A^\top A=\sum_i\sigma_i^2v_iv_i^\top$, $AA^\top=\sum_i\sigma_i^2u_iu_i^\top$, ולכן $\sigma_i^2(A)$ הם הערכים העצמיים השונים-מאפס של שתי מטריצות Gram וגם $\operatorname{rank}(A)=\operatorname{rank}(A^\top A)=\operatorname{rank}(AA^\top)$. כמו כן $\operatorname{rank}(JJ^\top)\le\operatorname{rank}(J)$, ודרגת סכום $\le$ סכום הדרגות.
+**Statement:**
+
+$$A=U\Sigma V^\top=\sum_{i=1}^r\sigma_i u_iv_i^\top$$
+
+עם $r=\operatorname{rank}(A)$; $A^\top A=\sum_i\sigma_i^2v_iv_i^\top$, $AA^\top=\sum_i\sigma_i^2u_iu_i^\top$, ולכן $\sigma_i^2(A)$ הם הערכים העצמיים השונים-מאפס של שתי מטריצות Gram וגם
+
+$$\operatorname{rank}(A)=\operatorname{rank}(A^\top A)=\operatorname{rank}(AA^\top)$$
+
+כמו כן
+
+$$\operatorname{rank}(JJ^\top)\le\operatorname{rank}(J)$$
+
+ודרגת סכום $\le$ סכום הדרגות.
 **Use it when:** כל חישוב דרגה — סינגולריות ה-Gram של NTK ($k<m\Rightarrow\lambda_i=0$), דרגות מטריציזציה, שאלות פירוק.
 **Seen in:** b2020_Q2, a2022_Q1
 
 ### Eckart–Young–Mirsky (צורת הקורס)
-**Statement:** עבור $A\in\mathbb{R}^{m_1,m_2}$ עם ערכים סינגולריים $\sigma_1\ge\dots\ge\sigma_{\min\{m_1,m_2\}}\ge0$ וכל $r$: $\min_{\operatorname{rank}(W)\le r}\|W-A\|_F^2=\sum_{i=r+1}^{\min\{m_1,m_2\}}\sigma_i(A)$ *כפי שמודפס בהערות*; לניסוח הקלאסי יש $\sigma_i(A)^2$ — הם מתלכדים ביישום של הקורס שבו כל $\sigma_i\in\{0,1\}$ (אמתו את הצורה המדויקת עם המתרגל).
+**Statement:** עבור $A\in\mathbb{R}^{m_1,m_2}$ עם ערכים סינגולריים
+
+$$\sigma_1\ge\dots\ge\sigma_{\min\{m_1,m_2\}}\ge0$$
+
+וכל $r$:
+
+$$\min_{\operatorname{rank}(W)\le r}\|W-A\|_F^2=\sum_{i=r+1}^{\min\{m_1,m_2\}}\sigma_i(A)$$
+
+*כפי שמודפס בהערות*; לניסוח הקלאסי יש $\sigma_i(A)^2$ — הם מתלכדים ביישום של הקורס שבו כל $\sigma_i\in\{0,1\}$ (אמתו את הצורה המדויקת עם המתרגל).
 **Use it when:** המרת פער-דרגה לחסם-תחתון על מרחק פרובניוס (אי-קריבות), למשל $\|[\![\mathcal A^{CP}]\!]-I_{M^{N/2}}\|_F\ge\sqrt{M^{N/2}-B}$.
 **Seen in:** תיאוריית ליבה (הרצאה 2 §2.5; לא נבחן ישירות)
 
 ### זהויות עקבה
-**Statement:** $\mathrm{Tr}(ABC)=\mathrm{Tr}(CAB)$ (מחזורי; כל אימת ששני המכפלים מוגדרים); $\langle A,B\rangle=\mathrm{Tr}(AB^\top)$, שקול $\mathrm{Tr}(X^\top Y)=\langle X,Y\rangle$; עבור $A$ סימטרית: $\mathrm{Tr}(A)=\sum_i\lambda_i(A)$; $\|A\|_F^2=\mathrm{Tr}(A^\top A)=\langle A,A\rangle=\sum_i\sigma_i^2(A)=\sum_{ij}A_{ij}^2$.
+**Statement:** $\mathrm{Tr}(ABC)=\mathrm{Tr}(CAB)$ (מחזורי; כל אימת ששני המכפלים מוגדרים); $\langle A,B\rangle=\mathrm{Tr}(AB^\top)$, שקול
+
+$$\mathrm{Tr}(X^\top Y)=\langle X,Y\rangle$$
+
+עבור $A$ סימטרית: $\mathrm{Tr}(A)=\sum_i\lambda_i(A)$;
+
+$$\|A\|_F^2=\mathrm{Tr}(A^\top A)=\langle A,A\rangle=\sum_i\sigma_i^2(A)=\sum_{ij}A_{ij}^2$$
 **Use it when:** חילוץ ODE של ערך-עצמי/ערך-סינגולרי (מניפולציות של $v_r^\top\dot W v_r$), חישובי balancedness, ניהול-חשבונות של נורמת פרובניוס.
 **Seen in:** a2024_Q2 (ניתן כתזכורת), a2021_Q2
 
 ### חסמי מנת Rayleigh
-**Statement:** עבור $A$ סימטרית וכל $x$: $\lambda_{\min}(A)\|x\|_2^2\le x^\top Ax\le\lambda_{\max}(A)\|x\|_2^2$. הוכחה: EVD $A=UDU^\top$, הצבה $q=U^\top x$ (העתקות אורתוגונליות משמרות נורמת $\ell_2$).
+**Statement:** עבור $A$ סימטרית וכל $x$:
+
+$$\lambda_{\min}(A)\|x\|_2^2\le x^\top Ax\le\lambda_{\max}(A)\|x\|_2^2$$
+
+הוכחה: EVD $A=UDU^\top$, הצבה $q=U^\top x$ (העתקות אורתוגונליות משמרות נורמת $\ell_2$).
 **Use it when:** קצבי התכנסות של GD/GF ($\frac{d}{dt}\|u-y\|^2=-2(u-y)^\top H(u-y)\le-2\lambda_{\min}\|u-y\|^2$); קבועי חלקות של ריבועיות.
 **Seen in:** b2020_Q2, example_Q2
 
 ### פירוק ספקטרלי של מטריצות סימטריות
-**Statement:** לכל מטריצה סימטרית $A\in\mathbb{R}^{d,d}$ יש פירוק עצמי אורתוגונלי $A=VDV^\top$ עם $V$ אורתוגונלית, $D$ אלכסונית ממשית. השלכות: $W^*$ סימטרית PSD יש לה שורש $U^*=(W^*)^{1/2}$; מחלקת מטריצות סימטרית שווה למה שתת-המחלקה האלכסונית שלה מממשת לאחר סיבוב ($C^\top A^{L-t}B=(V^\top C)^\top D^{L-t}(V^\top B)$); כל מטריצה סימטרית $M\times M$ $=\sum_z\lambda_z v_zv_z^\top$ (פירוק CP סימטרי).
+**Statement:** לכל מטריצה סימטרית $A\in\mathbb{R}^{d,d}$ יש פירוק עצמי אורתוגונלי $A=VDV^\top$ עם $V$ אורתוגונלית, $D$ אלכסונית ממשית. השלכות: $W^*$ סימטרית PSD יש לה שורש $U^*=(W^*)^{1/2}$; מחלקת מטריצות סימטרית שווה למה שתת-המחלקה האלכסונית שלה מממשת לאחר סיבוב (
+
+$$C^\top A^{L-t}B=(V^\top C)^\top D^{L-t}(V^\top B)$$
+
+); כל מטריצה סימטרית $M\times M$ $=\sum_z\lambda_z v_zv_z^\top$ (פירוק CP סימטרי).
 **Use it when:** שאלות $\mathcal H^{diag}=\mathcal H^{sym}$; בניית $U^*$ עם $U^*U^{*\top}=W^*$ בהוכחות אי-קמירות; אפיון מחלקות טנזור-סימטרי ב-$N=2$.
 **Seen in:** a2024_Q1, a2021_Q2, a2024_Q2, b2020_Q1
 
@@ -75,12 +129,36 @@
 **Seen in:** a2024_Q1, b2020_Q2
 
 ### טריק דרגה לסדרה גאומטרית
-**Statement:** RNN לינארי אלכסוני עם $d=1$ מפיק מקדמים $w_t=cb\,a^{L-t}$ — סדרה הנדסית, ולכן $w_{t+1}w_{t-1}=w_t^2$; בפרט אפס אמצעי כופה אפס שכן ($w_{L-1}=0\Rightarrow cb=0$ או $a=0\Rightarrow w_L=0$ או $w_{L-2}=0$). עם $d=2$, המקדמים הם סכומים של שתי סדרות גאומטריות: $(1,0,1)$ הופך לבר-מימוש ($a_1=1,a_2=-1$, $c_1b_1=c_2b_2=\frac12$).
+**Statement:** RNN לינארי אלכסוני עם $d=1$ מפיק מקדמים $w_t=cb\,a^{L-t}$ — סדרה הנדסית, ולכן $w_{t+1}w_{t-1}=w_t^2$; בפרט אפס אמצעי כופה אפס שכן (
+
+$$w_{L-1}=0\Rightarrow cb=0$$
+
+או
+
+$$a=0\Rightarrow w_L=0$$
+
+או $w_{L-2}=0$). עם $d=2$, המקדמים הם סכומים של שתי סדרות גאומטריות: $(1,0,1)$ הופך לבר-מימוש (
+
+$$a_1=1,a_2=-1$$
+
+$$c_1b_1=c_2b_2=\frac12$$
+
+).
 **Use it when:** הוכחת היררכיה ממש $\mathcal H_1^{diag}\subsetneq\mathcal H_2^{diag}$ או כל רמז מסוג "כיצד $\mathrm{Tr}(A^t)$ מתנהג עם $t$".
 **Seen in:** a2024_Q1
 
 ### עובדות על מכפלת Kronecker ודרגת מטריציזציה
-**Statement:** $A\odot B$ = מטריצת בלוקים $[a_{ij}B]$; מכפלה מעורבת $(A\odot B)(C\odot D)=(AC)\odot(BD)$; $(A\odot B)^\top=A^\top\odot B^\top$, $(A\odot B)^{-1}=A^{-1}\odot B^{-1}$; SVD: $A\odot B=(U_A\odot U_B)(\Sigma_A\odot\Sigma_B)(V_A\odot V_B)^\top$, ולכן $\operatorname{rank}(A\odot B)=\operatorname{rank}(A)\operatorname{rank}(B)$. מטריציזציה היא לינארית, וגם $[\![\mathcal T\otimes\bar{\mathcal T}]\!]_I=[\![\mathcal T]\!]_{I\cap[n]}\odot[\![\bar{\mathcal T}]\!]_{(I-n)\cap[\bar n]}$.
+**Statement:** $A\odot B$ = מטריצת בלוקים $[a_{ij}B]$; מכפלה מעורבת $(A\odot B)(C\odot D)=(AC)\odot(BD)$; $(A\odot B)^\top=A^\top\odot B^\top$, $(A\odot B)^{-1}=A^{-1}\odot B^{-1}$; SVD:
+
+$$A\odot B=(U_A\odot U_B)(\Sigma_A\odot\Sigma_B)(V_A\odot V_B)^\top$$
+
+ולכן
+
+$$\operatorname{rank}(A\odot B)=\operatorname{rank}(A)\operatorname{rank}(B)$$
+
+מטריציזציה היא לינארית, וגם
+
+$$[\![\mathcal T\otimes\bar{\mathcal T}]\!]_I=[\![\mathcal T]\!]_{I\cap[n]}\odot[\![\bar{\mathcal T}]\!]_{(I-n)\cap[\bar n]}$$
 **Use it when:** כל חסם דרגה של CAC/טנזור: מטריצזו, פצלו מכפלות חיצוניות ל-Kronecker, הכפילו דרגות.
 **Seen in:** a2022_Q1, b2020_Q1
 **Watch out:** בקורס זה $\odot$ = Kronecker, $\otimes$ = מכפלה חיצונית/טנזורית (ספרים רבים מחליפים); $A\odot B\ne B\odot A$.
@@ -88,35 +166,69 @@
 ## כושר ביטוי
 
 ### פירוק שגיאה לשלושת העמודים
-**Statement:** $\mathcal L_{\mathcal D}(\bar h)=\underbrace{\mathcal L_{\mathcal D}(\bar h)-\mathcal L_{\mathcal D}(h_S^*)}_{\text{training error (Optimization)}}+\underbrace{\mathcal L_{\mathcal D}(h_S^*)-\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{estimation error (Generalization)}}+\underbrace{\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{approximation error (Expressiveness)}}$, כאשר $h_S^*\in\operatorname{argmin}_{h\in\mathcal H_B}\mathcal L_S(h)$.
+**Statement:**
+
+$$\mathcal L_{\mathcal D}(\bar h)=\underbrace{\mathcal L_{\mathcal D}(\bar h)-\mathcal L_{\mathcal D}(h_S^*)}_{\text{training error (Optimization)}}+\underbrace{\mathcal L_{\mathcal D}(h_S^*)-\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{estimation error (Generalization)}}+\underbrace{\min_{h\in\mathcal H_B}\mathcal L_{\mathcal D}(h)}_{\text{approximation error (Expressiveness)}}$$
+
+כאשר
+
+$$h_S^*\in\operatorname{argmin}_{h\in\mathcal H_B}\mathcal L_S(h)$$
 **Use it when:** חלקי מסגור/חיבור — נקבו בכל איבר ובעמוד שלו.
 **Seen in:** תיאוריית ליבה (לא נבחן ישירות)
 
 ### אוניברסליות (הגדרה 1)
-**Statement:** $\mathcal H_B$ היא **אוניברסלית-$\mathcal F$ במובן של $d(\cdot,\cdot)$** כאשר $\forall\epsilon>0,\ \forall f\in\mathcal F,\ \exists B,\ \exists h\in\mathcal H_B$ כך ש-$d(f,h)<\epsilon$. (שימו לב לסדר: $B$ עשוי להיות תלוי ב-$f$ וב-$\epsilon$.) כדי להוכיח אי-אוניברסליות, הציגו $f\in\mathcal F$ אחת ו-$\epsilon_0>0$ עם $d(f,h)\ge\epsilon_0$ לכל $B,h$ (למשל כל $h$ מתאפס ב-$0$ בעוד $f(0)=1$).
+**Statement:** $\mathcal H_B$ היא **אוניברסלית-$\mathcal F$ במובן של $d(\cdot,\cdot)$** כאשר
+
+$$\forall\epsilon>0,\ \forall f\in\mathcal F,\ \exists B,\ \exists h\in\mathcal H_B$$
+
+כך ש-$d(f,h)<\epsilon$. (שימו לב לסדר: $B$ עשוי להיות תלוי ב-$f$ וב-$\epsilon$.) כדי להוכיח אי-אוניברסליות, הציגו $f\in\mathcal F$ אחת ו-$\epsilon_0>0$ עם $d(f,h)\ge\epsilon_0$ לכל $B,h$ (למשל כל $h$ מתאפס ב-$0$ בעוד $f(0)=1$).
 **Use it when:** תת-שאלות "הגדירו פורמלית" (מילה במילה) והוכחות/הפרכות אוניברסליות.
 **Seen in:** example_Q1, a2021_Q1, b2020_Q1, a2024_Q1, b2024_Q1, c2024_Q1
 
 ### יעילות ביטוי (הגדרה 2 + חיזוקים)
-**Statement:** $\bar{\mathcal H}_{\bar B}$ יעילה-ביטוי ביחס ל-$\mathcal H_B$ אם (1) $\forall B\ \exists\bar B\in O(B)$ עם $\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$, וגם (2) $\exists\bar h\in\bar{\mathcal H}_{\bar B}$ ($\bar B$ סביר) עם $\bar h\notin\mathcal H_B$ אלא אם $B$ גדול באופן בלתי-נסבל. **אקספוננציאלית**: $B$ אקספוננציאלי בממד הבעיה (למשל עומק $L$) בעוד $\bar B$ פולינומי. **אי-קריבות**: החליפו $\bar h\notin\mathcal H_B$ ב-$d(\bar h,\mathcal H_B)>\epsilon$. **שלמה**: כמעט כל $\bar h$ קשה.
+**Statement:** $\bar{\mathcal H}_{\bar B}$ יעילה-ביטוי ביחס ל-$\mathcal H_B$ אם (1) $\forall B\ \exists\bar B\in O(B)$ עם
+
+$$\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$$
+
+וגם (2)
+
+$$\exists\bar h\in\bar{\mathcal H}_{\bar B}$$
+
+($\bar B$ סביר) עם $\bar h\notin\mathcal H_B$ אלא אם $B$ גדול באופן בלתי-נסבל. **אקספוננציאלית**: $B$ אקספוננציאלי בממד הבעיה (למשל עומק $L$) בעוד $\bar B$ פולינומי. **אי-קריבות**: החליפו $\bar h\notin\mathcal H_B$ ב-$d(\bar h,\mathcal H_B)>\epsilon$. **שלמה**: כמעט כל $\bar h$ קשה.
 **Use it when:** "הגדירו ש-X (אקספוננציאלית) יעילת-ביטוי ביחס ל-Y" — נשאל מילה במילה, ואז מוכח.
 **Seen in:** a2020_Q1, b2021_Q1, b2022_Q1, b2023_Q1, b2024_Q1
 **Watch out:** תנאי (1) (הכלה עם גודל בר-השוואה) נבדק גם הוא — בנייות passthrough/ריפוד מוכיחות אותו; b2021_Q1 מראה שהתשובה יכולה להיות לא (רשתות סימן אי-שליליות: עומק אינו מוסיף דבר).
 
 ### רשתות ReLU רדודות = לינאריות למקוטעין, ספירת חלקים
-**Statement:** (טענה 1, הרצאה 2) רשת ReLU רדודה ברוחב-$B$ ($B\ge2$) מממשת כל $g$ לינארית למקוטעין עם $\le B$ חלקים; להיפך כל $h\in\mathcal H_B$ לינארית למקוטעין עם $\le B+1$ חלקים (כל נוירון תורם $\le1$ נקודת שבירה). לינארית למקוטעין: $\exists\,{-\infty}=:c_0<c_1<\dots<c_N:=\infty$ עם $g$ אפינית על כל $[c_{i-1},c_i]$; מספר החלקים = ה-$N$ המינימלי כזה.
+**Statement:** (טענה 1, הרצאה 2) רשת ReLU רדודה ברוחב-$B$ ($B\ge2$) מממשת כל $g$ לינארית למקוטעין עם $\le B$ חלקים; להיפך כל $h\in\mathcal H_B$ לינארית למקוטעין עם $\le B+1$ חלקים (כל נוירון תורם $\le1$ נקודת שבירה). לינארית למקוטעין:
+
+$$\exists\,{-\infty}=:c_0<c_1<\dots<c_N:=\infty$$
+
+עם $g$ אפינית על כל $[c_{i-1},c_i]$; מספר החלקים = ה-$N$ המינימלי כזה.
 **Use it when:** כל Q1 על רשתות ReLU/leaky-ReLU — כיוון האפיון וחסמים-תחתונים על רוחב דרך ספירת חלקים.
 **Seen in:** example_Q1, a2020_Q1, b2022_Q1, a2023_Q1
 **Watch out:** אל תחליפו את שני הכיוונים ($\le B$ בר-מימוש מול $\le B+1$ ממומש); לרשתות חד-ממדיות ללא הטיה יש את נקודת השבירה היחידה שלהן ב-$0$ (כך ש-$|A_h|\le2$, ויעילות העומק מתה ללא הטיות).
 
 ### לינארי למקוטעין = אפיני + סכום ReLU
-**Statement:** כל $f$ לינארית למקוטעין עם נקודות שבירה $t_1<\dots<t_k$ ניתנת לכתיבה $f(x)=ax+b+\sum_{i=1}^k c_i\,[x-t_i]_+$ (ה-$c_i$ הם שינויי השיפוע); גרסאות leaky-ReLU דרך $\sigma_a(z)=\sigma(z)-a\sigma(-z)$ וגם $\sigma(z)=\frac{1}{1-a^2}\sigma_a(z)+\frac{a}{1-a^2}\sigma_a(-z)$ (שני נוירונים לכל ReLU, הרוחב מוכפל).
+**Statement:** כל $f$ לינארית למקוטעין עם נקודות שבירה $t_1<\dots<t_k$ ניתנת לכתיבה
+
+$$f(x)=ax+b+\sum_{i=1}^k c_i\,[x-t_i]_+$$
+
+(ה-$c_i$ הם שינויי השיפוע); גרסאות leaky-ReLU דרך $\sigma_a(z)=\sigma(z)-a\sigma(-z)$ וגם
+
+$$\sigma(z)=\frac{1}{1-a^2}\sigma_a(z)+\frac{a}{1-a^2}\sigma_a(-z)$$
+
+(שני נוירונים לכל ReLU, הרוחב מוכפל).
 **Use it when:** הכיוון הבונה של הוכחות כושר-ביטוי; העברת תוצאות ReLU למחלקות leaky-ReLU.
 **Seen in:** example_Q1, b2022_Q1
 **Watch out:** ב-$\alpha=1$ ה-leaky-ReLU הוא הזהות — המחלקה קורסת לפונקציות אפיניות וכל הפרדת עומק נכשלת (b2022_Q1e).
 
 ### sawtooth של Telgarsky (הגדרה, ספירת חלקים, אי-קריבות)
-**Statement:** אוהל $g(x)=[2x]_+-[4x-2]_++[2x-2]_+$ (2 שכבות, רוחב 3). ל-$g^{\circ k}$ יש $2^{k-1}$ שיניים; רשת ReLU ברוחב-3 עם $L$ שכבות מממשת את $g^{\circ L-1}$ עם $2+2^{L-1}$ חלקים לינאריים $\Rightarrow$ מימוש רדוד דורש $B\ge2^{L-1}+1$. אי-קריבות ב-$d(f_1,f_2)=\int_0^1|f_1-f_2|$: לכל $h\in\mathcal H_B$, $d(g^{\circ L-1},h)\ge\frac18-B\cdot2^{-L-2}-3\cdot2^{-L-1}$, ולכן $d<\epsilon$ כופה $B>2^{L+2}(\frac18-\epsilon)-6$.
+**Statement:** אוהל $g(x)=[2x]_+-[4x-2]_++[2x-2]_+$ (2 שכבות, רוחב 3). ל-$g^{\circ k}$ יש $2^{k-1}$ שיניים; רשת ReLU ברוחב-3 עם $L$ שכבות מממשת את $g^{\circ L-1}$ עם $2+2^{L-1}$ חלקים לינאריים $\Rightarrow$ מימוש רדוד דורש $B\ge2^{L-1}+1$. אי-קריבות ב-$d(f_1,f_2)=\int_0^1|f_1-f_2|$: לכל $h\in\mathcal H_B$,
+
+$$d(g^{\circ L-1},h)\ge\frac18-B\cdot2^{-L-2}-3\cdot2^{-L-1}$$
+
+ולכן $d<\epsilon$ כופה $B>2^{L+2}(\frac18-\epsilon)-6$.
 **Use it when:** הפרדת עומק אקספוננציאלית לרשתות ReLU/leaky-ReLU — הארכיטיפ הקנוני של Q1.
 **Seen in:** a2020_Q1, b2022_Q1
 **Watch out:** מספר האינטרוולים הוא $2^{L-1}+1$ ($2^{L-2}$ ב-$S_>$, $2^{L-2}+1$ ב-$S_<$); אינטרוול מוחמץ עולה $[\text{length}]\cdot\frac12\cdot\frac12$; לכל האינטרוולים המוחמצים פרט ל-$\le2$ יש אורך $2^{-L+1}$.
@@ -128,7 +240,15 @@
 **Watch out:** תמיד הפעילו רציפות במידה שווה (הרמז שנותנים); $B$ תלוי ב-$\epsilon$ — זה מותר לפי הגדרה 1.
 
 ### רשתות עם אקטיבציית סימן = קבועות למקוטעין
-**Statement:** עם $\sigma(z)=\mathbb 1[z\ge0]$ וגם $w_i\ge0$: כל נוירון הוא מדרגה יחידה סגורה-משמאל $\mathbb 1[x\ge -b_i/w_i]$, ולכן כל $h\in\mathcal H_B$ קבועה למקוטעין עם $\le B+1$ חלקים; להיפך כל $g$ קבועה למקוטעין עם $\le B+1$ חלקים נמצאת ב-$\mathcal H_B$ דרך הבנייה הטלסקופית $h(x)=\alpha_1+\sum_j(\alpha_{j+1}-\alpha_j)\sigma(x-c_j)$. עם $k>d$ נוירוני סימן בפלט ($f(x)=\operatorname{sign}(Wx)$), תבנית פלט כלשהי $y\in\{0,1\}^k$ בלתי-נתונה-להשגה (VC של מפרידים לינאריים הומוגניים הוא $d$; דואליות: הקלטים פועלים כמפרידים על שורות $W$).
+**Statement:** עם
+
+$$\sigma(z)=\mathbb 1[z\ge0]$$
+
+וגם $w_i\ge0$: כל נוירון הוא מדרגה יחידה סגורה-משמאל $\mathbb 1[x\ge -b_i/w_i]$, ולכן כל $h\in\mathcal H_B$ קבועה למקוטעין עם $\le B+1$ חלקים; להיפך כל $g$ קבועה למקוטעין עם $\le B+1$ חלקים נמצאת ב-$\mathcal H_B$ דרך הבנייה הטלסקופית
+
+$$h(x)=\alpha_1+\sum_j(\alpha_{j+1}-\alpha_j)\sigma(x-c_j)$$
+
+עם $k>d$ נוירוני סימן בפלט ($f(x)=\operatorname{sign}(Wx)$), תבנית פלט כלשהי $y\in\{0,1\}^k$ בלתי-נתונה-להשגה (VC של מפרידים לינאריים הומוגניים הוא $d$; דואליות: הקלטים פועלים כמפרידים על שורות $W$).
 **Use it when:** Q1 של רשתות סימן — אפיון, אוניברסליות ביחס ל-$f$ רציפה בנורמת סופרמום, פלטים בלתי-נתונים-להשגה.
 **Seen in:** a2021_Q1, b2021_Q1, c2024_Q1, b2023_Q1
 
@@ -138,7 +258,23 @@
 **Seen in:** b2021_Q1, b2022_Q1, a2020_Q1
 
 ### פירוקי CP/HT ↔ CAC רדוד/עמוק + ההפרדה $M^{N/2}$
-**Statement:** CAC רדוד (רוחב $Z$, pooling מכפלה גלובלי) מחשב $\mathcal A=\sum_{z=1}^Z a_z^{out}\,\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}$ (CP); CAC עמוק ($L=\log_2N$ שכבות, pooling בגודל-2) מחשב את רקורסיית ה-HT $\Phi^{l,j,\gamma}=\sum_{\alpha=1}^{r_{l-1}}a^{l,j,\gamma}_\alpha\Phi^{l-1,2j-1,\alpha}\otimes\Phi^{l-1,2j,\alpha}$. דרגות: $\operatorname{rank}[\![\mathcal A^{CP}]\!]_I\le Z$ עבור **כל** חלוקה $I$; הצבה עמוקה עם $r_0\ge M$ נותנת $[\![\mathcal A^{HT}]\!]=I_{M^{N/2}}$ (דרגה $M^{N/2}$), וגם $\det[\![\mathcal A^{HT}]\!]\ne0$ עבור כמעט כל הפרמטרים (קבוצת-אפס-של-פולינום) — יעילות אקספוננציאלית שלמה; קירוב-$\epsilon$ דורש $B\ge M^{N/2}-\epsilon^2$ (EYM). $\mathrm{sep}[f;I]=\operatorname{rank}[\![\mathcal A]\!]_I$ (טענה 7, שני הכיוונים). אוניברסליות: $Z=M^N$ מממש כל טנזור במדויק.
+**Statement:** CAC רדוד (רוחב $Z$, pooling מכפלה גלובלי) מחשב
+
+$$\mathcal A=\sum_{z=1}^Z a_z^{out}\,\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}$$
+
+(CP); CAC עמוק ($L=\log_2N$ שכבות, pooling בגודל-2) מחשב את רקורסיית ה-HT
+
+$$\Phi^{l,j,\gamma}=\sum_{\alpha=1}^{r_{l-1}}a^{l,j,\gamma}_\alpha\Phi^{l-1,2j-1,\alpha}\otimes\Phi^{l-1,2j,\alpha}$$
+
+דרגות:
+
+$$\operatorname{rank}[\![\mathcal A^{CP}]\!]_I\le Z$$
+
+עבור **כל** חלוקה $I$; הצבה עמוקה עם $r_0\ge M$ נותנת $[\![\mathcal A^{HT}]\!]=I_{M^{N/2}}$ (דרגה $M^{N/2}$), וגם $\det[\![\mathcal A^{HT}]\!]\ne0$ עבור כמעט כל הפרמטרים (קבוצת-אפס-של-פולינום) — יעילות אקספוננציאלית שלמה; קירוב-$\epsilon$ דורש $B\ge M^{N/2}-\epsilon^2$ (EYM).
+
+$$\mathrm{sep}[f;I]=\operatorname{rank}[\![\mathcal A]\!]_I$$
+
+(טענה 7, שני הכיוונים). אוניברסליות: $Z=M^N$ מממש כל טנזור במדויק.
 **Use it when:** Q1 של טנזור/CAC — דרגת הפרדה דרך מטריציזציה, CP סימטרי (עם שיתוף-משקלים) מאבד אוניברסליות (רק טנזורים אינווריאנטיים לתמורה; ב-$N=2$ בדיוק מטריצות סימטריות).
 **Seen in:** b2020_Q1, a2022_Q1
 **Watch out:** פונקציה ↔ טנזור היא טבלת חיפוש $\mathcal A_{d_1..d_N}=f(d_1,..,d_N)$; מטריציזציה קנונית = מודות אי-זוגיות לשורות; אוניברסליות כאן היא מימוש מדויק על תחום סופי, לא קירוב.
@@ -146,19 +282,47 @@
 ## אופטימיזציה
 
 ### gradient flow: הגדרה + ירידה מונוטונית
-**Statement:** GF הוא ה-ODE $\dot\theta(t)=-\nabla f(\theta(t))$, $t\ge0$ (GD עם צעד אינפיניטסימלי; GD $\theta_{t+1}=\theta_t-\eta\nabla f(\theta_t)$ הוא הדיסקרטיזציה של אוילר-קדמי שלו). כלל השרשרת: $\frac{d}{dt}f(\theta(t))=-\|\nabla f(\theta(t))\|_2^2\le0$ — ההפסד יורד מונוטונית. כמו כן $\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2\le\sqrt{(f(\theta(0))-f^*)/T}$, ואם GF מתכנס גבולו הוא נקודה קריטית ($f\in C^1$).
+**Statement:** GF הוא ה-ODE $\dot\theta(t)=-\nabla f(\theta(t))$, $t\ge0$ (GD עם צעד אינפיניטסימלי; GD
+
+$$\theta_{t+1}=\theta_t-\eta\nabla f(\theta_t)$$
+
+הוא הדיסקרטיזציה של אוילר-קדמי שלו). כלל השרשרת:
+
+$$\frac{d}{dt}f(\theta(t))=-\|\nabla f(\theta(t))\|_2^2\le0$$
+
+— ההפסד יורד מונוטונית. כמו כן
+
+$$\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2\le\sqrt{(f(\theta(0))-f^*)/T}$$
+
+ואם GF מתכנס גבולו הוא נקודה קריטית ($f\in C^1$).
 **Use it when:** המהלך הפותח של כמעט כל Q2; מונוטוניות גם מוכיחה שמסלולים נשארים בקבוצות תת-רמה (טיעוני $w(t)\ge c$).
 **Seen in:** a2020_Q2, b2020_Q2, a2021_Q2, b2021_Q2, a2022_Q2, b2022_Q2, a2023_Q2, b2023_Q2, a2024_Q2, b2024_Q2, c2024_Q2
 **Watch out:** GF יורד ללא הנחות מעבר לגזירות; GD דורש חלקות-$\beta$ ו-$\eta$ קטן — מבחין נכון/לא-נכון אהוב.
 
 ### חלקות-$\beta$, למת הירידה, קצב GD לנייחות
-**Statement:** $f$ בעלת חלקות-$\beta$ אם $\|\nabla f(w_1)-\nabla f(w_2)\|\le\beta\|w_1-w_2\|$. עבור פונקציה **גזירה ברציפות פעמיים** בעלת חלקות-$\beta$, $f$, ה**מקבלת מינימום גלובלי $f^*$** (ההנחות העומדות של הקורס — הרצאה 3, למה 2/משפט 1): $|f(w_2)-f(w_1)-\langle\nabla f(w_1),w_2-w_1\rangle|\le\frac\beta2\|w_1-w_2\|^2$, כל הערכים העצמיים של ההסיאן נמצאים ב-$[-\beta,\beta]$, וגם GD עם $\eta\le1/\beta$ נותן ירידה לכל-צעד $f(w_{t+1})\le f(w_t)-\frac\eta2\|\nabla f(w_t)\|^2$, מגיע לנקודה $\epsilon$-נייחת ($\|\nabla f(w)\|\le\epsilon$) בתוך $\frac{2(f(w_0)-f^*)}{\eta\epsilon^2}$ צעדים. עבור $f(w)=\frac12w^\top Qw$ ($Q$ מוגדרת-חיובית): קבוע חלקות מדויק $\beta=\lambda_{\max}(Q)$ (הידוק דרך הווקטור העצמי העליון).
+**Statement:** $f$ בעלת חלקות-$\beta$ אם
+
+$$\|\nabla f(w_1)-\nabla f(w_2)\|\le\beta\|w_1-w_2\|$$
+
+עבור פונקציה **גזירה ברציפות פעמיים** בעלת חלקות-$\beta$, $f$, ה**מקבלת מינימום גלובלי $f^*$** (ההנחות העומדות של הקורס — הרצאה 3, למה 2/משפט 1):
+
+$$|f(w_2)-f(w_1)-\langle\nabla f(w_1),w_2-w_1\rangle|\le\frac\beta2\|w_1-w_2\|^2$$
+
+כל הערכים העצמיים של ההסיאן נמצאים ב-$[-\beta,\beta]$, וגם GD עם $\eta\le1/\beta$ נותן ירידה לכל-צעד
+
+$$f(w_{t+1})\le f(w_t)-\frac\eta2\|\nabla f(w_t)\|^2$$
+
+מגיע לנקודה $\epsilon$-נייחת ($\|\nabla f(w)\|\le\epsilon$) בתוך $\frac{2(f(w_0)-f^*)}{\eta\epsilon^2}$ צעדים. עבור $f(w)=\frac12w^\top Qw$ ($Q$ מוגדרת-חיובית): קבוע חלקות מדויק $\beta=\lambda_{\max}(Q)$ (הידוק דרך הווקטור העצמי העליון).
 **Use it when:** "הגדירו חלקות-$\beta$ / הוכיחו שהריבועית חלקה" (example_Q2) וכל גזירת קצב-נייחות.
 **Seen in:** example_Q2 (הגדרה + הוכחת חלקות; חלק סיבוכיות-האיטרציות הוא תיאוריית הרצאה, לא באותו מבחן)
 **Watch out:** ציינו את הנחות C² + המינימום-המושג (הוכחת הקורס משתמשת ב-Taylor–Lagrange); טלסקפו את אי-שוויון הירידה; הקצב הוא ל*נייחות*, לא למינימום — לא הונחה קמירות.
 
 ### קמור + נקודה קריטית ⇒ מינימום גלובלי
-**Statement:** עבור $f$ קמורה גזירה, כל נקודה קריטית ($\nabla f(w)=0$) היא ממזערת גלובלית ($f(w')\ge f(w)+\langle\nabla f(w),w'-w\rangle=f(w)$). ההיפוך הנגדי הוא תעודת אי-הקמירות הסטנדרטית: הציגו נקודה קריטית שאינה מינימום גלובלי.
+**Statement:** עבור $f$ קמורה גזירה, כל נקודה קריטית ($\nabla f(w)=0$) היא ממזערת גלובלית (
+
+$$f(w')\ge f(w)+\langle\nabla f(w),w'-w\rangle=f(w)$$
+
+). ההיפוך הנגדי הוא תעודת אי-הקמירות הסטנדרטית: הציגו נקודה קריטית שאינה מינימום גלובלי.
 **Use it when:** הוכחת אי-קמירות של פונקציות מטרה בפרמטריזציית-יתר (הראשית קריטית אך תת-אופטימלית); הסקת התכנסות גלובלית ברגע ש-GF מגיע לנקודה קריטית של $l$ קמורה.
 **Seen in:** b2023_Q2, b2024_Q2, example_Q2
 
@@ -175,48 +339,158 @@
 **Watch out:** אי-קמירות מתקיימת עבור כל אקטיבציה, כולל לינארית — היא נובעת מהפרמטריזציה, לא מהאי-לינאריות.
 
 ### שימור balancedness (צורות כללית + סקלרית + ReLU)
-**Statement:** תחת GF על $\phi(W_1,\dots,W_N)=\ell(W_N\cdots W_1)$: $\frac{d}{dt}\big(W_{j+1}^\top W_{j+1}-W_jW_j^\top\big)=0$, כלומר $C_{j,j+1}:=W_{j+1}(0)^\top W_{j+1}(0)-W_j(0)W_j(0)^\top$ נשמר; אתחול מאוזן ($C_{j,j+1}=0$) נשאר מאוזן. סקלרי רוחב-1: $\frac{d}{dt}(w_i^2-w_j^2)=0$ שכן $\frac{d}{dt}w_i^2=-2L'(w)\,w$ עבור כל $i$. ReLU רדוד (ללא הטיות): $\frac{d}{dt}v_m^2=\frac{d}{dt}\|w_m\|^2=-2\sum_n\ell'(h_\theta(x_n),y_n)\,v_m\,\phi(\langle w_m,x_n\rangle)$ דרך זהות ההומוגניות $z\phi'(z)=\phi(z)$. Hadamard: $\frac{d}{dt}u_j^2=-2\,w\odot\nabla L(w)$ עבור כל $j$.
+**Statement:** תחת GF על $\phi(W_1,\dots,W_N)=\ell(W_N\cdots W_1)$:
+
+$$\frac{d}{dt}\big(W_{j+1}^\top W_{j+1}-W_jW_j^\top\big)=0$$
+
+כלומר
+
+$$C_{j,j+1}:=W_{j+1}(0)^\top W_{j+1}(0)-W_j(0)W_j(0)^\top$$
+
+נשמר; אתחול מאוזן ($C_{j,j+1}=0$) נשאר מאוזן. סקלרי רוחב-1: $\frac{d}{dt}(w_i^2-w_j^2)=0$ שכן $\frac{d}{dt}w_i^2=-2L'(w)\,w$ עבור כל $i$. ReLU רדוד (ללא הטיות):
+
+$$\frac{d}{dt}v_m^2=\frac{d}{dt}\|w_m\|^2=-2\sum_n\ell'(h_\theta(x_n),y_n)\,v_m\,\phi(\langle w_m,x_n\rangle)$$
+
+דרך זהות ההומוגניות $z\phi'(z)=\phi(z)$. Hadamard: $\frac{d}{dt}u_j^2=-2\,w\odot\nabla L(w)$ עבור כל $j$.
 **Use it when:** כל תת-שאלה "הוכיחו שגודל זה נשמר"; שימור + תנאי-גבול מקבעים את גבול ה-GF (למשל $w_1(\infty)=\sqrt{(c+\sqrt{c^2+4(w^*)^2})/2}$).
 **Seen in:** a2020_Q2, b2021_Q2, a2022_Q2, b2022_Q2, b2023_Q2, c2024_Q2
 **Watch out:** האוריינטציה אסימטרית — $W_{j+1}^\top W_{j+1}=W_jW_j^\top$ (Gram הקלט של שכבה $j{+}1$ = Gram הפלט של שכבה $j$); הגזירה = הכפלת ה-ODE של השכבה ב-$W_j^\top$, סימטריזציה, אינטגרציה.
 
 ### דינמיקת end-to-end של רשתות לינאריות עמוקות
-**Statement:** (משפט 1, הרצאה 4) GF מאתחול מאוזן: $\dot W_{1:N}=-\sum_{j=1}^N\big[W_{1:N}W_{1:N}^\top\big]^{\frac{j-1}{N}}\nabla\ell(W_{1:N})\big[W_{1:N}^\top W_{1:N}\big]^{\frac{N-j}{N}}$ — GF מותנה-מראש (preconditioned) שלמתנה-המראש ה-PSD שלו יש וקטורים עצמיים $\mathrm{vec}(u_rv_{r'}^\top)$ וערכים עצמיים $\sum_{j=1}^N\sigma_r^{2(N-j)/N}\sigma_{r'}^{2(j-1)/N}$ (התנועה מוגברת לאורך כיוונים סינגולריים גדולים). מקרה סקלרי: $\dot w=-N\,L'(w)\,w^{2-\frac2N}$; מקרה וקטור-שורה: $\dot w=-\|w\|^{2(N-1)/N}\nabla L_S(w)-(N-1)\|w\|^{-2/N}\langle\nabla L_S(w),w\rangle w$; מקרה Hadamard: $\dot w=-N\,\nabla L(w)\odot w^{2-\frac2N}$; סימטרי $W=UU^\top$ ($\nabla L$ סימטרי): $\dot W=-2[\nabla L(W)W+W\nabla L(W)]$.
+**Statement:** (משפט 1, הרצאה 4) GF מאתחול מאוזן:
+
+$$\dot W_{1:N}=-\sum_{j=1}^N\big[W_{1:N}W_{1:N}^\top\big]^{\frac{j-1}{N}}\nabla\ell(W_{1:N})\big[W_{1:N}^\top W_{1:N}\big]^{\frac{N-j}{N}}$$
+
+— GF מותנה-מראש (preconditioned) שלמתנה-המראש ה-PSD שלו יש וקטורים עצמיים $\mathrm{vec}(u_rv_{r'}^\top)$ וערכים עצמיים
+
+$$\sum_{j=1}^N\sigma_r^{2(N-j)/N}\sigma_{r'}^{2(j-1)/N}$$
+
+(התנועה מוגברת לאורך כיוונים סינגולריים גדולים). מקרה סקלרי: $\dot w=-N\,L'(w)\,w^{2-\frac2N}$; מקרה וקטור-שורה:
+
+$$\dot w=-\|w\|^{2(N-1)/N}\nabla L_S(w)-(N-1)\|w\|^{-2/N}\langle\nabla L_S(w),w\rangle w$$
+
+מקרה Hadamard:
+
+$$\dot w=-N\,\nabla L(w)\odot w^{2-\frac2N}$$
+
+סימטרי $W=UU^\top$ ($\nabla L$ סימטרי): $\dot W=-2[\nabla L(W)W+W\nabla L(W)]$.
 **Use it when:** "הוכיחו $\dot w(t)=\dots$" — הגזירה הכי ממוחזרת במבחנים (כלל המכפלה + balancedness $w_i^2=|w|^{2/N}$).
 **Seen in:** b2021_Q2, c2024_Q2, b2023_Q2, a2021_Q2, a2024_Q2
 **Watch out:** שננו את המעריכים $\frac{j-1}{N}$ (שמאל) / $\frac{N-j}{N}$ (ימין); $N=1$ מצטמצם ל-GF רגיל; וריאנטי מבחן משנים קבועים (למשל $\dot U=-4(W-W^*)U$ עבור $L(W)=\|W-W^*\|^2$).
 
 ### תנאי PL ⇒ קצב לינארי (אקספוננציאלי)
-**Statement:** אם $f(w)-f(w^*)\le\|\nabla f(w)\|^2$ (אי-שוויון מסוג PL), אז תחת GF $f(w(t))-f(w^*)\le e^{-t}(f(w_0)-f(w^*))$: $\frac{d}{dt}(f-f^*)=-\|\nabla f\|^2\le-(f-f^*)$, אינטגרציה (Grönwall). תבנית כללית: $\dot g\le-\kappa(g-\ell^*)\Rightarrow g(t)-\ell^*\le(g(0)-\ell^*)e^{-\kappa t}$. קמירות-חזקה מסדר $\alpha$ גוררת את צורת ה-PL $\|\nabla f(w)\|^2\ge\alpha(f(w)-f^*)$ (הרצאה 4, טענה 2).
+**Statement:** אם $f(w)-f(w^*)\le\|\nabla f(w)\|^2$ (אי-שוויון מסוג PL), אז תחת GF $f(w(t))-f(w^*)\le e^{-t}(f(w_0)-f(w^*))$:
+
+$$\frac{d}{dt}(f-f^*)=-\|\nabla f\|^2\le-(f-f^*)$$
+
+אינטגרציה (Grönwall). תבנית כללית:
+
+$$\dot g\le-\kappa(g-\ell^*)\Rightarrow g(t)-\ell^*\le(g(0)-\ell^*)e^{-\kappa t}$$
+
+קמירות-חזקה מסדר $\alpha$ גוררת את צורת ה-PL $\|\nabla f(w)\|^2\ge\alpha(f(w)-f^*)$ (הרצאה 4, טענה 2).
 **Use it when:** כל תת-שאלה "הוכיחו התכנסות אקספוננציאלית" — בססו $\dot L\le-\kappa L$ ואינטגרלו ($\kappa=2Nc^{2-2/N}$ במבחני הסקלר/Hadamard).
 **Seen in:** a2023_Q2, b2021_Q2, b2023_Q2, c2024_Q2
 
 ### שולי ליקוי (deficiency margin)
-**Statement:** ל-$W$ יש שולי-ליקוי $c>0$ ביחס להפסד $\ell$ כאשר $\ell(W)<\ell(W')$ עבור **כל** $W'$ עם $\sigma_{\min}(W')\le c$. מאחר ש-GF רק מקטין את ההפסד, השוליים נשמרים, ולכן $\sigma_{\min}(W_{1:N}(t))\ge c$ לכל $t$; עם קמירות-חזקה מסדר $\alpha$ של $\ell$, GF מאתחול מאוזן עם שוליים $c$ הוא $\epsilon$-אופטימלי עד זמן $\ln(\epsilon^{-1}(\phi(0)-\ell^*))\,c^{-2(N-1)/N}\alpha^{-1}$. עובדה נלווית: $\min\{\|W-\Lambda\|_F:\sigma_{\min}(W)\le c\}=\max\{0,\sigma_{\min}(\Lambda)-c\}$ (ניתוח SVD + $\sigma_{\min}(A+B)\ge\sigma_{\min}(A)-\sigma_{\max}(B)$).
+**Statement:** ל-$W$ יש שולי-ליקוי $c>0$ ביחס להפסד $\ell$ כאשר $\ell(W)<\ell(W')$ עבור **כל** $W'$ עם $\sigma_{\min}(W')\le c$. מאחר ש-GF רק מקטין את ההפסד, השוליים נשמרים, ולכן $\sigma_{\min}(W_{1:N}(t))\ge c$ לכל $t$; עם קמירות-חזקה מסדר $\alpha$ של $\ell$, GF מאתחול מאוזן עם שוליים $c$ הוא $\epsilon$-אופטימלי עד זמן
+
+$$\ln(\epsilon^{-1}(\phi(0)-\ell^*))\,c^{-2(N-1)/N}\alpha^{-1}$$
+
+עובדה נלווית:
+
+$$\min\{\|W-\Lambda\|_F:\sigma_{\min}(W)\le c\}=\max\{0,\sigma_{\min}(\Lambda)-c\}$$
+
+(ניתוח SVD +
+
+$$\sigma_{\min}(A+B)\ge\sigma_{\min}(A)-\sigma_{\max}(B)$$
+
+).
 **Use it when:** ערובות התכנסות-למינימום-גלובלי לרשתות לינאריות עמוקות; חישוב המרחק הוא תרגיל חוזר בסגנון תרגול.
 **Seen in:** תיאוריית ליבה (לא נבחן ישירות)
 **Watch out:** אי-השוויון בהגדרה חמור ומכומת על פני כל $W'$ עם $\sigma_{\min}$ קטן; העובדה "אתחול מקרי קטן משיג שוליים בהסתברות $\approx1/2$" מנוסחת בקורס רק עבור **מקרה הפלט-היחיד $d_N=1$** (רגרסיה לינארית, שבה $\sigma_{\min}=\|\cdot\|_F$); משפט 2 מניח גם ש-$\ell$ גזירה ברציפות.
 
 ### דינמיקת ניבוי NTK + פתרון ספקטרלי
-**Statement:** (למה 1, הרצאה 5 — מדויק, ללא הנחת רוחב) GF על $\ell(w)=\frac12\sum_{i=1}^m(f(w,x_i)-y_i)^2$ נותן $\dot u(t)=-H(t)(u(t)-y)$, כאשר $(H(t))_{i,j}=\big\langle\frac{\partial f(w(t),x_i)}{\partial w},\frac{\partial f(w(t),x_j)}{\partial w}\big\rangle$ הוא PSD (Gram של יעקוביאנים). אם $H$ קבוע: $u(t)-y=e^{-Ht}(u(0)-y)$; בבסיס העצמי $q:=V^\top(u-y)$, $q_i(t)=q_i(0)e^{-\lambda_it}$ וגם $\|q\|^2=2\ell$; אם כל $\lambda_i>0$, $\ell\le\epsilon$ עד זמן $\max_i\frac{1}{2\lambda_i}\log\frac{m\,\|u(0)-y\|^2}{2\epsilon}$. אם מספר הפרמטרים $k<m$ אז $H=JJ^\top$ סינגולרי (דרגה $\le k$) — מוד כלשהו לעולם אינו דועך.
+**Statement:** (למה 1, הרצאה 5 — מדויק, ללא הנחת רוחב) GF על
+
+$$\ell(w)=\frac12\sum_{i=1}^m(f(w,x_i)-y_i)^2$$
+
+נותן $\dot u(t)=-H(t)(u(t)-y)$, כאשר
+
+$$(H(t))_{i,j}=\big\langle\frac{\partial f(w(t),x_i)}{\partial w},\frac{\partial f(w(t),x_j)}{\partial w}\big\rangle$$
+
+הוא PSD (Gram של יעקוביאנים). אם $H$ קבוע: $u(t)-y=e^{-Ht}(u(0)-y)$; בבסיס העצמי $q:=V^\top(u-y)$, $q_i(t)=q_i(0)e^{-\lambda_it}$ וגם $\|q\|^2=2\ell$; אם כל $\lambda_i>0$, $\ell\le\epsilon$ עד זמן
+
+$$\max_i\frac{1}{2\lambda_i}\log\frac{m\,\|u(0)-y\|^2}{2\epsilon}$$
+
+אם מספר הפרמטרים $k<m$ אז $H=JJ^\top$ סינגולרי (דרגה $\le k$) — מוד כלשהו לעולם אינו דועך.
 **Use it when:** "הוכיחו $\dot u=-H(u-y)$" + "הוכיחו התכנסות לינארית כאשר $\lambda_i>0$" — b2020_Q2 מילה במילה; הוכחת קצב חלופית: $\frac{d}{dt}\|u-y\|^2\le-2\lambda_{\min}\|u-y\|^2$ (Rayleigh).
 **Seen in:** b2020_Q2
 **Watch out:** ה-PSD-יות אוטומטית; **אי-סינגולריות** של $H^*$ היא התנאי הנוסף להתכנסות לאפס-הפסד; הערך העצמי הקטן ביותר שולט בחסם הזמן.
 
 ### רשתות רחבות-במיוחד: $H(t)\approx H(0)\approx H^*$ (lazy training)
-**Statement:** עבור המודל הרדוד $f_a(W,x)=\frac{1}{\sqrt n}\sum_{r=1}^na_r\sigma(w_r^\top x)$ ($\|x\|=1$, $|\dot\sigma|,|\ddot\sigma|\le1$, $w_r(0)\sim N(0,I)$, $a_r=\pm1$ קבוע): $n\ge\frac{2m^4}{\epsilon^2}\log\frac{m^2}{\delta}\Rightarrow\|H(0)-H^*\|_{spectral}\le\epsilon$ בהסתברות $\ge1-\delta$ (Hoeffding לכל כניסה + איחוד על $m^2$ כניסות). יציבות הגרעין (הרצאה 5, טענה 2 — מניחה בנוסף $|y_i|\le c$ וגם $\max_{\tau\in[0,t]}|(u(\tau))_i|\le c$ לכל $i$, מה שמגדיר את הקבוע $c$): $n\ge\frac{16c^2m^6t^2}{\epsilon^2}\Rightarrow\|H(t)-H(0)\|_{spectral}\le\epsilon$, דרך חסם ה-lazy-training $\|w_r(t)-w_r(0)\|\le\frac{2cmt}{\sqrt n}$. NTK: $K_s(x,x')=x^\top x'\,\mathbb E_{w\sim N(0,I)}[\dot\sigma(w^\top x)\dot\sigma(w^\top x')]$; במשטר האפיני (עם $w(0)\approx0$ הישארות-בפרישה ו-$H^*$ בעל דרגה מלאה) המנבא הנלמד הוא בדיוק רגרסיית גרעין $x\mapsto[K(x,x_1),\dots,K(x,x_m)](H^*)^{-1}y$.
+**Statement:** עבור המודל הרדוד
+
+$$f_a(W,x)=\frac{1}{\sqrt n}\sum_{r=1}^na_r\sigma(w_r^\top x)$$
+
+($\|x\|=1$, $|\dot\sigma|,|\ddot\sigma|\le1$, $w_r(0)\sim N(0,I)$, $a_r=\pm1$ קבוע):
+
+$$n\ge\frac{2m^4}{\epsilon^2}\log\frac{m^2}{\delta}\Rightarrow\|H(0)-H^*\|_{spectral}\le\epsilon$$
+
+בהסתברות $\ge1-\delta$ (Hoeffding לכל כניסה + איחוד על $m^2$ כניסות). יציבות הגרעין (הרצאה 5, טענה 2 — מניחה בנוסף $|y_i|\le c$ וגם $\max_{\tau\in[0,t]}|(u(\tau))_i|\le c$ לכל $i$, מה שמגדיר את הקבוע $c$):
+
+$$n\ge\frac{16c^2m^6t^2}{\epsilon^2}\Rightarrow\|H(t)-H(0)\|_{spectral}\le\epsilon$$
+
+דרך חסם ה-lazy-training
+
+$$\|w_r(t)-w_r(0)\|\le\frac{2cmt}{\sqrt n}$$
+
+NTK:
+
+$$K_s(x,x')=x^\top x'\,\mathbb E_{w\sim N(0,I)}[\dot\sigma(w^\top x)\dot\sigma(w^\top x')]$$
+
+במשטר האפיני (עם $w(0)\approx0$ הישארות-בפרישה ו-$H^*$ בעל דרגה מלאה) המנבא הנלמד הוא בדיוק רגרסיית גרעין
+
+$$x\mapsto[K(x,x_1),\dots,K(x,x_m)](H^*)^{-1}y$$
 **Use it when:** שאלות "מדוע התכנסות לאפס-הפסד סבירה כאשר $k\gg m$" / הצדקת משטר-הגרעין.
 **Seen in:** b2020_Q2
 **Watch out:** כל נוירון זז $O(1/\sqrt n)$ — רוחב קונה יציבות-גרעין; הרוחבים הנדרשים "בלתי-נסבלים" (הסתייגות מנוסחת); $K_s$ מערב את $\dot\sigma$, לא $\sigma$.
 
 ### דינמיקת ערכים סינגולריים / ערכים עצמיים של פירוק מטריצות עמוק
-**Statement:** (משפט 1, הרצאה 8) GF על $\phi(W_1,\dots,W_N)=L_S(W_N\cdots W_1)$ מאתחול מאוזן, עם SVD אנליטי $W_{1:N}(t)=U(t)S(t)V(t)^\top$: $\dot\sigma_r(t)=-N\big(\sigma_r(t)^2\big)^{1-\frac1N}\big\langle\nabla L_S(W_{1:N}(t)),u_r(t)v_r(t)^\top\big\rangle$. וריאנט סימטרי $W=UU^\top$: $\frac{d}{dt}\lambda_r=4\lambda_r\langle-\nabla L(W),v_rv_r^\top\rangle$, ולכן $\lambda_r(t)=\lambda_r(0)\exp\big(4\int_0^t\langle-\nabla L,v_rv_r^\top\rangle\big)$ — הערכים העצמיים לעולם אינם משנים סימן. $N=1$: גורם $=1$ (ללא הטיה); $N\ge2$: ערכים סינגולריים גדולים מאיצים, קטנים נתקעים (חד יותר עבור $N$ גדול) ⇒ אתחול קרוב-לאפס מניב פתרונות **דרגה נמוכה** בקירוב (למידה מצטברת/סדרתית).
+**Statement:** (משפט 1, הרצאה 8) GF על $\phi(W_1,\dots,W_N)=L_S(W_N\cdots W_1)$ מאתחול מאוזן, עם SVD אנליטי $W_{1:N}(t)=U(t)S(t)V(t)^\top$:
+
+$$\dot\sigma_r(t)=-N\big(\sigma_r(t)^2\big)^{1-\frac1N}\big\langle\nabla L_S(W_{1:N}(t)),u_r(t)v_r(t)^\top\big\rangle$$
+
+וריאנט סימטרי $W=UU^\top$:
+
+$$\frac{d}{dt}\lambda_r=4\lambda_r\langle-\nabla L(W),v_rv_r^\top\rangle$$
+
+ולכן
+
+$$\lambda_r(t)=\lambda_r(0)\exp\big(4\int_0^t\langle-\nabla L,v_rv_r^\top\rangle\big)$$
+
+— הערכים העצמיים לעולם אינם משנים סימן. $N=1$: גורם $=1$ (ללא הטיה); $N\ge2$: ערכים סינגולריים גדולים מאיצים, קטנים נתקעים (חד יותר עבור $N$ גדול) ⇒ אתחול קרוב-לאפס מניב פתרונות **דרגה נמוכה** בקירוב (למידה מצטברת/סדרתית).
 **Use it when:** "הוכיחו את ה-ODE של הערך העצמי" (גזרו $\lambda_r=v_r^\top Wv_r$; איברי $\dot v_r$ מתאפסים שכן $\langle v_r,\dot v_r\rangle=0$) + "הסבירו את ההטיה לדרגה נמוכה" (חלק איכותי).
 **Seen in:** a2021_Q2, a2024_Q2
 **Watch out:** balancedness נכנס דרך דינמיקת ה-E2E; ה-SVD האנליטי עצמו אינו זקוק ל-balancedness; דינמיקה כפלית ⇒ שימור סימן ⇒ אינווריאנטי $\det\ne0$.
 
 ### ReLU רדוד תחת GF מאוזן: שימור סימן + הפסד בלתי-נתן-להשגה
-**Statement:** (b2022_Q2) אתחול מאוזן $v_m(0)^2=\|w_m(0)\|^2$ נשמר; עם $\sigma_m:=|v_m|\|w_m\|$, $\frac{d}{dt}\sigma_m^2=\sigma_m^2\cdot g(t)$ עם $g$ רציפה וחסומה על כל $[0,t_0)$, ולכן $\sigma_m(t)^2=\sigma_m(0)^2e^{\int_0^tg}>0$ — ומכאן $v_m(0)>0\Rightarrow v_m(t)>0$ לכל $t$ (סתירת אפס-ראשון). מסקנה: כל $v_m>0$ ו-$\phi\ge0$ נותנים $h_{\theta(t)}(x)\ge0$ בכל מקום; אם תווית כלשהי $y_{\bar n}<0$ אז $\mathcal L(\theta(t))\ge y_{\bar n}^2=:\epsilon$ לכל $t$ — רמת ההפסד בלתי-נתנת-להשגה.
+**Statement:** (b2022_Q2) אתחול מאוזן $v_m(0)^2=\|w_m(0)\|^2$ נשמר; עם $\sigma_m:=|v_m|\|w_m\|$,
+
+$$\frac{d}{dt}\sigma_m^2=\sigma_m^2\cdot g(t)$$
+
+עם $g$ רציפה וחסומה על כל $[0,t_0)$, ולכן
+
+$$\sigma_m(t)^2=\sigma_m(0)^2e^{\int_0^tg}>0$$
+
+— ומכאן
+
+$$v_m(0)>0\Rightarrow v_m(t)>0$$
+
+לכל $t$ (סתירת אפס-ראשון). מסקנה: כל $v_m>0$ ו-$\phi\ge0$ נותנים $h_{\theta(t)}(x)\ge0$ בכל מקום; אם תווית כלשהי $y_{\bar n}<0$ אז
+
+$$\mathcal L(\theta(t))\ge y_{\bar n}^2=:\epsilon$$
+
+לכל $t$ — רמת ההפסד בלתי-נתנת-להשגה.
 **Use it when:** Q2 של רשתות ReLU המבקשות אינווריאנטיות סימן לאורך הזרימה ורצפות הפסד; וגם בניות מינימום-מקומי-רע (כל ה-ReLU מתים: $w_m=-x$ ⇒ $h\equiv0$ מקומית, $L\equiv y^2$).
 **Seen in:** b2022_Q2, a2022_Q2
 **Watch out:** המנגנון הוא ה-ODE האקספוננציאלי/כפלי — גודל המקיים $\dot z=g\,z$ עם $g$ חסום אינו יכול להגיע ל-$0$ בזמן סופי; הומוגניות-1 חיובית $\phi(\langle w,x\rangle)=\|w\|\phi(\langle w/\|w\|,x\rangle)$ היא שלב הנרמול.
@@ -224,12 +498,30 @@
 ## הכללה
 
 ### $L_D$, $L_S$, הפער, והחסם המבוקש
-**Statement:** $L_D(h):=\mathbb E_{(x,y)\sim D}[\ell(y,h(x))]$ (הפסד אוכלוסייה), $L_S(h):=\frac1m\sum_{i=1}^m\ell(y_i,h(x_i))$ (הפסד אמפירי), $S\sim D^m$ i.i.d., הפסד חסום ב-$[0,1]$ (ו-$\rho$-Lipschitz בעת הצורך). מטרה: $\forall\delta\in(0,1)$, בהסתברות $\ge1-\delta$ על פני $S$: $L_D(\hat h)-L_S(\hat h)\le\Delta(m,\delta,\mathcal H,\hat h,S)$ — הדוק וגם מעמיק; להתכנסות אחידה קלאסית $\Delta$ תלוי רק ב-$(m,\delta,\mathcal H)$.
+**Statement:**
+
+$$L_D(h):=\mathbb E_{(x,y)\sim D}[\ell(y,h(x))]$$
+
+(הפסד אוכלוסייה),
+
+$$L_S(h):=\frac1m\sum_{i=1}^m\ell(y_i,h(x_i))$$
+
+(הפסד אמפירי), $S\sim D^m$ i.i.d., הפסד חסום ב-$[0,1]$ (ו-$\rho$-Lipschitz בעת הצורך). מטרה: $\forall\delta\in(0,1)$, בהסתברות $\ge1-\delta$ על פני $S$:
+
+$$L_D(\hat h)-L_S(\hat h)\le\Delta(m,\delta,\mathcal H,\hat h,S)$$
+
+— הדוק וגם מעמיק; להתכנסות אחידה קלאסית $\Delta$ תלוי רק ב-$(m,\delta,\mathcal H)$.
 **Use it when:** הקמת כל Q3; חלקי חיבור על מדוע $\Delta$ חייב להיות תלוי ב-$\hat h$ וב-$S$ בלמידה עמוקה.
 **Seen in:** ה-Q3 של כל 12 המבחנים
 
 ### חסם התכנסות אחידה למחלקה סופית
-**Statement:** אם $|\mathcal H|<\infty$, אז $\forall\delta\in(0,1)$, בהסתברות $\ge1-\delta$: $\forall h\in\mathcal H:\ L_D(h)-L_S(h)\le\sqrt{\frac{\ln(2|\mathcal H|/\delta)}{2m}}=\sqrt{\frac{\ln|\mathcal H|+\ln(2/\delta)}{2m}}$. הוכחה: Hoeffding לכל $h$ קבוע + חסם איחוד + פתרון $2|\mathcal H|e^{-2m\epsilon^2}=\delta$. צורת ביטים: $b$ ביטים ⇒ $|\mathcal H|\le2^b$ ⇒ פער $\le\sqrt{\frac{\ln(2/\delta)+b\ln 2}{2m}}$.
+**Statement:** אם $|\mathcal H|<\infty$, אז $\forall\delta\in(0,1)$, בהסתברות $\ge1-\delta$:
+
+$$\forall h\in\mathcal H:\ L_D(h)-L_S(h)\le\sqrt{\frac{\ln(2|\mathcal H|/\delta)}{2m}}=\sqrt{\frac{\ln|\mathcal H|+\ln(2/\delta)}{2m}}$$
+
+הוכחה: Hoeffding לכל $h$ קבוע + חסם איחוד + פתרון $2|\mathcal H|e^{-2m\epsilon^2}=\delta$. צורת ביטים: $b$ ביטים ⇒ $|\mathcal H|\le2^b$ ⇒ פער
+
+$$\le\sqrt{\frac{\ln(2/\delta)+b\ln 2}{2m}}$$
 **Use it when:** חלק 1–2 כמעט של כל Q3 ("מותר להשתמש ב-Hoeffding אך לא בטענות מהכיתה").
 **Seen in:** example_Q3, a2021_Q3, a2023_Q3, b2023_Q3, a2024_Q3, b2024_Q3, c2024_Q3
 **Watch out:** למעשה מוכיח את הגרסה הדו-צדדית $\forall h:|L_D-L_S|\le\dots$; לא-ריק רק כאשר $m\gtrsim\ln|\mathcal H|$ (≈ מספר הביטים).
@@ -240,31 +532,89 @@
 **Seen in:** a2021_Q3, b2023_Q3, a2024_Q3, b2024_Q3
 
 ### כיסוי + העברת Lipschitz (תבנית $+2\rho\epsilon$)
-**Statement:** יהי $F$ כיסוי-$\epsilon$ סופי של $H$ בנורמת סופרמום ($\forall h\ \exists f\in F:\ \sup_x|h(x)-f(x)|\le\epsilon$) ו-$\ell$ בעל $\rho$-Lipschitz בארגומנט הראשון שלו. אז נקודתית $|\ell(h(x),y)-\ell(f(x),y)|\le\rho\epsilon$, ולכן $|L_D(h)-L_D(f)|\le\rho\epsilon$ וגם $|L_S(h)-L_S(f)|\le\rho\epsilon$, ועל מאורע ההתכנסות-האחידה של הכיסוי: $\forall h\in H:\ L_D(h)-L_S(h)\le\Delta(N,\delta,|F|)+2\rho\epsilon$. אותו מנגנון כמו חסם הדחיסה $\Delta+2\rho\,d(\hat h,H')$ וחסם הקואורדינטה-המאופסת $\Delta_r(m,\delta)+2\rho|(w)_r|$.
+**Statement:** יהי $F$ כיסוי-$\epsilon$ סופי של $H$ בנורמת סופרמום (
+
+$$\forall h\ \exists f\in F:\ \sup_x|h(x)-f(x)|\le\epsilon$$
+
+) ו-$\ell$ בעל $\rho$-Lipschitz בארגומנט הראשון שלו. אז נקודתית
+
+$$|\ell(h(x),y)-\ell(f(x),y)|\le\rho\epsilon$$
+
+ולכן $|L_D(h)-L_D(f)|\le\rho\epsilon$ וגם $|L_S(h)-L_S(f)|\le\rho\epsilon$, ועל מאורע ההתכנסות-האחידה של הכיסוי:
+
+$$\forall h\in H:\ L_D(h)-L_S(h)\le\Delta(N,\delta,|F|)+2\rho\epsilon$$
+
+אותו מנגנון כמו חסם הדחיסה $\Delta+2\rho\,d(\hat h,H')$ וחסם הקואורדינטה-המאופסת $\Delta_r(m,\delta)+2\rho|(w)_r|$.
 **Use it when:** מחלקות אינסופיות המטופלות דרך שלד סופי ("טכניקת דיסקרטיזציה/דחיסה"); חסמי אינדקס-של-נקודת-הכיסוי-הקרובה.
 **Seen in:** a2023_Q3, c2024_Q3, b2020_Q3, a2024_Q3
 **Watch out:** הפקטור 2 — $\rho\epsilon$ אחד מצד האוכלוסייה, אחד מהצד האמפירי; השמטת אחד מהם מאבדת נקודות.
 
 ### מורכבות Rademacher: הגדרה, משפט מרכזי, מחלקות לינאריות
-**Statement:** $R(A):=\frac1m\mathbb E_\xi\big[\sup_{a\in A}\sum_{i=1}^m\xi_ia_i\big]$, $\xi_i=\pm1$ בהסתברות $\frac12$ i.i.d., מיושם על $\ell\circ\mathcal H\circ S:=\{(\ell(y_1,h(x_1)),\dots,\ell(y_m,h(x_m))):h\in\mathcal H\}$. משפט מרכזי (קבועי הקורס): בהסתברות $\ge1-\delta$, $\forall h\in\mathcal H:\ L_D(h)-L_S(h)\le 2R(\ell\circ\mathcal H\circ S)+4\sqrt{\frac{2\ln(4/\delta)}{m}}$. **מבוקר: השתמשו בצורת הקבוע-4** — זו הצורה שהרצאה 6 משפט 1 מנסחת ושהמבחנים מוסרים כתזכורת (b2021, a2020); ההוכחה העצמאית בתרגול מניבה קבוע 3 — צטטו 3 רק אם אתם משחזרים אותה הוכחה. עוגנים: $R(\{a'\})=0$, $R(\{\pm1\}^m)=1$. חסמי מחלקה-לינארית שמבחנים מוסרים: $R(\ell\circ\mathcal H_r\circ S)\le\frac{\rho\,r\,\max_i\|x_i\|}{\sqrt m}$ ($\|w\|\le r$, הפסד $\rho$-Lipschitz) או פשוט $\le\frac{r}{\sqrt m}$.
+**Statement:**
+
+$$R(A):=\frac1m\mathbb E_\xi\big[\sup_{a\in A}\sum_{i=1}^m\xi_ia_i\big]$$
+
+$\xi_i=\pm1$ בהסתברות $\frac12$ i.i.d., מיושם על
+
+$$\ell\circ\mathcal H\circ S:=\{(\ell(y_1,h(x_1)),\dots,\ell(y_m,h(x_m))):h\in\mathcal H\}$$
+
+משפט מרכזי (קבועי הקורס): בהסתברות $\ge1-\delta$,
+
+$$\forall h\in\mathcal H:\ L_D(h)-L_S(h)\le 2R(\ell\circ\mathcal H\circ S)+4\sqrt{\frac{2\ln(4/\delta)}{m}}$$
+
+. **מבוקר: השתמשו בצורת הקבוע-4** — זו הצורה שהרצאה 6 משפט 1 מנסחת ושהמבחנים מוסרים כתזכורת (b2021, a2020); ההוכחה העצמאית בתרגול מניבה קבוע 3 — צטטו 3 רק אם אתם משחזרים אותה הוכחה. עוגנים: $R(\{a'\})=0$, $R(\{\pm1\}^m)=1$. חסמי מחלקה-לינארית שמבחנים מוסרים:
+
+$$R(\ell\circ\mathcal H_r\circ S)\le\frac{\rho\,r\,\max_i\|x_i\|}{\sqrt m}$$
+
+($\|w\|\le r$, הפסד $\rho$-Lipschitz) או פשוט $\le\frac{r}{\sqrt m}$.
 **Use it when:** שאלות הכללה מבוססות-נורמה; פרשו את $R$ כיכולת להתאים סימנים מקריים (התאמת תת-קבוצה מקרית, אנטי-התאמת השאר) — $R\approx1$ למחלקות מאנטרפלות הופך את החסם לריק.
 **Seen in:** a2020_Q3, b2021_Q3
 **Watch out:** שלד ההוכחה (תרגול): $\mathbb E_S[\sup_h(L_D-L_S)]\le2\mathbb E_S[R]$ (SSBD למה 26.2) + McDiarmid פעמיים עם הפרשים חסומים $c=\frac2m$ + חסם איחוד עם $\delta/2$.
 
 ### חסם אדפטיבי-לנורמה דרך איחוד על רדיוסים
-**Statement:** הפעילו את חסם ה-Rademacher (או הנתון) על $\mathcal H_k=\{h_\theta:\|\theta\|\le k\}$ מקוננות, $k\in\mathbb N$, עם $\delta_k=\frac{6\delta}{\pi^2k^2}$; אז עבור כל $h_\theta$ בחרו $k=\lceil\|\theta\|\rceil\ (\le\|\theta\|+1$, השתמשו ב-$k=1$ אם $\lceil\cdot\rceil=0$): בהסתברות $\ge1-\delta$, $\forall h_\theta\in\mathcal H:\ L_D(h_\theta)-L_S(h_\theta)\le\frac{2(\|\theta\|+1)}{\sqrt m}+4\sqrt{\frac{2\ln\big(\frac{2\pi^2(\|\theta\|+1)^2}{3\delta}\big)}{m}}$.
+**Statement:** הפעילו את חסם ה-Rademacher (או הנתון) על
+
+$$\mathcal H_k=\{h_\theta:\|\theta\|\le k\}$$
+
+מקוננות, $k\in\mathbb N$, עם $\delta_k=\frac{6\delta}{\pi^2k^2}$; אז עבור כל $h_\theta$ בחרו
+
+$$k=\lceil\|\theta\|\rceil\ (\le\|\theta\|+1$$
+
+השתמשו ב-$k=1$ אם $\lceil\cdot\rceil=0$): בהסתברות $\ge1-\delta$,
+
+$$\forall h_\theta\in\mathcal H:\ L_D(h_\theta)-L_S(h_\theta)\le\frac{2(\|\theta\|+1)}{\sqrt m}+4\sqrt{\frac{2\ln\big(\frac{2\pi^2(\|\theta\|+1)^2}{3\delta}\big)}{m}}$$
 **Use it when:** "עשו את החסם תלוי בנורמה של ההשערה הנלמדת" — משתלב עם הטיית הנורמה-המינימלית של GD.
 **Seen in:** b2021_Q3, a2020_Q3, b2022_Q3, b2024_Q3
 **Watch out:** החסם הוא בדיעבד: יותר נתונים יכולים ל**הגדיל** אותו אם $\|\theta(GD(S'))\|$ גדל — הוא אינו מונוטוני ב-$m$ לבדו (b2021_Q3b).
 
 ### משפט PAC-Bayes + מימושים
-**Statement:** (צורת הקורס) עבור כל prior $P$ מעל $\mathcal H$ הקבוע בלתי-תלוי ב-$S$, בהסתברות $\ge1-\delta$ על פני $S$, **לכל** ה-posteriors $Q$ (אפילו תלויי-$S$): $L_D(Q)-L_S(Q)\le\sqrt{\frac{\mathrm{KL}(Q\|P)+\ln(2m/\delta)}{2(m-1)}}$, כאשר $L(Q)=\mathbb E_{h\sim Q}[L(h)]$, $\mathrm{KL}(Q\|P)=\mathbb E_{h\sim Q}[\ln\frac{Q(h)}{P(h)}]$. מימושים: prior אחיד + posterior מסה-נקודתית ⇒ $\mathrm{KL}=\ln|\mathcal H|$ (חסם מחלקה-סופית); prior $P(h_k)=2^{-k}$ מעל $\mathcal H$ בת-מנייה ⇒ $\mathrm{KL}=k\ln2$ (חסם מעדיף-אינדקס); גאוסי $P=N(0,\sigma^2I)$, $Q=N(\hat\theta,\sigma^2I)$ ⇒ $\mathrm{KL}=\frac{\|\hat\theta\|^2}{2\sigma^2}$ ⇒ קריטריון מינימום-שטוח + נורמה-נמוכה.
+**Statement:** (צורת הקורס) עבור כל prior $P$ מעל $\mathcal H$ הקבוע בלתי-תלוי ב-$S$, בהסתברות $\ge1-\delta$ על פני $S$, **לכל** ה-posteriors $Q$ (אפילו תלויי-$S$):
+
+$$L_D(Q)-L_S(Q)\le\sqrt{\frac{\mathrm{KL}(Q\|P)+\ln(2m/\delta)}{2(m-1)}}$$
+
+כאשר $L(Q)=\mathbb E_{h\sim Q}[L(h)]$,
+
+$$\mathrm{KL}(Q\|P)=\mathbb E_{h\sim Q}[\ln\frac{Q(h)}{P(h)}]$$
+
+מימושים: prior אחיד + posterior מסה-נקודתית ⇒ $\mathrm{KL}=\ln|\mathcal H|$ (חסם מחלקה-סופית); prior $P(h_k)=2^{-k}$ מעל $\mathcal H$ בת-מנייה ⇒ $\mathrm{KL}=k\ln2$ (חסם מעדיף-אינדקס); גאוסי $P=N(0,\sigma^2I)$, $Q=N(\hat\theta,\sigma^2I)$ ⇒
+
+$$\mathrm{KL}=\frac{\|\hat\theta\|^2}{2\sigma^2}$$
+
+⇒ קריטריון מינימום-שטוח + נורמה-נמוכה.
 **Use it when:** חסמי מחלקה בת-מנייה, priors מותאמי-אלגוריתם (לוחות זמנים $\delta_m$), מלכודות "האם שיטת הערכה זו תקפה?".
 **Seen in:** a2022_Q3, example_Q3
 **Watch out:** $P$ **אסור** שיהיה תלוי ב-$S$ — מירכוז ה-prior ב-$h$ המאומן הוא המהלך הלא-חוקי הקלאסי (a2022_Q3d); המכנים הם $2(m-1)$ והלוג הוא $\ln(2m/\delta)$, לא $\ln(1/\delta)$; הערובה היא ל-$L_D(Q)$ (רשת סטוכסטית), לא ל-$L_D(h_{\hat\theta})$.
 
 ### הטיית הנורמה-המינימלית המרומזת של GD (רגרסיה לינארית)
-**Statement:** (טענה 1 + למה 1, הרצאה 7) רגרסיה לינארית בפרמטריזציית-יתר ($d>m$, $\{x_i\}$ בלתי-תלויים לינארית, $X=[x_1,\dots,x_m]\in\mathbb R^{d\times m}$ מופעים-כעמודות): כל שיטה איטרטיבית עם $w^{(0)}=0$ ועדכונים ב-$\mathrm{span}\{\nabla\ell_{(x_i,y_i)}(w)\}=\mathrm{span}\{x_i\}$ (GD/SGD ± momentum) המתכנסת לאפס-הפסד מתכנסת ל-$X(X^\top X)^{-1}y$ — האינטרפולנט בעל **הנורמה האוקלידית המינימלית**. (מוסכמת שורה $X\in\mathbb R^{m\times d}$: $w^*=X^\top(XX^\top)^{-1}y$ — אותו אובייקט.) הוכחה: האיטרטים והגבול נשארים בפרישה; אפס-הפסד בפרישה יחיד (Gram הפיך); פיתגורס מבטל כל רכיב אורתוגונלי.
+**Statement:** (טענה 1 + למה 1, הרצאה 7) רגרסיה לינארית בפרמטריזציית-יתר ($d>m$, $\{x_i\}$ בלתי-תלויים לינארית,
+
+$$X=[x_1,\dots,x_m]\in\mathbb R^{d\times m}$$
+
+מופעים-כעמודות): כל שיטה איטרטיבית עם $w^{(0)}=0$ ועדכונים ב-
+
+$$\mathrm{span}\{\nabla\ell_{(x_i,y_i)}(w)\}=\mathrm{span}\{x_i\}$$
+
+(GD/SGD ± momentum) המתכנסת לאפס-הפסד מתכנסת ל-$X(X^\top X)^{-1}y$ — האינטרפולנט בעל **הנורמה האוקלידית המינימלית**. (מוסכמת שורה $X\in\mathbb R^{m\times d}$: $w^*=X^\top(XX^\top)^{-1}y$ — אותו אובייקט.) הוכחה: האיטרטים והגבול נשארים בפרישה; אפס-הפסד בפרישה יחיד (Gram הפיך); פיתגורס מבטל כל רכיב אורתוגונלי.
 **Use it when:** "הוכיחו ש-GD מתכנס לפתרון הנורמה-המינימלית" + הזנת החסם האדפטיבי-לנורמה; גרסת NTK: אינטרפולנט מינימום-נורמת-RKHS, גרעין-בלבד.
 **Seen in:** a2020_Q3, b2022_Q3
 **Watch out:** אתחול-אפס והתכנסות-לאפס-הפסד הם **הנחות**; ההפיכות היא של מטריצת ה-Gram בגודל $m\times m$ ($X^\top X$ במוסכמת העמודה) — בדקו באיזו מוסכמת המבחן משתמש; וריאנט b2022: $\ell$ הפיך הופך את קבוצות-הרמה לאפיניות, ולכן הטיעון עובד בכל איטרט $\bar t$.
@@ -275,7 +625,11 @@
 **Seen in:** a2021_Q3, b2023_Q3, example_Q3
 
 ### אינטרפולציה הופכת התכנסות אחידה לריקה
-**Statement:** (b2023_Q3) אם $\mathcal H$ (מיוצגת ב-$b$ ביטים) יכולה להתאים כל מדגם בגודל $m$, אז $b\ge m$, ולכן חסם ה-UC הוא $\ge\sqrt{\frac{m\ln2}{2m}}=\sqrt{\ln2/2}\approx0.59$ — קבוע; עם הפסדים ב-$[0,1]$ זה טריוויאלי. יתר על כן אותה מחלקה מאפשרת $D$ עם $L_D(h)=0.5$ לכל $h$ (תוויות = רעש Bernoulli(1/2) בלתי-תלוי) ו-$D$ אחרת (מסה-נקודתית) שבה ל-$h$ מאנטרפל יש $L_D(h)=0$ — קיבולת לבדה אינה יכולה להבחין בין מקריות להכללה מושלמת.
+**Statement:** (b2023_Q3) אם $\mathcal H$ (מיוצגת ב-$b$ ביטים) יכולה להתאים כל מדגם בגודל $m$, אז $b\ge m$, ולכן חסם ה-UC הוא
+
+$$\ge\sqrt{\frac{m\ln2}{2m}}=\sqrt{\ln2/2}\approx0.59$$
+
+— קבוע; עם הפסדים ב-$[0,1]$ זה טריוויאלי. יתר על כן אותה מחלקה מאפשרת $D$ עם $L_D(h)=0.5$ לכל $h$ (תוויות = רעש Bernoulli(1/2) בלתי-תלוי) ו-$D$ אחרת (מסה-נקודתית) שבה ל-$h$ מאנטרפל יש $L_D(h)=0$ — קיבולת לבדה אינה יכולה להבחין בין מקריות להכללה מושלמת.
 **Use it when:** תת-השאלה "מדוע ערובה זו טריוויאלית?" אחרי חסם מניית-ביטים.
 **Seen in:** b2023_Q3
 
@@ -294,7 +648,11 @@
 ## דוגמאות קנוניות שכדאי להחזיק מוכנות
 
 ### $-x^2$ נגד מחלקות קמורות ⧉ external
-**Statement:** מטרה קעורה כמו $f(x)=-x^2$ אינה ניתנת לקירוב על ידי אף מחלקה של פונקציות קמורות במרחק סופרמום על אינטרוול: עבור $h$ קמורה, $h(\frac{a+b}{2})\le\frac{h(a)+h(b)}{2}$, ולכן עם $\epsilon:=\sup|f-h|$ נקודת האמצע נותנת $f(\frac{a+b}{2})-\frac{f(a)+f(b)}{2}\le2\epsilon$ — על $[0,1]$ עם $f=-x^2$ זה כופה $\epsilon\ge\frac18$. **מבוקר: לא נמצא בחומרי הקורס** — זו בניית מוק 1; הטכניקה (חסם מבני ⇒ אי-קריבות כמותית) משקפת טיעונים מעוגני-קורס (חסמי ערך-בנקודה, b2024_Q1(4)).
+**Statement:** מטרה קעורה כמו $f(x)=-x^2$ אינה ניתנת לקירוב על ידי אף מחלקה של פונקציות קמורות במרחק סופרמום על אינטרוול: עבור $h$ קמורה, $h(\frac{a+b}{2})\le\frac{h(a)+h(b)}{2}$, ולכן עם $\epsilon:=\sup|f-h|$ נקודת האמצע נותנת
+
+$$f(\frac{a+b}{2})-\frac{f(a)+f(b)}{2}\le2\epsilon$$
+
+— על $[0,1]$ עם $f=-x^2$ זה כופה $\epsilon\ge\frac18$. **מבוקר: לא נמצא בחומרי הקורס** — זו בניית מוק 1; הטכניקה (חסם מבני ⇒ אי-קריבות כמותית) משקפת טיעונים מעוגני-קורס (חסמי ערך-בנקודה, b2024_Q1(4)).
 **Use it when:** הראיית מחלקת השערות בעלת תכונה מבנית (קמירות, מונוטוניות, חסימות) שאינה אוניברסלית — ה*תבנית* רלוונטית-מבחן אף שהמופע הזה שלנו.
 **Seen in:** מוק 1 Q1.2 (מיוצר); קרובי-תבנית: b2024_Q1
 
@@ -304,23 +662,59 @@
 **Seen in:** a2020_Q1, b2022_Q1
 
 ### מטריצת היחידה $I_{M^{N/2}}$ (עד הפרדת-דרגה)
-**Statement:** הצבת CAC עמוקה עם $r_0\ge M$ (מסנני-בסיס בשכבה 0, מסנן כולו-אחדות בשכבה 1) מניבה $[\![\mathcal A^{HT}]\!]=I_{M^{N/2}}$, בעל דרגה מלאה $M^{N/2}$; לכל טנזור רדוד יש $\operatorname{rank}[\![\mathcal A^{CP}]\!]\le Z$, ו-EYM נותן $\|[\![\mathcal A^{CP}]\!]-I_{M^{N/2}}\|_F\ge\sqrt{M^{N/2}-B}$ — ולכן קירוב-$\epsilon$ כופה $B\ge M^{N/2}-\epsilon^2$.
+**Statement:** הצבת CAC עמוקה עם $r_0\ge M$ (מסנני-בסיס בשכבה 0, מסנן כולו-אחדות בשכבה 1) מניבה $[\![\mathcal A^{HT}]\!]=I_{M^{N/2}}$, בעל דרגה מלאה $M^{N/2}$; לכל טנזור רדוד יש
+
+$$\operatorname{rank}[\![\mathcal A^{CP}]\!]\le Z$$
+
+ו-EYM נותן
+
+$$\|[\![\mathcal A^{CP}]\!]-I_{M^{N/2}}\|_F\ge\sqrt{M^{N/2}-B}$$
+
+— ולכן קירוב-$\epsilon$ כופה $B\ge M^{N/2}-\epsilon^2$.
 **Use it when:** הצגת הפונקציה הקשה להפרדת-עומק של CAC וחיזוק אי-הקריבות שלה.
 **Seen in:** תיאוריית ליבה (הרצאה 2; מכונת הטנזורים נבחנה ב-b2020_Q1, a2022_Q1)
 
 ### מערך-נתונים חד-ReLU בעל הפסד בלתי-נתן-להשגה
-**Statement:** רשת ReLU רדודה ללא הטיה, אתחול מאוזן עם כל $v_m(0)>0$: הפלטים מקיימים $h_{\theta(t)}(x)=\sum_mv_m(t)\phi(\langle w_m(t),x\rangle)\ge0$ לנצח (שימור סימן). מכאן דוגמה אחת עם תווית שלילית $y_{\bar n}<0$ הופכת את $\mathcal L(\theta(t))\ge y_{\bar n}^2>0$ לכל $t$: gradient flow לעולם אינו יכול להגיע להפסד מתחת ל-$\epsilon=y_{\bar n}^2$, אף שהמחלקה עצמה יכולה להתאים לנתונים.
+**Statement:** רשת ReLU רדודה ללא הטיה, אתחול מאוזן עם כל $v_m(0)>0$: הפלטים מקיימים
+
+$$h_{\theta(t)}(x)=\sum_mv_m(t)\phi(\langle w_m(t),x\rangle)\ge0$$
+
+לנצח (שימור סימן). מכאן דוגמה אחת עם תווית שלילית $y_{\bar n}<0$ הופכת את
+
+$$\mathcal L(\theta(t))\ge y_{\bar n}^2>0$$
+
+לכל $t$: gradient flow לעולם אינו יכול להגיע להפסד מתחת ל-$\epsilon=y_{\bar n}^2$, אף שהמחלקה עצמה יכולה להתאים לנתונים.
 **Use it when:** הדגמה ש-GF מאתחול רע (נעול-סימן) נכשל באופן מוכח — כישלון אופטימיזציה ללא חסם-נוף.
 **Seen in:** b2022_Q2
 
 ### דינמיקת פירוק סקלרי נפתרת איכותית
-**Statement:** עבור $L(W)=$ מרחק ריבועי למטרה, הדינמיקה לכל-כיוון היא קובית/לוגיסטית: מקרה סימטרי $d{=}1$ $\dot\lambda=8\lambda(\lambda^*-\lambda)$ (מ-$\dot\lambda_r=4\lambda_r\langle-\nabla L,v_rv_r^\top\rangle$), ערכים סינגולריים בעומק-$N$ $\dot\sigma_i=-N\sigma_i^{2-\frac2N}\cdot\frac{1}{dd'}(\sigma_i-\sigma_i^*)$: פתרונות משתהים אקספוננציאלית זמן רב ליד $0$ (אתחול קטן $\epsilon$), ואז עולים בחדות בזמן $\sim\frac{dd'}{2\sigma_i^*}\ln\frac1\epsilon$, ואז רוויים ב-$\sigma_i^*$ — ערכים סינגולריים אמיתיים גדולים יותר נלמדים ראשונים, אחד-אחד; $N=1$ נותן רלקסציה אקספוננציאלית רגילה בלי הטיה כזו.
+**Statement:** עבור $L(W)=$ מרחק ריבועי למטרה, הדינמיקה לכל-כיוון היא קובית/לוגיסטית: מקרה סימטרי $d{=}1$ $\dot\lambda=8\lambda(\lambda^*-\lambda)$ (מ-
+
+$$\dot\lambda_r=4\lambda_r\langle-\nabla L,v_rv_r^\top\rangle$$
+
+), ערכים סינגולריים בעומק-$N$
+
+$$\dot\sigma_i=-N\sigma_i^{2-\frac2N}\cdot\frac{1}{dd'}(\sigma_i-\sigma_i^*)$$
+
+פתרונות משתהים אקספוננציאלית זמן רב ליד $0$ (אתחול קטן $\epsilon$), ואז עולים בחדות בזמן
+
+$$\sim\frac{dd'}{2\sigma_i^*}\ln\frac1\epsilon$$
+
+ואז רוויים ב-$\sigma_i^*$ — ערכים סינגולריים אמיתיים גדולים יותר נלמדים ראשונים, אחד-אחד; $N=1$ נותן רלקסציה אקספוננציאלית רגילה בלי הטיה כזו.
 **Use it when:** הסוגר של 5-נקודות "הסבירו איכותית מדוע אתחול קרוב-לאפס נותן דרגה נמוכה" בשאלות MF.
 **Seen in:** a2021_Q2, a2024_Q2
 **Watch out:** שימור סימן ($\lambda_r(t)=\lambda_r(0)e^{\int\cdots}$) משמעו שהערכים העצמיים לעולם אינם חוצים אפס — הגידול חייב לבוא דרך הגברה, לא דרך היפוכי-סימן.
 
 ### פרמטריזציית-יתר אלכסונית / Hadamard ⇒ הטיה לדלילות
-**Statement:** עבור $\phi(u_1,\dots,u_N)=L(u_1\odot\cdots\odot u_N)$ (רשת לינארית אלכסונית) עם אתחול מאוזן חיובי: $\dot w=-N\,\nabla L(w)\odot w^{2-\frac2N}$ כניסה-כניסה. כל קואורדינטה זזה בקצב $\propto|w_i|^{2-2/N}$: קואורדינטות ב-$0$ מקיימות $\dot w_i=0$ (קואורדינטות אפס נשארות אפס), קואורדינטות קרובות-לאפס בקושי זזות, גדולות מאיצות. (הדינמיקה והשימור מעוגני-מבחן — b2023_Q2; לכנות זאת "הטיה לווקטורים **דלילים**, האנלוג הכניסתי של הטיה-לדרגה-נמוכה" הוא הפרשנות שלנו — הקורס מנסח את דינמיקת העשיר-מתעשר אך לעולם אינו משתמש במילה "דליל". הציגו את הדינמיקה, לא את הסיסמה, אלא אם נתבקשתם לפרש.)
+**Statement:** עבור
+
+$$\phi(u_1,\dots,u_N)=L(u_1\odot\cdots\odot u_N)$$
+
+(רשת לינארית אלכסונית) עם אתחול מאוזן חיובי:
+
+$$\dot w=-N\,\nabla L(w)\odot w^{2-\frac2N}$$
+
+כניסה-כניסה. כל קואורדינטה זזה בקצב $\propto|w_i|^{2-2/N}$: קואורדינטות ב-$0$ מקיימות $\dot w_i=0$ (קואורדינטות אפס נשארות אפס), קואורדינטות קרובות-לאפס בקושי זזות, גדולות מאיצות. (הדינמיקה והשימור מעוגני-מבחן — b2023_Q2; לכנות זאת "הטיה לווקטורים **דלילים**, האנלוג הכניסתי של הטיה-לדרגה-נמוכה" הוא הפרשנות שלנו — הקורס מנסח את דינמיקת העשיר-מתעשר אך לעולם אינו משתמש במילה "דליל". הציגו את הדינמיקה, לא את הסיסמה, אלא אם נתבקשתם לפרש.)
 **Use it when:** Q2 של רשת Hadamard/אלכסונית והמשכים "מהי ההטיה המרומזת כאן?".
 **Seen in:** b2023_Q2
 **Watch out:** balancedness כאן הוא כניסה-כניסה ($u_i^2(t)-u_j^2(t)$ נשמר); הנחת אותו-הסימן באתחול היא מה ששומר $u_1(t)=\dots=u_N(t)$.

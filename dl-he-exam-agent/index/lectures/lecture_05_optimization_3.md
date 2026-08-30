@@ -19,7 +19,9 @@ $$\ell(w) = \frac12\sum_{i=1}^m \big(f(w,x_i) - y_i\big)^2 .$$
 **Def (time-varying kernel matrix $H(t)$).** $H(t) \in \mathbb{R}^{m,m}$ היא מטריצת ה-PSD
 $$(H(t))_{i,j} = \left\langle \frac{\partial}{\partial w} f(w(t),x_i),\ \frac{\partial}{\partial w} f(w(t),x_j) \right\rangle .$$
 
-**Def (spectral coordinates).** $H^*$ היא PSD עם פירוק עצמי אורתוגונלי $H^* = V\Lambda V^\top$, $\Lambda = \mathrm{diag}(\lambda_1,\dots,\lambda_m) \ge 0$; החלפת משתנים $q(t) := V^\top(u(t) - y) \iff u(t) = Vq(t) + y$.
+**Def (spectral coordinates).** $H^*$ היא PSD עם פירוק עצמי אורתוגונלי $H^* = V\Lambda V^\top$, $\Lambda = \mathrm{diag}(\lambda_1,\dots,\lambda_m) \ge 0$; החלפת משתנים
+
+$$q(t) := V^\top(u(t) - y) \iff u(t) = Vq(t) + y$$
 
 **Def (features and NTK, affine regime).** כאשר $\frac{\partial}{\partial w}f(w(t),x)$ בלתי-תלוי ב-$w(t)$ (פלט הרשת אפיני ב-$w$), הגדירו $\phi(x) := \frac{\partial}{\partial w}f(w(t),x) \in \mathbb{R}^k$; אזי $f(w,x) = \langle\phi(x),w\rangle + b_x$, ו-$b_x = 0$ במסגרת הנפוצה שבה משקלים אפסיים נותנים פלט אפס. ל-$\Phi \in \mathbb{R}^{k,m}$ יש עמודה $i$-ית $\phi(x_i)$. הקרנל
 $$K : \mathbb{R}^d\times\mathbb{R}^d \to \mathbb{R},\qquad K(x,x') := \langle\phi(x), \phi(x')\rangle$$
@@ -50,23 +52,43 @@ $$\dot\Sigma^{(n)}(x,x') := c_\sigma\,\mathbb{E}\big[\dot\sigma(u)\dot\sigma(v)\
 **Lem 1 (prediction-space dynamics — exact).** תחת GF על הפסד ה-$\ell_2$, $u(t)$ מקיים
 $$\forall t \in \mathbb{R}_{\ge0}:\quad \dot u(t) = -H(t)\,\big(u(t) - y\big),$$
 עם $H(t)$ כמוגדר לעיל (PSD).
-*רעיון ההוכחה:* $\dot w(t) = -\nabla\ell(w(t)) = -\sum_{j=1}^m (f(w(t),x_j)-y_j)\frac{\partial}{\partial w}f(w(t),x_j)$; יישמו את כלל השרשרת על $\frac{d}{dt}f(w(t),x_i)$ וזהו את המכפלות הפנימיות כ-$(H(t))_{i,j}$.
-*רלוונטיות למבחן:* גזירה זו קצרה, מדויקת (ללא הנחת רוחב), וסבירה מאוד להישאל; דעו שה-PSD-יות אוטומטית (מטריצת גרם).
+
+**רעיון ההוכחה:**
+
+$$\dot w(t) = -\nabla\ell(w(t)) = -\sum_{j=1}^m (f(w(t),x_j)-y_j)\frac{\partial}{\partial w}f(w(t),x_j)$$
+
+יישמו את כלל השרשרת על $\frac{d}{dt}f(w(t),x_i)$ וזהו את המכפלות הפנימיות כ-$(H(t))_{i,j}$.
+
+**רלוונטיות למבחן:** גזירה זו קצרה, מדויקת (ללא הנחת רוחב), וסבירה מאוד להישאל; דעו שה-PSD-יות אוטומטית (מטריצת גרם).
 
 **Result (convergence under the idealized dynamics).** אם הרשת רחבה מספיק אזי $H(t) \approx H(0)$ לכל אורך האימון, ותחת אתחול אקראי מתאים $H(0) \approx H^*$ דטרמיניסטית, ונותנת $\dot u(t) \approx -H^*(u(t)-y)$. בהתייחסות לכך כמדויק וליכסון ($q := V^\top(u-y)$):
 $$\forall i \in [m]:\quad (q(t))_i = (q(0))_i\,e^{-\lambda_i t},\qquad \|q(t)\|_2^2 = \|u(t)-y\|_2^2 = 2\,\ell(w(t)).$$
 אם $H^*$ לא-סינגולרית ($\lambda_i > 0\ \forall i$), הפסד האימון מתכנס למינימום הגלובלי (אפס) במהירות אקספוננציאלית; ספציפית $\ell(w(t)) < \epsilon$ עבור כל
 $$t > \max_{i\in[m]} \frac{1}{2\lambda_i}\,\log\!\left(\frac{m\,(q(0))_i^2}{2\epsilon}\right).$$
-*רעיון ההוכחה:* $\dot q = -\Lambda q$ מתנתק ל-ODE-ים סקלריים $\dot q_i = -\lambda_i q_i$; אנטגרלו $\frac{\dot q_i}{q_i}$.
-*רלוונטיות למבחן:* התכנסות למינימום-גלובלי עבור מטרה לא-קמורה; כל מוד שגיאה דועך בקצב שלו $\lambda_i$ (הערכים העצמיים של מטריצת הגרם של ה-NTK קובעים את המהירות).
 
-**Result (equivalence to kernel regression).** במשטר $H(t) \approx H^*$ עם $\frac{\partial}{\partial w}f$ בלתי-תלוי ב-$w$ (פלטים אפיניים, $b_x = 0$): $\dot w(t) = -\Phi(\Phi^\top w(t) - y)$, כך שעם $w(0) \approx 0$, $w(t)$ נשאר במרחב העמודות של $\Phi$, כלומר $w(t) = \Phi r(t)$; אזי $u(t) = \Phi^\top w(t) = \Phi^\top\Phi\, r(t) = H^* r(t)$. בהנחה ש-$H^*$ בעלת דרגה מלאה, $u(t) \to y$ מכריח $r(t) \to (H^*)^{-1}y$ וכן
+**רעיון ההוכחה:** $\dot q = -\Lambda q$ מתנתק ל-ODE-ים סקלריים $\dot q_i = -\lambda_i q_i$; אנטגרלו $\frac{\dot q_i}{q_i}$.
+
+**רלוונטיות למבחן:** התכנסות למינימום-גלובלי עבור מטרה לא-קמורה; כל מוד שגיאה דועך בקצב שלו $\lambda_i$ (הערכים העצמיים של מטריצת הגרם של ה-NTK קובעים את המהירות).
+
+**Result (equivalence to kernel regression).** במשטר $H(t) \approx H^*$ עם $\frac{\partial}{\partial w}f$ בלתי-תלוי ב-$w$ (פלטים אפיניים, $b_x = 0$):
+
+$$\dot w(t) = -\Phi(\Phi^\top w(t) - y)$$
+
+כך שעם $w(0) \approx 0$, $w(t)$ נשאר במרחב העמודות של $\Phi$, כלומר $w(t) = \Phi r(t)$; אזי
+
+$$u(t) = \Phi^\top w(t) = \Phi^\top\Phi\, r(t) = H^* r(t)$$
+
+בהנחה ש-$H^*$ בעלת דרגה מלאה, $u(t) \to y$ מכריח $r(t) \to (H^*)^{-1}y$ וכן
 $$w(t) \xrightarrow{t\to\infty} \Phi\,(H^*)^{-1}y,$$
 כך שפונקציית הניבוי המוחזרת על ידי האימון היא
 $$x \mapsto f\big(\Phi(H^*)^{-1}y,\ x\big) = \big[K(x,x_1),\dots,K(x,x_m)\big]^\top (H^*)^{-1}\, y$$
 — **בדיוק רגרסיית קרנל** עם ה-NTK $K(\cdot,\cdot)$.
-*רעיון ההוכחה:* הציבו $f(w,x) = \langle\phi(x),w\rangle$ בכל מקום; המנבא הגבולי הוא $\langle\phi(x), \Phi(H^*)^{-1}y\rangle$, שרכיביו הם הערכות קרנל.
-*רלוונטיות למבחן:* זהות שורת-המחץ "רשת אולטרה-רחבה מאומנת $=$ רגרסיית קרנל NTK"; היו מסוגלים לשחזר את השרשרת המלאה $w(t)=\Phi r(t) \Rightarrow u = H^*r \Rightarrow w_\infty = \Phi(H^*)^{-1}y$.
+
+**רעיון ההוכחה:** הציבו $f(w,x) = \langle\phi(x),w\rangle$ בכל מקום; המנבא הגבולי הוא $\langle\phi(x), \Phi(H^*)^{-1}y\rangle$, שרכיביו הם הערכות קרנל.
+
+**רלוונטיות למבחן:** זהות שורת-המחץ "רשת אולטרה-רחבה מאומנת $=$ רגרסיית קרנל NTK"; היו מסוגלים לשחזר את השרשרת המלאה
+
+$$w(t)=\Phi r(t) \Rightarrow u = H^*r \Rightarrow w_\infty = \Phi(H^*)^{-1}y$$
 
 **Result (shallow NTK formula).** עבור הארכיטקטורה הרדודה, אם $n$ גדול מספיק אזי עבור כל $t \ge 0$, $H(t)$ היא בקירוב מטריצת הגרם של
 $$K_s(x,x') = x^\top x'\cdot\mathbb{E}_{w\sim\mathcal N(0,I)}\big[\dot\sigma(w^\top x)\,\dot\sigma(w^\top x')\big].$$
@@ -74,20 +96,45 @@ $$K_s(x,x') = x^\top x'\cdot\mathbb{E}_{w\sim\mathcal N(0,I)}\big[\dot\sigma(w^\
 
 **Prop 1 (concentration at initialization).** יהיו $\epsilon > 0$, $\delta \in (0,1)$. אם
 $$n \ \ge\ \frac{2m^4}{\epsilon^2}\,\log\!\left(\frac{m^2}{\delta}\right),$$
-אזי בהסתברות $\ge 1-\delta$ על פני האתחול של $w_1,\dots,w_n$: $\|H(0) - H^*\|_{\mathrm{spectral}} \le \epsilon$ (נורמה ספקטרלית = ערך סינגולרי מקסימלי), כאשר $(H^*)_{i,j} = K_s(x_i,x_j)$.
-*רעיון ההוכחה:* $(H(0))_{i,j} = \frac1n\sum_{r=1}^n x_i^\top x_j\,\dot\sigma(w_r(0)^\top x_i)\,\dot\sigma(w_r(0)^\top x_j)$ הוא ממוצע של $n$ עותקים i.i.d. של $\gamma := x_i^\top x_j\dot\sigma(w^\top x_i)\dot\sigma(w^\top x_j) \in [-1,1]$ (בשימוש ב-$a_r^2 = 1$, $|\dot\sigma|\le1$, $\|x_i\|=1$) עם $\mathbb{E}[\gamma] = K_s(x_i,x_j)$; Hoeffding בדיוק $\epsilon/m^2$ לכל רכיב, חסם איחוד על פני $m^2$ רכיבים, ואז $\|A\|_{\mathrm{spectral}} \le \|A\|_F \le \sum_{i,j}|A_{i,j}|$.
-*רלוונטיות למבחן:* צינור ריכוז סטנדרטי (Hoeffding + חסם איחוד + שליטת נורמה) — ניתן לשחזור לפי דרישה.
+אזי בהסתברות $\ge 1-\delta$ על פני האתחול של $w_1,\dots,w_n$:
+
+$$\|H(0) - H^*\|_{\mathrm{spectral}} \le \epsilon$$
+
+(נורמה ספקטרלית = ערך סינגולרי מקסימלי), כאשר $(H^*)_{i,j} = K_s(x_i,x_j)$.
+
+**רעיון ההוכחה:**
+
+$$(H(0))_{i,j} = \frac1n\sum_{r=1}^n x_i^\top x_j\,\dot\sigma(w_r(0)^\top x_i)\,\dot\sigma(w_r(0)^\top x_j)$$
+
+הוא ממוצע של $n$ עותקים i.i.d. של $\gamma := x_i^\top x_j\dot\sigma(w^\top x_i)\dot\sigma(w^\top x_j) \in [-1,1]$ (בשימוש ב-$a_r^2 = 1$, $|\dot\sigma|\le1$, $\|x_i\|=1$) עם $\mathbb{E}[\gamma] = K_s(x_i,x_j)$; Hoeffding בדיוק $\epsilon/m^2$ לכל רכיב, חסם איחוד על פני $m^2$ רכיבים, ואז
+
+$$\|A\|_{\mathrm{spectral}} \le \|A\|_F \le \sum_{i,j}|A_{i,j}|$$
+
+**רלוונטיות למבחן:** צינור ריכוז סטנדרטי (Hoeffding + חסם איחוד + שליטת נורמה) — ניתן לשחזור לפי דרישה.
 
 **Prop 2 (kernel stability during training).** יהי $t \ge 0$. הניחו $|y_i| \le c$ וכן $\max_{\tau\in[0,t]}|(u(\tau))_i| \le c$ עבור כל $i \in [m]$, עבור $c > 0$ כלשהו. אם
 $$n \ \ge\ \frac{16\,c^2 m^6 t^2}{\epsilon^2},$$
 אזי $\|H(t) - H(0)\|_{\mathrm{spectral}} \le \epsilon$.
-*רעיון ההוכחה:* אנטגרלו GF עבור נוירון בודד: $\|w_r(t) - w_r(0)\| \le \int_0^t\|\dot w_r\| \le \frac{2cmt}{\sqrt n}$ (אי-שוויון המשולש; $|u_i - y_i| \le 2c$, $|\dot\sigma| \le 1$, $\|x_i\| = 1$, קנה-מידה $1/\sqrt n$). משפט הערך הממוצע עם $|\ddot\sigma| \le 1$: $|\dot\sigma(w_r(t)^\top x) - \dot\sigma(w_r(0)^\top x)| \le \|w_r(t)-w_r(0)\|$, נותן את החסם הרכיבי $|(H(t))_{i,j} - (H(0))_{i,j}| \le \frac{4cmt}{\sqrt n}$; סיימו עם $\|H(t)-H(0)\|_{\mathrm{spectral}} \le m^2\max_{i,j}|(H(t))_{i,j}-(H(0))_{i,j}| \le \frac{4cm^3t}{\sqrt n}$.
-*רלוונטיות למבחן:* מנגנון ה"אימון העצל": התנועה לכל נוירון היא $O(1/\sqrt n)$, כך שהקרנל כמעט קפוא; דעו את שלושת החסמים הביניים $\frac{2cmt}{\sqrt n}$, $\frac{4cmt}{\sqrt n}$, $\frac{4cm^3t}{\sqrt n}$.
+
+**רעיון ההוכחה:** אנטגרלו GF עבור נוירון בודד:
+
+$$\|w_r(t) - w_r(0)\| \le \int_0^t\|\dot w_r\| \le \frac{2cmt}{\sqrt n}$$
+
+(אי-שוויון המשולש; $|u_i - y_i| \le 2c$, $|\dot\sigma| \le 1$, $\|x_i\| = 1$, קנה-מידה $1/\sqrt n$). משפט הערך הממוצע עם $|\ddot\sigma| \le 1$:
+
+$$|\dot\sigma(w_r(t)^\top x) - \dot\sigma(w_r(0)^\top x)| \le \|w_r(t)-w_r(0)\|$$
+
+נותן את החסם הרכיבי $|(H(t))_{i,j} - (H(0))_{i,j}| \le \frac{4cmt}{\sqrt n}$; סיימו עם
+
+$$\|H(t)-H(0)\|_{\mathrm{spectral}} \le m^2\max_{i,j}|(H(t))_{i,j}-(H(0))_{i,j}| \le \frac{4cm^3t}{\sqrt n}$$
+
+**רלוונטיות למבחן:** מנגנון ה"אימון העצל": התנועה לכל נוירון היא $O(1/\sqrt n)$, כך שהקרנל כמעט קפוא; דעו את שלושת החסמים הביניים $\frac{2cmt}{\sqrt n}$, $\frac{4cmt}{\sqrt n}$, $\frac{4cm^3t}{\sqrt n}$.
 
 **Result (deep NTK; stated without proof).** בגבול הרוחב-האינסופי, ה-NTK של הרשת העמוקה $K_d : \mathbb{R}^{d_0}\times\mathbb{R}^{d_0} \to \mathbb{R}$ הוא
 $$K_d(x,x') = \sum_{n=1}^{N}\left(\Sigma^{(n-1)}(x,x') \prod_{n'=n}^{N} \dot\Sigma^{(n')}(x,x')\right),$$
 עם $\Sigma^{(n)}, \dot\Sigma^{(n)}$ כמו בהגדרות הרקורסיביות לעיל.
-*רלוונטיות למבחן:* דעו את המבנה — סכום על פני שכבות של (שונות-משותפת של שכבה-$(n{-}1)$) $\times$ (מכפלת קרנלי-נגזרת משכבה $n$ עד $N$) — ואת תפקידי $c_\sigma$ ושונויות גאוס 2-על-2 $\Lambda^{(n)}$.
+
+**רלוונטיות למבחן:** דעו את המבנה — סכום על פני שכבות של (שונות-משותפת של שכבה-$(n{-}1)$) $\times$ (מכפלת קרנלי-נגזרת משכבה $n$ עד $N$) — ואת תפקידי $c_\sigma$ ושונויות גאוס 2-על-2 $\Lambda^{(n)}$.
 
 ## טכניקות וטריקים
 - **הרמת דינמיקת פרמטרים למרחב פונקציות:** כלל השרשרת על $\frac{d}{dt}f(w(t),x_i)$ ממיר GF על משקלים לדינמיקת קרנל על ניבויים; $H(t)$ היא מטריצת גרם של יעקוביאנים, ומכאן PSD בחינם.

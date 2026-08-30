@@ -14,7 +14,9 @@
 ## Key definitions
 **Def (Gradient Flow, GF).** עבור $f:\mathbb{R}^d\to\mathbb{R}$ גזירה, המסלול $\theta : [0,\infty) \to \mathbb{R}^d$ מקיים
 $$\forall t \in \mathbb{R}_{\ge 0}:\quad \dot\theta(t) := \frac{d}{dt}\theta(t) = -\nabla f(\theta(t)).$$
-GF מתאימה ל-GD עם גודל צעד (קצב למידה) אינפיניטסימלי. GF על מטרת ה-LNN: $\forall t, \forall j\in[N]:\ \dot W_j(t) = -\frac{\partial}{\partial W_j}\phi(W_1(t),\dots,W_N(t))$.
+GF מתאימה ל-GD עם גודל צעד (קצב למידה) אינפיניטסימלי. GF על מטרת ה-LNN:
+
+$$\forall t, \forall j\in[N]:\ \dot W_j(t) = -\frac{\partial}{\partial W_j}\phi(W_1(t),\dots,W_N(t))$$
 
 **Def (conserved constants).** לאורך GF על LNN, עבור $j \in [N-1]$ ההפרש $W_{j+1}(t)^\top W_{j+1}(t) - W_j(t)W_j(t)^\top$ קבוע בזמן ומסומן
 $$C_{j,j+1} := W_{j+1}(0)^\top W_{j+1}(0) - W_j(0)\,W_j(0)^\top \in \mathbb{R}^{d_j,d_j}.$$
@@ -44,14 +46,18 @@ $$\forall x, y \in \mathbb{R}^d:\quad f(y) \ge f(x) + \langle\nabla f(x), y - x\
 $$\forall t \ge 0,\ \forall j \in [N]:\quad \dot W_j(t) = -\,W_{j+1:N}(t)^\top\, \nabla\ell(W_{1:N}(t))\, W_{1:j-1}(t)^\top .$$
 
 **Lem 1 (balancedness is conserved).** אם GF על LNN מתחילה מאתחול מאוזן (Def 1 ב-$t=0$), המשקלים נשארים מאוזנים לכל $t \ge 0$.
-*רעיון ההוכחה:* מ-Eq. (2), $\dot W_j(t)W_j(t)^\top = W_{j+1}(t)^\top \dot W_{j+1}(t)$ עבור כל $j \in [N-1]$; הוספת הזהות המשוחלפת נותנת $\frac{d}{dt}\big(W_j W_j^\top\big) = \frac{d}{dt}\big(W_{j+1}^\top W_{j+1}\big)$; אנטגרלו מ-$0$ עד $t$.
-*רלוונטיות למבחן:* גזירת חוק השימור (הכפלה, סימטריזציה, אינטגרציה) היא חישוב מבחן סטנדרטי.
+
+**רעיון ההוכחה:** מ-Eq. (2), $\dot W_j(t)W_j(t)^\top = W_{j+1}(t)^\top \dot W_{j+1}(t)$ עבור כל $j \in [N-1]$; הוספת הזהות המשוחלפת נותנת $\frac{d}{dt}\big(W_j W_j^\top\big) = \frac{d}{dt}\big(W_{j+1}^\top W_{j+1}\big)$; אנטגרלו מ-$0$ עד $t$.
+
+**רלוונטיות למבחן:** גזירת חוק השימור (הכפלה, סימטריזציה, אינטגרציה) היא חישוב מבחן סטנדרטי.
 
 **Thm 1 (end-to-end dynamics).** יהי $\ell : \mathbb{R}^{d_N,d_0} \to \mathbb{R}$ הפסד גזיר ברציפות בעל פרמטריזציית-יתר על ידי LNN בעומק $N$, $\phi(W_1,\dots,W_N) := \ell(W_{1:N})$. תחת GF מאתחול מאוזן, מטריצת ה-E2E מצייתת ל-
 $$\forall t \in \mathbb{R}_{\ge0}:\quad \dot W_{1:N}(t) = -\sum_{j=1}^{N} \Big[W_{1:N}(t)\,W_{1:N}(t)^\top\Big]^{\frac{j-1}{N}}\; \nabla\ell\big(W_{1:N}(t)\big)\; \Big[W_{1:N}(t)^\top\, W_{1:N}(t)\Big]^{\frac{N-j}{N}} ,$$
 *דינמיקת הקצה-אל-קצה* (חזקות מטריצה של מטריצות PSD כמוגדר לעיל). הדינמיקה תלויה רק ב-$W_{1:N}$, לא ב-$W_j$ הבודדות.
-*רעיון ההוכחה:* (ניתן תחת הנחות ניתנות-להסרה: כל הממדים שווים ל-$d$; לאיזושהי $W_j(t)$ יש ערכים סינגולריים נבדלים.) המאוזנות מכריחה את פירוקי ה-SVD העוקבים להתיישר: כל $\Sigma_j$ שווים ל-$\Sigma$ משותף, ו-$U_j = V_{j+1}D_j$ עם אלכסונית $D_j \in \mathrm{diag}\{\pm1\}$; ומכאן $W_{j:N}W_{j:N}^\top = [W_{1:N}W_{1:N}^\top]^{\frac{N-j+1}{N}}$ וכן $W_{1:j}^\top W_{1:j} = [W_{1:N}^\top W_{1:N}]^{\frac{j}{N}}$; הציבו בכלל המכפלה $\dot W_{1:N} = \sum_j W_{j+1:N}\dot W_j W_{1:j-1}$ עם Eq. (2).
-*רלוונטיות למבחן:* שננו את המעריכים $\frac{j-1}{N}$ (שמאל) ו-$\frac{N-j}{N}$ (ימין) ואת למת ההתיישרות; שלב ה"תרגיל: הוכיחו זאת" (נוסחת $W_{1:j}^\top W_{1:j}$) הוא פריט מבחן טבעי.
+
+**רעיון ההוכחה:** (ניתן תחת הנחות ניתנות-להסרה: כל הממדים שווים ל-$d$; לאיזושהי $W_j(t)$ יש ערכים סינגולריים נבדלים.) המאוזנות מכריחה את פירוקי ה-SVD העוקבים להתיישר: כל $\Sigma_j$ שווים ל-$\Sigma$ משותף, ו-$U_j = V_{j+1}D_j$ עם אלכסונית $D_j \in \mathrm{diag}\{\pm1\}$; ומכאן $W_{j:N}W_{j:N}^\top = [W_{1:N}W_{1:N}^\top]^{\frac{N-j+1}{N}}$ וכן $W_{1:j}^\top W_{1:j} = [W_{1:N}^\top W_{1:N}]^{\frac{j}{N}}$; הציבו בכלל המכפלה $\dot W_{1:N} = \sum_j W_{j+1:N}\dot W_j W_{1:j-1}$ עם Eq. (2).
+
+**רלוונטיות למבחן:** שננו את המעריכים $\frac{j-1}{N}$ (שמאל) ו-$\frac{N-j}{N}$ (ימין) ואת למת ההתיישרות; שלב ה"תרגיל: הוכיחו זאת" (נוסחת $W_{1:j}^\top W_{1:j}$) הוא פריט מבחן טבעי.
 
 **Prop 1 (vectorized form: preconditioned gradient flow).** ניתן לכתוב את דינמיקת הקצה-אל-קצה כ-
 $$\forall t \in \mathbb{R}_{\ge0}:\quad \mathrm{vec}\big[\dot W_{1:N}(t)\big] = -\,P_{W_{1:N}(t)}\; \mathrm{vec}\big[\nabla\ell(W_{1:N}(t))\big],$$
@@ -59,26 +65,41 @@ $$\forall t \in \mathbb{R}_{\ge0}:\quad \mathrm{vec}\big[\dot W_{1:N}(t)\big] = 
 $$\mathrm{vec}\big(u_r v_{r'}^\top\big),\qquad r \in [d_N],\ r' \in [d_0],$$
 עם ערכים עצמיים מתאימים
 $$\sum_{j=1}^{N} \sigma_r^{\frac{2(N-j)}{N}}\, \sigma_{r'}^{\frac{2(j-1)}{N}} .$$
-*רעיון ההוכחה:* זהויות Kronecker ($\mathrm{vec}[AB] = (B^\top \odot I)\mathrm{vec}[A] = (I \odot A)\mathrm{vec}[B]$; מכפלה מעורבת; $(A\odot B)^\top = A^\top\odot B^\top$; Kronecker של אורתוגונליות הוא אורתוגונלי) הופכות כל מחובר ל-$\big([W^\top W]^{\frac{N-j}{N}} \odot [WW^\top]^{\frac{j-1}{N}}\big)$; עם SVD $W_{1:N} = UDV^\top$, הסכום מתלכסן כ-$Q = (V\odot U)\Lambda(V\odot U)^\top$.
-*רלוונטיות למבחן:* הפרשנות חשובה: פרמטריזציית-יתר על ידי LNN משרה preconditioner תלוי-מיקום ה**מותח** את הגרדיאנט לאורך כיוונים סינגולריים בעלי ערכים סינגולריים גדולים של $W_{1:N}(t)$ ו**מחליש** אותו לאורך קטנים — כלומר, מקדם תנועה בכיוונים שכבר נחצו מאתחול (קרוב-לראשית).
+
+**רעיון ההוכחה:** זהויות Kronecker ($\mathrm{vec}[AB] = (B^\top \odot I)\mathrm{vec}[A] = (I \odot A)\mathrm{vec}[B]$; מכפלה מעורבת; $(A\odot B)^\top = A^\top\odot B^\top$; Kronecker של אורתוגונליות הוא אורתוגונלי) הופכות כל מחובר ל-$\big([W^\top W]^{\frac{N-j}{N}} \odot [WW^\top]^{\frac{j-1}{N}}\big)$; עם SVD $W_{1:N} = UDV^\top$, הסכום מתלכסן כ-$Q = (V\odot U)\Lambda(V\odot U)^\top$.
+
+**רלוונטיות למבחן:** הפרשנות חשובה: פרמטריזציית-יתר על ידי LNN משרה preconditioner תלוי-מיקום ה**מותח** את הגרדיאנט לאורך כיוונים סינגולריים בעלי ערכים סינגולריים גדולים של $W_{1:N}(t)$ ו**מחליש** אותו לאורך קטנים — כלומר, מקדם תנועה בכיוונים שכבר נחצו מאתחול (קרוב-לראשית).
 
 **Result (deficiency margin under whitened squared loss — worked example).** עבור ההפסד הריבועי עם נתונים מולבנים:
 $$\ell(W) = \tfrac12\mathrm{Tr}(W\Lambda_{xx}W^\top) - \mathrm{Tr}(W\Lambda_{yx}^\top) + \tfrac12\mathrm{Tr}(\Lambda_{yy}) \;\overset{\Lambda_{xx}=I}{=}\; \tfrac12\|W - \Lambda_{yx}\|_F^2 + \mathrm{const}.$$
-כיוון ש-$\min\{\|W' - \Lambda_{yx}\|_F : \sigma_{\min}(W') \le c\} = \max\{0,\ \sigma_{\min}(\Lambda_{yx}) - c\}$ (תרגיל בסיכומים),
+כיוון ש-
+
+$$\min\{\|W' - \Lambda_{yx}\|_F : \sigma_{\min}(W') \le c\} = \max\{0,\ \sigma_{\min}(\Lambda_{yx}) - c\}$$
+
+(תרגיל בסיכומים),
 $$W \text{ has deficiency margin } c > 0 \iff \|W - \Lambda_{yx}\|_F < \sigma_{\min}(\Lambda_{yx}) - c .$$
 מקרה פרטי $d_N = 1$ (רגרסיה לינארית, פלט יחיד): למטריצת $(1,d_0)$ יש ערך סינגולרי יחיד השווה לנורמת Frobenius שלה, כך שהתנאי הופך ל-$\|W - \Lambda_{yx}\|_F < \|\Lambda_{yx}\|_F - c$; ומכאן דגימת $W$ מהתפלגות איזוטרופית עם סטיית תקן קטנה יחסית ל-$\|\Lambda_{yx}\|_F$ מניבה מרווח חוסר (איזה $c>0$) בהסתברות של בערך $1/2$.
-*רלוונטיות למבחן:* הן השכתוב $\frac12\|W-\Lambda_{yx}\|_F^2 + \text{const}$ והן המסקנה של הסתברות-$\approx 1/2$ ניתנים לציטוט; חישוב המרחק-המינימלי מסומן "תרגיל: הוכיחו זאת".
+
+**רלוונטיות למבחן:** הן השכתוב $\frac12\|W-\Lambda_{yx}\|_F^2 + \text{const}$ והן המסקנה של הסתברות-$\approx 1/2$ ניתנים לציטוט; חישוב המרחק-המינימלי מסומן "תרגיל: הוכיחו זאת".
 
 **Prop 2 ($\delta$-stationarity under strong convexity).** תהי $f:\mathbb{R}^d\to\mathbb{R}$ $\alpha$-קמורה חזק, המשיגה את המינימום הגלובלי שלה $f^*$ ב-$x^*$. עבור כל $\delta>0$, אם $x$ היא נקודה $\delta$-סטציונרית ($\|\nabla f(x)\|_2 \le \delta$), אזי
 $$f(x) \le f^* + \frac{\delta^2}{\alpha} .$$
-*רעיון ההוכחה:* יישמו קמירות חזקה פעמיים (ב-$x$ לכיוון $x^*$ וב-$x^*$ לכיוון $x$), השתמשו ב-$\nabla f(x^*)=0$ וב-Cauchy-Schwarz כדי לקבל $\|x^*-x\|_2 \le \delta/\alpha$; הציבו בחזרה בקמירות החזקה.
-*רלוונטיות למבחן:* בשימוש ב-Thm 2 בצורה השקולה (מסוג PL) $\|\nabla f(x)\|_2^2 \ge \alpha\,(f(x) - f^*)$ (קחו $\delta := \|\nabla f(x)\|_2$).
+
+**רעיון ההוכחה:** יישמו קמירות חזקה פעמיים (ב-$x$ לכיוון $x^*$ וב-$x^*$ לכיוון $x$), השתמשו ב-$\nabla f(x^*)=0$ וב-Cauchy-Schwarz כדי לקבל $\|x^*-x\|_2 \le \delta/\alpha$; הציבו בחזרה בקמירות החזקה.
+
+**רלוונטיות למבחן:** בשימוש ב-Thm 2 בצורה השקולה (מסוג PL) $\|\nabla f(x)\|_2^2 \ge \alpha\,(f(x) - f^*)$ (קחו $\delta := \|\nabla f(x)\|_2$).
 
 **Thm 2 (GF convergence to global minimum, arbitrary depth).** יהי $\ell:\mathbb{R}^{d_N,d_0}\to\mathbb{R}$ גזיר ברציפות ו-$\alpha$-קמור חזק, בעל פרמטריזציית-יתר על ידי LNN בעומק $N$, $\phi(W_1,\dots,W_N) := \ell(W_{1:N})$. הריצו GF על $\phi(\cdot)$ מאתחול **מאוזן** שמטריצת ה-E2E שלו $W_{1:N}(0)$ בעלת **מרווח חוסר** $c > 0$. אזי עבור כל $\epsilon > 0$, המטרה $\phi(W_1(t),\dots,W_N(t))$ נמצאת בתוך $\epsilon$ מהמינימום הגלובלי בזמן של לכל היותר
 $$\ln\!\big(\epsilon^{-1}\,(\phi(W_1(0),\dots,W_N(0)) - \ell^*)\big)\; c^{-\frac{2(N-1)}{N}}\,\alpha^{-1},$$
 כאשר $\ell^* := \min\{\ell(W) : W \in \mathbb{R}^{d_N,d_0}\}$.
-*רעיון ההוכחה:* עם $g(t) := \ell(W_{1:N}(t))$, כלל השרשרת ו-Prop 1 נותנים $\dot g(t) = -\mathrm{vec}[\nabla\ell]^\top P\,\mathrm{vec}[\nabla\ell] \le -\lambda_{\min}(P)\|\nabla\ell\|_F^2$, והספקטרום מניב $\lambda_{\min}(P_{W_{1:N}(t)}) \ge \sigma_{\min}(W_{1:N}(t))^{\frac{2(N-1)}{N}}$. ירידה מונוטונית של $g$ משמרת את מרווח החוסר, כך ש-$\sigma_{\min}(W_{1:N}(t)) \ge c$ לכל $t$; שילוב עם $\|\nabla\ell\|_F^2 \ge \alpha(g - \ell^*)$ (Prop 2) נותן $\dot g \le -\alpha c^{\frac{2N-2}{N}}(g-\ell^*)$; אנטגרלו $\dot g/(g-\ell^*)$ והפעילו אקספוננציאל.
-*רלוונטיות למבחן:* זהו לב-לבה של ההרצאה: **קצב התכנסות לינארי (אקספוננציאלי)** למינימום גלובלי עבור LNN עמוקים שרירותית — בלתי-ניתן להשגה במפורש דרך גישת הנוף (הרצאה 3, Prop 3). דעו כל מרכיב: חסם $\lambda_{\min}(P)$, התמדת המרווח, אי-שוויון PL, אינטגרציה בסגנון Gronwall.
+
+**רעיון ההוכחה:** עם $g(t) := \ell(W_{1:N}(t))$, כלל השרשרת ו-Prop 1 נותנים
+
+$$\dot g(t) = -\mathrm{vec}[\nabla\ell]^\top P\,\mathrm{vec}[\nabla\ell] \le -\lambda_{\min}(P)\|\nabla\ell\|_F^2$$
+
+והספקטרום מניב $\lambda_{\min}(P_{W_{1:N}(t)}) \ge \sigma_{\min}(W_{1:N}(t))^{\frac{2(N-1)}{N}}$. ירידה מונוטונית של $g$ משמרת את מרווח החוסר, כך ש-$\sigma_{\min}(W_{1:N}(t)) \ge c$ לכל $t$; שילוב עם $\|\nabla\ell\|_F^2 \ge \alpha(g - \ell^*)$ (Prop 2) נותן $\dot g \le -\alpha c^{\frac{2N-2}{N}}(g-\ell^*)$; אנטגרלו $\dot g/(g-\ell^*)$ והפעילו אקספוננציאל.
+
+**רלוונטיות למבחן:** זהו לב-לבה של ההרצאה: **קצב התכנסות לינארי (אקספוננציאלי)** למינימום גלובלי עבור LNN עמוקים שרירותית — בלתי-ניתן להשגה במפורש דרך גישת הנוף (הרצאה 3, Prop 3). דעו כל מרכיב: חסם $\lambda_{\min}(P)$, התמדת המרווח, אי-שוויון PL, אינטגרציה בסגנון Gronwall.
 
 **Thm 3 (GD version; Arora, Cohen, Golowich, Hu 2018 — stated without proof).** יהי $\ell:\mathbb{R}^{d_N,d_0}\to\mathbb{R}$ ההפסד הריבועי לחיזוי לינארי עם נתונים מולבנים, $\phi$ הפרמטריזציית-יתר שלו על ידי LNN בעומק $N$. הריצו GD על $\phi(\cdot)$ מ-$W_1(0),\dots,W_N(0)$ שמטריצת ה-E2E שלהם $W_{1:N}(0)$ בעלת מרווח חוסר $c>0$, ואשר הם *מאוזנים בקירוב*: עבור כל $j\in[N-1]$,
 $$\big\|W_{j+1}(0)^\top W_{j+1}(0) - W_j(0)W_j(0)^\top\big\|_F \;\le\; \frac{c^2}{256\cdot N^3\,\|\Lambda_{yx}\|_F^{\frac{2(N-1)}{N}}}\,.$$
@@ -87,8 +108,10 @@ $$\eta \;\le\; \frac{c^{\frac{4N-2}{N}}}{6144\cdot N^3\,\|\Lambda_{yx}\|_F^{\fra
 אזי עבור כל $\epsilon>0$, המטרה נמצאת בתוך $\epsilon$ מהמינימום הגלובלי במספר צעדים שאינו גדול מ-
 $$\frac{1}{\eta\, c^{\frac{2(N-1)}{N}}}\,\log\!\left(\frac{\phi(W_1(0),\dots,W_N(0)) - \ell^*}{\epsilon}\right),$$
 עם $\ell^* := \min\{\ell(W) : W\in\mathbb{R}^{d_N,d_0}\}$.
-*רעיון ההוכחה:* דיסקרטיזציה של תוצאת ה-GF "עם עבודה טכנית ניכרת"; לא הוכח בקורס.
-*רלוונטיות למבחן:* דעו את הצורה האיכותית: סבילות המאוזנות המקורבת $\propto c^2/(N^3\|\Lambda_{yx}\|_F^{2(N-1)/N})$, גודל צעד קבוע קטן-מספיק, וספירת איטרציות $\frac{1}{\eta c^{2(N-1)/N}}\log\frac{\phi(0)-\ell^*}{\epsilon}$ (קצב לינארי).
+
+**רעיון ההוכחה:** דיסקרטיזציה של תוצאת ה-GF "עם עבודה טכנית ניכרת"; לא הוכח בקורס.
+
+**רלוונטיות למבחן:** דעו את הצורה האיכותית: סבילות המאוזנות המקורבת $\propto c^2/(N^3\|\Lambda_{yx}\|_F^{2(N-1)/N})$, גודל צעד קבוע קטן-מספיק, וספירת איטרציות $\frac{1}{\eta c^{2(N-1)/N}}\log\frac{\phi(0)-\ell^*}{\epsilon}$ (קצב לינארי).
 
 ## טכניקות וטריקים
 - **חוקי שימור מ-GF:** הכפילו את ה-ODE השכבתי ב-$W_j^\top$, השוו שכבות סמוכות, בצעו סימטריזציה (הוסיפו שחלופים ליצירת נגזרות מדויקות $\frac{d}{dt}(W_jW_j^\top)$), אנטגרלו על פני זמן. מאוזנות = האינווריאנט האידיאלי עבור אתחול קרוב-לאפס.

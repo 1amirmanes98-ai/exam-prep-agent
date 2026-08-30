@@ -12,20 +12,71 @@
 - GF מוצאת נקודות קריטיות: גבול של מסלול GF מתכנס הוא נקודה קריטית
 
 ## בעיות פתורות וגזירות
-**P1.** תהי $f$ קמורה, $C^1$, ו-$w(t)$ עקומת GF. הוכיחו $f(w(T)) - f(w^*) \le \frac{\|w_0-w^*\|^2}{2T}$ לכל $T>0,\ w^*\in\mathbb{R}^d$.
-טכניקה: המשפט היסודי של החשבון על הכמות המנוטרת $\frac12\|w(t)-w^*\|^2$; כלל השרשרת נותן אינטגרנד $\langle w(t)-w^*, -\nabla f(w(t))\rangle$; חסמו אותו דרך אי-שוויון הקמירות $f(w^*)\ge f(w(t)) + \langle\nabla f(w(t)), w^*-w(t)\rangle$ ומונוטוניות GF ($f(w(t))\ge f(w(T))$); סדרו מחדש והשמיטו $-\frac{1}{2T}\|w(T)-w^*\|^2$.
+**P1.** תהי $f$ קמורה, $C^1$, ו-$w(t)$ עקומת GF. הוכיחו
 
-**P2.** (שולי גירעון) עבור $\Lambda\in\mathbb{R}^{d,d'}$, $c>0$: $M_c := \min\{\|W-\Lambda\|_F : W\in\mathbb{R}^{d,d'},\ \sigma_{\min}(W)\le c\} = \max\{0,\sigma_{\min}(\Lambda)-c\}$.
-טכניקה: אם $\sigma_{\min}(\Lambda)\le c$ בחרו $W=\Lambda$. אחרת, השׂגה דרך "ניתוח SVD": מתוך $\Lambda=\sum_{i=1}^k \sigma_i(\Lambda)u_iv_i^\top$ הגדירו $W = \sum_{i=1}^{k-1}\sigma_i(\Lambda)u_iv_i^\top + c\,u_kv_k^\top$, כך ש-$\sigma_{\min}(W)=c$ וגם $\|W-\Lambda\|_F = \sigma_{\min}(\Lambda)-c$. אופטימליות בסתירה: אם $\|W'-\Lambda\|_F < \sigma_{\min}(\Lambda)-c$ אזי $\sigma_{\min}(W') \ge \sigma_{\min}(\Lambda) - \sigma_{\max}(W'-\Lambda) \ge \sigma_{\min}(\Lambda) - \|W'-\Lambda\|_F > c$.
+$$f(w(T)) - f(w^*) \le \frac{\|w_0-w^*\|^2}{2T}$$
+
+לכל $T>0,\ w^*\in\mathbb{R}^d$.
+טכניקה: המשפט היסודי של החשבון על הכמות המנוטרת $\frac12\|w(t)-w^*\|^2$; כלל השרשרת נותן אינטגרנד $\langle w(t)-w^*, -\nabla f(w(t))\rangle$; חסמו אותו דרך אי-שוויון הקמירות
+
+$$f(w^*)\ge f(w(t)) + \langle\nabla f(w(t)), w^*-w(t)\rangle$$
+
+ומונוטוניות GF ($f(w(t))\ge f(w(T))$); סדרו מחדש והשמיטו $-\frac{1}{2T}\|w(T)-w^*\|^2$.
+
+**P2.** (שולי גירעון) עבור $\Lambda\in\mathbb{R}^{d,d'}$, $c>0$:
+
+$$M_c := \min\{\|W-\Lambda\|_F : W\in\mathbb{R}^{d,d'},\ \sigma_{\min}(W)\le c\} = \max\{0,\sigma_{\min}(\Lambda)-c\}$$
+
+טכניקה: אם $\sigma_{\min}(\Lambda)\le c$ בחרו $W=\Lambda$. אחרת, השׂגה דרך "ניתוח SVD": מתוך
+
+$$\Lambda=\sum_{i=1}^k \sigma_i(\Lambda)u_iv_i^\top$$
+
+הגדירו
+
+$$W = \sum_{i=1}^{k-1}\sigma_i(\Lambda)u_iv_i^\top + c\,u_kv_k^\top$$
+
+, כך ש-$\sigma_{\min}(W)=c$ וגם
+
+$$\|W-\Lambda\|_F = \sigma_{\min}(\Lambda)-c$$
+
+. אופטימליות בסתירה: אם
+
+$$\|W'-\Lambda\|_F < \sigma_{\min}(\Lambda)-c$$
+
+אזי
+
+$$\sigma_{\min}(W') \ge \sigma_{\min}(\Lambda) - \sigma_{\max}(W'-\Lambda) \ge \sigma_{\min}(\Lambda) - \|W'-\Lambda\|_F > c$$
 
 **P3.** $f(w)=\frac12 w^\top Qw$ עם $Q$ מסוג PD: (Q1) $f$ היא $\beta$-חלקה לכל $\beta\ge\lambda_{\max}(Q)$; (Q2) אינה $\beta$-חלקה לאף $\beta<\lambda_{\max}(Q)$.
-טכניקה: $\nabla f(w)=Qw$, ולכן $\|\nabla f(w)-\nabla f(w')\| = \|Q(w-w')\| \le \lambda_{\max}(Q)\|w-w'\|$; להידוק בחרו $v$ וקטור עצמי עליון יחידה: $\|\nabla f(v)-\nabla f(0)\| = \lambda_{\max}(Q)\|v\| > \beta\|v-0\|$.
+טכניקה: $\nabla f(w)=Qw$, ולכן
 
-**P4.** פרמטרו-ביתר את $f$ עם רשת NN לינארית בת 2 שכבות ורוחב חבוי 1: $\phi(\mathbf{w},u) := f(u\mathbf{w}) = \frac{u^2}{2}\mathbf{w}^\top Q\mathbf{w}$. (Q3) חשבו $\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}$, $\nabla_u\phi = u\,\mathbf{w}^\top Q\mathbf{w}$; (Q4) כל הנקודות הקריטיות של $\phi$ הן מינימות גלובליות.
-טכניקה: מ-$\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}=0$ ו-$Q$ מסוג PD, או $u=0$ או $\mathbf{w}=0$, כלומר $u\mathbf{w}=0$; אזי $\phi(\mathbf{w}^*,u^*) = f(0) = 0 \le f(u'\mathbf{w}') = \phi(\mathbf{w}',u')$ כי $f\ge0$ ($Q$ מסוג PD) — כך שכל נקודה קריטית משיגה את המינימום הגלובלי $0$.
+$$\|\nabla f(w)-\nabla f(w')\| = \|Q(w-w')\| \le \lambda_{\max}(Q)\|w-w'\|$$
+
+; להידוק בחרו $v$ וקטור עצמי עליון יחידה:
+
+$$\|\nabla f(v)-\nabla f(0)\| = \lambda_{\max}(Q)\|v\| > \beta\|v-0\|$$
+
+**P4.** פרמטרו-ביתר את $f$ עם רשת NN לינארית בת 2 שכבות ורוחב חבוי 1:
+
+$$\phi(\mathbf{w},u) := f(u\mathbf{w}) = \frac{u^2}{2}\mathbf{w}^\top Q\mathbf{w}$$
+
+. (Q3) חשבו $\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}$, $\nabla_u\phi = u\,\mathbf{w}^\top Q\mathbf{w}$; (Q4) כל הנקודות הקריטיות של $\phi$ הן מינימות גלובליות.
+טכניקה: מ-
+
+$$\nabla_\mathbf{w}\phi = u^2Q\mathbf{w}=0$$
+
+ו-$Q$ מסוג PD, או $u=0$ או $\mathbf{w}=0$, כלומר $u\mathbf{w}=0$; אזי
+
+$$\phi(\mathbf{w}^*,u^*) = f(0) = 0 \le f(u'\mathbf{w}') = \phi(\mathbf{w}',u')$$
+
+כי $f\ge0$ ($Q$ מסוג PD) — כך שכל נקודה קריטית משיגה את המינימום הגלובלי $0$.
 
 **P5.** (GF מוצאת נקודות קריטיות) אם $f\in C^1$ ועקומת ה-GF מקיימת $\lim_{t\to\infty}w(t)=w^*$, אזי $\nabla f(w^*)=0$.
-טכניקה: בסתירה. אם $c:=\nabla f(w^*)_i > 0$ (בה"כ), הרציפות נותנת קבוצה פתוחה $U\ni w^*$ עם $\nabla f(w)_i \ge c/2$ על $U$; עבור $t\ge t_0$ המסלול נשאר ב-$U$, ולכן לפי המשפט היסודי של החשבון $w(t)_i - w(t_0)_i = -\int_{t_0}^t \nabla f(w(s))_i\,ds \le -(t-t_0)\frac{c}{2} \to -\infty$, בסתירה להתכנסות.
+טכניקה: בסתירה. אם $c:=\nabla f(w^*)_i > 0$ (בה"כ), הרציפות נותנת קבוצה פתוחה $U\ni w^*$ עם $\nabla f(w)_i \ge c/2$ על $U$; עבור $t\ge t_0$ המסלול נשאר ב-$U$, ולכן לפי המשפט היסודי של החשבון
+
+$$w(t)_i - w(t_0)_i = -\int_{t_0}^t \nabla f(w(s))_i\,ds \le -(t-t_0)\frac{c}{2} \to -\infty$$
+
+, בסתירה להתכנסות.
 
 ## נוסחאות ועובדות מפתח
 - הגדרות GF: $w(0)=w_0$, $\dot w(t) = -\nabla f(w(t))$

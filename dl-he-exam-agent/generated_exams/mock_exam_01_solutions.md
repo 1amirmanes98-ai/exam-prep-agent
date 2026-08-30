@@ -16,14 +16,24 @@ $I_j := \{x : h(x) = w_j x + b_j\}$ ממוין לפי שיפוע. שתי פונ�
 
 **2. (10)** קחו $f(x) = -x^2$, $c = 1/8$. עבור כל $h$ קמורה:
 $h(1/2) \le \tfrac{h(0)+h(1)}{2}$. יהי $\epsilon := \sup_{[0,1]}|f-h|$. אז
-$h(1/2) \ge f(1/2) - \epsilon = -\tfrac14 - \epsilon$ ו-
+
+$$h(1/2) \ge f(1/2) - \epsilon = -\tfrac14 - \epsilon$$
+
+ו-
 $\tfrac{h(0)+h(1)}{2} \le \tfrac{f(0)+f(1)}{2} + \epsilon = -\tfrac12 + \epsilon$.
-בשילוב: $-\tfrac14 - \epsilon \le -\tfrac12 + \epsilon \Rightarrow \epsilon \ge \tfrac18$.
+בשילוב:
+
+$$-\tfrac14 - \epsilon \le -\tfrac12 + \epsilon \Rightarrow \epsilon \ge \tfrac18$$
+
 (3 pts עבור בחירת מטרה קעורה-ממש + רעיון חסימת הקמירות; 7 pts הטיעון הכמותי. כל
 $f$ קעורה-ממש עם אותו חישוב נקודת-אמצע מתאימה.)
 
 **3. (10)** כל PWL $f$ עם $m$ מקטעים (נקודות שבירה $t_1<\dots<t_{m-1}$) ניתנת
-לכתיבה $f(x) = ax + b + \sum_{i=1}^{m-1} c_i [x - t_i]_+$ כאשר $c_i$ = קפיצות שיפוע
+לכתיבה
+
+$$f(x) = ax + b + \sum_{i=1}^{m-1} c_i [x - t_i]_+$$
+
+כאשר $c_i$ = קפיצות שיפוע
 (4 pts; ייצוג זה שימש בכיתה/בשיעורי הבית). פצלו
 $P(x) := ax+b+\sum_{c_i>0} c_i[x-t_i]_+$ ו-$Q(x) := \sum_{c_i<0} (-c_i)[x-t_i]_+$:
 שתיהן PWL קמורות עם לכל היותר $m$ מקטעים, ו-$f = P - Q$. כל PWL קמורה עם
@@ -51,9 +61,15 @@ $(0,0)$ שניהם מתאפסים, ולכן זו נקודה קריטית עם $L
 $L$ אינה קמורה. (זכות מלאה חלופית: צמצמו לישר דרך שתי נקודות המפרות את אי-שוויון
 המיתר, בחישוב מפורש.)
 
-**2. (10)** פתחו $L(u,v) = \tfrac12\langle uv^\top - M, uv^\top - M\rangle$ וגזרו: עבור
+**2. (10)** פתחו
+
+$$L(u,v) = \tfrac12\langle uv^\top - M, uv^\top - M\rangle$$
+
+וגזרו: עבור
 הפרעה $\delta u$,
-$D_u L[\delta u] = \langle uv^\top - M, \delta u\, v^\top \rangle = \delta u^\top (uv^\top - M) v$
+
+$$D_u L[\delta u] = \langle uv^\top - M, \delta u\, v^\top \rangle = \delta u^\top (uv^\top - M) v$$
+
 ⇒ $\nabla_u L = (uv^\top - M) v = (v^\top v) u - M v$; באופן סימטרי
 $\nabla_v L = (uv^\top - M)^\top u = (u^\top u) v - M^\top u$. שללו עבור הזרימה.
 (לציון מלא נדרשת גזירה של ממש — חישוב אינדקסים או נגזרת כיוונית — לא רק ציטוט התשובה.)
@@ -71,7 +87,10 @@ $0 < a < \sqrt\lambda$, $\dot a = a(\lambda - a^2) > 0$ ו-$a$ חסום מלעי
 $\sqrt\lambda$ (אינו יכול לחצות את נקודת שיווי-המשקל: $\dot a = 0$ שם); מונוטוני + חסום
 ⇒ $a(t) \to a_\infty$ עם $a_\infty(\lambda - a_\infty^2) = 0$ ו-
 $a_\infty \ge \alpha > 0$ ⇒ $a_\infty = \sqrt\lambda$. מסקנה (2 pts):
-$uv^\top = a^2 xy^\top \to \lambda xy^\top = M$, ולכן $L \to 0$.
+
+$$uv^\top = a^2 xy^\top \to \lambda xy^\top = M$$
+
+ולכן $L \to 0$.
 
 **💡 טריקים שימושיים:** אי-קמירות מנקודה קריטית ($0,0$) שנחתרת על ידי השלישייה הסינגולרית העליונה; גזרו גרדיאנטים בעזרת הנגזרת הכיוונית $\langle uv^\top-M,\delta u\,v^\top\rangle$; אי-האיזון $\|u\|^2-\|v\|^2$ נשמר (שחלוף-סקלרי $u^\top Mv=v^\top M^\top u$); אנזץ דרגה-1 מיושר $u=ax,v=ay$ מכווץ את הזרימה לסקלר $\dot a=\lambda a-a^3$, ומונוטוני+חסום ⇒ $a^2\to\lambda$.
 
@@ -82,7 +101,10 @@ $uv^\top = a^2 xy^\top \to \lambda xy^\top = M$, ולכן $L \to 0$.
 **1. (8)** $|\mathcal{H}| \le 3^d$ (2 pts). קבעו $h$: ה-$\ell(h(x_n),y_n)$ הם i.i.d.
 ב-$[0,1]$ עם תוחלת $L_D(h)$; Hoeffding עם
 $\epsilon = \sqrt{(d\ln3 + \ln(2/\delta))/(2N)}$ נותן הסתברות כשל
-$\le 2\exp(-2N\epsilon^2) = 2 e^{-d\ln 3}\,\delta/2 = \delta\,3^{-d}$ (3 pts). חסם
+
+$$\le 2\exp(-2N\epsilon^2) = 2 e^{-d\ln 3}\,\delta/2 = \delta\,3^{-d}$$
+
+(3 pts). חסם
 איחוד על $\le 3^d$ ההשערות ⇒ כשל כולל $\le \delta$ (3 pts).
 
 **2. (10)** ספירה (5 pts): $w$ עם $\|w\|_0 \le k$ מתואר על ידי $k$-יה

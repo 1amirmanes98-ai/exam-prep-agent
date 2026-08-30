@@ -61,11 +61,29 @@ Assume now that $H(t)$ is fixed ($H(t) = H(0)$, $\forall t \geq 0$) and let $\{\
 - **(7 pts)** Explain (qualitatively) why convergence to zero loss is unlikely to happen in this regime ($k < m$), but is likely under overparameterization, i.e. when $k \gg m$.
 
 **Solution sketch:**
-**i.** Gradient flow: $\underline{\dot w} = -\nabla\ell(\underline w) = -\sum_j (u_j - y_j)\, \frac{\partial f(\underline w, \underline x_j)}{\partial \underline w}$. Chain rule per coordinate: $\dot u_i = \big\langle \frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}, \underline{\dot w}\big\rangle = -\sum_j H_{ij}(t)(u_j - y_j)$.
+**i.** Gradient flow:
 
-**ii.** Let $\underline e := \underline u - \underline y$. With constant symmetric PSD $H$: $\underline{\dot e} = -H\underline e \Rightarrow \underline e(t) = e^{-Ht}\underline e(0)$. In $H$'s orthonormal eigenbasis, the $i$-th component decays as $e^{-\lambda_i t}$. $\ell(\underline w(t)) = \frac12\|\underline e(t)\|^2 = \frac12\sum_i e^{-2\lambda_i t}\,\langle \underline e(0), \underline v_i\rangle^2$. Each summand is $\leq \epsilon/m$ once $t \geq \frac{1}{2\lambda_i}\log\big(\frac{m\,\|\underline e(0)\|^2}{2\epsilon}\big)$ (using $\langle \underline e(0), \underline v_i\rangle^2 \leq \|\underline e(0)\|^2$). Take the max over $i$ and sum — the $m$ inside the log pays for the $m$ summands.
+$$\begin{aligned} \underline{\dot w} &= -\nabla\ell(\underline w) \\ &= -\sum_j (u_j - y_j)\, \frac{\partial f(\underline w, \underline x_j)}{\partial \underline w} \end{aligned}$$
 
-**iii.** $H = JJ^\top$ where $J \in \mathbb{R}^{m \times k}$ is the Jacobian with rows $\frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}^\top$. Hence $\mathrm{rank}(H) \leq \mathrm{rank}(J) \leq k < m$, so the symmetric PSD matrix $H$ is singular — some eigenvalue equals 0.
+Chain rule per coordinate:
+
+$$\begin{aligned} \dot u_i &= \big\langle \frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}, \underline{\dot w}\big\rangle \\ &= -\sum_j H_{ij}(t)(u_j - y_j) \end{aligned}$$
+
+**ii.** Let $\underline e := \underline u - \underline y$. With constant symmetric PSD $H$:
+
+$$\underline{\dot e} = -H\underline e \Rightarrow \underline e(t) = e^{-Ht}\underline e(0)$$
+
+In $H$'s orthonormal eigenbasis, the $i$-th component decays as $e^{-\lambda_i t}$.
+
+$$\begin{aligned} \ell(\underline w(t)) &= \frac12\|\underline e(t)\|^2 \\ &= \frac12\sum_i e^{-2\lambda_i t}\,\langle \underline e(0), \underline v_i\rangle^2 \end{aligned}$$
+
+Each summand is $\leq \epsilon/m$ once $t \geq \frac{1}{2\lambda_i}\log\big(\frac{m\,\|\underline e(0)\|^2}{2\epsilon}\big)$ (using $\langle \underline e(0), \underline v_i\rangle^2 \leq \|\underline e(0)\|^2$). Take the max over $i$ and sum — the $m$ inside the log pays for the $m$ summands.
+
+**iii.** $H = JJ^\top$ where $J \in \mathbb{R}^{m \times k}$ is the Jacobian with rows $\frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}^\top$. Hence
+
+$$\mathrm{rank}(H) \leq \mathrm{rank}(J) \leq k < m$$
+
+so the symmetric PSD matrix $H$ is singular — some eigenvalue equals 0.
 
 **iv.** With $k < m$: residual components lying in $H$'s null space do not decay, and generically the $m$ labels cannot all be fit by $k < m$ parameters — training loss stalls above 0. With $k \gg m$: generically $J$ has full row rank so $H \succ 0$ ($\lambda_{\min} > 0$), giving exponential convergence to zero loss. Moreover in the ultra-wide (NTK) regime $H(t)$ indeed stays close to $H(0)$, justifying the fixed-kernel assumption.
 
@@ -92,7 +110,29 @@ $$\forall \underline{w} \in \mathbb{R}^k : L_{\mathcal{D}}(\underline{w}) - L_S(
 $$\forall \underline{w} \in \mathbb{R}^k : L_{\mathcal{D}}(\underline{w}) - L_S(\underline{w}) \leq \min_{r \in [k]}\left\{\Delta_r\left(m, \tfrac{\delta}{k}\right) + 2\rho \cdot |(\underline{w})_r|\right\}$$
 
 **Solution sketch:**
-**i.** For arbitrary $\underline w$, define $\tilde{\underline w} \in W_r$ by zeroing coordinate $r$. Then $\|\underline w - \tilde{\underline w}\| = |(\underline w)_r|$. Lipschitz transfer: $|f(\underline w, \underline x) - f(\tilde{\underline w}, \underline x)| \leq \rho\,|(\underline w)_r|$ for every $\underline x$, and by the reverse triangle inequality the $\ell_1$ loss $|y - f(\cdot, \underline x)|$ is 1-Lipschitz in the prediction, so pointwise $\big|\,|y - f(\underline w,\underline x)| - |y - f(\tilde{\underline w},\underline x)|\,\big| \leq \rho\,|(\underline w)_r|$. Averaging/taking expectation gives $|L_S(\underline w) - L_S(\tilde{\underline w})| \leq \rho|(\underline w)_r|$ and $|L_{\mathcal D}(\underline w) - L_{\mathcal D}(\tilde{\underline w})| \leq \rho|(\underline w)_r|$. Chain the three inequalities on the $1-\delta$ event for $W_r$: $L_{\mathcal D}(\underline w) - L_S(\underline w) \leq \big[L_{\mathcal D}(\tilde{\underline w}) - L_S(\tilde{\underline w})\big] + 2\rho|(\underline w)_r| \leq \Delta_r(m,\delta) + 2\rho|(\underline w)_r|$.
+**i.** For arbitrary $\underline w$, define $\tilde{\underline w} \in W_r$ by zeroing coordinate $r$. Then
+
+$$\|\underline w - \tilde{\underline w}\| = |(\underline w)_r|$$
+
+Lipschitz transfer:
+
+$$|f(\underline w, \underline x) - f(\tilde{\underline w}, \underline x)| \leq \rho\,|(\underline w)_r|$$
+
+for every $\underline x$, and by the reverse triangle inequality the $\ell_1$ loss $|y - f(\cdot, \underline x)|$ is 1-Lipschitz in the prediction, so pointwise
+
+$$\big|\,|y - f(\underline w,\underline x)| - |y - f(\tilde{\underline w},\underline x)|\,\big| \leq \rho\,|(\underline w)_r|$$
+
+Averaging/taking expectation gives
+
+$$|L_S(\underline w) - L_S(\tilde{\underline w})| \leq \rho|(\underline w)_r|$$
+
+and
+
+$$|L_{\mathcal D}(\underline w) - L_{\mathcal D}(\tilde{\underline w})| \leq \rho|(\underline w)_r|$$
+
+Chain the three inequalities on the $1-\delta$ event for $W_r$:
+
+$$\begin{aligned} L_{\mathcal D}(\underline w) - L_S(\underline w) &\leq \big[L_{\mathcal D}(\tilde{\underline w}) - L_S(\tilde{\underline w})\big] + 2\rho|(\underline w)_r| \\ &\leq \Delta_r(m,\delta) + 2\rho|(\underline w)_r| \end{aligned}$$
 
 **ii.** Apply part (i) for each $r \in [k]$ with confidence parameter $\delta/k$. By a union bound all $k$ events hold simultaneously w.p. $\geq 1 - \delta$. On that joint event the bound of (i) holds for *every* $r$ simultaneously and for every $\underline w$, so one may take the minimum over $r \in [k]$ — yielding the stated bound (an SRM/nonuniform-learning flavor: the best coordinate to zero out per hypothesis).
 

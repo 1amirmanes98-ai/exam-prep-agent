@@ -10,7 +10,10 @@ Q3: Gaussian-KL Monte-Carlo agrees with $\|w\|^2/(2\sigma^2)$ to $10^{-3}$).
 ## Q1 — Linear RNNs: scalar state and anti-symmetric transitions (40)
 
 **1. (10)** *Closed form (4 pts).* By induction on $t$:
-$s_t(x) = \sum_{\tau=1}^{t} A^{t-\tau} B\, x_\tau$. Base: $s_1 = A s_0 + B x_1 =
+
+$$s_t(x) = \sum_{\tau=1}^{t} A^{t-\tau} B\, x_\tau$$
+
+Base: $s_1 = A s_0 + B x_1 =
 A^0 B x_1$. Step: $s_t = A s_{t-1} + B x_t = \sum_{\tau \le t-1} A^{t-\tau} B x_\tau
 + A^0 B x_t$. Hence $h(x) = C^\top s_L(x) = \sum_{t=1}^{L} C^\top A^{L-t} B\, x_t$,
 so $h$ realizes $a_t = C^\top A^{L-t} B$ and is a linear functional of $x$.
@@ -43,7 +46,10 @@ the geometric ratio in the wrong direction (the sequence is geometric *backwards
 $a_t = \lambda\, a_{t+1}$, exponent grows as $t$ decreases).
 
 **3. (9)** *Inclusion (2 pts):* zero-padding — given scalar weights
-$(\lambda, b, c)$, take $A' = \begin{pmatrix} \lambda & 0 \\ 0 & 0 \end{pmatrix}$,
+$(\lambda, b, c)$, take
+
+$$A' = \begin{pmatrix} \lambda & 0 \\ 0 & 0 \end{pmatrix}$$
+
 $B' = (b, 0)^\top$, $C' = (c, 0)^\top$; then $C'^\top A'^{k} B' = c \lambda^k b$
 for all $k \ge 0$, so the same function is realized and
 $\mathcal{H}_1 \subseteq \mathcal{H}_2$.
@@ -55,7 +61,10 @@ $A = \mathrm{diag}(1, 2)$, $B = C = (1, 1)^\top$, so $C^\top A^{L-t} B =
 1 \cdot 1^{L-t} + 1 \cdot 2^{L-t}$ — a sum of two geometric sequences with distinct
 ratios.
 *Violation & conclusion (1 pt):* at $t = L-1$ (valid since $L \ge 3$):
-$a_L a_{L-2} = 2 \cdot 5 = 10 \neq 9 = 3^2 = a_{L-1}^2$, so $a \notin
+
+$$a_L a_{L-2} = 2 \cdot 5 = 10 \neq 9 = 3^2 = a_{L-1}^2$$
+
+so $a \notin
 \mathcal{S}_1$ by the identity. Hence $\mathcal{S}_1 \subsetneq \mathcal{S}_2$,
 i.e. $\mathcal{H}_1 \subsetneq \mathcal{H}_2$.
 (Alternative full-credit witnesses: any non-geometric sum of two geometrics, e.g.
@@ -147,7 +156,10 @@ $$2 v \dot v = -2 \sum_n r_n\, v\, [w^\top x_n]_+ , \qquad
 Homogeneity identity (3 pts): $z\,\mathbb{1}[z > 0] = [z]_+$ for all $z$ (check
 $z > 0$ and $z \le 0$ separately; equality at $z = 0$ is $0 = 0$ under the
 convention), so the two expressions coincide and the derivative vanishes. Hence
-$v(t)^2 - \|w(t)\|^2 \equiv v(0)^2 - \|w(0)\|^2$. This is the single-neuron case
+
+$$v(t)^2 - \|w(t)\|^2 \equiv v(0)^2 - \|w(0)\|^2$$
+
+This is the single-neuron case
 of the balancedness conservation law (Lecture 4, Lemma 1; cf. 2022 exams Q2).
 Trap: treating $w^\top \dot w$ as anything other than the inner product; invoking
 balancedness from class without deriving it in this setting (the derivation is the

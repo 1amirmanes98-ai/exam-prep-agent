@@ -78,13 +78,33 @@ i.e., the loss function converges to $0$ at an exponential rate. Do not use clai
 **Solution sketch:**
 (Identical to Moed B 2021 Q2 — see index/exams/fodl_exam_b_2021.md; only the point split differs: 10/10/5/10 instead of 12/12/6/12.)
 
-**1.** $\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$, so under gradient flow $\frac{d}{dt} w_i^2 = 2 w_i \dot w_i = -2 L'(w) \prod_k w_k = -2 L'(w)\, w(t)$ — identical for every $i$. Subtracting for $i, j$ gives $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (balancedness conservation law).
+**1.**
 
-**2.** By (1), a balanced initialization stays balanced: $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ in the $w(t) \geq 0$ regime considered). Product rule: $\dot w = \sum_i \big(\prod_{k \neq i} w_k\big) \dot w_i = -L'(w) \sum_i \big(\prod_{k \neq i} w_k\big)^2 = -L'(w) \sum_i w^2 / w_i^2 = -N L'(w)\, w^{2 - 2/N}$, with $L'(w) = w - y$.
+$$\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$$
+
+so under gradient flow
+
+$$\frac{d}{dt} w_i^2 = 2 w_i \dot w_i = -2 L'(w) \prod_k w_k = -2 L'(w)\, w(t)$$
+
+— identical for every $i$. Subtracting for $i, j$ gives $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (balancedness conservation law).
+
+**2.** By (1), a balanced initialization stays balanced: $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ in the $w(t) \geq 0$ regime considered). Product rule:
+
+$$\dot w = \sum_i \big(\prod_{k \neq i} w_k\big) \dot w_i = -L'(w) \sum_i \big(\prod_{k \neq i} w_k\big)^2 = -L'(w) \sum_i w^2 / w_i^2 = -N L'(w)\, w^{2 - 2/N}$$
+
+with $L'(w) = w - y$.
 
 **3.** Gradient-flow monotonicity: $L(w(t)) \leq L(w(0)) = L(c)$, i.e. $|w(t) - y| \leq y - c$ (as $c \in (0, y)$), which gives $c \leq w(t) \leq 2y - c$.
 
-**4.** Hint step: $\frac{d}{dt} L(w(t)) = (w - y)\dot w = -N (w - y)^2 w^{2 - 2/N} = -2 L(w(t)) \cdot N w(t)^{2 - 2/N}$. Since $w(t) \geq c > 0$ by (3) and $2 - 2/N > 0$: $\frac{d}{dt} L(w(t)) \leq -2N c^{2 - 2/N} L(w(t))$. Integrate ($\frac{d}{dt} \ln L \leq -2N c^{2-2/N}$, Grönwall) to obtain the exponential bound.
+**4.** Hint step:
+
+$$\frac{d}{dt} L(w(t)) = (w - y)\dot w = -N (w - y)^2 w^{2 - 2/N} = -2 L(w(t)) \cdot N w(t)^{2 - 2/N}$$
+
+Since $w(t) \geq c > 0$ by (3) and $2 - 2/N > 0$:
+
+$$\frac{d}{dt} L(w(t)) \leq -2N c^{2 - 2/N} L(w(t))$$
+
+Integrate ($\frac{d}{dt} \ln L \leq -2N c^{2-2/N}$, Grönwall) to obtain the exponential bound.
 
 **💡 Useful tricks:** "Do not use claims from class" ⇒ derive balancedness from scratch: $\frac{d}{dt}w_i^2=-2L'(w)\,w$ is *identical for all $i$*, so differences are conserved; balanced init ⇒ $w_i^2=w^{2/N}$; the loss-monotonicity fact gives the barrier $w(t)\geq c$, which is what lets you lower-bound $w^{2-2/N}\geq c^{2-2/N}$; finish with $\frac{d}{dt}\ln L\leq -2Nc^{2-2/N}$ + Grönwall.
 
@@ -117,11 +137,29 @@ $$\forall h \in \mathcal{H}:\ L_\mathcal{D}(h) - L_S(h) \leq \Delta(N, \delta, |
 **(3) (11 pts)** Denote by $\mathcal{F}_1, \ldots, \mathcal{F}_R \subset \mathcal{F}$ an arbitrary partition of $\mathcal{F}$ into disjoint subsets; that is, $\mathcal{F}_1 \cup \cdots \cup \mathcal{F}_R = \mathcal{F}$ and $\mathcal{F}_i \cap \mathcal{F}_j = \emptyset$ for all $i \neq j \in \{1, \ldots, R\}$. Suppose we have at our disposal a learning algorithm which tends to return hypotheses $h \in \mathcal{H}$ for which $f \in \arg\min_{f \in \mathcal{F}} \|h - f\|_\infty$ lies in a set $\mathcal{F}_i$ with a relatively small index $i$. Derive a generalization bound similar to the bound of part 2, but suited to the use of this algorithm. That is, for $h \in \mathcal{H}$: the smaller the index $i$ of the set $\mathcal{F}_i$ in which the hypothesis of $\mathcal{F}$ closest to $h$ lies, the smaller the bound for $h$ should be.
 
 **Solution sketch:**
-**1.** Fix $f$: $A_n := l(f(x_n), y_n)$ are i.i.d. in $[0,1]$ with $E[A_1] = L_\mathcal{D}(f)$. Hoeffding gives $P(|L_S(f) - L_\mathcal{D}(f)| \geq \epsilon') \leq 2e^{-2N\epsilon'^2}$. Union bound over the finite $\mathcal{F}$ and solve $2|\mathcal{F}| e^{-2N\epsilon'^2} = \delta$: $\Delta(N, \delta, |\mathcal{F}|) = \sqrt{\frac{\ln(2|\mathcal{F}|/\delta)}{2N}} \to 0$.
+**1.** Fix $f$: $A_n := l(f(x_n), y_n)$ are i.i.d. in $[0,1]$ with $E[A_1] = L_\mathcal{D}(f)$. Hoeffding gives
 
-**2.** For $h \in \mathcal{H}$ take its cover point $f \in \mathcal{F}$ with $\sup_x |h(x) - f(x)| \leq \epsilon$. $\rho$-Lipschitzness of $l$ in its first argument gives $|l(h(x), y) - l(f(x), y)| \leq \rho\epsilon$ pointwise. Hence $L_\mathcal{D}(h) \leq L_\mathcal{D}(f) + \rho\epsilon$ and $L_S(f) \leq L_S(h) + \rho\epsilon$. On part 1's event: $L_\mathcal{D}(h) - L_S(h) \leq \big(L_\mathcal{D}(f) - L_S(f)\big) + 2\rho\epsilon \leq \Delta(N, \delta, |\mathcal{F}|) + 2\rho\epsilon$, uniformly over $\mathcal{H}$, w.p. $\geq 1 - \delta$.
+$$P(|L_S(f) - L_\mathcal{D}(f)| \geq \epsilon') \leq 2e^{-2N\epsilon'^2}$$
 
-**3.** SRM-style confidence weighting over the cells: allocate $\delta_i := \delta \cdot 2^{-i}$ to $\mathcal{F}_i$ (so $\sum_{i=1}^{R} \delta_i < \delta$) and apply part 1 to each cell: w.p. $\geq 1 - \delta$, simultaneously $\forall i,\ \forall f \in \mathcal{F}_i$: $L_\mathcal{D}(f) - L_S(f) \leq \Delta(N, \delta 2^{-i}, |\mathcal{F}_i|)$. For $h$, let $i(h)$ be the index of the cell containing its nearest cover point $f$ (which satisfies $\|h - f\|_\infty \leq \epsilon$ by the cover assumption). The Lipschitz transfer of part 2 gives $L_\mathcal{D}(h) - L_S(h) \leq \Delta\big(N, \delta 2^{-i(h)}, |\mathcal{F}_{i(h)}|\big) + 2\rho\epsilon$. The bound strictly decreases as $i(h)$ decreases (larger confidence share $\delta 2^{-i}$; to make monotonicity in $i$ hold regardless of the cell sizes one may replace $|\mathcal{F}_{i(h)}|$ by $|\mathcal{F}|$), matching the algorithm's bias toward small-index cells.
+Union bound over the finite $\mathcal{F}$ and solve $2|\mathcal{F}| e^{-2N\epsilon'^2} = \delta$:
+
+$$\Delta(N, \delta, |\mathcal{F}|) = \sqrt{\frac{\ln(2|\mathcal{F}|/\delta)}{2N}} \to 0$$
+
+**2.** For $h \in \mathcal{H}$ take its cover point $f \in \mathcal{F}$ with $\sup_x |h(x) - f(x)| \leq \epsilon$. $\rho$-Lipschitzness of $l$ in its first argument gives $|l(h(x), y) - l(f(x), y)| \leq \rho\epsilon$ pointwise. Hence $L_\mathcal{D}(h) \leq L_\mathcal{D}(f) + \rho\epsilon$ and $L_S(f) \leq L_S(h) + \rho\epsilon$. On part 1's event:
+
+$$L_\mathcal{D}(h) - L_S(h) \leq \big(L_\mathcal{D}(f) - L_S(f)\big) + 2\rho\epsilon \leq \Delta(N, \delta, |\mathcal{F}|) + 2\rho\epsilon$$
+
+uniformly over $\mathcal{H}$, w.p. $\geq 1 - \delta$.
+
+**3.** SRM-style confidence weighting over the cells: allocate $\delta_i := \delta \cdot 2^{-i}$ to $\mathcal{F}_i$ (so $\sum_{i=1}^{R} \delta_i < \delta$) and apply part 1 to each cell: w.p. $\geq 1 - \delta$, simultaneously $\forall i,\ \forall f \in \mathcal{F}_i$:
+
+$$L_\mathcal{D}(f) - L_S(f) \leq \Delta(N, \delta 2^{-i}, |\mathcal{F}_i|)$$
+
+For $h$, let $i(h)$ be the index of the cell containing its nearest cover point $f$ (which satisfies $\|h - f\|_\infty \leq \epsilon$ by the cover assumption). The Lipschitz transfer of part 2 gives
+
+$$\boxed{\,L_\mathcal{D}(h) - L_S(h) \leq \Delta\big(N, \delta 2^{-i(h)}, |\mathcal{F}_{i(h)}|\big) + 2\rho\epsilon\,}$$
+
+The bound strictly decreases as $i(h)$ decreases (larger confidence share $\delta 2^{-i}$; to make monotonicity in $i$ hold regardless of the cell sizes one may replace $|\mathcal{F}_{i(h)}|$ by $|\mathcal{F}|$), matching the algorithm's bias toward small-index cells.
 
 **💡 Useful tricks:** A finite $\epsilon$-cover ⇒ Hoeffding + union on $\mathcal F$ only; transfer to *all* of $\mathcal H$ via the $2\rho\epsilon$ Lipschitz bridge; "algorithm prefers low-index cells" ⇒ SRM weight $\delta_i=\delta 2^{-i}$ per cell of the partition.
 

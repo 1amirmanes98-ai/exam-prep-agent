@@ -38,37 +38,53 @@
 
 ## Key theorems & results
 **Prop 1 (linear regression: where span-of-gradients methods land).** מזערו את $L_S(w)$ עם $w^{(0)}=0$ ואיטרטים המקיימים $w^{(t+1)}-w^{(t)}\in\mathrm{span}(\{\nabla\ell_{(x_i,y_i)}(w):i\in[m],w\in\mathbb{R}^d\})$ (כולל GD ו-SGD, עם/בלי מומנטום). אם האיטרטים מתכנסים לממזער גלובלי (הפסד אפס), גבול זה הוא $X(X^\top X)^{-1}y$.
-רעיון ההוכחה: $\nabla\ell_{(x_i,y_i)}(w)=(y_i-x_i^\top w)\cdot x_i\in\mathrm{span}(\{x_i\})$ ⇒ כל האיטרטים (והגבול — פרישות סגורות טופולוגית) נמצאים ב-$\mathrm{span}(\{x_i\}_{i=1}^m)$, ולכן $w^{(\infty)}=Xr$; הפסד אפס ⇒ $X^\top Xr=y$ עם $X^\top X$ הפיכה ($\mathrm{rank}(X)=m$) ⇒ $r=(X^\top X)^{-1}y$.
-רלוונטיות למבחן: צטטו בדיוק אילו אלגוריתמים מכוסים ומדוע הגבול נשאר בפרישה.
+
+**רעיון ההוכחה:** $\nabla\ell_{(x_i,y_i)}(w)=(y_i-x_i^\top w)\cdot x_i\in\mathrm{span}(\{x_i\})$ ⇒ כל האיטרטים (והגבול — פרישות סגורות טופולוגית) נמצאים ב-$\mathrm{span}(\{x_i\}_{i=1}^m)$, ולכן $w^{(\infty)}=Xr$; הפסד אפס ⇒ $X^\top Xr=y$ עם $X^\top X$ הפיכה ($\mathrm{rank}(X)=m$) ⇒ $r=(X^\top X)^{-1}y$.
+
+**רלוונטיות למבחן:** צטטו בדיוק אילו אלגוריתמים מכוסים ומדוע הגבול נשאר בפרישה.
 
 **Lem 1 (minimal-norm characterization).** מבין כל הפתרונות בעלי הפסד-אפס של $L_S$, $X(X^\top X)^{-1}y$ הוא זה בעל הנורמה האוקלידית המינימלית.
-רעיון ההוכחה: פרקו ממזער גלובלי בעל נורמה מינימלית $w^*=w_\parallel^*+w_\perp^*$ ביחס ל-$\mathrm{span}(\{x_i\})$; $X^\top w^*=X^\top w_\parallel^*$ ולכן $w_\parallel^*$ הוא גם ממזער גלובלי; פיתגורס מכריח $\|w_\perp^*\|=0$; הפתרון בעל הפסד-אפס בתוך-הפרישה יחיד $=X(X^\top X)^{-1}y$.
+
+**רעיון ההוכחה:** פרקו ממזער גלובלי בעל נורמה מינימלית $w^*=w_\parallel^*+w_\perp^*$ ביחס ל-$\mathrm{span}(\{x_i\})$; $X^\top w^*=X^\top w_\parallel^*$ ולכן $w_\parallel^*$ הוא גם ממזער גלובלי; פיתגורס מכריח $\|w_\perp^*\|=0$; הפתרון בעל הפסד-אפס בתוך-הפרישה יחיד $=X(X^\top X)^{-1}y$.
 
 **Cor 1.** תחת תנאי Prop 1, האופטימיזציה מתכנסת לפתרון בעל הנורמה האוקלידית המינימלית. (רגולריזציה משתמעת של אופטימיזציה מבוססת-גרדיאנט ברגרסיה לינארית, אתחול אפס = מזעור נורמת-$\ell_2$.)
 
 **Result (NTK regime).** המשקלים הנלמדים מתכנסים ל-$\Phi(\Phi^\top\Phi)^{-1}y$; כלל הניבוי
+
 $$x\mapsto\big\langle\phi(x),\Phi(\Phi^\top\Phi)^{-1}y\big\rangle=[K_{NTK}(x,x_1),\dots,K_{NTK}(x,x_m)]^\top (H^*)^{-1}y .$$
+
 עבור **כל** העתקת מאפיינים $\psi$ המממשת את ה-NTK (עם $\Psi:=[\psi(x_1),\dots,\psi(x_m)]$) אותו כלל שווה ל-$x\mapsto\langle\psi(x),\Psi(\Psi^\top\Psi)^{-1}y\rangle$ — המנבא הלינארי המאנטרפל בעל הנורמה-האוקלידית-המינימלית במרחב המאפיינים של $\psi$. ומכאן: רגולריזציה משתמעת של רשתות אולטרה-רחבות במשטר ה-NTK = **מזעור נורמה ב-RKHS**.
-רלוונטיות למבחן: הכלל תלוי רק בקרנל, לא במימוש העתקת-המאפיינים.
+
+**רלוונטיות למבחן:** הכלל תלוי רק בקרנל, לא במימוש העתקת-המאפיינים.
 
 **Lem 2 ($\delta>0$).** $\delta:=\min_{\xi:\|\xi\|=1,\xi\perp u^*}\max_{i\in I}\langle\xi,z_i\rangle>0$.
-רעיון ההוכחה: אם ל-$\xi\perp u^*$ יחידה כלשהי היה $\max_{i\in I}\langle\xi,z_i\rangle\le0$, אזי $0=\langle\xi,u^*\rangle=\sum_{i\in I}\alpha_i^*\langle\xi,z_i\rangle$ עם מחוברים אי-חיוביים ו-$\alpha_i^*>0$ מכריח $\langle\xi,z_i\rangle=0\ \forall i\in I$; כיוון ש-$\{z_i\}_{i\in I}$ פורש את $\mathbb{R}^d$, $\xi=0$ — סתירה.
+
+**רעיון ההוכחה:** אם ל-$\xi\perp u^*$ יחידה כלשהי היה $\max_{i\in I}\langle\xi,z_i\rangle\le0$, אזי $0=\langle\xi,u^*\rangle=\sum_{i\in I}\alpha_i^*\langle\xi,z_i\rangle$ עם מחוברים אי-חיוביים ו-$\alpha_i^*>0$ מכריח $\langle\xi,z_i\rangle=0\ \forall i\in I$; כיוון ש-$\{z_i\}_{i\in I}$ פורש את $\mathbb{R}^d$, $\xi=0$ — סתירה.
 
 **Lem 3 (gradient pushes the perpendicular part back).** יהי $w\in\mathbb{R}^d$ עם $\langle w,u^*\rangle\ge0$ ו-$\|\Pi^\perp w\|\ge\frac{1+\ln(m)}{\delta}$. אזי $\langle\Pi^\perp w,\nabla L_S(w)\rangle\ge 0$.
-רעיון ההוכחה: בחרו וקטור תומך $z'\in\operatorname{argmax}_{z\in\{z_i\}_{i\in I}}\langle-\Pi^\perp w,z\rangle$, כך ש-$\langle-\Pi^\perp w,z'\rangle\ge\delta\|\Pi^\perp w\|$; פצלו את $\langle\Pi^\perp w,\nabla L_S(w)\rangle=\frac1m\sum_i e^{-\langle w,z_i\rangle}\langle-\Pi^\perp w,\Pi^\perp z_i\rangle$ לאיבר ה-$z'$, החסום מלמטה על ידי $\frac1m e^{-\gamma\langle w,u^*\rangle}e^{\delta\|\Pi^\perp w\|}\delta\|\Pi^\perp w\|$ (בשימוש ב-$z'=\Pi^\perp z'+\gamma u^*$), ולאיברים עם $\langle\Pi^\perp w,\Pi^\perp z_i\rangle\ge0$, כל אחד חסום מלמטה על ידי $-e^{-\gamma\langle w,u^*\rangle}\cdot\frac1e$ באמצעות $-\beta e^{-\beta}\ge-e^{-1}$; הסף $\|\Pi^\perp w\|\ge\frac{1+\ln m}{\delta}$ גורם לאיבר החיובי לשלוט.
-רלוונטיות למבחן: הסף המדויק $\frac{1+\ln(m)}{\delta}$ ותפקיד ההנחה $\langle w,u^*\rangle\ge 0$.
+
+**רעיון ההוכחה:** בחרו וקטור תומך $z'\in\operatorname{argmax}_{z\in\{z_i\}_{i\in I}}\langle-\Pi^\perp w,z\rangle$, כך ש-$\langle-\Pi^\perp w,z'\rangle\ge\delta\|\Pi^\perp w\|$; פצלו את $\langle\Pi^\perp w,\nabla L_S(w)\rangle=\frac1m\sum_i e^{-\langle w,z_i\rangle}\langle-\Pi^\perp w,\Pi^\perp z_i\rangle$ לאיבר ה-$z'$, החסום מלמטה על ידי $\frac1m e^{-\gamma\langle w,u^*\rangle}e^{\delta\|\Pi^\perp w\|}\delta\|\Pi^\perp w\|$ (בשימוש ב-$z'=\Pi^\perp z'+\gamma u^*$), ולאיברים עם $\langle\Pi^\perp w,\Pi^\perp z_i\rangle\ge0$, כל אחד חסום מלמטה על ידי $-e^{-\gamma\langle w,u^*\rangle}\cdot\frac1e$ באמצעות $-\beta e^{-\beta}\ge-e^{-1}$; הסף $\|\Pi^\perp w\|\ge\frac{1+\ln m}{\delta}$ גורם לאיבר החיובי לשלוט.
+
+**רלוונטיות למבחן:** הסף המדויק $\frac{1+\ln(m)}{\delta}$ ותפקיד ההנחה $\langle w,u^*\rangle\ge 0$.
 
 **Thm 1 (GF on linear predictors → max margin).** יהי $w(t)$ מסלול GF, $\dot w(t)=-\nabla L_S(w(t))$, עם $\lim_{t\to\infty}L_S(w(t))=0$. אזי
+
 $$\lim_{t\to\infty}\frac{w(t)}{\|w(t)\|}=u^*.$$
-רעיון ההוכחה: הפסד $\to0$ ⇒ כל $e^{-\langle w(t),z_i\rangle}\to0$ ⇒ $\|w(t)\|\to\infty$ וכן $\exists t_0$: $\langle w(t),z_i\rangle\ge0\ \forall i,t\ge t_0$ ⇒ $\langle w(t),u^*\rangle=\sum_i\alpha_i^*\langle w(t),z_i\rangle\ge0$; $\frac{d}{dt}\|\Pi^\perp w(t)\|^2=-2\langle\Pi^\perp w(t),\nabla L_S(w(t))\rangle\le0$ בכל פעם ש-$\|\Pi^\perp w(t)\|\ge\frac{1+\ln m}{\delta}$ (Lem 3) ⇒ $\|\Pi^\perp w(t)\|\le R:=\max\{\|\Pi^\perp w(t_0)\|,\frac{1+\ln m}{\delta}\}$ עבור כל $t\ge t_0$ (אחרת סתירת משפט-הערך-הממוצע בחצייה האחרונה של $R$); $\|\Pi^\perp w\|$ חסום + $\|w\|\to\infty$ ⇒ $w/\|w\|\to u^*$.
-רלוונטיות למבחן: ההוכחה ניתנה במלואה — חומר מבחן קנוני; שימו לב שאינפימום ההפסד אינו מושג, רק הכיוון מתכנס.
+
+**רעיון ההוכחה:** הפסד $\to0$ ⇒ כל $e^{-\langle w(t),z_i\rangle}\to0$ ⇒ $\|w(t)\|\to\infty$ וכן $\exists t_0$: $\langle w(t),z_i\rangle\ge0\ \forall i,t\ge t_0$ ⇒ $\langle w(t),u^*\rangle=\sum_i\alpha_i^*\langle w(t),z_i\rangle\ge0$; $\frac{d}{dt}\|\Pi^\perp w(t)\|^2=-2\langle\Pi^\perp w(t),\nabla L_S(w(t))\rangle\le0$ בכל פעם ש-$\|\Pi^\perp w(t)\|\ge\frac{1+\ln m}{\delta}$ (Lem 3) ⇒ $\|\Pi^\perp w(t)\|\le R:=\max\{\|\Pi^\perp w(t_0)\|,\frac{1+\ln m}{\delta}\}$ עבור כל $t\ge t_0$ (אחרת סתירת משפט-הערך-הממוצע בחצייה האחרונה של $R$); $\|\Pi^\perp w\|$ חסום + $\|w\|\to\infty$ ⇒ $w/\|w\|\to u^*$.
+
+**רלוונטיות למבחן:** ההוכחה ניתנה במלואה — חומר מבחן קנוני; שימו לב שאינפימום ההפסד אינו מושג, רק הכיוון מתכנס.
 
 **Thm 2 (GF on deep linear networks → max margin).** יהי $(W_1(t),\dots,W_N(t))$ מסלול GF של $\phi(\cdot)$ מ**אתחול מאוזן**, עם $\lim_{t\to\infty}\phi(W_1(t),\dots,W_N(t))=0$. אזי, בראיית $W_{1:N}(t)\in\mathbb{R}^{1,d}$ כווקטור,
+
 $$\lim_{t\to\infty}\frac{W_{1:N}(t)}{\|W_{1:N}(t)\|}=u^*.$$
-רעיון ההוכחה: המאוזנות נותנת את דינמיקת ה-E2E $\dot W_{1:N}=-\sum_{j=1}^N[W_{1:N}W_{1:N}^\top]^{\frac{j-1}{N}}\nabla\ell(W_{1:N})[W_{1:N}^\top W_{1:N}]^{\frac{N-j}{N}}$, אשר עבור וקטור שורה $w(t):=W_{1:N}(t)$ הופכת ל-$\dot w=-\|w\|^{\frac{2(N-1)}{N}}\nabla L_S(w)-(N-1)\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle w$; די להראות $\frac{\|\Pi^\perp w(t)\|^2}{\|w(t)\|^2}\to0$; באמצעות כלל המנה, כאשר היחס $\ge\epsilon$ ו-$\|w\|^2\ge\frac{(1+\ln m)^2}{\delta^2\epsilon}$, $\frac{d}{dt}\frac{\|\Pi^\perp w\|^2}{\|w\|^2}\le 2\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle\epsilon=-\frac{\epsilon}{N}\frac{d}{dt}\ln(\|w\|^2)<0$ (בשימוש ב-Lem 3 וב-$\langle\nabla L_S(w),w\rangle=-\frac1m\sum_ie^{-\langle w,z_i\rangle}\langle w,z_i\rangle<0$); באינטגרציה, אם היחס נשאר $\ge\epsilon$ הירידה באגף ימין הייתה $-\frac{\epsilon}{N}[\ln\|w(t')\|^2-\ln\|w(t)\|^2]\to-\infty$ — סתירה, כך שהיחס בסופו של דבר יורד מתחת לכל $\epsilon$ ונשאר שם.
-רלוונטיות למבחן: הניסוח + תפקיד האתחול המאוזן; התוצאה מתקיימת עבור **כל עומק $N$** — אותו גבול $u^*$.
+
+**רעיון ההוכחה:** המאוזנות נותנת את דינמיקת ה-E2E $\dot W_{1:N}=-\sum_{j=1}^N[W_{1:N}W_{1:N}^\top]^{\frac{j-1}{N}}\nabla\ell(W_{1:N})[W_{1:N}^\top W_{1:N}]^{\frac{N-j}{N}}$, אשר עבור וקטור שורה $w(t):=W_{1:N}(t)$ הופכת ל-$\dot w=-\|w\|^{\frac{2(N-1)}{N}}\nabla L_S(w)-(N-1)\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle w$; די להראות $\frac{\|\Pi^\perp w(t)\|^2}{\|w(t)\|^2}\to0$; באמצעות כלל המנה, כאשר היחס $\ge\epsilon$ ו-$\|w\|^2\ge\frac{(1+\ln m)^2}{\delta^2\epsilon}$, $\frac{d}{dt}\frac{\|\Pi^\perp w\|^2}{\|w\|^2}\le 2\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle\epsilon=-\frac{\epsilon}{N}\frac{d}{dt}\ln(\|w\|^2)<0$ (בשימוש ב-Lem 3 וב-$\langle\nabla L_S(w),w\rangle=-\frac1m\sum_ie^{-\langle w,z_i\rangle}\langle w,z_i\rangle<0$); באינטגרציה, אם היחס נשאר $\ge\epsilon$ הירידה באגף ימין הייתה $-\frac{\epsilon}{N}[\ln\|w(t')\|^2-\ln\|w(t)\|^2]\to-\infty$ — סתירה, כך שהיחס בסופו של דבר יורד מתחת לכל $\epsilon$ ונשאר שם.
+
+**רלוונטיות למבחן:** הניסוח + תפקיד האתחול המאוזן; התוצאה מתקיימת עבור **כל עומק $N$** — אותו גבול $u^*$.
 
 **Exercise (E2E dynamics in vector form).** בהינתן דינמיקת ה-E2E לעיל עם $W_{1:N}(t)\in\mathbb{R}^{1,d}$, הוכיחו
+
 $$\frac{d}{dt}W_{1:N}(t)=-\|W_{1:N}(t)\|_{Fro}^{\frac{2(N-1)}{N}}\cdot\nabla L_S(W_{1:N}(t))-(N-1)\|W_{1:N}(t)\|_{Fro}^{-\frac2N}\cdot\big\langle\nabla L_S(W_{1:N}(t)),W_{1:N}(t)\big\rangle\cdot W_{1:N}(t).$$
 
 **Extensions (1.3.4, stated results).** (i) האמור לעיל עיוור-לעומק — עומקים $1$, $2$, $\ge3$ נותנים את אותה הטיה משתמעת, בניגוד לפרקטיקה; עם וריאנטים "קונבולוציוניים" מסוימים של רשתות לינאריות העומק כן משנה את ההטיה המשתמעת (Gunasekar et al. [1]). (ii) עבור רשתות הומוגניות מסדר $N$, תחת תנאים מסוימים GD מחזיר פתרון מקורב ל-$\max_\Theta\gamma(\Theta)$, כלומר ממקסם את המרווח המנורמל (Lyu–Li [3]). (iii) Thm 2 מתרחב ל-GD עם קצב למידה יורד ואתחול שרירותי (לא-מאוזן); אומת אמפירית (איור: GD על נתונים פרידים דו-ממדיים סינתטיים, LNN בעומק 4 ומנבא בעומק 1 שניהם מתכנסים לכיוון המרווח-המקסימלי; מ-Ji–Telgarsky, "GD Aligns the Layers of Deep Linear Networks").

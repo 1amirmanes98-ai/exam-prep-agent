@@ -19,7 +19,9 @@ $$\ell(w) = \frac12\sum_{i=1}^m \big(f(w,x_i) - y_i\big)^2 .$$
 **Def (time-varying kernel matrix $H(t)$).** $H(t) \in \mathbb{R}^{m,m}$ is the PSD matrix
 $$(H(t))_{i,j} = \left\langle \frac{\partial}{\partial w} f(w(t),x_i),\ \frac{\partial}{\partial w} f(w(t),x_j) \right\rangle .$$
 
-**Def (spectral coordinates).** $H^*$ PSD with orthogonal eigendecomposition $H^* = V\Lambda V^\top$, $\Lambda = \mathrm{diag}(\lambda_1,\dots,\lambda_m) \ge 0$; change of variables $q(t) := V^\top(u(t) - y) \iff u(t) = Vq(t) + y$.
+**Def (spectral coordinates).** $H^*$ PSD with orthogonal eigendecomposition $H^* = V\Lambda V^\top$, $\Lambda = \mathrm{diag}(\lambda_1,\dots,\lambda_m) \ge 0$; change of variables
+
+$$q(t) := V^\top(u(t) - y) \iff u(t) = Vq(t) + y$$
 
 **Def (features and NTK, affine regime).** When $\frac{\partial}{\partial w}f(w(t),x)$ is independent of $w(t)$ (NN output affine in $w$), define $\phi(x) := \frac{\partial}{\partial w}f(w(t),x) \in \mathbb{R}^k$; then $f(w,x) = \langle\phi(x),w\rangle + b_x$, and $b_x = 0$ in the common setting where zero weights give zero output. $\Phi \in \mathbb{R}^{k,m}$ has $i$-th column $\phi(x_i)$. The kernel
 $$K : \mathbb{R}^d\times\mathbb{R}^d \to \mathbb{R},\qquad K(x,x') := \langle\phi(x), \phi(x')\rangle$$
@@ -50,23 +52,43 @@ $$\dot\Sigma^{(n)}(x,x') := c_\sigma\,\mathbb{E}\big[\dot\sigma(u)\dot\sigma(v)\
 **Lem 1 (prediction-space dynamics — exact).** Under GF on the $\ell_2$ loss, $u(t)$ follows
 $$\forall t \in \mathbb{R}_{\ge0}:\quad \dot u(t) = -H(t)\,\big(u(t) - y\big),$$
 with $H(t)$ as defined above (PSD).
-*Proof idea:* $\dot w(t) = -\nabla\ell(w(t)) = -\sum_{j=1}^m (f(w(t),x_j)-y_j)\frac{\partial}{\partial w}f(w(t),x_j)$; apply the chain rule to $\frac{d}{dt}f(w(t),x_i)$ and recognize the inner products as $(H(t))_{i,j}$.
-*Exam relevance:* This derivation is short, exact (no width assumption), and highly likely to be asked; know that PSD-ness is automatic (Gram matrix).
+
+**Proof idea:**
+
+$$\dot w(t) = -\nabla\ell(w(t)) = -\sum_{j=1}^m (f(w(t),x_j)-y_j)\frac{\partial}{\partial w}f(w(t),x_j)$$
+
+apply the chain rule to $\frac{d}{dt}f(w(t),x_i)$ and recognize the inner products as $(H(t))_{i,j}$.
+
+**Exam relevance:** This derivation is short, exact (no width assumption), and highly likely to be asked; know that PSD-ness is automatic (Gram matrix).
 
 **Result (convergence under the idealized dynamics).** If the NN is wide enough then $H(t) \approx H(0)$ throughout training, and under suitable random initialization $H(0) \approx H^*$ deterministic, giving $\dot u(t) \approx -H^*(u(t)-y)$. Treating this as exact and diagonalizing ($q := V^\top(u-y)$):
 $$\forall i \in [m]:\quad (q(t))_i = (q(0))_i\,e^{-\lambda_i t},\qquad \|q(t)\|_2^2 = \|u(t)-y\|_2^2 = 2\,\ell(w(t)).$$
 If $H^*$ is non-singular ($\lambda_i > 0\ \forall i$), the training loss converges to the global minimum (zero) exponentially fast; specifically $\ell(w(t)) < \epsilon$ for any
 $$t > \max_{i\in[m]} \frac{1}{2\lambda_i}\,\log\!\left(\frac{m\,(q(0))_i^2}{2\epsilon}\right).$$
-*Proof idea:* $\dot q = -\Lambda q$ decouples into scalar ODEs $\dot q_i = -\lambda_i q_i$; integrate $\frac{\dot q_i}{q_i}$.
-*Exam relevance:* Global-minimum convergence for a non-convex objective; each error mode decays at its own rate $\lambda_i$ (eigenvalues of the NTK Gram matrix set the speed).
 
-**Result (equivalence to kernel regression).** In the regime $H(t) \approx H^*$ with $\frac{\partial}{\partial w}f$ independent of $w$ (affine outputs, $b_x = 0$): $\dot w(t) = -\Phi(\Phi^\top w(t) - y)$, so with $w(0) \approx 0$, $w(t)$ stays in the column space of $\Phi$, i.e., $w(t) = \Phi r(t)$; then $u(t) = \Phi^\top w(t) = \Phi^\top\Phi\, r(t) = H^* r(t)$. Assuming $H^*$ full-rank, $u(t) \to y$ forces $r(t) \to (H^*)^{-1}y$ and
+**Proof idea:** $\dot q = -\Lambda q$ decouples into scalar ODEs $\dot q_i = -\lambda_i q_i$; integrate $\frac{\dot q_i}{q_i}$.
+
+**Exam relevance:** Global-minimum convergence for a non-convex objective; each error mode decays at its own rate $\lambda_i$ (eigenvalues of the NTK Gram matrix set the speed).
+
+**Result (equivalence to kernel regression).** In the regime $H(t) \approx H^*$ with $\frac{\partial}{\partial w}f$ independent of $w$ (affine outputs, $b_x = 0$):
+
+$$\dot w(t) = -\Phi(\Phi^\top w(t) - y)$$
+
+so with $w(0) \approx 0$, $w(t)$ stays in the column space of $\Phi$, i.e., $w(t) = \Phi r(t)$; then
+
+$$u(t) = \Phi^\top w(t) = \Phi^\top\Phi\, r(t) = H^* r(t)$$
+
+Assuming $H^*$ full-rank, $u(t) \to y$ forces $r(t) \to (H^*)^{-1}y$ and
 $$w(t) \xrightarrow{t\to\infty} \Phi\,(H^*)^{-1}y,$$
 so the prediction function returned by training is
 $$x \mapsto f\big(\Phi(H^*)^{-1}y,\ x\big) = \big[K(x,x_1),\dots,K(x,x_m)\big]^\top (H^*)^{-1}\, y$$
 — **precisely kernel regression** with the NTK $K(\cdot,\cdot)$.
-*Proof idea:* Substitute $f(w,x) = \langle\phi(x),w\rangle$ everywhere; the limit predictor is $\langle\phi(x), \Phi(H^*)^{-1}y\rangle$, whose entries are kernel evaluations.
-*Exam relevance:* The punchline identity "trained ultra-wide NN $=$ NTK kernel regression"; be able to reproduce the full chain $w(t)=\Phi r(t) \Rightarrow u = H^*r \Rightarrow w_\infty = \Phi(H^*)^{-1}y$.
+
+**Proof idea:** Substitute $f(w,x) = \langle\phi(x),w\rangle$ everywhere; the limit predictor is $\langle\phi(x), \Phi(H^*)^{-1}y\rangle$, whose entries are kernel evaluations.
+
+**Exam relevance:** The punchline identity "trained ultra-wide NN $=$ NTK kernel regression"; be able to reproduce the full chain
+
+$$w(t)=\Phi r(t) \Rightarrow u = H^*r \Rightarrow w_\infty = \Phi(H^*)^{-1}y$$
 
 **Result (shallow NTK formula).** For the shallow architecture, if $n$ is sufficiently large then for any $t \ge 0$, $H(t)$ is approximately the Gram matrix of
 $$K_s(x,x') = x^\top x'\cdot\mathbb{E}_{w\sim\mathcal N(0,I)}\big[\dot\sigma(w^\top x)\,\dot\sigma(w^\top x')\big].$$
@@ -74,20 +96,45 @@ Established via Prop 1 (at $t=0$) + Prop 2 (for $t>0$).
 
 **Prop 1 (concentration at initialization).** Let $\epsilon > 0$, $\delta \in (0,1)$. If
 $$n \ \ge\ \frac{2m^4}{\epsilon^2}\,\log\!\left(\frac{m^2}{\delta}\right),$$
-then w.p. $\ge 1-\delta$ over the initialization of $w_1,\dots,w_n$: $\|H(0) - H^*\|_{\mathrm{spectral}} \le \epsilon$ (spectral norm = max singular value), where $(H^*)_{i,j} = K_s(x_i,x_j)$.
-*Proof idea:* $(H(0))_{i,j} = \frac1n\sum_{r=1}^n x_i^\top x_j\,\dot\sigma(w_r(0)^\top x_i)\,\dot\sigma(w_r(0)^\top x_j)$ is an average of $n$ i.i.d. copies of $\gamma := x_i^\top x_j\dot\sigma(w^\top x_i)\dot\sigma(w^\top x_j) \in [-1,1]$ (using $a_r^2 = 1$, $|\dot\sigma|\le1$, $\|x_i\|=1$) with $\mathbb{E}[\gamma] = K_s(x_i,x_j)$; Hoeffding at accuracy $\epsilon/m^2$ per entry, union bound over $m^2$ entries, then $\|A\|_{\mathrm{spectral}} \le \|A\|_F \le \sum_{i,j}|A_{i,j}|$.
-*Exam relevance:* Standard concentration pipeline (Hoeffding + union bound + norm domination) — reproducible on demand.
+then w.p. $\ge 1-\delta$ over the initialization of $w_1,\dots,w_n$:
+
+$$\|H(0) - H^*\|_{\mathrm{spectral}} \le \epsilon$$
+
+(spectral norm = max singular value), where $(H^*)_{i,j} = K_s(x_i,x_j)$.
+
+**Proof idea:**
+
+$$(H(0))_{i,j} = \frac1n\sum_{r=1}^n x_i^\top x_j\,\dot\sigma(w_r(0)^\top x_i)\,\dot\sigma(w_r(0)^\top x_j)$$
+
+is an average of $n$ i.i.d. copies of $\gamma := x_i^\top x_j\dot\sigma(w^\top x_i)\dot\sigma(w^\top x_j) \in [-1,1]$ (using $a_r^2 = 1$, $|\dot\sigma|\le1$, $\|x_i\|=1$) with $\mathbb{E}[\gamma] = K_s(x_i,x_j)$; Hoeffding at accuracy $\epsilon/m^2$ per entry, union bound over $m^2$ entries, then
+
+$$\|A\|_{\mathrm{spectral}} \le \|A\|_F \le \sum_{i,j}|A_{i,j}|$$
+
+**Exam relevance:** Standard concentration pipeline (Hoeffding + union bound + norm domination) — reproducible on demand.
 
 **Prop 2 (kernel stability during training).** Let $t \ge 0$. Assume $|y_i| \le c$ and $\max_{\tau\in[0,t]}|(u(\tau))_i| \le c$ for all $i \in [m]$, for some $c > 0$. If
 $$n \ \ge\ \frac{16\,c^2 m^6 t^2}{\epsilon^2},$$
 then $\|H(t) - H(0)\|_{\mathrm{spectral}} \le \epsilon$.
-*Proof idea:* Integrate GF for a single neuron: $\|w_r(t) - w_r(0)\| \le \int_0^t\|\dot w_r\| \le \frac{2cmt}{\sqrt n}$ (triangle inequality; $|u_i - y_i| \le 2c$, $|\dot\sigma| \le 1$, $\|x_i\| = 1$, $1/\sqrt n$ scaling). Mean value theorem with $|\ddot\sigma| \le 1$: $|\dot\sigma(w_r(t)^\top x) - \dot\sigma(w_r(0)^\top x)| \le \|w_r(t)-w_r(0)\|$, giving the entrywise bound $|(H(t))_{i,j} - (H(0))_{i,j}| \le \frac{4cmt}{\sqrt n}$; finish with $\|H(t)-H(0)\|_{\mathrm{spectral}} \le m^2\max_{i,j}|(H(t))_{i,j}-(H(0))_{i,j}| \le \frac{4cm^3t}{\sqrt n}$.
-*Exam relevance:* The "lazy training" mechanism: per-neuron movement is $O(1/\sqrt n)$, so the kernel is nearly frozen; know the three intermediate bounds $\frac{2cmt}{\sqrt n}$, $\frac{4cmt}{\sqrt n}$, $\frac{4cm^3t}{\sqrt n}$.
+
+**Proof idea:** Integrate GF for a single neuron:
+
+$$\|w_r(t) - w_r(0)\| \le \int_0^t\|\dot w_r\| \le \frac{2cmt}{\sqrt n}$$
+
+(triangle inequality; $|u_i - y_i| \le 2c$, $|\dot\sigma| \le 1$, $\|x_i\| = 1$, $1/\sqrt n$ scaling). Mean value theorem with $|\ddot\sigma| \le 1$:
+
+$$|\dot\sigma(w_r(t)^\top x) - \dot\sigma(w_r(0)^\top x)| \le \|w_r(t)-w_r(0)\|$$
+
+giving the entrywise bound $|(H(t))_{i,j} - (H(0))_{i,j}| \le \frac{4cmt}{\sqrt n}$; finish with
+
+$$\|H(t)-H(0)\|_{\mathrm{spectral}} \le m^2\max_{i,j}|(H(t))_{i,j}-(H(0))_{i,j}| \le \frac{4cm^3t}{\sqrt n}$$
+
+**Exam relevance:** The "lazy training" mechanism: per-neuron movement is $O(1/\sqrt n)$, so the kernel is nearly frozen; know the three intermediate bounds $\frac{2cmt}{\sqrt n}$, $\frac{4cmt}{\sqrt n}$, $\frac{4cm^3t}{\sqrt n}$.
 
 **Result (deep NTK; stated without proof).** In the infinite-width limit, the NTK of the deep network $K_d : \mathbb{R}^{d_0}\times\mathbb{R}^{d_0} \to \mathbb{R}$ is
 $$K_d(x,x') = \sum_{n=1}^{N}\left(\Sigma^{(n-1)}(x,x') \prod_{n'=n}^{N} \dot\Sigma^{(n')}(x,x')\right),$$
 with $\Sigma^{(n)}, \dot\Sigma^{(n)}$ as in the recursive definitions above.
-*Exam relevance:* Know the structure — sum over layers of (layer-$(n{-}1)$ covariance) $\times$ (product of derivative-kernels from layer $n$ to $N$) — and the roles of $c_\sigma$ and the 2-by-2 Gaussian covariances $\Lambda^{(n)}$.
+
+**Exam relevance:** Know the structure — sum over layers of (layer-$(n{-}1)$ covariance) $\times$ (product of derivative-kernels from layer $n$ to $N$) — and the roles of $c_\sigma$ and the 2-by-2 Gaussian covariances $\Lambda^{(n)}$.
 
 ## Techniques & tricks
 - **Lifting parameter dynamics to function space:** chain rule on $\frac{d}{dt}f(w(t),x_i)$ converts GF on weights into kernel dynamics on predictions; $H(t)$ is a Gram matrix of Jacobians, hence PSD for free.

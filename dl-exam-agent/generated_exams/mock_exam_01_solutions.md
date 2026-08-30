@@ -16,15 +16,25 @@ without using convexity/ordering (k lines can cross k(k−1)/2 times in general)
 
 **2. (10)** Take $f(x) = -x^2$, $c = 1/8$. For any convex $h$:
 $h(1/2) \le \tfrac{h(0)+h(1)}{2}$. Let $\epsilon := \sup_{[0,1]}|f-h|$. Then
-$h(1/2) \ge f(1/2) - \epsilon = -\tfrac14 - \epsilon$ and
+
+$$h(1/2) \ge f(1/2) - \epsilon = -\tfrac14 - \epsilon$$
+
+and
 $\tfrac{h(0)+h(1)}{2} \le \tfrac{f(0)+f(1)}{2} + \epsilon = -\tfrac12 + \epsilon$.
-Combining: $-\tfrac14 - \epsilon \le -\tfrac12 + \epsilon \Rightarrow \epsilon \ge \tfrac18$.
+Combining:
+
+$$-\tfrac14 - \epsilon \le -\tfrac12 + \epsilon \Rightarrow \epsilon \ge \tfrac18$$
+
 (3 pts choosing a strictly concave target + convexity obstruction idea; 7 pts the
 quantitative argument. Any strictly concave $f$ with the same midpoint computation is
 fine.)
 
 **3. (10)** Any PWL $f$ with $m$ pieces (breakpoints $t_1<\dots<t_{m-1}$) can be
-written $f(x) = ax + b + \sum_{i=1}^{m-1} c_i [x - t_i]_+$ where $c_i$ = slope jumps
+written
+
+$$f(x) = ax + b + \sum_{i=1}^{m-1} c_i [x - t_i]_+$$
+
+where $c_i$ = slope jumps
 (4 pts; this representation was used in class/hw). Split
 $P(x) := ax+b+\sum_{c_i>0} c_i[x-t_i]_+$ and $Q(x) := \sum_{c_i<0} (-c_i)[x-t_i]_+$:
 both are convex PWL with at most $m$ pieces, and $f = P - Q$. Each convex PWL with
@@ -52,9 +62,15 @@ dominates $\epsilon^2/2$). So $(0,0)$ is a non-global critical point ⇒ by the
 reminder, $L$ is not convex. (Alternative full credit: restrict to a line through two
 points violating the chord inequality, computed explicitly.)
 
-**2. (10)** Expand $L(u,v) = \tfrac12\langle uv^\top - M, uv^\top - M\rangle$ and
+**2. (10)** Expand
+
+$$L(u,v) = \tfrac12\langle uv^\top - M, uv^\top - M\rangle$$
+
+and
 differentiate: for a perturbation $\delta u$,
-$D_u L[\delta u] = \langle uv^\top - M, \delta u\, v^\top \rangle = \delta u^\top (uv^\top - M) v$
+
+$$D_u L[\delta u] = \langle uv^\top - M, \delta u\, v^\top \rangle = \delta u^\top (uv^\top - M) v$$
+
 ⇒ $\nabla_u L = (uv^\top - M) v = (v^\top v) u - M v$; symmetrically
 $\nabla_v L = (uv^\top - M)^\top u = (u^\top u) v - M^\top u$. Negate for the flow.
 (Full marks require an actual derivation — index computation or directional
@@ -73,7 +89,10 @@ $0 < a < \sqrt\lambda$, $\dot a = a(\lambda - a^2) > 0$ and $a$ is bounded above
 $\sqrt\lambda$ (cannot cross the equilibrium: $\dot a = 0$ there); monotone + bounded
 ⇒ $a(t) \to a_\infty$ with $a_\infty(\lambda - a_\infty^2) = 0$ and
 $a_\infty \ge \alpha > 0$ ⇒ $a_\infty = \sqrt\lambda$. Conclusion (2 pts):
-$uv^\top = a^2 xy^\top \to \lambda xy^\top = M$, so $L \to 0$.
+
+$$uv^\top = a^2 xy^\top \to \lambda xy^\top = M$$
+
+so $L \to 0$.
 
 **💡 Useful tricks:** Non-convexity from a critical point ($0,0$) undercut by the top singular triplet; derive gradients by the directional derivative $\langle uv^\top-M,\delta u\,v^\top\rangle$; imbalance $\|u\|^2-\|v\|^2$ is conserved (scalar-transpose $u^\top Mv=v^\top M^\top u$); an aligned rank-1 ansatz $u=ax,v=ay$ collapses the flow to the scalar $\dot a=\lambda a-a^3$, and monotone+bounded ⇒ $a^2\to\lambda$.
 
@@ -84,7 +103,10 @@ $uv^\top = a^2 xy^\top \to \lambda xy^\top = M$, so $L \to 0$.
 **1. (8)** $|\mathcal{H}| \le 3^d$ (2 pts). Fix $h$: the $\ell(h(x_n),y_n)$ are i.i.d.
 in $[0,1]$ with mean $L_D(h)$; Hoeffding with
 $\epsilon = \sqrt{(d\ln3 + \ln(2/\delta))/(2N)}$ gives failure prob
-$\le 2\exp(-2N\epsilon^2) = 2 e^{-d\ln 3}\,\delta/2 = \delta\,3^{-d}$ (3 pts). Union
+
+$$\le 2\exp(-2N\epsilon^2) = 2 e^{-d\ln 3}\,\delta/2 = \delta\,3^{-d}$$
+
+(3 pts). Union
 bound over $\le 3^d$ hypotheses ⇒ total failure $\le \delta$ (3 pts).
 
 **2. (10)** Counting (5 pts): a $w$ with $\|w\|_0 \le k$ is specified by a $k$-tuple

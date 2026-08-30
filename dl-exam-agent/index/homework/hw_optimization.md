@@ -6,7 +6,9 @@
 ### Part 1: Trajectory Approach — Linear Neural Networks
 
 **P1.1 (5 pts).** Complete the class proof sketch of the end-to-end dynamics: under the theorem's conditions (GF on a depth-$N$ linear net with balanced initialization), show
+
 $$W_{1:j}(t)^\top W_{1:j}(t) = \big[W_{1:N}(t)^\top W_{1:N}(t)\big]^{\frac{j}{N}} \quad \forall t \in \mathbb{R}_{\ge0},\ j \in [N],$$
+
 where $W_{1:j} := W_j W_{j-1}\cdots W_1$.
 Key ideas:
 - Balancedness $W_{j+1}^\top W_{j+1} = W_j W_j^\top$ is conserved under GF; propagate it through products.
@@ -17,13 +19,19 @@ Key ideas:
 - Chain rule: $\nabla\phi(U) = \big(\nabla\ell(UU^\top) + \nabla\ell(UU^\top)^\top\big)U$; then $\dot W = \dot U U^\top + U\dot U^\top$.
 - Substituting gives a preconditioned flow of the form $\dot W = -\big[\nabla\ell(W)_{\mathrm{sym}} W + W \nabla\ell(W)_{\mathrm{sym}}\big]$ (gradient multiplied by $W$ on each side) — the PSD factor $W$ plays the preconditioner role.
 
-**P1.3 (6 pts).** Simplify the end-to-end dynamics $\dot W(t) = -\sum_{j=1}^N [W W^\top]^{\frac{j-1}{N}}\,\nabla\ell(W)\,[W^\top W]^{\frac{N-j}{N}}$ for output dimension $d_N = 1$ (row vector $W$), and explain how the result resonates with "promoting movement in directions already taken".
+**P1.3 (6 pts).** Simplify the end-to-end dynamics
+
+$$\dot W(t) = -\sum_{j=1}^N [W W^\top]^{\frac{j-1}{N}}\,\nabla\ell(W)\,[W^\top W]^{\frac{N-j}{N}}$$
+
+for output dimension $d_N = 1$ (row vector $W$), and explain how the result resonates with "promoting movement in directions already taken".
 Key ideas:
 - With $d_N = 1$, $WW^\top = \|W\|_2^2$ is scalar; the dynamics collapse to $\dot W = -\|W\|_2^{2-\frac2N}\big(\nabla\ell + (N-1)\,P_{W}\,\nabla\ell\big)$-type form, i.e., $\dot W^\top = -\|W(t)\|^{2-\frac{2}{N}}\Big(I + (N-1)\,\frac{W^\top W}{\|W\|^2}\Big)\nabla\ell(W(t))^\top$ (projection onto the current direction amplified by factor $N$).
 - Interpretation: the gradient component along the current $W$ direction is boosted ($\times N$) and the overall rate scales with $\|W\|^{2-2/N}$ — depth induces momentum-like acceleration along directions already taken (implicit bias toward low-rank / aligned solutions).
 
 **P1.4 (Experiment, 8 pts).** Scalar regression, $\ell_2$ loss, full-batch GD, small LR, near-zero init: train a depth-$N$ linear network (hidden widths $\ge \min\{d_{\text{in}}, d_{\text{out}}\}$) and compare the end-to-end matrix's trajectory to directly iterating the discretized end-to-end dynamics on a linear model:
+
 $$W_{t+1} \leftarrow W_t - \eta\sum_{j=1}^N \big[W_tW_t^\top\big]^{\frac{j-1}{N}}\,\nabla\ell(W_t)\,\big[W_t^\top W_t\big]^{\frac{N-j}{N}}.$$
+
 Repeat for $N = 2, 3$.
 Key ideas:
 - With small LR and near-zero (approximately balanced) init the two trajectories should coincide, validating the end-to-end dynamics theorem; deviations grow with LR (discretization) and unbalancedness.
@@ -40,8 +48,14 @@ Key ideas:
 - Let $\delta(t) = u_{(2)}(t) - u_{(1)}(t)$; $\dot\delta = -H^*\delta + (H^*-H(t))(u_{(2)}-y)$, so $\tfrac{d}{dt}\|\delta\| \le \epsilon\,\|u_{(2)}(t)-y\|$ (the $-H^*\delta$ term only shrinks $\|\delta\|$).
 - $\|u_{(2)}(t)-y\|$ stays bounded by $\|u(0)-y\|$ (residual non-increasing); integrate — with the decaying residual bound one gets the $O(\sqrt t\,\epsilon)$ growth (Cauchy–Schwarz over $\int_0^t e^{-\lambda s}$-type factors).
 
-**P1.7 (Experiment, 8 pts).** With the class NTK formula for a shallow network, $k(x,x') = x^\top x'\cdot\mathbb{E}_{W\sim\mathcal N(0,I)}\big[\dot\sigma(W^\top x)\dot\sigma(W^\top x')\big]$, which for ReLU is
+**P1.7 (Experiment, 8 pts).** With the class NTK formula for a shallow network,
+
+$$k(x,x') = x^\top x'\cdot\mathbb{E}_{W\sim\mathcal N(0,I)}\big[\dot\sigma(W^\top x)\dot\sigma(W^\top x')\big]$$
+
+, which for ReLU is
+
 $$k(x,x') = x^\top x'\cdot\frac{1}{2\pi}\Big(\pi - \arccos\Big(\frac{x^\top x'}{\|x\|\|x'\|}\Big)\Big),$$
+
 compare $u(t)$ of GF over an actual shallow ReLU net to a direct implementation of the kernel dynamics (1) on a scalar regression dataset ($\ell_2$ loss, small LR); vary width — does the match improve with width?
 Key ideas:
 - Wider network $\Rightarrow$ empirical NTK closer to its infinite-width limit $H^*$ $\Rightarrow$ trajectories match more closely (the "lazy" / kernel regime).
@@ -62,13 +76,35 @@ Key ideas:
 - Compression error: rank-$r$ truncation of each layer perturbs the output; Lipschitz composition gives error $\rho\cdot\gamma^{N-1}\big(\sum_n \|W_n - W_n^{(r)}\|\prod_{k\ne n}\|W_k\|\big)$-style, controlled by discarded singular values.
 - (b): union bound over $r \in [d]$ (extra $\ln d$ / $\delta \to \delta/d$), then pick the best trade-off $r$ per learned network — a "structural risk minimization over ranks" bound.
 
-**P3.2 (9 pts). Rademacher complexity and norms.** $\mathcal H = \{h_\theta : \theta\in\mathbb{R}^p, \|\theta\|_\infty \le 0.5\}$; for $\Theta$ a subset of the cube, $\mathcal H_\Theta = \{h_\theta : \theta\in\Theta\}$, with Rademacher complexity $\mathcal R(\ell\circ\mathcal H_\Theta\circ S) = \frac1m\mathbb{E}_{\xi}\big[\sup_{v\in\ell\circ\mathcal H_\Theta\circ S}\sum_{i=1}^m\xi_iv_i\big]$ ($\xi_i = \pm1$ w.p. $\tfrac12$). *Assume* $\mathbb{E}_S[\mathcal R(\ell\circ\mathcal H_\Theta\circ S)] = \mathrm{Volume}(\Theta) = \int \mathbb{1}[\theta\in\Theta]d\theta$, and that implicit regularization returns $\hat\theta \in \arg\max_{\|\theta\|_\infty\le0.5}\|\theta\|_\infty$ among training-loss minimizers. Derive a generalization bound for $\mathcal H$ exploiting this implicit regularization (high $\|\hat\theta\|_\infty$ $\Rightarrow$ small gap).
+**P3.2 (9 pts). Rademacher complexity and norms.**
+
+$$\mathcal H = \{h_\theta : \theta\in\mathbb{R}^p, \|\theta\|_\infty \le 0.5\}$$
+
+; for $\Theta$ a subset of the cube,
+
+$$\mathcal H_\Theta = \{h_\theta : \theta\in\Theta\}$$
+
+, with Rademacher complexity
+
+$$\mathcal R(\ell\circ\mathcal H_\Theta\circ S) = \frac1m\mathbb{E}_{\xi}\big[\sup_{v\in\ell\circ\mathcal H_\Theta\circ S}\sum_{i=1}^m\xi_iv_i\big]$$
+
+($\xi_i = \pm1$ w.p. $\tfrac12$). *Assume*
+
+$$\mathbb{E}_S[\mathcal R(\ell\circ\mathcal H_\Theta\circ S)] = \mathrm{Volume}(\Theta) = \int \mathbb{1}[\theta\in\Theta]d\theta$$
+
+, and that implicit regularization returns
+
+$$\hat\theta \in \arg\max_{\|\theta\|_\infty\le0.5}\|\theta\|_\infty$$
+
+among training-loss minimizers. Derive a generalization bound for $\mathcal H$ exploiting this implicit regularization (high $\|\hat\theta\|_\infty$ $\Rightarrow$ small gap).
 Key ideas:
 - Stratify the cube into shells $\Theta_c := \{\theta : c \le \|\theta\|_\infty \le 0.5\}$ with $\mathrm{Volume}(\Theta_c) = 1 - (2c)^p$ — high-norm shells have exponentially small volume, hence small Rademacher complexity.
 - Union-bound the standard Rademacher generalization theorem over a discretized family of shells; the learned high-$\|\cdot\|_\infty$ solution falls in a low-complexity shell, giving a small gap. Mirrors the course theme "implicit regularization $\to$ restricted effective hypothesis class $\to$ generalization."
 
 **P3.3 (9 pts). PAC-Bayes: KL between Gaussians.** Prove the class lemma: for non-singular $\Sigma_0,\Sigma_1 \succ 0$,
+
 $$\mathrm{KL}\big(\mathcal N(\mu_0,\Sigma_0)\,\|\,\mathcal N(\mu_1,\Sigma_1)\big) = \tfrac12\Big(\operatorname{tr}(\Sigma_1^{-1}\Sigma_0) + (\mu_1-\mu_0)^\top\Sigma_1^{-1}(\mu_1-\mu_0) - r + \ln\tfrac{\det\Sigma_1}{\det\Sigma_0}\Big).$$
+
 Key ideas:
 - Write $\mathrm{KL} = \mathbb{E}_{x\sim\mathcal N(\mu_0,\Sigma_0)}[\ln p_0(x) - \ln p_1(x)]$; expand log-densities of Gaussians.
 - Use $\mathbb{E}[x^\top A x] = \operatorname{tr}(A\Sigma) + \mu^\top A\mu$ and $\mathbb{E}_{p_0}[(x-\mu_0)^\top\Sigma_0^{-1}(x-\mu_0)] = r$; collect terms.

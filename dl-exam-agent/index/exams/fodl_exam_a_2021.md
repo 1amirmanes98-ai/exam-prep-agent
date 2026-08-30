@@ -33,7 +33,9 @@ and denote by $F$ the set of continuous functions from $\mathbb{R}$ to $\mathbb{
 **Solution sketch:**
 **a.** Each neuron $\sigma(w_i x + b_i)$ with $w_i > 0$ is the step function $\mathbb{1}[x \ge -b_i/w_i]$ (constant if $w_i = 0$). Sorting the $\le B$ distinct thresholds $t_1 < \cdots < t_k$ partitions $\mathbb{R}$ into $\le B+1$ intervals $(-\infty,t_1), [t_1,t_2), \dots, [t_k,\infty)$ on which every neuron — hence the whole sum plus $b'$ — is constant. The half-open convention matches $\sigma(0)=1$.
 
-**b.** Given $g$ with values $\alpha_1,\dots,\alpha_{N'}$ ($N' \le B+1$) and breakpoints $c_1 < \cdots < c_{N'-1}$: set $b' := \alpha_1$ and for $i \le N'-1$ take $w_i := 1$, $b_i := -c_i$, $v_i := \alpha_{i+1} - \alpha_i$ (unused neurons get $v_i := 0$). Since $\sigma(x - c_i) = \mathbb{1}[x \ge c_i]$, on $[c_{j-1},c_j)$ the network telescopes to $\alpha_1 + \sum_{i<j}(\alpha_{i+1}-\alpha_i) = \alpha_j$.
+**b.** Given $g$ with values $\alpha_1,\dots,\alpha_{N'}$ ($N' \le B+1$) and breakpoints $c_1 < \cdots < c_{N'-1}$: set $b' := \alpha_1$ and for $i \le N'-1$ take $w_i := 1$, $b_i := -c_i$, $v_i := \alpha_{i+1} - \alpha_i$ (unused neurons get $v_i := 0$). Since $\sigma(x - c_i) = \mathbb{1}[x \ge c_i]$, on $[c_{j-1},c_j)$ the network telescopes to
+
+$$\alpha_1 + \sum_{i<j}(\alpha_{i+1}-\alpha_i) = \alpha_j$$
 
 **c.** Definition: for every $f \in F$ and every $\epsilon > 0$ there exist $B \in \mathbb{N}$ and $h \in \mathcal{H}_B$ such that $d(f,h) \le \epsilon$ (i.e. wide-enough sign networks approximate every continuous function on $[0,1]$ in sup-distance to arbitrary accuracy).
 
@@ -66,13 +68,41 @@ where $v_r(t)$ is the $r$-th column vector of $V(t)$.
 **d. (6 pts)** Explain why, following the result of sub-part c, one can expect that running gradient flow over $\phi$ with initialization close to $0 \in \mathbb{R}^{d,d}$ will yield an end-to-end matrix of low rank (under the assumption that $L$ can be minimized with low-rank matrices).
 
 **Solution sketch:**
-**a.** $\phi(U) = \phi(-U)$ for every $U$. If $\phi$ were convex, then $\phi(0) = \phi\big(\tfrac{1}{2}U + \tfrac{1}{2}(-U)\big) \le \tfrac{1}{2}\phi(U) + \tfrac{1}{2}\phi(-U) = \phi(U)$, making $0$ a global minimizer of $\phi$. But $W^*$ is PSD, so it has a square root $U^*$ with $U^*U^{*\top} = W^*$, and $\phi(U^*) = L(W^*) < L(0) = \phi(0)$ — contradiction.
+**a.** $\phi(U) = \phi(-U)$ for every $U$. If $\phi$ were convex, then
 
-**b.** Chain rule: $\nabla\phi(U) = \big[\nabla L(UU^\top) + \nabla L(UU^\top)^\top\big]U = 2\nabla L(W)U$ using the symmetry assumption. Gradient flow $\dot U = -\nabla\phi(U) = -2\nabla L(W)U$. Hence $\dot W = \dot U U^\top + U\dot U^\top = -2\big[\nabla L(W)\,UU^\top + UU^\top\,\nabla L(W)^\top\big] = -2[\nabla L(W)W + W\nabla L(W)]$.
+$$\phi(0) = \phi\big(\tfrac{1}{2}U + \tfrac{1}{2}(-U)\big) \le \tfrac{1}{2}\phi(U) + \tfrac{1}{2}\phi(-U) = \phi(U)$$
 
-**c.** $D(t)_{r,r} = v_r(t)^\top W(t)v_r(t)$. Differentiating: $\dot D_{r,r} = 2\dot v_r^\top W v_r + v_r^\top \dot W v_r = 2D_{r,r}(\dot v_r^\top v_r) + v_r^\top \dot W v_r$. Orthonormality gives $v_r^\top v_r \equiv 1 \Rightarrow \dot v_r^\top v_r = 0$ (and $Wv_r = D_{r,r}v_r$). Substituting (b): $v_r^\top \dot W v_r = -2\big[v_r^\top\nabla L(W)\,W v_r + v_r^\top W\,\nabla L(W)v_r\big] = -4D_{r,r}\,v_r^\top \nabla L(W) v_r = 4D_{r,r}\langle -\nabla L(W), v_rv_r^\top\rangle$.
+making $0$ a global minimizer of $\phi$. But $W^*$ is PSD, so it has a square root $U^*$ with $U^*U^{*\top} = W^*$, and
 
-**d.** Each eigenvalue evolves multiplicatively, $\dot\lambda_r = 4\lambda_r\langle-\nabla L, v_rv_r^\top\rangle$, so $\lambda_r(t) = \lambda_r(0)\exp\big(4\int_0^t \langle-\nabla L, v_rv_r^\top\rangle dz\big)$: eigenvalues cannot change sign and, starting from a near-zero initialization, all start (exponentially) tiny and move very slowly while small. An eigenvalue grows to significant size only after sustained exponential amplification along a persistently aligned descent direction. Eigenvalues are thus learned incrementally/sequentially. Since $L$ can be minimized with low-rank matrices, the flow can drive $L$ down while only a few eigenvalues leave the vicinity of $0$, so the end-to-end matrix is expected to be (approximately) low-rank — an implicit regularization toward low rank (unverified as a formal theorem; this is the expected qualitative explanation).
+$$\phi(U^*) = L(W^*) < L(0) = \phi(0)$$
+
+— contradiction.
+
+**b.** Chain rule:
+
+$$\nabla\phi(U) = \big[\nabla L(UU^\top) + \nabla L(UU^\top)^\top\big]U = 2\nabla L(W)U$$
+
+using the symmetry assumption. Gradient flow
+
+$$\dot U = -\nabla\phi(U) = -2\nabla L(W)U$$
+
+Hence
+
+$$\dot W = \dot U U^\top + U\dot U^\top = -2\big[\nabla L(W)\,UU^\top + UU^\top\,\nabla L(W)^\top\big] = -2[\nabla L(W)W + W\nabla L(W)]$$
+
+**c.** $D(t)_{r,r} = v_r(t)^\top W(t)v_r(t)$. Differentiating:
+
+$$\dot D_{r,r} = 2\dot v_r^\top W v_r + v_r^\top \dot W v_r = 2D_{r,r}(\dot v_r^\top v_r) + v_r^\top \dot W v_r$$
+
+Orthonormality gives $v_r^\top v_r \equiv 1 \Rightarrow \dot v_r^\top v_r = 0$ (and $Wv_r = D_{r,r}v_r$). Substituting (b):
+
+$$v_r^\top \dot W v_r = -2\big[v_r^\top\nabla L(W)\,W v_r + v_r^\top W\,\nabla L(W)v_r\big] = -4D_{r,r}\,v_r^\top \nabla L(W) v_r = 4D_{r,r}\langle -\nabla L(W), v_rv_r^\top\rangle$$
+
+**d.** Each eigenvalue evolves multiplicatively, $\dot\lambda_r = 4\lambda_r\langle-\nabla L, v_rv_r^\top\rangle$, so
+
+$$\lambda_r(t) = \lambda_r(0)\exp\big(4\int_0^t \langle-\nabla L, v_rv_r^\top\rangle dz\big)$$
+
+eigenvalues cannot change sign and, starting from a near-zero initialization, all start (exponentially) tiny and move very slowly while small. An eigenvalue grows to significant size only after sustained exponential amplification along a persistently aligned descent direction. Eigenvalues are thus learned incrementally/sequentially. Since $L$ can be minimized with low-rank matrices, the flow can drive $L$ down while only a few eigenvalues leave the vicinity of $0$, so the end-to-end matrix is expected to be (approximately) low-rank — an implicit regularization toward low rank (unverified as a formal theorem; this is the expected qualitative explanation).
 
 **💡 Useful tricks:** $\phi(U)=\phi(-U)$ ⇒ non-convex via midpoint at $0$; differentiate $\lambda_r=v_r^\top W v_r$ and kill $\dot v_r$ terms with $Wv_r=\lambda_r v_r$, $v_r^\top v_r=1$; the multiplicative $\dot\lambda_r\propto\lambda_r$ ⇒ eigenvalues keep their sign and grow one-at-a-time from tiny init ⇒ low rank. (Same as Moed A 2024 Q2, here with general convex $L$ and the $\nabla L$ symmetry given.)
 
@@ -94,7 +124,19 @@ $$P\left(\left|\frac{1}{m}\sum_{i=1}^m A_i - \mathbb{E}[A_1]\right| \ge \epsilon
 **b. (10 pts)** In light of the empirical phenomena studied in class (and demonstrated in the home exercises) concerning generalization of neural networks, explain why in deep learning, generalization bounds based on uniform convergence will not be tight.
 
 **Solution sketch:**
-**a.** The class is finite: $|\mathcal{H}| \le k^p$ (each of $p$ parameters takes one of $k$ values). For a fixed $h$, apply Hoeffding to $A_i := l(h(x_i),y_i) \in [0,1]$ with $\mathbb{E}[A_1] = L_D(h)$: $P(|L_S(h) - L_D(h)| \ge \epsilon) \le 2e^{-2m\epsilon^2}$. Union bound over all $\le k^p$ hypotheses: $P(\exists h: |L_S(h)-L_D(h)| \ge \epsilon) \le 2k^p e^{-2m\epsilon^2}$. Setting this to $\delta$ and solving for $\epsilon$ gives $\Delta(m,\delta) = \sqrt{\dfrac{p\ln k + \ln(2/\delta)}{2m}}$, which is hypothesis-independent and $\to 0$ as $m \to \infty$.
+**a.** The class is finite: $|\mathcal{H}| \le k^p$ (each of $p$ parameters takes one of $k$ values). For a fixed $h$, apply Hoeffding to $A_i := l(h(x_i),y_i) \in [0,1]$ with $\mathbb{E}[A_1] = L_D(h)$:
+
+$$P(|L_S(h) - L_D(h)| \ge \epsilon) \le 2e^{-2m\epsilon^2}$$
+
+Union bound over all $\le k^p$ hypotheses:
+
+$$P(\exists h: |L_S(h)-L_D(h)| \ge \epsilon) \le 2k^p e^{-2m\epsilon^2}$$
+
+Setting this to $\delta$ and solving for $\epsilon$ gives
+
+$$\boxed{\,\Delta(m,\delta) = \sqrt{\dfrac{p\ln k + \ln(2/\delta)}{2m}}\,}$$
+
+which is hypothesis-independent and $\to 0$ as $m \to \infty$.
 
 **b.** The phenomenon taught in class (and reproduced in the homework): modern over-parameterized networks ($p \gg m$) can perfectly fit even random labels. So $\mathcal{H}$ contains hypotheses with $L_S \approx 0$ but $L_D \approx$ chance level, i.e. generalization gap of order a constant. A uniform-convergence bound must hold simultaneously for **all** $h \in \mathcal{H}$, including those memorizing hypotheses. Hence $\Delta(m,\delta)$ cannot be smaller than their (large) gap unless $m \gtrsim p\ln k$, which fails in practice. The bound above is vacuous at realistic sample sizes. The same trained architecture nonetheless generalizes well on real data: generalization is determined by *which* hypothesis the training algorithm (GD and its implicit regularization) selects, a fact invisible to bounds that are uniform over the entire class. Hence such bounds are inherently not tight for deep learning.
 

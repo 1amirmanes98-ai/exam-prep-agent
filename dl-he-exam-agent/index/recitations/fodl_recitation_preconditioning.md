@@ -12,17 +12,43 @@
 - דוגמה: GD בפרה-קונדישנינג של ניוטון על רגרסיה לינארית מתכנסת בצעד אחד; קישור ל-whitening
 
 ## בעיות פתורות וגזירות
-**P1.** פרשנות המתיחה-העצמית: בהינתן EVD אורתוגונלי $P_t = \sum_{i=1}^d \lambda_i u_i u_i^\top$ וכן $\nabla f(w_t) = \sum_{i=1}^d \alpha_i u_i$, הראו מה עושה $P_t \nabla f(w_t)$.
-טכניקה: פרשו והשתמשו באורתונורמליות, $P_t \nabla f(w_t) = \sum_{i,j} \lambda_i \alpha_j u_i u_i^\top u_j = \sum_{i=1}^d \lambda_i \alpha_i u_i$ — כל רכיב גרדיאנט לאורך $u_i$ מוכפל בערך העצמי $\lambda_i$.
+**P1.** פרשנות המתיחה-העצמית: בהינתן EVD אורתוגונלי
+
+$$P_t = \sum_{i=1}^d \lambda_i u_i u_i^\top$$
+
+וכן
+
+$$\nabla f(w_t) = \sum_{i=1}^d \alpha_i u_i$$
+
+, הראו מה עושה $P_t \nabla f(w_t)$.
+טכניקה: פרשו והשתמשו באורתונורמליות,
+
+$$P_t \nabla f(w_t) = \sum_{i,j} \lambda_i \alpha_j u_i u_i^\top u_j = \sum_{i=1}^d \lambda_i \alpha_i u_i$$
+
+— כל רכיב גרדיאנט לאורך $u_i$ מוכפל בערך העצמי $\lambda_i$.
 
 **P2.** פרשנות שינוי-קנה-המידה של המרחב: הראו ש-GD על $g(\theta) = f(Q\theta)$, $Q \in \mathbb{R}^{d,d}$, שווה ל-GD בפרה-קונדישנינג על $f$ עם $P = QQ^\top$.
-טכניקה: כלל השרשרת נותן $\theta_{t+1} = \theta_t - \eta Q^\top \nabla f(Q\theta_t)$; הכפילו משמאל ב-$Q$ והגדירו $w_t := Q\theta_t$ כדי לקבל $w_{t+1} = w_t - \eta\, QQ^\top \nabla f(w_t)$.
+טכניקה: כלל השרשרת נותן
+
+$$\theta_{t+1} = \theta_t - \eta Q^\top \nabla f(Q\theta_t)$$
+
+; הכפילו משמאל ב-$Q$ והגדירו $w_t := Q\theta_t$ כדי לקבל
+
+$$w_{t+1} = w_t - \eta\, QQ^\top \nabla f(w_t)$$
 
 **P3.** משפט המונוטוניות: תחת GF בפרה-קונדישנינג, $f(w(t))$ אינה עולה.
-טכניקה: $\frac{d}{dt} f(w(t)) = \nabla f(w(t))^\top \dot w(t) = -\nabla f(w(t))^\top P_t \nabla f(w(t)) \le 0$ כי $P_t$ היא PSD (התבנית הריבועית אי-שלילית).
+טכניקה:
+
+$$\frac{d}{dt} f(w(t)) = \nabla f(w(t))^\top \dot w(t) = -\nabla f(w(t))^\top P_t \nabla f(w(t)) \le 0$$
+
+כי $P_t$ היא PSD (התבנית הריבועית אי-שלילית).
 
 **P4.** רגרסיה לינארית $f(w) = \tfrac12\|X^\top w - y\|_2^2$, $X \in \mathbb{R}^{d,n}$, $n \ge d$, $\operatorname{rank}(XX^\top) = d$; הריצו GD בפרה-קונדישנינג עם $\eta = 1$, $P_t = (\nabla^2 f(w_t))^{-1}$ (ניוטון).
-טכניקה: $\nabla f(w) = XX^\top w - Xy$, $\nabla^2 f(w) = XX^\top$; אזי $w_1 = w_0 - (XX^\top)^{-1}(XX^\top w_0 - Xy) = (XX^\top)^{-1}Xy$ — הממזער היחיד, מושג בצעד אחד ללא תלות ב-$w_0$.
+טכניקה: $\nabla f(w) = XX^\top w - Xy$, $\nabla^2 f(w) = XX^\top$; אזי
+
+$$w_1 = w_0 - (XX^\top)^{-1}(XX^\top w_0 - Xy) = (XX^\top)^{-1}Xy$$
+
+— הממזער היחיד, מושג בצעד אחד ללא תלות ב-$w_0$.
 
 ## נוסחאות ועובדות מפתח
 - GD בפרה-קונדישנינג: $w_{t+1} = w_t - \eta P_t \nabla f(w_t)$; GF בפרה-קונדישנינג: $\dot w(t) = -P_t \nabla f(w(t))$, עם $P_t$ מסוג PSD.

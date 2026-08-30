@@ -5,12 +5,20 @@
 ## בעיות
 ### חלק 1: רגולריזציה סמויה
 
-**P1.1 (13 pts). רגרסיה לינארית, אתחול שרירותי.** טענת המחלקה: מזעור $L_S(w)$ תת-נקבע מ-$w^{(0)} = 0$ עם כל אלגוריתם איטרטיבי שעדכוניו מקיימים $w^{(t+1)} - w^{(t)} \in \operatorname{span}\{\nabla\ell_{(x_i,y_i)}(w) : i\in[m], w\in\mathbb{R}^d\}$ (מכסה GD, SGD, momentum), בהנחת התכנסות לאופטימום גלובלי חסר-הפסד, מניב את האופטימום הגלובלי בעל *הנורמה האוקלידית המינימלית*. הכלילו: אם במקום זאת $w^{(0)} = a \in \mathbb{R}^d$, הוכיחו שתת-האופטימליות בנורמה (העודף מעל הנורמה המינימלית בין האופטימות הגלובליות) היא $\le \|P_\perp a\|$, כאשר $P_\perp$ מקרין על $\operatorname{span}\{x_i\}_{i=1}^m{}^\perp$.
+**P1.1 (13 pts). רגרסיה לינארית, אתחול שרירותי.** טענת המחלקה: מזעור $L_S(w)$ תת-נקבע מ-$w^{(0)} = 0$ עם כל אלגוריתם איטרטיבי שעדכוניו מקיימים
+
+$$w^{(t+1)} - w^{(t)} \in \operatorname{span}\{\nabla\ell_{(x_i,y_i)}(w) : i\in[m], w\in\mathbb{R}^d\}$$
+
+(מכסה GD, SGD, momentum), בהנחת התכנסות לאופטימום גלובלי חסר-הפסד, מניב את האופטימום הגלובלי בעל *הנורמה האוקלידית המינימלית*. הכלילו: אם במקום זאת $w^{(0)} = a \in \mathbb{R}^d$, הוכיחו שתת-האופטימליות בנורמה (העודף מעל הנורמה המינימלית בין האופטימות הגלובליות) היא $\le \|P_\perp a\|$, כאשר $P_\perp$ מקרין על $\operatorname{span}\{x_i\}_{i=1}^m{}^\perp$.
 רעיונות מרכזיים:
 - כל העדכונים נמצאים ב-$\operatorname{span}\{x_i\}$ (גרדיאנטים של $\ell(w^\top x_i, y_i)$ הם כפולות של $x_i$), ולכן $w^{(\infty)} = a + (\text{רכיב פרישה})$; פרקו $w^{(\infty)} = P_\perp a + P_{\parallel}(\cdot)$.
 - לכל פתרון חסר-הפסד יש רכיב מקביל קבוע הנקבע על ידי $Xw = y$; פתרון הנורמה-המינימלית $w^*$ הוא זה בעל רכיב אורתוגונלי אפס. אי-שוויון המשולש / פיתגורס: $\|w^{(\infty)}\| \le \|w^*\| + \|P_\perp a\|$.
 
-**P1.2 (Bonus 10 pts). פירוק מטריצות / רשתות לינאריות עמוקות — הערכים הסינגולריים מזנקים אחד-אחד.** השלמת מטריצה עם צפייה ב*כל* הרכיבים: $L_S(W) = \frac{1}{d\cdot d'}\cdot\frac12\|W - W^*\|_{\mathrm{Fro}}^2$ עם SVD $W^* = U\Sigma V^\top$. אופטימיזציה דרך רשת לינארית בעומק $N$, gradient flow, אתחול מאוזן עם מטריצת קצה-לקצה $W_{1:N}(0) = U E V^\top$, $E$ מלבנית-דיאגונלית עם כל הרכיבים באלכסון $\epsilon > 0$ (קטן בהרבה מכל $\sigma_i(W^*)$). בהינתן שה-SVD שומר על הצורה $W_{1:N}(t) = U S(t) V^\top$ (וקטורים סינגולריים קבועים), גזרו במפורש $\sigma_1(t),\dots,\sigma_{\min\{d,d'\}}(t)$ עבור עומקים $N = 1$ ו-$N = 2$, והסבירו כיצד עומק גורם לערכים הסינגולריים "לזנק" אחד בכל פעם.
+**P1.2 (Bonus 10 pts). פירוק מטריצות / רשתות לינאריות עמוקות — הערכים הסינגולריים מזנקים אחד-אחד.** השלמת מטריצה עם צפייה ב*כל* הרכיבים:
+
+$$L_S(W) = \frac{1}{d\cdot d'}\cdot\frac12\|W - W^*\|_{\mathrm{Fro}}^2$$
+
+עם SVD $W^* = U\Sigma V^\top$. אופטימיזציה דרך רשת לינארית בעומק $N$, gradient flow, אתחול מאוזן עם מטריצת קצה-לקצה $W_{1:N}(0) = U E V^\top$, $E$ מלבנית-דיאגונלית עם כל הרכיבים באלכסון $\epsilon > 0$ (קטן בהרבה מכל $\sigma_i(W^*)$). בהינתן שה-SVD שומר על הצורה $W_{1:N}(t) = U S(t) V^\top$ (וקטורים סינגולריים קבועים), גזרו במפורש $\sigma_1(t),\dots,\sigma_{\min\{d,d'\}}(t)$ עבור עומקים $N = 1$ ו-$N = 2$, והסבירו כיצד עומק גורם לערכים הסינגולריים "לזנק" אחד בכל פעם.
 רעיונות מרכזיים:
 - הערכים הסינגולריים מתפצלים: כל אחד מציית למשוואה הדיפרנציאלית הסקלרית מקצה-לקצה $\dot\sigma_i(t) = -N\,\sigma_i(t)^{2-\frac2N}\cdot\frac{1}{dd'}(\sigma_i(t) - \sigma_i^*)$.
 - $N=1$: משוואה דיפרנציאלית לינארית $\Rightarrow$ רלקסציה אקספוננציאלית $\sigma_i(t) = \sigma_i^* + (\epsilon-\sigma_i^*)e^{-t/(dd')}$ — כל הערכים הסינגולריים נעים באותו קצב (ללא הטיית דרגה).
@@ -23,20 +31,45 @@
 - אמתו את הנחות המשפט עבור פריורי הגורמים בשימוש במחלקה (רכיבים i.i.d., תנאי מומנטים) — טענה בטעם CLT: מכפלות של מטריצות אקראיות בעלות עמודות גאוסיות בקירוב כשהרוחב $k \to \infty$.
 - שרשרו את חסם המרחק-הקמור הכמותי לתוך תנאי הקטנות של למה 2; זה סוגר את הפער בהוכחת השערת-הנפח של משפט 1 (פירוקים עמוקים אקראיים מתנהגים כמו הפרמטריזציה ה"שטוחה" i.i.d., ולכן אזורי הפסד-נמוך בעלי נפח גדול שולטים).
 
-**P2.2 (10 pts). ל-Guess & Check יש הטיית נורמה-מינימלית — התפלגות מותנית.** ריבועים פחותים $f(w) = \frac1m\|Xw-y\|^2$, $X \in \mathbb{R}^{m,d}$, $d > m$, $\operatorname{rank}(X) = m$, קבוצת פתרונות $\{w : Xw = y\} \ne \emptyset$, פתרון נורמה-מינימלית $w^* = X^\top(XX^\top)^{-1}y$. G&C דוגם $w \sim \mathcal N(0, \sigma^2I_d)$ ומקבל אם"ם $Xw = y$. עם $e := w - w^*$, הוכיחו $e \mid Xw = y \sim \mathcal N(0, \Sigma)$, $\Sigma = \sigma^2\big(I - X^\top(XX^\top)^{-1}X\big)$. (מותר להשתמש: עבור $z \sim \mathcal N(0,\sigma^2I_d)$ ו-$A$ בעלת דרגת-שורות מלאה: $z \mid Az = b \sim \mathcal N\big(A^\top(AA^\top)^{-1}b,\ \sigma^2(I - A^\top(AA^\top)^{-1}A)\big)$.)
+**P2.2 (10 pts). ל-Guess & Check יש הטיית נורמה-מינימלית — התפלגות מותנית.** ריבועים פחותים $f(w) = \frac1m\|Xw-y\|^2$, $X \in \mathbb{R}^{m,d}$, $d > m$, $\operatorname{rank}(X) = m$, קבוצת פתרונות $\{w : Xw = y\} \ne \emptyset$, פתרון נורמה-מינימלית $w^* = X^\top(XX^\top)^{-1}y$. G&C דוגם $w \sim \mathcal N(0, \sigma^2I_d)$ ומקבל אם"ם $Xw = y$. עם $e := w - w^*$, הוכיחו
+
+$$e \mid Xw = y \sim \mathcal N(0, \Sigma)$$
+
+$$\Sigma = \sigma^2\big(I - X^\top(XX^\top)^{-1}X\big)$$
+
+. (מותר להשתמש: עבור $z \sim \mathcal N(0,\sigma^2I_d)$ ו-$A$ בעלת דרגת-שורות מלאה: $z \mid Az = b \sim \mathcal N\big(A^\top(AA^\top)^{-1}b,\ \sigma^2(I - A^\top(AA^\top)^{-1}A)\big)$.)
 רעיונות מרכזיים:
 - החילו את עובדת ההתניה הגאוסית הנתונה עם $A = X$, $b = y$: התוחלת המותנית היא בדיוק $w^*$, ולכן $e = w - w^*$ בעל תוחלת אפס עם השונות המשותפת המצוינת.
 
-**P2.3 (10 pts).** הוכיחו ש-$\frac{1}{\sigma^2}\Sigma$ הוא מטיל אורתוגונלי — $\big(\frac{1}{\sigma^2}\Sigma\big)^\top = \frac{1}{\sigma^2}\Sigma$ וכן $\big(\frac{1}{\sigma^2}\Sigma\big)^2 = \frac{1}{\sigma^2}\Sigma$ — וגם ש-$\operatorname{rank}(\Sigma) = d - m$. רמז: הראו $\operatorname{Im}(\Sigma) = \operatorname{Ker}(X)$.
+**P2.3 (10 pts).** הוכיחו ש-$\frac{1}{\sigma^2}\Sigma$ הוא מטיל אורתוגונלי —
+
+$$\big(\frac{1}{\sigma^2}\Sigma\big)^\top = \frac{1}{\sigma^2}\Sigma$$
+
+וכן
+
+$$\big(\frac{1}{\sigma^2}\Sigma\big)^2 = \frac{1}{\sigma^2}\Sigma$$
+
+— וגם ש-$\operatorname{rank}(\Sigma) = d - m$. רמז: הראו
+
+$$\operatorname{Im}(\Sigma) = \operatorname{Ker}(X)$$
+
 רעיונות מרכזיים:
 - חישוב ישיר: $P := X^\top(XX^\top)^{-1}X$ סימטרי ואידמפוטנטי, ומכאן גם $I - P$.
 - $X(I-P) = 0$ נותן $\operatorname{Im}(I-P) \subseteq \operatorname{Ker}(X)$; ובכיוון ההפוך $(I-P)w = w$ על $\operatorname{Ker}(X)$; דרגה–ריקוד עם $\operatorname{rank}(X) = m$ נותן $\operatorname{rank}(\Sigma) = d-m$.
 
-**P2.4 (10 pts).** הוכיחו $\frac{\|e\|^2}{\sigma^2} \,\big|\, Xw = y \sim \chi^2_{d-m}$. (מותר להשתמש: עבור $z\sim\mathcal N(0,I_d)$ ומטיל אורתוגונלי $P$ מדרגה $r$, $\|Pz\|^2 \sim \chi^2_r$.)
+**P2.4 (10 pts).** הוכיחו
+
+$$\frac{\|e\|^2}{\sigma^2} \,\big|\, Xw = y \sim \chi^2_{d-m}$$
+
+. (מותר להשתמש: עבור $z\sim\mathcal N(0,I_d)$ ומטיל אורתוגונלי $P$ מדרגה $r$, $\|Pz\|^2 \sim \chi^2_r$.)
 רעיונות מרכזיים:
 - כתבו $e = \sigma\,\big(\frac{1}{\sigma^2}\Sigma\big)^{1/2}$-מותמר של גאוסי סטנדרטי; מאחר ש-$\frac{1}{\sigma^2}\Sigma$ מטיל מדרגה $(d-m)$, $e \stackrel{d}{=} \sigma P z$ עם $z \sim \mathcal N(0, I_d)$, ולכן $\|e\|^2/\sigma^2 = \|Pz\|^2 \sim \chi^2_{d-m}$.
 
-**P2.5 (8 pts).** הסיקו: $\forall \epsilon, \delta > 0$ קיים $\sigma > 0$ כך שעם פריור $\mathcal N(0,\sigma^2I_d)$, $\Pr\big(\|w - w^*\| \le \epsilon \mid Xw = y\big) \ge 1 - \delta$. (רמז: $\lim_{\epsilon\to\infty}\Pr(\chi^2_r \le \epsilon) = 1$.)
+**P2.5 (8 pts).** הסיקו: $\forall \epsilon, \delta > 0$ קיים $\sigma > 0$ כך שעם פריור $\mathcal N(0,\sigma^2I_d)$,
+
+$$\Pr\big(\|w - w^*\| \le \epsilon \mid Xw = y\big) \ge 1 - \delta$$
+
+. (רמז: $\lim_{\epsilon\to\infty}\Pr(\chi^2_r \le \epsilon) = 1$.)
 רעיונות מרכזיים:
 - $\Pr(\|e\| \le \epsilon \mid \cdot) = \Pr\big(\chi^2_{d-m} \le \epsilon^2/\sigma^2\big)$; כאשר $\sigma \to 0$, $\epsilon^2/\sigma^2 \to \infty$, ולכן ההסתברות $\to 1$ — G&C עם פריור גאוסי בעל שונות-קטנה מתרכז על פתרון הנורמה-המינימלית, כלומר אותה הטיה סמויה כמו GD ללא כל דינמיקת גרדיאנט (פרספקטיבת נפח/G&C).
 

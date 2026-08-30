@@ -6,7 +6,9 @@
 ### חלק 1: גישת המסלול — רשתות נוירונים לינאריות
 
 **P1.1 (5 pts).** השלימו את סקיצת ההוכחה מהמחלקה של דינמיקת הקצה-לקצה: תחת תנאי המשפט (GF על רשת לינארית בעומק $N$ עם אתחול מאוזן), הראו
+
 $$W_{1:j}(t)^\top W_{1:j}(t) = \big[W_{1:N}(t)^\top W_{1:N}(t)\big]^{\frac{j}{N}} \quad \forall t \in \mathbb{R}_{\ge0},\ j \in [N],$$
+
 כאשר $W_{1:j} := W_j W_{j-1}\cdots W_1$.
 רעיונות מרכזיים:
 - balancedness $W_{j+1}^\top W_{j+1} = W_j W_j^\top$ נשמר תחת GF; הפיצו אותו דרך המכפלות.
@@ -17,13 +19,19 @@ $$W_{1:j}(t)^\top W_{1:j}(t) = \big[W_{1:N}(t)^\top W_{1:N}(t)\big]^{\frac{j}{N}
 - כלל השרשרת: $\nabla\phi(U) = \big(\nabla\ell(UU^\top) + \nabla\ell(UU^\top)^\top\big)U$; אזי $\dot W = \dot U U^\top + U\dot U^\top$.
 - ההצבה נותנת זרימה בפרה-קונדישנינג מהצורה $\dot W = -\big[\nabla\ell(W)_{\mathrm{sym}} W + W \nabla\ell(W)_{\mathrm{sym}}\big]$ (הגרדיאנט מוכפל ב-$W$ מכל צד) — הגורם ה-PSD $W$ ממלא את תפקיד הפרה-קונדישנר.
 
-**P1.3 (6 pts).** פשטו את דינמיקת הקצה-לקצה $\dot W(t) = -\sum_{j=1}^N [W W^\top]^{\frac{j-1}{N}}\,\nabla\ell(W)\,[W^\top W]^{\frac{N-j}{N}}$ עבור ממד פלט $d_N = 1$ (וקטור שורה $W$), והסבירו כיצד התוצאה מהדהדת עם "קידום תנועה בכיוונים שכבר ננקטו".
+**P1.3 (6 pts).** פשטו את דינמיקת הקצה-לקצה
+
+$$\dot W(t) = -\sum_{j=1}^N [W W^\top]^{\frac{j-1}{N}}\,\nabla\ell(W)\,[W^\top W]^{\frac{N-j}{N}}$$
+
+עבור ממד פלט $d_N = 1$ (וקטור שורה $W$), והסבירו כיצד התוצאה מהדהדת עם "קידום תנועה בכיוונים שכבר ננקטו".
 רעיונות מרכזיים:
 - עם $d_N = 1$, $WW^\top = \|W\|_2^2$ סקלרי; הדינמיקה קורסת לצורה מסוג $\dot W = -\|W\|_2^{2-\frac2N}\big(\nabla\ell + (N-1)\,P_{W}\,\nabla\ell\big)$, כלומר $\dot W^\top = -\|W(t)\|^{2-\frac{2}{N}}\Big(I + (N-1)\,\frac{W^\top W}{\|W\|^2}\Big)\nabla\ell(W(t))^\top$ (הטלה על הכיוון הנוכחי מוגברת בפקטור $N$).
 - פרשנות: רכיב הגרדיאנט לאורך כיוון $W$ הנוכחי מוגבר ($\times N$) והקצב הכולל מתכייל עם $\|W\|^{2-2/N}$ — עומק משרה האצה דמוית-momentum לאורך כיוונים שכבר ננקטו (הטיה סמויה לעבר פתרונות דרגה-נמוכה / מיושרים).
 
 **P1.4 (Experiment, 8 pts).** רגרסיה סקלרית, הפסד $\ell_2$, full-batch GD, קצב-למידה קטן, אתחול קרוב-לאפס: אמנו רשת לינארית בעומק $N$ (רוחבים חבויים $\ge \min\{d_{\text{in}}, d_{\text{out}}\}$) והשוו את מסלול מטריצת הקצה-לקצה לאיטרציה ישירה של דינמיקת הקצה-לקצה המדוסקרטת על מודל לינארי:
+
 $$W_{t+1} \leftarrow W_t - \eta\sum_{j=1}^N \big[W_tW_t^\top\big]^{\frac{j-1}{N}}\,\nabla\ell(W_t)\,\big[W_t^\top W_t\big]^{\frac{N-j}{N}}.$$
+
 חזרו עבור $N = 2, 3$.
 רעיונות מרכזיים:
 - עם קצב-למידה קטן ואתחול קרוב-לאפס (מאוזן בקירוב) שני המסלולים אמורים לחפוף, ובכך לאמת את משפט דינמיקת הקצה-לקצה; סטיות גדלות עם קצב-הלמידה (דיסקרטיזציה) ועם חוסר-איזון.
@@ -40,8 +48,14 @@ $$W_{t+1} \leftarrow W_t - \eta\sum_{j=1}^N \big[W_tW_t^\top\big]^{\frac{j-1}{N}
 - יהי $\delta(t) = u_{(2)}(t) - u_{(1)}(t)$; $\dot\delta = -H^*\delta + (H^*-H(t))(u_{(2)}-y)$, ולכן $\tfrac{d}{dt}\|\delta\| \le \epsilon\,\|u_{(2)}(t)-y\|$ (האיבר $-H^*\delta$ רק מכווץ את $\|\delta\|$).
 - $\|u_{(2)}(t)-y\|$ נשאר חסום על ידי $\|u(0)-y\|$ (השארית אינה עולה); אינטגרציה — עם חסם השארית הדועך מתקבלת הצמיחה $O(\sqrt t\,\epsilon)$ (Cauchy–Schwarz על פני גורמים מסוג $\int_0^t e^{-\lambda s}$).
 
-**P1.7 (Experiment, 8 pts).** עם נוסחת ה-NTK מהמחלקה לרשת רדודה, $k(x,x') = x^\top x'\cdot\mathbb{E}_{W\sim\mathcal N(0,I)}\big[\dot\sigma(W^\top x)\dot\sigma(W^\top x')\big]$, שהיא עבור ReLU
+**P1.7 (Experiment, 8 pts).** עם נוסחת ה-NTK מהמחלקה לרשת רדודה,
+
+$$k(x,x') = x^\top x'\cdot\mathbb{E}_{W\sim\mathcal N(0,I)}\big[\dot\sigma(W^\top x)\dot\sigma(W^\top x')\big]$$
+
+, שהיא עבור ReLU
+
 $$k(x,x') = x^\top x'\cdot\frac{1}{2\pi}\Big(\pi - \arccos\Big(\frac{x^\top x'}{\|x\|\|x'\|}\Big)\Big),$$
+
 השוו את $u(t)$ של GF על רשת ReLU רדודה ממשית להצבה ישירה של דינמיקת הגרעין (1) על מערך נתונים של רגרסיה סקלרית (הפסד $\ell_2$, קצב-למידה קטן); שנו את הרוחב — האם ההתאמה משתפרת עם הרוחב?
 רעיונות מרכזיים:
 - רשת רחבה יותר $\Rightarrow$ NTK אמפירי קרוב יותר לגבול הרוחב-האינסופי שלו $H^*$ $\Rightarrow$ מסלולים מתאימים בצורה הדוקה יותר (המשטר ה"עצל" / משטר הגרעין).
@@ -62,13 +76,35 @@ $$k(x,x') = x^\top x'\cdot\frac{1}{2\pi}\Big(\pi - \arccos\Big(\frac{x^\top x'}{
 - שגיאת הדחיסה: קטימה מדרגה $r$ של כל שכבה מפריעה לפלט; הרכבה ליפשיצית נותנת שגיאה מסגנון $\rho\cdot\gamma^{N-1}\big(\sum_n \|W_n - W_n^{(r)}\|\prod_{k\ne n}\|W_k\|\big)$, הנשלטת על ידי הערכים הסינגולריים המושמטים.
 - (b): חסם איחוד על $r \in [d]$ (תוספת $\ln d$ / $\delta \to \delta/d$), ואז בחרו את ה-$r$ בעל הפשרה הטובה ביותר לכל רשת נלמדת — חסם מסוג "מזעור סיכון מבני על פני דרגות".
 
-**P3.2 (9 pts). מורכבות Rademacher ונורמות.** $\mathcal H = \{h_\theta : \theta\in\mathbb{R}^p, \|\theta\|_\infty \le 0.5\}$; עבור $\Theta$ תת-קבוצה של הקובייה, $\mathcal H_\Theta = \{h_\theta : \theta\in\Theta\}$, עם מורכבות Rademacher $\mathcal R(\ell\circ\mathcal H_\Theta\circ S) = \frac1m\mathbb{E}_{\xi}\big[\sup_{v\in\ell\circ\mathcal H_\Theta\circ S}\sum_{i=1}^m\xi_iv_i\big]$ ($\xi_i = \pm1$ בהסתברות $\tfrac12$). *הניחו* $\mathbb{E}_S[\mathcal R(\ell\circ\mathcal H_\Theta\circ S)] = \mathrm{Volume}(\Theta) = \int \mathbb{1}[\theta\in\Theta]d\theta$, ושרגולריזציה סמויה מחזירה $\hat\theta \in \arg\max_{\|\theta\|_\infty\le0.5}\|\theta\|_\infty$ בין ממזערי הפסד-האימון. גזרו חסם הכללה עבור $\mathcal H$ המנצל רגולריזציה סמויה זו ($\|\hat\theta\|_\infty$ גבוה $\Rightarrow$ פער קטן).
+**P3.2 (9 pts). מורכבות Rademacher ונורמות.**
+
+$$\mathcal H = \{h_\theta : \theta\in\mathbb{R}^p, \|\theta\|_\infty \le 0.5\}$$
+
+; עבור $\Theta$ תת-קבוצה של הקובייה,
+
+$$\mathcal H_\Theta = \{h_\theta : \theta\in\Theta\}$$
+
+, עם מורכבות Rademacher
+
+$$\mathcal R(\ell\circ\mathcal H_\Theta\circ S) = \frac1m\mathbb{E}_{\xi}\big[\sup_{v\in\ell\circ\mathcal H_\Theta\circ S}\sum_{i=1}^m\xi_iv_i\big]$$
+
+($\xi_i = \pm1$ בהסתברות $\tfrac12$). *הניחו*
+
+$$\mathbb{E}_S[\mathcal R(\ell\circ\mathcal H_\Theta\circ S)] = \mathrm{Volume}(\Theta) = \int \mathbb{1}[\theta\in\Theta]d\theta$$
+
+, ושרגולריזציה סמויה מחזירה
+
+$$\hat\theta \in \arg\max_{\|\theta\|_\infty\le0.5}\|\theta\|_\infty$$
+
+בין ממזערי הפסד-האימון. גזרו חסם הכללה עבור $\mathcal H$ המנצל רגולריזציה סמויה זו ($\|\hat\theta\|_\infty$ גבוה $\Rightarrow$ פער קטן).
 רעיונות מרכזיים:
 - רבדו את הקובייה לקליפות $\Theta_c := \{\theta : c \le \|\theta\|_\infty \le 0.5\}$ עם $\mathrm{Volume}(\Theta_c) = 1 - (2c)^p$ — לקליפות בעלות נורמה-גבוהה יש נפח קטן אקספוננציאלית, ומכאן מורכבות Rademacher קטנה.
 - חסמו באיחוד את משפט הכללת ה-Rademacher הסטנדרטי על פני משפחה מדוסקרטת של קליפות; הפתרון הנלמד בעל $\|\cdot\|_\infty$ הגבוה נופל בקליפה בעלת מורכבות נמוכה, ונותן פער קטן. משקף את ערכת הקורס "רגולריזציה סמויה $\to$ מחלקת השערות אפקטיבית מצומצמת $\to$ הכללה".
 
 **P3.3 (9 pts). PAC-Bayes: KL בין גאוסיאנים.** הוכיחו את למת המחלקה: עבור $\Sigma_0,\Sigma_1 \succ 0$ לא-סינגולריות,
+
 $$\mathrm{KL}\big(\mathcal N(\mu_0,\Sigma_0)\,\|\,\mathcal N(\mu_1,\Sigma_1)\big) = \tfrac12\Big(\operatorname{tr}(\Sigma_1^{-1}\Sigma_0) + (\mu_1-\mu_0)^\top\Sigma_1^{-1}(\mu_1-\mu_0) - r + \ln\tfrac{\det\Sigma_1}{\det\Sigma_0}\Big).$$
+
 רעיונות מרכזיים:
 - כתבו $\mathrm{KL} = \mathbb{E}_{x\sim\mathcal N(\mu_0,\Sigma_0)}[\ln p_0(x) - \ln p_1(x)]$; פרשו את הלוג-צפיפויות של הגאוסיאנים.
 - השתמשו ב-$\mathbb{E}[x^\top A x] = \operatorname{tr}(A\Sigma) + \mu^\top A\mu$ וב-$\mathbb{E}_{p_0}[(x-\mu_0)^\top\Sigma_0^{-1}(x-\mu_0)] = r$; אספו איברים.

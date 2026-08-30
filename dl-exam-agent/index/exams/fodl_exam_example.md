@@ -15,13 +15,21 @@ Let $\mathcal{H}_B$ be the hypotheses space corresponding to a fully-connected s
 - **(15 pts)** Prove that this universality holds.
 
 **Solution sketch:**
-**a.** Explicit expression: $\mathcal{H}_B=\big\{x\mapsto\sum_{i=1}^B v_i\,\sigma(w_ix+b_i)+c\ :\ w_i,b_i,v_i,c\in\mathbb{R}\big\}$ with $\sigma(z)=z$ for $z>0$ and $\alpha z$ otherwise (whether the output bias $c$ is included depends on the course convention — unverified; constants are realizable via a $w_i=0$ neuron anyway).
+**a.** Explicit expression:
+
+$$\mathcal{H}_B=\big\{x\mapsto\sum_{i=1}^B v_i\,\sigma(w_ix+b_i)+c\ :\ w_i,b_i,v_i,c\in\mathbb{R}\big\}$$
+
+with $\sigma(z)=z$ for $z>0$ and $\alpha z$ otherwise (whether the output bias $c$ is included depends on the course convention — unverified; constants are realizable via a $w_i=0$ neuron anyway).
 
 **b.** Universality definition: for every $f\in\mathcal{F}$ and every $\epsilon>0$ there exist $B\in\mathbb{N}$ and $h\in\mathcal{H}_B$ with $d(f,h)\le\epsilon$ (equivalently, $\bigcup_{B\in\mathbb{N}}\mathcal{H}_B$ is dense in $\mathcal{F}$ w.r.t. $d$).
 
 **c.** Key identities: $\sigma(z)-\sigma(-z)=(1+\alpha)z$ and $\sigma(z)+\sigma(-z)=(1-\alpha)|z|$. So two leaky-ReLU neurons implement the identity map and $|z|$. Hence $\mathrm{ReLU}(z)=\tfrac{z+|z|}{2}$ is implementable with 2 leaky-ReLU neurons.
 
-**d.** Any piecewise linear $f$ with finitely many breakpoints $t_1<\dots<t_k$ can be written $f(x)=ax+b+\sum_{i=1}^k c_i\,\mathrm{ReLU}(x-t_i)$ (slopes determine the $c_i$'s).
+**d.** Any piecewise linear $f$ with finitely many breakpoints $t_1<\dots<t_k$ can be written
+
+$$f(x)=ax+b+\sum_{i=1}^k c_i\,\mathrm{ReLU}(x-t_i)$$
+
+(slopes determine the $c_i$'s).
 
 **e.** Implement each term via the identities above: width $B=O(k)$ suffices for an exact representation, i.e., $d(f,h)=0\le\epsilon$. Universality holds (in fact exactly, not just approximately) for piecewise linear functions with finitely many pieces.
 
@@ -48,13 +56,29 @@ Suppose we overparameterize $f(\cdot)$ with a shallow (2 layer) linear neural ne
 - **(8 pts)** Prove that all such critical points are global minima.
 
 **Solution sketch:**
-**a.** $\beta$-smoothness: $\nabla f$ is $\beta$-Lipschitz, i.e., $\|\nabla f(w)-\nabla f(w')\|\le\beta\|w-w'\|$ for all $w,w'$ (equivalent quadratic-upper-bound form: $f(w')\le f(w)+\nabla f(w)^\top(w'-w)+\frac\beta2\|w'-w\|^2$).
+**a.** $\beta$-smoothness: $\nabla f$ is $\beta$-Lipschitz, i.e.,
 
-**b.** $\nabla f(w)=Qw$ (for symmetric $Q$), so $\|\nabla f(w)-\nabla f(w')\|=\|Q(w-w')\|\le\|Q\|_2\|w-w'\|=\lambda_{max}\|w-w'\|$. Hence $\beta$-smooth for every $\beta\ge\lambda_{max}$.
+$$\|\nabla f(w)-\nabla f(w')\|\le\beta\|w-w'\|$$
 
-**c.** For $\beta<\lambda_{max}$: choose $w-w'=v$, a top eigenvector. Then $\|Q(w-w')\|=\lambda_{max}\|w-w'\|>\beta\|w-w'\|$, violating the Lipschitz condition.
+for all $w,w'$ (equivalent quadratic-upper-bound form: $f(w')\le f(w)+\nabla f(w)^\top(w'-w)+\frac\beta2\|w'-w\|^2$).
 
-**d.** Overparameterization with hidden width 1: end-to-end vector $w=w_2\,w_1$ with $w_1\in\mathbb{R}^d$, $w_2\in\mathbb{R}$. Objective $g(w_1,w_2)=f(w_2w_1)=\frac12 w_2^2\,w_1^\top Qw_1$. Gradient: $\nabla_{w_1}g=w_2^2\,Qw_1$ and $\frac{\partial g}{\partial w_2}=w_2\,w_1^\top Qw_1$ (which factor is the scalar is a labeling choice — symmetric either way).
+**b.** $\nabla f(w)=Qw$ (for symmetric $Q$), so
+
+$$\|\nabla f(w)-\nabla f(w')\|=\|Q(w-w')\|\le\|Q\|_2\|w-w'\|=\lambda_{max}\|w-w'\|$$
+
+Hence $\beta$-smooth for every $\beta\ge\lambda_{max}$.
+
+**c.** For $\beta<\lambda_{max}$: choose $w-w'=v$, a top eigenvector. Then
+
+$$\|Q(w-w')\|=\lambda_{max}\|w-w'\|>\beta\|w-w'\|$$
+
+violating the Lipschitz condition.
+
+**d.** Overparameterization with hidden width 1: end-to-end vector $w=w_2\,w_1$ with $w_1\in\mathbb{R}^d$, $w_2\in\mathbb{R}$. Objective
+
+$$g(w_1,w_2)=f(w_2w_1)=\frac12 w_2^2\,w_1^\top Qw_1$$
+
+Gradient: $\nabla_{w_1}g=w_2^2\,Qw_1$ and $\frac{\partial g}{\partial w_2}=w_2\,w_1^\top Qw_1$ (which factor is the scalar is a labeling choice — symmetric either way).
 
 **e.** Critical point: a pair $(w_1,w_2)$ at which the entire gradient vanishes, $\nabla_{w_1}g=0$ and $\frac{\partial g}{\partial w_2}=0$.
 
@@ -80,11 +104,29 @@ Assume that $\mathcal{H}$ is countably infinite, i.e. we may write $\mathcal{H}=
 - **(11 pts)** Derive a generalization bound that takes this implicit regularization into account, i.e. in which hypotheses with lower index have tighter guarantee for gap between population and empirical losses.
 
 **Solution sketch:**
-**a.** For a fixed $h$, the sample losses are i.i.d. in $[0,1]$, so Hoeffding gives $P(L_D(h)-L_S(h)\ge\epsilon)\le e^{-2m\epsilon^2}$ (factor 2 if two-sided). A union bound over $\mathcal{H}$ with $\delta/|\mathcal{H}|$ each yields: w.p. $\ge1-\delta$, $\forall h\in\mathcal{H}:\ L_D(h)-L_S(h)\le\sqrt{\ln(|\mathcal{H}|/\delta)/(2m)}$.
+**a.** For a fixed $h$, the sample losses are i.i.d. in $[0,1]$, so Hoeffding gives
 
-**b.** PAC-Bayes with uniform prior $P(h)=1/|\mathcal{H}|$ and deterministic posterior $Q=\delta_{h}$: $KL(Q\|P)=\sum_{h'}Q(h')\ln\frac{Q(h')}{P(h')}=\ln|\mathcal{H}|$ (using $0\cdot\ln0=0$). Plugging into the course's PAC-Bayes theorem (Lecture 6, Thm 2: $\ln(2m/\delta)$ in the numerator) gives $L_D(h)\le L_S(h)+\sqrt{\big(\ln|\mathcal{H}|+\ln(2m/\delta)\big)/(2(m-1))}$ — the same $\ln|\mathcal{H}|$ complexity as (a) up to constants (audited against the course statement).
+$$P(L_D(h)-L_S(h)\ge\epsilon)\le e^{-2m\epsilon^2}$$
 
-**c.** Non-uniform bound aligned with the implicit bias: place a "prior" over indices $p_k$ with $\sum_k p_k\le1$ favoring small $k$, e.g. $p_k=2^{-k}$. Apply Hoeffding to each $h_k$ with confidence $\delta p_k$ and union bound over $k$. Result: w.p. $\ge1-\delta$, $\forall k\in\mathbb{N}:\ L_D(h_k)-L_S(h_k)\le\sqrt{\big(k\ln2+\ln(1/\delta)\big)/(2m)}$ — the guarantee is tighter for lower indices, matching the optimizer's implicit regularization. Equivalently via PAC-Bayes: use prior $P(h_k)=2^{-k}$ (valid over countable $\mathcal{H}$) and deterministic posterior on the learned $h_k$, giving $KL=k\ln2$ inside the same square-root bound.
+(factor 2 if two-sided). A union bound over $\mathcal{H}$ with $\delta/|\mathcal{H}|$ each yields: w.p. $\ge1-\delta$,
+
+$$\boxed{\,\forall h\in\mathcal{H}:\ L_D(h)-L_S(h)\le\sqrt{\ln(|\mathcal{H}|/\delta)/(2m)}\,}$$
+
+**b.** PAC-Bayes with uniform prior $P(h)=1/|\mathcal{H}|$ and deterministic posterior $Q=\delta_{h}$:
+
+$$KL(Q\|P)=\sum_{h'}Q(h')\ln\frac{Q(h')}{P(h')}=\ln|\mathcal{H}|$$
+
+(using $0\cdot\ln0=0$). Plugging into the course's PAC-Bayes theorem (Lecture 6, Thm 2: $\ln(2m/\delta)$ in the numerator) gives
+
+$$L_D(h)\le L_S(h)+\sqrt{\big(\ln|\mathcal{H}|+\ln(2m/\delta)\big)/(2(m-1))}$$
+
+— the same $\ln|\mathcal{H}|$ complexity as (a) up to constants (audited against the course statement).
+
+**c.** Non-uniform bound aligned with the implicit bias: place a "prior" over indices $p_k$ with $\sum_k p_k\le1$ favoring small $k$, e.g. $p_k=2^{-k}$. Apply Hoeffding to each $h_k$ with confidence $\delta p_k$ and union bound over $k$. Result: w.p. $\ge1-\delta$,
+
+$$\boxed{\,\forall k\in\mathbb{N}:\ L_D(h_k)-L_S(h_k)\le\sqrt{\big(k\ln2+\ln(1/\delta)\big)/(2m)}\,}$$
+
+— the guarantee is tighter for lower indices, matching the optimizer's implicit regularization. Equivalently via PAC-Bayes: use prior $P(h_k)=2^{-k}$ (valid over countable $\mathcal{H}$) and deterministic posterior on the learned $h_k$, giving $KL=k\ln2$ inside the same square-root bound.
 
 **💡 Useful tricks:** Finite class: fixed-$h$ Hoeffding + union bound at confidence $\delta/|\mathcal{H}|$ (Lecture 6); deterministic posterior collapses $KL(Q\|P)$ to $\ln(1/P(h))$; "tighter for lower index" cues a non-uniform confidence split $\delta p_k$ with $\sum_k p_k\le1$ (e.g. $p_k=2^{-k}$).
 

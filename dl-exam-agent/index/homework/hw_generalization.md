@@ -5,12 +5,20 @@
 ## Problems
 ### Part 1: Implicit Regularization
 
-**P1.1 (13 pts). Linear regression, arbitrary initialization.** Class proposition: minimizing underdetermined $L_S(w)$ from $w^{(0)} = 0$ with any iterative algorithm whose updates satisfy $w^{(t+1)} - w^{(t)} \in \operatorname{span}\{\nabla\ell_{(x_i,y_i)}(w) : i\in[m], w\in\mathbb{R}^d\}$ (covers GD, SGD, momentum), assuming convergence to a zero-loss global optimum, yields the *minimum Euclidean norm* global optimum. Generalize: if instead $w^{(0)} = a \in \mathbb{R}^d$, prove the norm sub-optimality (excess over the min norm among global optima) is $\le \|P_\perp a\|$, where $P_\perp$ projects onto $\operatorname{span}\{x_i\}_{i=1}^m{}^\perp$.
+**P1.1 (13 pts). Linear regression, arbitrary initialization.** Class proposition: minimizing underdetermined $L_S(w)$ from $w^{(0)} = 0$ with any iterative algorithm whose updates satisfy
+
+$$w^{(t+1)} - w^{(t)} \in \operatorname{span}\{\nabla\ell_{(x_i,y_i)}(w) : i\in[m], w\in\mathbb{R}^d\}$$
+
+(covers GD, SGD, momentum), assuming convergence to a zero-loss global optimum, yields the *minimum Euclidean norm* global optimum. Generalize: if instead $w^{(0)} = a \in \mathbb{R}^d$, prove the norm sub-optimality (excess over the min norm among global optima) is $\le \|P_\perp a\|$, where $P_\perp$ projects onto $\operatorname{span}\{x_i\}_{i=1}^m{}^\perp$.
 Key ideas:
 - All updates lie in $\operatorname{span}\{x_i\}$ (gradients of $\ell(w^\top x_i, y_i)$ are multiples of $x_i$), so $w^{(\infty)} = a + (\text{span component})$; decompose $w^{(\infty)} = P_\perp a + P_{\parallel}(\cdot)$.
 - Any zero-loss solution has fixed parallel component determined by $Xw = y$; the min-norm solution $w^*$ is the one with zero orthogonal component. Triangle inequality / Pythagoras: $\|w^{(\infty)}\| \le \|w^*\| + \|P_\perp a\|$.
 
-**P1.2 (Bonus 10 pts). Matrix factorization / deep linear nets — singular values shoot up one by one.** Matrix completion observing *all* entries: $L_S(W) = \frac{1}{d\cdot d'}\cdot\frac12\|W - W^*\|_{\mathrm{Fro}}^2$ with SVD $W^* = U\Sigma V^\top$. Optimize via depth-$N$ linear network, gradient flow, balanced initialization with end-to-end matrix $W_{1:N}(0) = U E V^\top$, $E$ rectangular-diagonal with all diagonal entries $\epsilon > 0$ (much smaller than all $\sigma_i(W^*)$). Given that the SVD keeps the form $W_{1:N}(t) = U S(t) V^\top$ (fixed singular vectors), derive explicit $\sigma_1(t),\dots,\sigma_{\min\{d,d'\}}(t)$ for depths $N = 1$ and $N = 2$, and explain how depth makes singular values "shoot up" one at a time.
+**P1.2 (Bonus 10 pts). Matrix factorization / deep linear nets — singular values shoot up one by one.** Matrix completion observing *all* entries:
+
+$$L_S(W) = \frac{1}{d\cdot d'}\cdot\frac12\|W - W^*\|_{\mathrm{Fro}}^2$$
+
+with SVD $W^* = U\Sigma V^\top$. Optimize via depth-$N$ linear network, gradient flow, balanced initialization with end-to-end matrix $W_{1:N}(0) = U E V^\top$, $E$ rectangular-diagonal with all diagonal entries $\epsilon > 0$ (much smaller than all $\sigma_i(W^*)$). Given that the SVD keeps the form $W_{1:N}(t) = U S(t) V^\top$ (fixed singular vectors), derive explicit $\sigma_1(t),\dots,\sigma_{\min\{d,d'\}}(t)$ for depths $N = 1$ and $N = 2$, and explain how depth makes singular values "shoot up" one at a time.
 Key ideas:
 - Singular values decouple: each obeys the end-to-end scalar ODE $\dot\sigma_i(t) = -N\,\sigma_i(t)^{2-\frac2N}\cdot\frac{1}{dd'}(\sigma_i(t) - \sigma_i^*)$.
 - $N=1$: linear ODE $\Rightarrow$ exponential relaxation $\sigma_i(t) = \sigma_i^* + (\epsilon-\sigma_i^*)e^{-t/(dd')}$ — all singular values move at the same rate (no rank bias).
@@ -23,20 +31,45 @@ Key ideas:
 - Verify the Theorem's hypotheses for the factor priors used in class (i.i.d. entries, moment conditions) — a CLT-flavored statement: products of random matrices have approximately Gaussian columns as width $k \to \infty$.
 - Chain the quantitative convex-distance bound into Lemma 2's smallness condition; this closes the gap in the volume-hypothesis proof of Theorem 1 (random deep factorizations behave like the "flat" i.i.d. parameterization, so low-loss regions with large volume dominate).
 
-**P2.2 (10 pts). Guess & Check has min-norm bias — conditional distribution.** Least squares $f(w) = \frac1m\|Xw-y\|^2$, $X \in \mathbb{R}^{m,d}$, $d > m$, $\operatorname{rank}(X) = m$, solution set $\{w : Xw = y\} \ne \emptyset$, min-norm solution $w^* = X^\top(XX^\top)^{-1}y$. G&C draws $w \sim \mathcal N(0, \sigma^2I_d)$ and accepts iff $Xw = y$. With $e := w - w^*$, prove $e \mid Xw = y \sim \mathcal N(0, \Sigma)$, $\Sigma = \sigma^2\big(I - X^\top(XX^\top)^{-1}X\big)$. (May use: for $z \sim \mathcal N(0,\sigma^2I_d)$ and full-row-rank $A$: $z \mid Az = b \sim \mathcal N\big(A^\top(AA^\top)^{-1}b,\ \sigma^2(I - A^\top(AA^\top)^{-1}A)\big)$.)
+**P2.2 (10 pts). Guess & Check has min-norm bias — conditional distribution.** Least squares $f(w) = \frac1m\|Xw-y\|^2$, $X \in \mathbb{R}^{m,d}$, $d > m$, $\operatorname{rank}(X) = m$, solution set $\{w : Xw = y\} \ne \emptyset$, min-norm solution $w^* = X^\top(XX^\top)^{-1}y$. G&C draws $w \sim \mathcal N(0, \sigma^2I_d)$ and accepts iff $Xw = y$. With $e := w - w^*$, prove
+
+$$e \mid Xw = y \sim \mathcal N(0, \Sigma)$$
+
+$$\Sigma = \sigma^2\big(I - X^\top(XX^\top)^{-1}X\big)$$
+
+. (May use: for $z \sim \mathcal N(0,\sigma^2I_d)$ and full-row-rank $A$: $z \mid Az = b \sim \mathcal N\big(A^\top(AA^\top)^{-1}b,\ \sigma^2(I - A^\top(AA^\top)^{-1}A)\big)$.)
 Key ideas:
 - Apply the given Gaussian-conditioning fact with $A = X$, $b = y$: the conditional mean is exactly $w^*$, so $e = w - w^*$ is zero-mean with the stated covariance.
 
-**P2.3 (10 pts).** Prove $\frac{1}{\sigma^2}\Sigma$ is an orthogonal projector — $\big(\frac{1}{\sigma^2}\Sigma\big)^\top = \frac{1}{\sigma^2}\Sigma$ and $\big(\frac{1}{\sigma^2}\Sigma\big)^2 = \frac{1}{\sigma^2}\Sigma$ — and that $\operatorname{rank}(\Sigma) = d - m$. Hint: show $\operatorname{Im}(\Sigma) = \operatorname{Ker}(X)$.
+**P2.3 (10 pts).** Prove $\frac{1}{\sigma^2}\Sigma$ is an orthogonal projector —
+
+$$\big(\frac{1}{\sigma^2}\Sigma\big)^\top = \frac{1}{\sigma^2}\Sigma$$
+
+and
+
+$$\big(\frac{1}{\sigma^2}\Sigma\big)^2 = \frac{1}{\sigma^2}\Sigma$$
+
+— and that $\operatorname{rank}(\Sigma) = d - m$. Hint: show
+
+$$\operatorname{Im}(\Sigma) = \operatorname{Ker}(X)$$
+
 Key ideas:
 - Direct computation: $P := X^\top(XX^\top)^{-1}X$ is symmetric idempotent, hence so is $I - P$.
 - $X(I-P) = 0$ gives $\operatorname{Im}(I-P) \subseteq \operatorname{Ker}(X)$; conversely $(I-P)w = w$ on $\operatorname{Ker}(X)$; rank–nullity with $\operatorname{rank}(X) = m$ gives $\operatorname{rank}(\Sigma) = d-m$.
 
-**P2.4 (10 pts).** Prove $\frac{\|e\|^2}{\sigma^2} \,\big|\, Xw = y \sim \chi^2_{d-m}$. (May use: for $z\sim\mathcal N(0,I_d)$ and orthogonal projector $P$ of rank $r$, $\|Pz\|^2 \sim \chi^2_r$.)
+**P2.4 (10 pts).** Prove
+
+$$\frac{\|e\|^2}{\sigma^2} \,\big|\, Xw = y \sim \chi^2_{d-m}$$
+
+. (May use: for $z\sim\mathcal N(0,I_d)$ and orthogonal projector $P$ of rank $r$, $\|Pz\|^2 \sim \chi^2_r$.)
 Key ideas:
 - Write $e = \sigma\,\big(\frac{1}{\sigma^2}\Sigma\big)^{1/2}$-transformed standard Gaussian; since $\frac{1}{\sigma^2}\Sigma$ is a rank-$(d-m)$ projector, $e \stackrel{d}{=} \sigma P z$ with $z \sim \mathcal N(0, I_d)$, so $\|e\|^2/\sigma^2 = \|Pz\|^2 \sim \chi^2_{d-m}$.
 
-**P2.5 (8 pts).** Conclude: $\forall \epsilon, \delta > 0$ there exists $\sigma > 0$ such that with prior $\mathcal N(0,\sigma^2I_d)$, $\Pr\big(\|w - w^*\| \le \epsilon \mid Xw = y\big) \ge 1 - \delta$. (Hint: $\lim_{\epsilon\to\infty}\Pr(\chi^2_r \le \epsilon) = 1$.)
+**P2.5 (8 pts).** Conclude: $\forall \epsilon, \delta > 0$ there exists $\sigma > 0$ such that with prior $\mathcal N(0,\sigma^2I_d)$,
+
+$$\Pr\big(\|w - w^*\| \le \epsilon \mid Xw = y\big) \ge 1 - \delta$$
+
+. (Hint: $\lim_{\epsilon\to\infty}\Pr(\chi^2_r \le \epsilon) = 1$.)
 Key ideas:
 - $\Pr(\|e\| \le \epsilon \mid \cdot) = \Pr\big(\chi^2_{d-m} \le \epsilon^2/\sigma^2\big)$; as $\sigma \to 0$, $\epsilon^2/\sigma^2 \to \infty$, so the probability $\to 1$ — G&C with a small-variance Gaussian prior concentrates on the min-norm solution, i.e., the same implicit bias as GD without any gradient dynamics (volume/G&C perspective).
 

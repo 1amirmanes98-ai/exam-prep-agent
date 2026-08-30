@@ -14,51 +14,74 @@
 **Def (volume hypothesis, informal).** ארכיטקטורות למידה עמוקה הן כאלה ש, עבור התפלגויות נתונים "טבעיות", קבוצת הפתרונות המתאימים את נתוני האימון מכילה בעיקר פתרונות מכלילים; ומכאן כל אלגוריתם אופטימיזציה המתאים את נתוני האימון סביר שיכליל — בפרט, פתרון הנבחר באקראי מקבוצת ההפסד-אימון-האפס/הנמוך מכליל בהסתברות גבוהה. (ניגוד: רגולריזציה משתמעת מייחסת זאת לתכונות מיוחדות של אופטימיזציה מבוססת-גרדיאנט.)
 
 **Def (abstract formulation).** $S=\{(x_i,y_i)\}_{i=1}^m\sim D^m$ i.i.d.; $f_\theta:X\to Y$ העתקת הקלט–פלט של הרשת, $\theta\in\Theta$; הפסד $\ell:Y\times Y\to\mathbb{R}_{\ge0}$; $L_S(\theta)=\frac1m\sum_{i=1}^m\ell(f_\theta(x_i),y_i)$, $L_D(\theta)=\mathbb{E}_{(x,y)\sim D}[\ell(f_\theta(x),y)]$. קבעו prior $P(\cdot)$ על $\Theta$ וסף אימון $\epsilon_S>0$; ה-**posterior** הוא $P(\theta \mid L_S(\theta)\le\epsilon_S)$. עבור $\epsilon_D>0$, אירוע ה-**$\epsilon_D$-הכללה** הוא $\{\theta: L_D(\theta)\le\epsilon_D\}$; מושא העניין הוא **הסתברות ה-posterior של $\epsilon_D$-הכללה** (Eq. (1)):
+
 $$P\big(L_D(\theta)\le\epsilon_D \,\big|\, L_S(\theta)\le\epsilon_S\big),$$
+
 המכמתת עד כמה נפוצים (לפי ה-prior) פתרונות מכלילים מבין אלה המתאימים את הנתונים. השערת הנפח טוענת שהיא גבוהה.
 
 **Def (MF testbed).** אותה מסגרת חישת מטריצות כמו בהרצאה 8: $X\in\mathbb{R}^{d,d'}$, $Y=\mathbb{R}$, $\ell(y,\hat y)=\frac12(y-\hat y)^2$, $H=\{X\mapsto\langle X,W\rangle : W\in\mathbb{R}^{d,d'}\}$; מימושיות $y=\langle X,W^*\rangle$ בהסתברות 1 עם $\mathrm{rank}(W^*)=r<\min\{d,d'\}$; $m<d\cdot d'$. מטרת אימון בעלת פרמטריזציית-יתר $\phi_S(W_1,\dots,W_N)=L_S(W_NW_{N-1}\cdots W_1)$ עם $L_S(W)=\frac{1}{2m}\sum_i(\langle X_i,W\rangle-y_i)^2$ ו**רוחבים חבויים שווים** $d_1=\dots=d_{N-1}=:k$.
 
 **Def (generalization loss).** כל $W$ הממזערת את ההפסד האמפירי מתלכדת עם $W^*$ על $\mathrm{span}\{X_i\}_{i=1}^m$; ומכאן ההכללה מוערכת על מופעים אורתוגונליים לפרישה זו. עם $B\subset\mathbb{R}^{d,d'}$ בסיס אורתונורמלי של המשלים האורתוגונלי של $\mathrm{span}\{X_i\}_{i=1}^m$:
+
 $$L_{gen}:\mathbb{R}^{d,d'}\to\mathbb{R}_{\ge0},\qquad L_{gen}(W):=\frac{1}{2|B|}\sum_{X\in B}\big(\langle X,W\rangle-\langle X,W^*\rangle\big)^2$$
+
 (בלתי-תלוי בבחירת $B$); גרסה בעלת פרמטריזציית-יתר $\phi_{gen}(W_1,\dots,W_N)=L_{gen}(W_NW_{N-1}\cdots W_1)$.
 
 **Def 1 (Gaussian-generated priors).** יהי $N(\cdot;0,\sigma^2)$ הגאוסיאן בעל התוחלת אפס על $\mathbb{R}$ עם שונות $\sigma^2>0$. $P(\cdot)$ הוא **מיוצר על ידי $N(\cdot;0,\sigma^2)$** אם $(W_1,\dots,W_N)\sim P$ גורר ש-$W_1,\dots,W_N$ בלתי-תלויים סטטיסטית וכן, עבור כל $j\in[N]$, רכיבי $W_j$ מתפלגים באופן בלתי-תלוי לפי $N(\cdot;0,\frac{\sigma^2}{d_j})$, כאשר $d_j$ = מספר ה**עמודות** של $W_j$. $P(\cdot)$ הוא **מיוצר על ידי $N(\cdot;0,\sigma^2)$ עם נרמול** אם ניתן לממשו על ידי דגימת $(W_1,\dots,W_N)$ מהתפלגות המיוצרת על ידי $N(\cdot;0,\sigma^2)$ ואז, עבור כל $j\in[N]$, חלוקת כל רכיב של $W_j$ ב-$\|W_NW_{N-1}\cdots W_1\|_{Fro}^{1/N}$.
 
 **Def 2 (convex distance).** עבור וקטורים אקראיים $d$-ממדיים $Y,Z$ על $\mathbb{R}^d$:
+
 $$\mathrm{Dist}_{convex}(Y,Z):=\sup_B\,\big|\Pr(Y\in B)-\Pr(Z\in B)\big|,$$
+
 סופרמום על פני כל הקבוצות ה**קמורות** $B\subset\mathbb{R}^d$; מורחב למטריצות אקראיות באמצעות ייצוגי הווקטור המשוטחים שלהן.
 
 ## Key theorems & results
 **Thm 1 (increasing width ⇒ volume hypothesis fails).** יהי $P(\cdot)$ מיוצר על ידי $N(\cdot;0,\sigma^2)$ (Def 1), $\epsilon_{train},\epsilon_{gen}>0$. בהתייחסות ל-$P$ כ-prior ובהתניה על $\{\phi_S(W_1,\dots,W_N)<\epsilon_{train}\}$: קיים $k_0$ כך שעבור כל רוחב $k\ge k_0$,
+
 $$P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\,\big|\,\phi_S(W_1,\dots,W_N)<\epsilon_{train}\big)-P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\big)=O\big(\tfrac{1}{\sqrt{k}}\big).$$
+
 כלומר, ככל ש-$k$ גדל (עומק קבוע), דגימה מה-posterior מכלילה לא טוב יותר מדגימה מה-prior תוך התעלמות מהנתונים ("לא טוב יותר מניחוש").
 רעיון ההוכחה (3 חלקים): (i) עבור מטריצה גאוסיאנית i.i.d. $W_{iid}$ אירועי האימון-הנמוך וההכללה-הנמוכה בלתי-תלויים במדויק (Lem 1); (ii) אם הפירוק $W_N\cdots W_1$ קרוב ל-$W_{iid}$ במרחק קמור, אי-התלות המקורבת עוברת כיוון שהאירועים הרלוונטיים הם קבוצות קמורות (Lem 2, Lem 3); (iii) הקרבה מתקיימת על ידי CLT כמותי (Thm 2).
 
 **Lem 1 (exact independence for $W_{iid}$).** עבור $W_{iid}\in\mathbb{R}^{d,d'}$ עם רכיבים גאוסיאניים i.i.d. בעלי תוחלת אפס ושונות סופית:
+
 $$\Pr\big(L_{gen}(W_{iid})<\epsilon_{gen},\,L_S(W_{iid})<\epsilon_{train}\big)=\Pr\big(L_{gen}(W_{iid})<\epsilon_{gen}\big)\cdot\Pr\big(L_S(W_{iid})<\epsilon_{train}\big).$$
-רעיון ההוכחה: מטריצות הבדיקה $X\in B$ אורתוגונליות ל-$X_1,\dots,X_m$; עבור וקטור $Z$ של גאוסיאנים i.i.d. ממורכזי-אפס ווקטורים קבועים אורתוגונליים $v_1,v_2$, $\langle Z,v_1\rangle,\langle Z,v_2\rangle$ בלתי-תלויים — כך ש-$L_S(W_{iid})$ ו-$L_{gen}(W_{iid})$ הן פונקציות של משפחות גאוסיאניות בלתי-תלויות.
+
+**רעיון ההוכחה:** מטריצות הבדיקה $X\in B$ אורתוגונליות ל-$X_1,\dots,X_m$; עבור וקטור $Z$ של גאוסיאנים i.i.d. ממורכזי-אפס ווקטורים קבועים אורתוגונליים $v_1,v_2$, $\langle Z,v_1\rangle,\langle Z,v_2\rangle$ בלתי-תלויים — כך ש-$L_S(W_{iid})$ ו-$L_{gen}(W_{iid})$ הן פונקציות של משפחות גאוסיאניות בלתי-תלויות.
 
 **Lem 2 (convexity of sublevel sets).** $W_S:=\{W\in\mathbb{R}^{d,d'}:L_S(W)<\epsilon_{train}\}$ ו-$W_{gen}:=\{W\in\mathbb{R}^{d,d'}:L_{gen}(W)<\epsilon_{gen}\}$ קמורות.
-רעיון ההוכחה: כל הפסד הוא סכום של איברים $\frac12(\langle X,W\rangle-c)^2$ — העתקות אפיניות המורכבות עם ה-$x\mapsto x^2$ הקמורה — ומכאן קמור; קבוצות תת-הרמה של פונקציות קמורות הן קמורות; חיתוכים של קבוצות קמורות הם קמורים (בשימוש עבור האירוע המשותף).
+
+**רעיון ההוכחה:** כל הפסד הוא סכום של איברים $\frac12(\langle X,W\rangle-c)^2$ — העתקות אפיניות המורכבות עם ה-$x\mapsto x^2$ הקמורה — ומכאן קמור; קבוצות תת-הרמה של פונקציות קמורות הן קמורות; חיתוכים של קבוצות קמורות הם קמורים (בשימוש עבור האירוע המשותף).
 
 **Lem 3 (convex-distance transfer).** יהיו $\epsilon_{gen},\epsilon_{train},c>0$, $W_{iid}$ כלעיל, וכן $k_0:=\big(\frac{c}{\Pr(L_S(W_{iid})<\epsilon_{train})}\big)^2$. עבור כל $k\ge k_0$, אם $\mathrm{Dist}_{convex}(W_NW_{N-1}\cdots W_1,\,W_{iid})\le\frac{c}{\sqrt{k}}$ אזי
+
 $$P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\,\big|\,\phi_S(W_1,\dots,W_N)<\epsilon_{train}\big)\le P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\big)+\frac{\frac{3c}{\sqrt{k}}}{\Pr(L_S(W_{iid})<\epsilon_{train})-\frac{c}{\sqrt{k}}}.$$
-רעיון ההוכחה: שלושת האירועים (אימון, הכללה, משותף) קמורים, כך שכל אחת מההסתברויות שלהם תחת $W_N\cdots W_1$ נמצאת בתוך $\frac{c}{\sqrt k}$ מן המקבילה שלה תחת $W_{iid}$; כתבו את המותנה כיחס, הציבו, פרקו את המשותף באמצעות אי-התלות של Lem 1, ואספו את איברי השגיאה.
+
+**רעיון ההוכחה:** שלושת האירועים (אימון, הכללה, משותף) קמורים, כך שכל אחת מההסתברויות שלהם תחת $W_N\cdots W_1$ נמצאת בתוך $\frac{c}{\sqrt k}$ מן המקבילה שלה תחת $W_{iid}$; כתבו את המותנה כיחס, הציבו, פרקו את המשותף באמצעות אי-התלות של Lem 1, ואספו את איברי השגיאה.
 
 **Thm 2 (quantitative CLT; Thm 3.6 of Favaro et al. [2], adapted).** יהי $P(\cdot)$ מיוצר על ידי $N(\cdot;0,\sigma^2)$. הגדירו רקורסיבית $V^{(j)}\in\mathbb{R}^{d',d'}$ עבור $j=2,\dots,N$ על ידי
+
 $$\forall\alpha,\beta\in[d']:\quad V^{(j)}_{\alpha\beta}=\mathbb{E}[z_\alpha\cdot z_\beta],\qquad \begin{pmatrix}z_\alpha\\ z_\beta\end{pmatrix}\sim N\left(0,\begin{pmatrix}V^{(j-1)}_{\alpha\alpha} & V^{(j-1)}_{\alpha\beta}\\ V^{(j-1)}_{\alpha\beta} & V^{(j-1)}_{\beta\beta}\end{pmatrix}\right),$$
+
 עם מטריצה התחלתית $V^{(1)}\in\mathbb{R}^{d',d'}$ הנתונה על ידי $V^{(1)}_{\alpha\beta}=\mathbb{E}\big[[W_1]_{1\alpha}\cdot[W_1]_{1\beta}\big]$. עבור $\alpha\in[d']$ יהי $\Gamma_\alpha$ וקטור גאוסיאני ממורכז-אפס (הסיכומים כותבים "$m$-ממדי"; האינדקסים שלו רצים על $r\in[d]$, בהתאמה לעמודות ה-$d$-ממדיות) עם שונות משותפת
+
 $$\forall\alpha,\beta\in[d'],\ r,r'\in[d]:\quad \mathrm{Cov}\big((\Gamma_\alpha)_r,(\Gamma_\beta)_{r'}\big)=\mathbb{1}[r=r']\cdot V^{(N)}_{\alpha\beta}.$$
+
 אם $V^{(j)}$ הפיכה עבור כל $j\in[N]$, אזי קיים $c>0$ התלוי ב-$d,d',N,\sigma^2$ כך שעבור כל $k\in\mathbb{N}$:
+
 $$\mathrm{Dist}_{convex}\Big(\big([W_NW_{N-1}\cdots W_1]_{:\alpha}\big)_{\alpha\in[d']},\,\big(\Gamma_\alpha\big)_{\alpha\in[d']}\Big)\le\frac{c}{\sqrt{k}},$$
+
 כאשר $[W_N\cdots W_1]_{:\alpha}$ היא העמודה ה-$\alpha$-ית ושני האוספים נחשבים כווקטורים אקראיים $d'\cdot d$-ממדיים. (תרגיל: הראו שזה גורר $\mathrm{Dist}_{convex}(W_NW_{N-1}\cdots W_1,W_{iid})\le\frac{c}{\sqrt k}$, התנאי ש-Lem 3 דורשת.)
-רלוונטיות למבחן: דעו את התפקידים — $c$ בלתי-תלוי ב-$k$; נדרשת הפיכות של $V^{(j)}$; ההתכנסות היא לגאוסיאן דמוי-i.i.d. ככל שהרוחב גדל.
+
+**רלוונטיות למבחן:** דעו את התפקידים — $c$ בלתי-תלוי ב-$k$; נדרשת הפיכות של $V^{(j)}$; ההתכנסות היא לגאוסיאן דמוי-i.i.d. ככל שהרוחב גדל.
 
 **Thm 3 (increasing depth ⇒ volume hypothesis holds).** הניחו ש-$W^*$ מקיימת $\|W^*\|_F=1$ ו-$\mathrm{rank}(W^*)=1$; מופעי האימון $\{X_i\}_{i=1}^m$ מקיימים תכונת רגולריות מתונה ("איזומטריה מוגבלת"); ו-$P(\cdot)$ מיוצר על ידי $N(\cdot;0,\sigma^2)$ **עם נרמול** (Def 1). אזי קיים $c\in\mathbb{R}_{>0}$ כך שעבור כל $\epsilon_{train}\in\mathbb{R}_{>0}$ וכל עומק של הפירוק:
+
 $$1-P\big(\phi_{gen}(W_1,\dots,W_d)<\epsilon_{train}\,c \,\big|\, \phi_S(W_1,\dots,W_d)<\epsilon_{train}\big)=O\big(\tfrac{1}{d}\big),$$
+
 כפי שמוצג בסיכומים — כאשר ה-$d$ המוצג מציין את ה**עומק** (מספר הגורמים $W_1,\dots,W_d$; הקדמת המשפט קוראת לעומק $N$). כלומר, בהסתברות השואפת ל-1 ככל שהעומק גדל, הפסד ההכללה אינו גדול מקבוע כפול הסף שנקבע להפסד האמפירי — הכללת ה-posterior הופכת מושלמת.
-רלוונטיות למבחן: השוו ל-Thm 1; שימו לב להנחות הנוספות (prior מנורמל, $W^*$ מדרגה-1 בעל נורמה-יחידה, RIP) ושסף ההכללה הוא $c\cdot\epsilon_{train}$, קשור לסף האימון.
+
+**רלוונטיות למבחן:** השוו ל-Thm 1; שימו לב להנחות הנוספות (prior מנורמל, $W^*$ מדרגה-1 בעל נורמה-יחידה, RIP) ושסף ההכללה הוא $c\cdot\epsilon_{train}$, קשור לסף האימון.
 
 ## טכניקות וטריקים
 - פורמליזציה של "נפח" כ**הסתברות posterior תחת prior**: התנו prior של פרמטרים על אירוע הפסד-האימון-הנמוך; ההשערה = הסתברות מותנית זו של הכללה גבוהה. (נקודת מבט של "ניחוש-ובדיקה" אקראיים על אימון.)

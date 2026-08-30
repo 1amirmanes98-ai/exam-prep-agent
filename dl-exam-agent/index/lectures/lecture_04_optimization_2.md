@@ -14,7 +14,9 @@
 ## Key definitions
 **Def (Gradient Flow, GF).** For differentiable $f:\mathbb{R}^d\to\mathbb{R}$, the trajectory $\theta : [0,\infty) \to \mathbb{R}^d$ follows
 $$\forall t \in \mathbb{R}_{\ge 0}:\quad \dot\theta(t) := \frac{d}{dt}\theta(t) = -\nabla f(\theta(t)).$$
-GF corresponds to GD with an infinitesimally small step size (learning rate). GF over the LNN objective: $\forall t, \forall j\in[N]:\ \dot W_j(t) = -\frac{\partial}{\partial W_j}\phi(W_1(t),\dots,W_N(t))$.
+GF corresponds to GD with an infinitesimally small step size (learning rate). GF over the LNN objective:
+
+$$\forall t, \forall j\in[N]:\ \dot W_j(t) = -\frac{\partial}{\partial W_j}\phi(W_1(t),\dots,W_N(t))$$
 
 **Def (conserved constants).** Along GF over an LNN, for $j \in [N-1]$ the difference $W_{j+1}(t)^\top W_{j+1}(t) - W_j(t)W_j(t)^\top$ is fixed in time and denoted
 $$C_{j,j+1} := W_{j+1}(0)^\top W_{j+1}(0) - W_j(0)\,W_j(0)^\top \in \mathbb{R}^{d_j,d_j}.$$
@@ -44,14 +46,18 @@ $$\forall x, y \in \mathbb{R}^d:\quad f(y) \ge f(x) + \langle\nabla f(x), y - x\
 $$\forall t \ge 0,\ \forall j \in [N]:\quad \dot W_j(t) = -\,W_{j+1:N}(t)^\top\, \nabla\ell(W_{1:N}(t))\, W_{1:j-1}(t)^\top .$$
 
 **Lem 1 (balancedness is conserved).** If GF over an LNN starts from a balanced initialization (Def 1 at $t=0$), the weights remain balanced for all $t \ge 0$.
-*Proof idea:* From Eq. (2), $\dot W_j(t)W_j(t)^\top = W_{j+1}(t)^\top \dot W_{j+1}(t)$ for all $j \in [N-1]$; adding the transposed identity gives $\frac{d}{dt}\big(W_j W_j^\top\big) = \frac{d}{dt}\big(W_{j+1}^\top W_{j+1}\big)$; integrate from $0$ to $t$.
-*Exam relevance:* The conservation-law derivation (multiply, symmetrize, integrate) is a standard exam computation.
+
+**Proof idea:** From Eq. (2), $\dot W_j(t)W_j(t)^\top = W_{j+1}(t)^\top \dot W_{j+1}(t)$ for all $j \in [N-1]$; adding the transposed identity gives $\frac{d}{dt}\big(W_j W_j^\top\big) = \frac{d}{dt}\big(W_{j+1}^\top W_{j+1}\big)$; integrate from $0$ to $t$.
+
+**Exam relevance:** The conservation-law derivation (multiply, symmetrize, integrate) is a standard exam computation.
 
 **Thm 1 (end-to-end dynamics).** Let $\ell : \mathbb{R}^{d_N,d_0} \to \mathbb{R}$ be a continuously differentiable loss overparameterized by a depth-$N$ LNN, $\phi(W_1,\dots,W_N) := \ell(W_{1:N})$. Under GF from a balanced initialization, the E2E matrix obeys
 $$\forall t \in \mathbb{R}_{\ge0}:\quad \dot W_{1:N}(t) = -\sum_{j=1}^{N} \Big[W_{1:N}(t)\,W_{1:N}(t)^\top\Big]^{\frac{j-1}{N}}\; \nabla\ell\big(W_{1:N}(t)\big)\; \Big[W_{1:N}(t)^\top\, W_{1:N}(t)\Big]^{\frac{N-j}{N}} ,$$
 the *end-to-end dynamics* (matrix powers of PSD matrices as defined above). The dynamics depend only on $W_{1:N}$, not on the individual $W_j$.
-*Proof idea:* (Given under removable assumptions: all dimensions equal $d$; some $W_j(t)$ has distinct singular values.) Balancedness forces consecutive SVDs to align: all $\Sigma_j$ equal a common $\Sigma$, and $U_j = V_{j+1}D_j$ with diagonal $D_j \in \mathrm{diag}\{\pm1\}$; hence $W_{j:N}W_{j:N}^\top = [W_{1:N}W_{1:N}^\top]^{\frac{N-j+1}{N}}$ and $W_{1:j}^\top W_{1:j} = [W_{1:N}^\top W_{1:N}]^{\frac{j}{N}}$; substitute into the product rule $\dot W_{1:N} = \sum_j W_{j+1:N}\dot W_j W_{1:j-1}$ with Eq. (2).
-*Exam relevance:* Memorize the exponents $\frac{j-1}{N}$ (left) and $\frac{N-j}{N}$ (right) and the alignment lemma; the "exercise: prove this" step ($W_{1:j}^\top W_{1:j}$ formula) is a natural exam item.
+
+**Proof idea:** (Given under removable assumptions: all dimensions equal $d$; some $W_j(t)$ has distinct singular values.) Balancedness forces consecutive SVDs to align: all $\Sigma_j$ equal a common $\Sigma$, and $U_j = V_{j+1}D_j$ with diagonal $D_j \in \mathrm{diag}\{\pm1\}$; hence $W_{j:N}W_{j:N}^\top = [W_{1:N}W_{1:N}^\top]^{\frac{N-j+1}{N}}$ and $W_{1:j}^\top W_{1:j} = [W_{1:N}^\top W_{1:N}]^{\frac{j}{N}}$; substitute into the product rule $\dot W_{1:N} = \sum_j W_{j+1:N}\dot W_j W_{1:j-1}$ with Eq. (2).
+
+**Exam relevance:** Memorize the exponents $\frac{j-1}{N}$ (left) and $\frac{N-j}{N}$ (right) and the alignment lemma; the "exercise: prove this" step ($W_{1:j}^\top W_{1:j}$ formula) is a natural exam item.
 
 **Prop 1 (vectorized form: preconditioned gradient flow).** The end-to-end dynamics can be written as
 $$\forall t \in \mathbb{R}_{\ge0}:\quad \mathrm{vec}\big[\dot W_{1:N}(t)\big] = -\,P_{W_{1:N}(t)}\; \mathrm{vec}\big[\nabla\ell(W_{1:N}(t))\big],$$
@@ -59,26 +65,41 @@ where $\mathrm{vec}[\cdot]$ stacks columns and $P_{W_{1:N}(t)} \in \mathbb{R}^{d
 $$\mathrm{vec}\big(u_r v_{r'}^\top\big),\qquad r \in [d_N],\ r' \in [d_0],$$
 with corresponding eigenvalues
 $$\sum_{j=1}^{N} \sigma_r^{\frac{2(N-j)}{N}}\, \sigma_{r'}^{\frac{2(j-1)}{N}} .$$
-*Proof idea:* Kronecker identities ($\mathrm{vec}[AB] = (B^\top \odot I)\mathrm{vec}[A] = (I \odot A)\mathrm{vec}[B]$; mixed product; $(A\odot B)^\top = A^\top\odot B^\top$; Kronecker of orthogonals is orthogonal) turn each summand into $\big([W^\top W]^{\frac{N-j}{N}} \odot [WW^\top]^{\frac{j-1}{N}}\big)$; with SVD $W_{1:N} = UDV^\top$, the sum diagonalizes as $Q = (V\odot U)\Lambda(V\odot U)^\top$.
-*Exam relevance:* Interpretation matters: overparameterization by an LNN induces a location-dependent preconditioner that **stretches** the gradient along singular directions with large singular values of $W_{1:N}(t)$ and **attenuates** it along small ones — i.e., promotes movement in directions already traversed from (near-origin) initialization.
+
+**Proof idea:** Kronecker identities ($\mathrm{vec}[AB] = (B^\top \odot I)\mathrm{vec}[A] = (I \odot A)\mathrm{vec}[B]$; mixed product; $(A\odot B)^\top = A^\top\odot B^\top$; Kronecker of orthogonals is orthogonal) turn each summand into $\big([W^\top W]^{\frac{N-j}{N}} \odot [WW^\top]^{\frac{j-1}{N}}\big)$; with SVD $W_{1:N} = UDV^\top$, the sum diagonalizes as $Q = (V\odot U)\Lambda(V\odot U)^\top$.
+
+**Exam relevance:** Interpretation matters: overparameterization by an LNN induces a location-dependent preconditioner that **stretches** the gradient along singular directions with large singular values of $W_{1:N}(t)$ and **attenuates** it along small ones — i.e., promotes movement in directions already traversed from (near-origin) initialization.
 
 **Result (deficiency margin under whitened squared loss — worked example).** For the squared loss with whitened data:
 $$\ell(W) = \tfrac12\mathrm{Tr}(W\Lambda_{xx}W^\top) - \mathrm{Tr}(W\Lambda_{yx}^\top) + \tfrac12\mathrm{Tr}(\Lambda_{yy}) \;\overset{\Lambda_{xx}=I}{=}\; \tfrac12\|W - \Lambda_{yx}\|_F^2 + \mathrm{const}.$$
-Since $\min\{\|W' - \Lambda_{yx}\|_F : \sigma_{\min}(W') \le c\} = \max\{0,\ \sigma_{\min}(\Lambda_{yx}) - c\}$ (exercise in the notes),
+Since
+
+$$\min\{\|W' - \Lambda_{yx}\|_F : \sigma_{\min}(W') \le c\} = \max\{0,\ \sigma_{\min}(\Lambda_{yx}) - c\}$$
+
+(exercise in the notes),
 $$W \text{ has deficiency margin } c > 0 \iff \|W - \Lambda_{yx}\|_F < \sigma_{\min}(\Lambda_{yx}) - c .$$
 Special case $d_N = 1$ (linear regression, single output): a $(1,d_0)$ matrix has a single singular value equal to its Frobenius norm, so the condition becomes $\|W - \Lambda_{yx}\|_F < \|\Lambda_{yx}\|_F - c$; hence drawing $W$ from an isotropic distribution with standard deviation small relative to $\|\Lambda_{yx}\|_F$ yields a deficiency margin (some $c>0$) with probability approximately $1/2$.
-*Exam relevance:* Both the $\frac12\|W-\Lambda_{yx}\|_F^2 + \text{const}$ rewriting and the probability-$\approx 1/2$ conclusion are quotable; the min-distance computation is flagged "exercise: prove this".
+
+**Exam relevance:** Both the $\frac12\|W-\Lambda_{yx}\|_F^2 + \text{const}$ rewriting and the probability-$\approx 1/2$ conclusion are quotable; the min-distance computation is flagged "exercise: prove this".
 
 **Prop 2 ($\delta$-stationarity under strong convexity).** Let $f:\mathbb{R}^d\to\mathbb{R}$ be $\alpha$-strongly convex, attaining its global minimum $f^*$ at $x^*$. For any $\delta>0$, if $x$ is a $\delta$-stationary point ($\|\nabla f(x)\|_2 \le \delta$), then
 $$f(x) \le f^* + \frac{\delta^2}{\alpha} .$$
-*Proof idea:* Apply strong convexity twice (at $x$ toward $x^*$ and at $x^*$ toward $x$), use $\nabla f(x^*)=0$ and Cauchy-Schwarz to get $\|x^*-x\|_2 \le \delta/\alpha$; plug back into strong convexity.
-*Exam relevance:* Used in Thm 2 in the equivalent (PL-type) form $\|\nabla f(x)\|_2^2 \ge \alpha\,(f(x) - f^*)$ (take $\delta := \|\nabla f(x)\|_2$).
+
+**Proof idea:** Apply strong convexity twice (at $x$ toward $x^*$ and at $x^*$ toward $x$), use $\nabla f(x^*)=0$ and Cauchy-Schwarz to get $\|x^*-x\|_2 \le \delta/\alpha$; plug back into strong convexity.
+
+**Exam relevance:** Used in Thm 2 in the equivalent (PL-type) form $\|\nabla f(x)\|_2^2 \ge \alpha\,(f(x) - f^*)$ (take $\delta := \|\nabla f(x)\|_2$).
 
 **Thm 2 (GF convergence to global minimum, arbitrary depth).** Let $\ell:\mathbb{R}^{d_N,d_0}\to\mathbb{R}$ be continuously differentiable and $\alpha$-strongly convex, overparameterized by a depth-$N$ LNN, $\phi(W_1,\dots,W_N) := \ell(W_{1:N})$. Run GF over $\phi(\cdot)$ from a **balanced** initialization whose E2E matrix $W_{1:N}(0)$ has **deficiency margin** $c > 0$. Then for any $\epsilon > 0$, the objective $\phi(W_1(t),\dots,W_N(t))$ is within $\epsilon$ of the global minimum in time at most
 $$\ln\!\big(\epsilon^{-1}\,(\phi(W_1(0),\dots,W_N(0)) - \ell^*)\big)\; c^{-\frac{2(N-1)}{N}}\,\alpha^{-1},$$
 where $\ell^* := \min\{\ell(W) : W \in \mathbb{R}^{d_N,d_0}\}$.
-*Proof idea:* With $g(t) := \ell(W_{1:N}(t))$, the chain rule and Prop 1 give $\dot g(t) = -\mathrm{vec}[\nabla\ell]^\top P\,\mathrm{vec}[\nabla\ell] \le -\lambda_{\min}(P)\|\nabla\ell\|_F^2$, and the spectrum yields $\lambda_{\min}(P_{W_{1:N}(t)}) \ge \sigma_{\min}(W_{1:N}(t))^{\frac{2(N-1)}{N}}$. Monotonic decrease of $g$ preserves the deficiency margin, so $\sigma_{\min}(W_{1:N}(t)) \ge c$ for all $t$; combining with $\|\nabla\ell\|_F^2 \ge \alpha(g - \ell^*)$ (Prop 2) gives $\dot g \le -\alpha c^{\frac{2N-2}{N}}(g-\ell^*)$; integrate $\dot g/(g-\ell^*)$ and exponentiate.
-*Exam relevance:* This is the lecture's centerpiece: a **linear (exponential) convergence rate** to global minimum for arbitrarily deep LNNs — explicitly unobtainable via the landscape approach (Lecture 3, Prop 3). Know each ingredient: $\lambda_{\min}(P)$ bound, margin persistence, PL inequality, Gronwall-style integration.
+
+**Proof idea:** With $g(t) := \ell(W_{1:N}(t))$, the chain rule and Prop 1 give
+
+$$\dot g(t) = -\mathrm{vec}[\nabla\ell]^\top P\,\mathrm{vec}[\nabla\ell] \le -\lambda_{\min}(P)\|\nabla\ell\|_F^2$$
+
+and the spectrum yields $\lambda_{\min}(P_{W_{1:N}(t)}) \ge \sigma_{\min}(W_{1:N}(t))^{\frac{2(N-1)}{N}}$. Monotonic decrease of $g$ preserves the deficiency margin, so $\sigma_{\min}(W_{1:N}(t)) \ge c$ for all $t$; combining with $\|\nabla\ell\|_F^2 \ge \alpha(g - \ell^*)$ (Prop 2) gives $\dot g \le -\alpha c^{\frac{2N-2}{N}}(g-\ell^*)$; integrate $\dot g/(g-\ell^*)$ and exponentiate.
+
+**Exam relevance:** This is the lecture's centerpiece: a **linear (exponential) convergence rate** to global minimum for arbitrarily deep LNNs — explicitly unobtainable via the landscape approach (Lecture 3, Prop 3). Know each ingredient: $\lambda_{\min}(P)$ bound, margin persistence, PL inequality, Gronwall-style integration.
 
 **Thm 3 (GD version; Arora, Cohen, Golowich, Hu 2018 — stated without proof).** Let $\ell:\mathbb{R}^{d_N,d_0}\to\mathbb{R}$ be the squared loss for linear prediction with whitened data, $\phi$ its overparameterization by a depth-$N$ LNN. Run GD over $\phi(\cdot)$ from $W_1(0),\dots,W_N(0)$ whose E2E matrix $W_{1:N}(0)$ has deficiency margin $c>0$, and which are *approximately balanced*: for all $j\in[N-1]$,
 $$\big\|W_{j+1}(0)^\top W_{j+1}(0) - W_j(0)W_j(0)^\top\big\|_F \;\le\; \frac{c^2}{256\cdot N^3\,\|\Lambda_{yx}\|_F^{\frac{2(N-1)}{N}}}\,.$$
@@ -87,8 +108,10 @@ $$\eta \;\le\; \frac{c^{\frac{4N-2}{N}}}{6144\cdot N^3\,\|\Lambda_{yx}\|_F^{\fra
 Then for any $\epsilon>0$, the objective is within $\epsilon$ of the global minimum in a number of steps no greater than
 $$\frac{1}{\eta\, c^{\frac{2(N-1)}{N}}}\,\log\!\left(\frac{\phi(W_1(0),\dots,W_N(0)) - \ell^*}{\epsilon}\right),$$
 with $\ell^* := \min\{\ell(W) : W\in\mathbb{R}^{d_N,d_0}\}$.
-*Proof idea:* Discretization of the GF result "with considerable technical work"; not proven in the course.
-*Exam relevance:* Know the qualitative shape: approximate balancedness tolerance $\propto c^2/(N^3\|\Lambda_{yx}\|_F^{2(N-1)/N})$, small-enough constant step size, and iteration count $\frac{1}{\eta c^{2(N-1)/N}}\log\frac{\phi(0)-\ell^*}{\epsilon}$ (linear rate).
+
+**Proof idea:** Discretization of the GF result "with considerable technical work"; not proven in the course.
+
+**Exam relevance:** Know the qualitative shape: approximate balancedness tolerance $\propto c^2/(N^3\|\Lambda_{yx}\|_F^{2(N-1)/N})$, small-enough constant step size, and iteration count $\frac{1}{\eta c^{2(N-1)/N}}\log\frac{\phi(0)-\ell^*}{\epsilon}$ (linear rate).
 
 ## Techniques & tricks
 - **Conservation laws from GF:** multiply the layer ODE by $W_j^\top$, compare adjacent layers, symmetrize (add transposes to form exact derivatives $\frac{d}{dt}(W_jW_j^\top)$), integrate over time. Balancedness = the idealized invariant for near-zero initialization.

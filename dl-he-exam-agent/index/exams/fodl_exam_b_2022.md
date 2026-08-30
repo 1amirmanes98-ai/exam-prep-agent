@@ -31,7 +31,11 @@ $$\mathcal{H}_M^L = \left\{ x \mapsto W_{L+1}\,\phi_\alpha\big(W_L\,\phi_\alpha(
 
 **b.** רשת בעומק 1 היא $x \mapsto \sum_{m=1}^M u_m\phi_\alpha(w_m x + b_m) + c$. כל נוירון הוא לינארי למקוטעין עם לכל היותר נקודת שבירה אחת (ב-$-b_m/w_m$ אם $w_m \ne 0$). סכום של פונקציות כאלה הוא לינארי למקוטעין עם נקודות שבירה המוכלות באיחוד — לכל היותר $M$ נקודות שבירה, ולכן לכל היותר $M+1$ קטעים.
 
-**c.** זהות מפתח: $\mathrm{ReLU}(z) = \frac{1}{1-\alpha^2}\big(\phi_\alpha(z) + \alpha\,\phi_\alpha(-z)\big)$ (בדקו בנפרד עבור $z\ge0$, $z<0$). ניקח את רשת ה-ReLU ברוחב $M$ הממשת את $f$ (העובדה המותרת $f \in \widehat{\mathcal{H}}_M^L$) ונחליף כל נוירון ReLU בזוג נוירוני Leaky-ReLU המוזנים בפרה-אקטיבציות $z$ ו-$-z$ (שכפלו את השורה/הטיה הנכנסת עם היפוך סימן). בלעו את המקדמים $\frac{1}{1-\alpha^2}, \frac{\alpha}{1-\alpha^2}$ לתוך המשקלים היוצאים. הרוחב מוכפל ל-$2M$, העומק והפונקציה המחושבת אינם משתנים. לכן $f \in \mathcal{H}_{2M}^L$.
+**c.** זהות מפתח:
+
+$$\mathrm{ReLU}(z) = \frac{1}{1-\alpha^2}\big(\phi_\alpha(z) + \alpha\,\phi_\alpha(-z)\big)$$
+
+(בדקו בנפרד עבור $z\ge0$, $z<0$). ניקח את רשת ה-ReLU ברוחב $M$ הממשת את $f$ (העובדה המותרת $f \in \widehat{\mathcal{H}}_M^L$) ונחליף כל נוירון ReLU בזוג נוירוני Leaky-ReLU המוזנים בפרה-אקטיבציות $z$ ו-$-z$ (שכפלו את השורה/הטיה הנכנסת עם היפוך סימן). בלעו את המקדמים $\frac{1}{1-\alpha^2}, \frac{\alpha}{1-\alpha^2}$ לתוך המשקלים היוצאים. הרוחב מוכפל ל-$2M$, העומק והפונקציה המחושבת אינם משתנים. לכן $f \in \mathcal{H}_{2M}^L$.
 
 **d1.** לפי (b), כל $h \in \mathcal{H}_M^1$ הוא לינארי למקוטעין עם $\le M+1$ קטעים. לפי (c) המוחל עם $M+1$ במקום $M$, $h \in \mathcal{H}_{2(M+1)}^L$, כלומר $\bar M = 2M+2 = O(M)$.
 
@@ -78,13 +82,43 @@ $$\frac{d}{dt}\big(\sigma_m(t)^2\big) = \sigma_m(t)^2\left[-4\sum_{n=1}^N \ell'\
 *רמז:* השתמשו בתוצאה של תת-סעיף c.
 
 **Solution sketch:**
-**a.** Gradient flow נותן $\dot v_m = -\sum_n \ell'(\cdot)\phi(\langle w_m,x_n\rangle)$, $\dot w_m = -\sum_n \ell'(\cdot)\,v_m\,\phi'(\langle w_m,x_n\rangle)\,x_n$. אזי $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$, $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$, וזהות ההומוגניות של ReLU $z\phi'(z) = \phi(z)$ גורמת לשני הביטויים להתלכד עם זה המצוין.
+**a.** Gradient flow נותן
 
-**b.** לפי (a), $v_m(t)^2 - \|w_m(t)\|^2$ נשמר. לכן ה-balancedness נמשך: $|v_m(t)| = \|w_m(t)\|$ וגם $\sigma_m = v_m^2$. גזרו את $\sigma_m^2 = v_m^2\|w_m\|^2$ בכלל המכפלה, הציבו את (a), והשתמשו בהומוגניות חיובית מסדר 1 $\phi(\langle w_m,x\rangle) = \|w_m\|\,\phi(\langle w_m/\|w_m\|,x\rangle)$ (תקף מכיוון ש-$v_m \ne 0 \Rightarrow w_m \ne 0$). הזהות $v_m^3\|w_m\| = \sigma_m^2\cdot\frac{v_m}{|v_m|}$ מניבה את ה-ODE המצוין. אם $v_m(t) = 0$ אז $w_m(t) = 0$ לפי ה-balancedness, ושתי הנגזרות ב-(a) מתאפסות. לכן $\frac{d}{dt}\sigma_m^2 = 0$.
+$$\dot v_m = -\sum_n \ell'(\cdot)\phi(\langle w_m,x_n\rangle)$$
 
-**c.** אם $v_m(\bar t)\le 0$ עבור $\bar t$ כלשהו, רציפות (משפט ערך הביניים) נותנת אפס של $v_m$. הקבוצה $\{t: v_m(t)=0\}$ סגורה ולא-ריקה ולכן $t_0 := \min$ קיים, עם $v_m > 0$ על $[0,t_0)$. על $[0,t_0)$, סעיף (b) מתקיים עם $g(t) := -4\sum_n \ell'(h_{\theta(t)}(x_n),y_n)\,\phi(\langle w_m(t)/\|w_m(t)\|,x_n\rangle)$, שהיא רציפה וחסומה ($\theta(t)$ רציפה על הקומפקט $[0,t_0]$, $\ell'$ רציפה, ל-$w_m$ המנורמל יש נורמה יחידה ולכן $\phi(\langle\cdot,x_n\rangle)\le\|x_n\|$). פתרון ה-ODE הלינארי $\frac{d}{dt}\sigma_m^2 = g\,\sigma_m^2$: $\sigma_m(t)^2 = \sigma_m(0)^2 e^{\int_0^t g}\ \ge\ \sigma_m(0)^2 e^{-\sup|g|\,t_0} > 0$ על $[0,t_0)$ (שימו לב ש-$\sigma_m(0)^2 = v_m(0)^4 > 0$). לפי רציפות $\sigma_m(t_0)^2 > 0$, בסתירה ל-$\sigma_m(t_0) = |v_m(t_0)|\|w_m(t_0)\| = 0$. לכן $v_m(t) > 0$ לכל $t$.
+$$\dot w_m = -\sum_n \ell'(\cdot)\,v_m\,\phi'(\langle w_m,x_n\rangle)\,x_n$$
 
-**d.** לפי (c), $v_m(t) > 0$ לכל $m,t$, וגם $\phi \ge 0$. לכן $h_{\theta(t)}(x) \ge 0$ לכל $x$. אזי $\mathcal{L}(\theta(t)) \ge (h_{\theta(t)}(x_{\bar n}) - y_{\bar n})^2 \ge y_{\bar n}^2 > 0$ מכיוון ש-$h \ge 0 > y_{\bar n}$. ניקח $\epsilon := y_{\bar n}^2$: אף $t \ge 0$ אינו משיג $\mathcal{L}(\theta(t)) < \epsilon$.
+אזי $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$, $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$, וזהות ההומוגניות של ReLU $z\phi'(z) = \phi(z)$ גורמת לשני הביטויים להתלכד עם זה המצוין.
+
+**b.** לפי (a), $v_m(t)^2 - \|w_m(t)\|^2$ נשמר. לכן ה-balancedness נמשך: $|v_m(t)| = \|w_m(t)\|$ וגם $\sigma_m = v_m^2$. גזרו את $\sigma_m^2 = v_m^2\|w_m\|^2$ בכלל המכפלה, הציבו את (a), והשתמשו בהומוגניות חיובית מסדר 1
+
+$$\phi(\langle w_m,x\rangle) = \|w_m\|\,\phi(\langle w_m/\|w_m\|,x\rangle)$$
+
+(תקף מכיוון ש-$v_m \ne 0 \Rightarrow w_m \ne 0$). הזהות
+
+$$v_m^3\|w_m\| = \sigma_m^2\cdot\frac{v_m}{|v_m|}$$
+
+מניבה את ה-ODE המצוין. אם $v_m(t) = 0$ אז $w_m(t) = 0$ לפי ה-balancedness, ושתי הנגזרות ב-(a) מתאפסות. לכן $\frac{d}{dt}\sigma_m^2 = 0$.
+
+**c.** אם $v_m(\bar t)\le 0$ עבור $\bar t$ כלשהו, רציפות (משפט ערך הביניים) נותנת אפס של $v_m$. הקבוצה $\{t: v_m(t)=0\}$ סגורה ולא-ריקה ולכן $t_0 := \min$ קיים, עם $v_m > 0$ על $[0,t_0)$. על $[0,t_0)$, סעיף (b) מתקיים עם
+
+$$g(t) := -4\sum_n \ell'(h_{\theta(t)}(x_n),y_n)\,\phi(\langle w_m(t)/\|w_m(t)\|,x_n\rangle)$$
+
+שהיא רציפה וחסומה ($\theta(t)$ רציפה על הקומפקט $[0,t_0]$, $\ell'$ רציפה, ל-$w_m$ המנורמל יש נורמה יחידה ולכן $\phi(\langle\cdot,x_n\rangle)\le\|x_n\|$). פתרון ה-ODE הלינארי $\frac{d}{dt}\sigma_m^2 = g\,\sigma_m^2$:
+
+$$\begin{aligned} \sigma_m(t)^2 &= \sigma_m(0)^2 e^{\int_0^t g}\ \\ &\ge \ \sigma_m(0)^2 e^{-\sup|g|\,t_0} > 0 \end{aligned}$$
+
+על $[0,t_0)$ (שימו לב ש-$\sigma_m(0)^2 = v_m(0)^4 > 0$). לפי רציפות $\sigma_m(t_0)^2 > 0$, בסתירה ל-
+
+$$\sigma_m(t_0) = |v_m(t_0)|\|w_m(t_0)\| = 0$$
+
+לכן $v_m(t) > 0$ לכל $t$.
+
+**d.** לפי (c), $v_m(t) > 0$ לכל $m,t$, וגם $\phi \ge 0$. לכן $h_{\theta(t)}(x) \ge 0$ לכל $x$. אזי
+
+$$\begin{aligned} \mathcal{L}(\theta(t)) &\ge (h_{\theta(t)}(x_{\bar n}) - y_{\bar n})^2 \\ &\ge y_{\bar n}^2 > 0 \end{aligned}$$
+
+מכיוון ש-$h \ge 0 > y_{\bar n}$. ניקח $\epsilon := y_{\bar n}^2$: אף $t \ge 0$ אינו משיג $\mathcal{L}(\theta(t)) < \epsilon$.
 
 **💡 טריקים שימושיים:** הומוגניות $z\phi'(z)=\phi(z)$ ⇒ ה-balancedness $v_m^2-\|w_m\|^2$ נשמר; כתבו את ה-ODE של $\sigma_m^2$ כ-$\frac{d}{dt}\sigma_m^2=g(t)\sigma_m^2$ עם $g$ *חסומה*, ולכן $\sigma_m^2=\sigma_m(0)^2e^{\int g}>0$ לעולם אינו מגיע ל-$0$ ⇒ הסימן של $v_m$ נשמר; אז $v_m>0,\ \phi\geq0\Rightarrow h\geq0$, ולכן תווית שלילית אינה ניתנת להשגה.
 
@@ -121,9 +155,33 @@ $$\forall h \in \mathcal{H}:\quad \mathcal{L}_D(h) - \mathcal{L}_S(h) \le \Delta
 **c. (8 pts)** נניח שהרצנו את אלגוריתם $A$ על מדגם אימון בגודל $N = 10^9$ וקיבלנו בחזרה השערה $h \in \mathcal{H}$ עם מדד סיבוכיות $R(h) = 1$. האם מובטח לנו שההפסד האמיתי $\mathcal{L}_D(h)$ יהיה נמוך בהסתברות גבוהה (למשל מעל $0.9$)? נמקו את תשובתכם.
 
 **Solution sketch:**
-**a.** $\nabla\mathcal{L}(w) = \frac{1}{N}\sum_n \ell'(\langle x_n,w\rangle - y_n)\,x_n \in \mathrm{span}\{x_1,\dots,x_N\}$. מכיוון ש-$w(0) = 0$, אינדוקציה על עדכוני ה-GD נותנת $w(\bar t) \in \mathrm{span}\{x_n\}_{n=1}^N$. מכיוון ש-$\ell$ הפיכה, האילוץ $\ell(\langle x_n,w\rangle - y_n) = c_n$ שקול לאילוץ הלינארי $\langle x_n,w\rangle = y_n + \ell^{-1}(c_n)$. לכן קבוצת האפשריות היא תת-מרחב אפיני $\{w: Xw = b\}$ ($X$ = מטריצה עם שורות $x_n^\top$), לא-ריקה מכיוון שהיא מכילה את $w(\bar t)$. פרקו כל וקטור אפשרי $w = w_\parallel + w_\perp$ (span של $\{x_n\}$ מול המשלים האורתוגונלי שלו). האילוצים קובעים את $w_\parallel$ באופן יחיד (אי-התלות הלינארית של $\{x_n\}$ הופכת את $X$ המצומצם ל-span להפיך), וכן $\|w\|^2 = \|w_\parallel\|^2 + \|w_\perp\|^2$. לכן ממזער הנורמה היחיד הוא הנקודה האפשרית עם $w_\perp = 0$, שהיא בדיוק $w(\bar t)$.
+**a.**
 
-**b.** רבדו את רמות הסיבוכיות: עבור $k \in \mathbb{N}$ החילו את החסם המונח עם $r = k$ וביטחון $\delta_k := \delta\,2^{-k}$ ($\sum_k \delta_k = \delta$). חסם איחוד גורם לכל הרמות להתקיים בו-זמנית בהסתברות $\ge 1-\delta$. עבור $h$ כלשהו, השתמשו ברמה $k = \max\{\lceil R(h)\rceil, 1\}\le R(h)+1$. בחירה מפורשת המקיימת את (1)-(3): $\Delta(N,\delta,r) := \sqrt{\dfrac{(r+1)(1+\ln 2) + \ln(1/\delta)}{N}}$ — היא שולטת בחסם ברמה-$k$ $\sqrt{(k + k\ln2 + \ln(1/\delta))/N}$ מכיוון ש-$k \le r+1$, עולה ממש ב-$r$, ושואפת ל-$0$ כאשר $N \to \infty$. (כל הקצאה סכימה, למשל $\delta_k \propto k^{-2}$, נותנת וריאנט.)
+$$\nabla\mathcal{L}(w) = \frac{1}{N}\sum_n \ell'(\langle x_n,w\rangle - y_n)\,x_n \in \mathrm{span}\{x_1,\dots,x_N\}$$
+
+מכיוון ש-$w(0) = 0$, אינדוקציה על עדכוני ה-GD נותנת
+
+$$w(\bar t) \in \mathrm{span}\{x_n\}_{n=1}^N$$
+
+מכיוון ש-$\ell$ הפיכה, האילוץ $\ell(\langle x_n,w\rangle - y_n) = c_n$ שקול לאילוץ הלינארי
+
+$$\langle x_n,w\rangle = y_n + \ell^{-1}(c_n)$$
+
+לכן קבוצת האפשריות היא תת-מרחב אפיני $\{w: Xw = b\}$ ($X$ = מטריצה עם שורות $x_n^\top$), לא-ריקה מכיוון שהיא מכילה את $w(\bar t)$. פרקו כל וקטור אפשרי $w = w_\parallel + w_\perp$ (span של $\{x_n\}$ מול המשלים האורתוגונלי שלו). האילוצים קובעים את $w_\parallel$ באופן יחיד (אי-התלות הלינארית של $\{x_n\}$ הופכת את $X$ המצומצם ל-span להפיך), וכן
+
+$$\|w\|^2 = \|w_\parallel\|^2 + \|w_\perp\|^2$$
+
+לכן ממזער הנורמה היחיד הוא הנקודה האפשרית עם $w_\perp = 0$, שהיא בדיוק $w(\bar t)$.
+
+**b.** רבדו את רמות הסיבוכיות: עבור $k \in \mathbb{N}$ החילו את החסם המונח עם $r = k$ וביטחון $\delta_k := \delta\,2^{-k}$ ($\sum_k \delta_k = \delta$). חסם איחוד גורם לכל הרמות להתקיים בו-זמנית בהסתברות $\ge 1-\delta$. עבור $h$ כלשהו, השתמשו ברמה
+
+$$k = \max\{\lceil R(h)\rceil, 1\}\le R(h)+1$$
+
+בחירה מפורשת המקיימת את (1)-(3):
+
+$$\Delta(N,\delta,r) := \sqrt{\dfrac{(r+1)(1+\ln 2) + \ln(1/\delta)}{N}}$$
+
+— היא שולטת בחסם ברמה-$k$ $\sqrt{(k + k\ln2 + \ln(1/\delta))/N}$ מכיוון ש-$k \le r+1$, עולה ממש ב-$r$, ושואפת ל-$0$ כאשר $N \to \infty$. (כל הקצאה סכימה, למשל $\delta_k \propto k^{-2}$, נותנת וריאנט.)
 
 **c.** לא. החסם המונח (וגם $\Delta$) שולט רק ב**פער** ההכללה $\mathcal{L}_D(h) - \mathcal{L}_S(h)$: עם $N = 10^9$ ו-$R(h) = 1$ נקבל $\mathcal{L}_D(h) \le \mathcal{L}_S(h) + \text{(tiny)}$ בהסתברות גבוהה, אך שום דבר בהנחות אינו מבטיח שההפסד האמפירי $\mathcal{L}_S(h)$ עצמו קטן — על אלגוריתם $A$ מונח רק שהוא מחזיר השערות בעלות סיבוכיות נמוכה, לא הפסד נמוך. אם $\mathcal{L}_S(h)$ גדול, $\mathcal{L}_D(h)$ יכול להיות גדול. לכן הפסד אמיתי נמוך אינו מובטח.
 

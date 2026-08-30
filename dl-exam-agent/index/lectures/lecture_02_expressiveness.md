@@ -61,7 +61,9 @@ In general $A\odot B\ne B\odot A$.
 
 **Def 5 (matricization; canonical matricization).** For a tensor $\mathcal T\in\mathbb R^{m_1,\dots,m_n}$ and ordered mode subset $I=\{i_1,\dots,i_{|I|}\}\subseteq[n]$ ($1\le i_1\le\dots\le i_{|I|}\le n$), with complement $I^c:=[n]\setminus I=\{j_1,\dots,j_{|I^c|}\}$: the matricization $[\![\mathcal T]\!]_I\in\mathbb R^{\prod_{t=1}^{|I|}m_{i_t},\ \prod_{t=1}^{|I^c|}m_{j_t}}$ unrolls the modes of $I$ as rows and those of $I^c$ as columns:
 $$\big([\![\mathcal T]\!]_I\big)_{\,1+\sum_{t=1}^{|I|}(d_{i_t}-1)\prod_{s=t+1}^{|I|}m_{i_s},\ \ 1+\sum_{t=1}^{|I^c|}(d_{j_t}-1)\prod_{s=t+1}^{|I^c|}m_{j_s}}:=\mathcal T_{d_1,\dots,d_n}.$$
-If $n$ is even, $[\![\mathcal T]\!]$ (no subscript) denotes the **canonical matricization** $[\![\mathcal T]\!]_I$ with $I=\{1,3,\dots,n-1\}$ (odd modes vs. even modes). Matricization is a **linear** operator: $[\![\sum_k\alpha_k\mathcal T_k]\!]_I=\sum_k\alpha_k[\![\mathcal T_k]\!]_I$.
+If $n$ is even, $[\![\mathcal T]\!]$ (no subscript) denotes the **canonical matricization** $[\![\mathcal T]\!]_I$ with $I=\{1,3,\dots,n-1\}$ (odd modes vs. even modes). Matricization is a **linear** operator:
+
+$$[\![\sum_k\alpha_k\mathcal T_k]\!]_I=\sum_k\alpha_k[\![\mathcal T_k]\!]_I$$
 
 **Def 6 (distance $D$ for CAC inapproximability).** For $f,\bar f:[M]^N\to\mathbb R$:
 $$D(f,\bar f):=\sqrt{\sum_{d_1,\dots,d_N=1}^M\big(f(d_1,\dots,d_N)-\bar f(d_1,\dots,d_N)\big)^2}\,;\qquad D(f,\bar f)=\big\|[\![\mathcal A]\!]-[\![\bar{\mathcal A}]\!]\big\|_F=:\|\mathcal A-\bar{\mathcal A}\|_F,$$
@@ -75,83 +77,136 @@ i.e., the minimal # of summands, each separable w.r.t. $I\,\dot\cup\,I^c$, that 
 
 ## Key theorems & results
 **Prop 1 (shallow ReLU ↔ piecewise linear).** A shallow network of width $B\ge2$ can realize any piecewise linear function with $\le B$ pieces: for any such $g$ there exists $h\in\mathcal H_B$ with $g\equiv h$. Conversely, any function realizable by a shallow network of width $B\ge2$ is piecewise linear with $\le B+1$ pieces: for any $h\in\mathcal H_B$ there is a piecewise linear $g$ with $\le B+1$ pieces s.t. $h\equiv g$.
-Proof idea: deferred to Home Assignment 2 (each ReLU neuron contributes one breakpoint; conversely sums of $B$ ReLUs plus affine give $\le B+1$ pieces).
-Exam relevance: the exact piece counts ($\le B$ realizable vs. $\le B+1$ for realized functions) drive both universality and the lower bound of Prop 2.
+
+**Proof idea:** deferred to Home Assignment 2 (each ReLU neuron contributes one breakpoint; conversely sums of $B$ ReLUs plus affine give $\le B+1$ pieces).
+
+**Exam relevance:** the exact piece counts ($\le B$ realizable vs. $\le B+1$ for realized functions) drive both universality and the lower bound of Prop 2.
 
 **Lemma 1 (piecewise linear approximation of continuous functions).** For any $\epsilon>0$ and any $f\in\mathcal F$ (continuous), there exists piecewise linear $g$ with $d(f,g)=\int_0^1|f(x)-g(x)|dx<\epsilon$.
-Proof idea: $f$ is uniformly continuous on $[0,1]$ (Heine–Cantor); take a discretization $0=:c_0<c_1<\dots<c_N:=1$ with mesh $<\delta$ and let $g$ interpolate $f$ at the $c_i$'s; on each $[c_i,c_{i+1}]$, $g(x)$ lies between $g(c_i)=f(c_i)$ and $g(c_{i+1})=f(c_{i+1})$, both $\epsilon$-close to $f(x)$; integrate.
-Exam relevance: combined with Prop 1 gives $\mathcal F$-universality of $\mathcal H_B$ in the sense of $d(\cdot,\cdot)$; universality of $\bar{\mathcal H}_{\bar B}$ follows since $\mathcal H_B\subset\bar{\mathcal H}_{\bar B=B}$.
+
+**Proof idea:** $f$ is uniformly continuous on $[0,1]$ (Heine–Cantor); take a discretization $0=:c_0<c_1<\dots<c_N:=1$ with mesh $<\delta$ and let $g$ interpolate $f$ at the $c_i$'s; on each $[c_i,c_{i+1}]$, $g(x)$ lies between $g(c_i)=f(c_i)$ and $g(c_{i+1})=f(c_{i+1})$, both $\epsilon$-close to $f(x)$; integrate.
+
+**Exam relevance:** combined with Prop 1 gives $\mathcal F$-universality of $\mathcal H_B$ in the sense of $d(\cdot,\cdot)$; universality of $\bar{\mathcal H}_{\bar B}$ follows since $\mathcal H_B\subset\bar{\mathcal H}_{\bar B=B}$.
 
 **Prop 2 (exponential expressive efficiency of deep ReLU nets).** (1) For any $B\in\mathbb N$ there exists $\bar B\in O(B)$ s.t. $\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$; (2) there exist $\bar B\in\mathbb N$ (in fact $\bar B\in O(1)$, namely width 3) and $\bar h\in\bar{\mathcal H}_{\bar B}$ s.t. $\bar h\notin\mathcal H_B$ unless $B\in\exp(L)$ ($L$ = # layers of the deep network).
-Proof idea: (1) passthrough layers. (2) An $L$-layer width-3 net realizes $\bar h=g^{\circ L-1}$ (contiguous affine operations blend when composing the width-3 block), a piecewise linear function with $2+2\cdot2^{L-2}=2+2^{L-1}$ linear pieces; by Prop 1 a shallow net realizing it needs width $\ge2^{L-1}+1$.
-Exam relevance: canonical depth-separation proof; know the piece count $2+2^{L-1}$ and where each factor comes from.
+
+**Proof idea:** (1) passthrough layers. (2) An $L$-layer width-3 net realizes $\bar h=g^{\circ L-1}$ (contiguous affine operations blend when composing the width-3 block), a piecewise linear function with $2+2\cdot2^{L-2}=2+2^{L-1}$ linear pieces; by Prop 1 a shallow net realizing it needs width $\ge2^{L-1}+1$.
+
+**Exam relevance:** canonical depth-separation proof; know the piece count $2+2^{L-1}$ and where each factor comes from.
 
 **Result (inapproximability of the sawtooth; Section 1.4).** Let $h\in\mathcal H_B$. Across all $2^{L-1}+1$ intervals of $S_>$ and $S_<$, $h$ can avoid missing no more than $\big\lceil\frac12(2^{L-1}+1)+\frac12(B+1)\big\rceil$ intervals, i.e., misses at least $\big\lfloor\frac12(2^{L-1}+1)-\frac12(B+1)\big\rfloor$ intervals (proof of the counting claim: Exercise; note the notes' exercise text misprints the interval count as "$2^{L+1}+1$"). All but at most two missed intervals have length $2^{-L+1}$, hence
 $$d\big(g^{\circ L-1},h\big)=\int_0^1\big|g^{\circ L-1}(x)-h(x)\big|dx\ \ge\ \Big(\Big\lfloor\tfrac12(2^{L-1}+1)-\tfrac12(B+1)\Big\rfloor-2\Big)\cdot2^{-L+1}\cdot\tfrac14\ \ge\ \tfrac18-B\cdot2^{-L-2}-3\cdot2^{-L-1}.$$
 Requiring distance $<\epsilon$ forces
 $$B>2^{L+2}\Big(\tfrac18-\epsilon\Big)-6.$$
-Proof idea: a piecewise linear $h$ with $\le B+1$ pieces can cross level $\frac12$ only limitedly often, so it must "miss" most of the exponentially many alternating intervals; each miss costs $\ge\text{length}\cdot\frac14$ in $L^1$.
-Exam relevance: upgrades Prop 2 from non-realizability to **inapproximability** (the stronger form of expressive efficiency from Lecture 1, Remark 2); the shallow width must be exponential in $L$ to get within fixed $\epsilon$.
+
+**Proof idea:** a piecewise linear $h$ with $\le B+1$ pieces can cross level $\frac12$ only limitedly often, so it must "miss" most of the exponentially many alternating intervals; each miss costs $\ge\text{length}\cdot\frac14$ in $L^1$.
+
+**Exam relevance:** upgrades Prop 2 from non-realizability to **inapproximability** (the stronger form of expressive efficiency from Lecture 1, Remark 2); the shallow width must be exponential in $L$ to get within fixed $\epsilon$.
 
 **Prop 3 (shallow CAC ≡ CP decomposition).** The tensor generated by the shallow network is
 $$\mathcal A=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot\mathbf a^{z,1}\otimes\mathbf a^{z,2}\otimes\cdots\otimes\mathbf a^{z,N}$$
 — the CANDECOMP/PARAFAC (CP) decomposition.
-Proof idea: on input $(d_1,\dots,d_N)$: $\mathrm{conv}(i,z)=\langle\mathbf a^{z,i},\mathbf e^{d_i}\rangle=a^{z,i}_{d_i}$; $\mathrm{pool}(z)=\prod_i a^{z,i}_{d_i}$; $\mathrm{out}=\sum_z a^{\mathrm{out}}_z\prod_i a^{z,i}_{d_i}$, which is entry $(d_1,\dots,d_N)$ of the CP sum (Def 2).
-Exam relevance: the bridge from architecture to tensor analysis; $\mathcal H_B$ = tensors of CP-rank $\le B$ representation.
+
+**Proof idea:** on input $(d_1,\dots,d_N)$: $\mathrm{conv}(i,z)=\langle\mathbf a^{z,i},\mathbf e^{d_i}\rangle=a^{z,i}_{d_i}$; $\mathrm{pool}(z)=\prod_i a^{z,i}_{d_i}$; $\mathrm{out}=\sum_z a^{\mathrm{out}}_z\prod_i a^{z,i}_{d_i}$, which is entry $(d_1,\dots,d_N)$ of the CP sum (Def 2).
+
+**Exam relevance:** the bridge from architecture to tensor analysis; $\mathcal H_B$ = tensors of CP-rank $\le B$ representation.
 
 **Prop 4 (deep CAC ≡ Hierarchical Tucker (HT) decomposition).** The tensor generated by the deep network is given recursively by
 $$\Phi^{1,j,\gamma}=\sum_{\alpha=1}^{r_0}a^{1,j,\gamma}_\alpha\cdot\mathbf a^{0,2j-1,\alpha}\otimes\mathbf a^{0,2j,\alpha},\qquad j\in[\tfrac N2],\ \gamma\in[r_1]$$
 $$\Phi^{l,j,\gamma}=\sum_{\alpha=1}^{r_{l-1}}a^{l,j,\gamma}_\alpha\cdot\underbrace{\Phi^{l-1,2j-1,\alpha}}_{\text{order }2^{l-1}}\otimes\underbrace{\Phi^{l-1,2j,\alpha}}_{\text{order }2^{l-1}},\qquad j\in[\tfrac N{2^l}],\ \gamma\in[r_l]$$
 $$\mathcal A=\sum_{\alpha=1}^{r_{L-1}}a^L_\alpha\cdot\underbrace{\Phi^{L-1,1,\alpha}}_{\text{order }\frac N2}\otimes\underbrace{\Phi^{L-1,2,\alpha}}_{\text{order }\frac N2}.$$
-Proof idea: induction over $l\in[L-1]$: the neuron $\mathrm{conv}_l(j,\gamma)$ (which depends on input elements $(j-1)2^l+1$ to $j\cdot2^l$) corresponds to the order-$2^l$ tensor $\Phi^{l,j,\gamma}$; base case is a shallow network on 2 inputs (Prop 3); step uses $\mathrm{conv}_l(j,\gamma)=\sum_{\alpha}a^{l,j,\gamma}_\alpha\,\mathrm{conv}_{l-1}(2j-1,\alpha)\,\mathrm{conv}_{l-1}(2j,\alpha)$ and Def 3.
-Exam relevance: know the recursion, the index ranges, and which halves of the input each factor covers.
+
+**Proof idea:** induction over $l\in[L-1]$: the neuron $\mathrm{conv}_l(j,\gamma)$ (which depends on input elements $(j-1)2^l+1$ to $j\cdot2^l$) corresponds to the order-$2^l$ tensor $\Phi^{l,j,\gamma}$; base case is a shallow network on 2 inputs (Prop 3); step uses $\mathrm{conv}_l(j,\gamma)=\sum_{\alpha}a^{l,j,\gamma}_\alpha\,\mathrm{conv}_{l-1}(2j-1,\alpha)\,\mathrm{conv}_{l-1}(2j,\alpha)$ and Def 3.
+
+**Exam relevance:** know the recursion, the index ranges, and which halves of the input each factor covers.
 
 **Prop 5 (universality of CAC).** For $\mathcal F=\mathcal Y^{\mathcal X}$ (all functions $[M]^N\to\mathbb R$), $\mathcal H_B$ is $\mathcal F$-universal: with $B=M^N$ it can realize **any** function/tensor. ($\mathcal F$-universality of $\bar{\mathcal H}_{\bar B}$ follows from its expressive efficiency w.r.t. $\mathcal H_B$, condition (1).)
-Proof idea: index $z\in[M^N]$ by $(d_1,\dots,d_N)\in[M]^N$ in lexicographic order; set $\mathbf a^{z,i}=\mathbf e^{d_i}$, making $\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}=\mathbb 1[d_1,\dots,d_N]$ (one-hot tensor); set $a^{\mathrm{out}}_z=\mathcal T_{d_1,\dots,d_N}$ to reproduce any target $\mathcal T$.
-Exam relevance: universality here is *exact realization* (finite domain), not approximation; needs exponential width $M^N$.
 
-**Lemma 2 (Kronecker rank multiplicativity).** For any $A\in\mathbb R^{m_1,m_2}$, $B\in\mathbb R^{n_1,n_2}$: $\mathrm{rank}(A\odot B)=\mathrm{rank}(A)\cdot\mathrm{rank}(B)$.
-Proof idea: in recitation notes (via SVD of the factors).
+**Proof idea:** index $z\in[M^N]$ by $(d_1,\dots,d_N)\in[M]^N$ in lexicographic order; set $\mathbf a^{z,i}=\mathbf e^{d_i}$, making $\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}=\mathbb 1[d_1,\dots,d_N]$ (one-hot tensor); set $a^{\mathrm{out}}_z=\mathcal T_{d_1,\dots,d_N}$ to reproduce any target $\mathcal T$.
+
+**Exam relevance:** universality here is *exact realization* (finite domain), not approximation; needs exponential width $M^N$.
+
+**Lemma 2 (Kronecker rank multiplicativity).** For any $A\in\mathbb R^{m_1,m_2}$, $B\in\mathbb R^{n_1,n_2}$:
+
+$$\mathrm{rank}(A\odot B)=\mathrm{rank}(A)\cdot\mathrm{rank}(B)$$
+
+**Proof idea:** in recitation notes (via SVD of the factors).
 
 **Lemma 3 (matricization of tensor outer product).** For tensors $\mathcal T,\bar{\mathcal T}$ of orders $n,\bar n$ and $I\subseteq[n+\bar n]$:
 $$[\![\mathcal T\otimes\bar{\mathcal T}]\!]_I=[\![\mathcal T]\!]_{I\cap[n]}\odot[\![\bar{\mathcal T}]\!]_{(I-n)\cap[\bar n]}$$
-($I-n$ = subtract $n$ from all elements of $I$). In particular, for $n,\bar n$ even: $[\![\mathcal T\otimes\bar{\mathcal T}]\!]=[\![\mathcal T]\!]\odot[\![\bar{\mathcal T}]\!]$.
-Proof idea: Home Assignment 2 (index bookkeeping in Def 5).
-Exam relevance: the workhorse of every rank computation in Section 2 (used with linearity of matricization).
+($I-n$ = subtract $n$ from all elements of $I$). In particular, for $n,\bar n$ even:
+
+$$[\![\mathcal T\otimes\bar{\mathcal T}]\!]=[\![\mathcal T]\!]\odot[\![\bar{\mathcal T}]\!]$$
+
+**Proof idea:** Home Assignment 2 (index bookkeeping in Def 5).
+
+**Exam relevance:** the workhorse of every rank computation in Section 2 (used with linearity of matricization).
 
 **Prop 6 (exponential expressive efficiency of deep CAC).** (1) For any $B\in\mathbb N$ there exists $\bar B\in O(B)$ s.t. $\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$. (2) There exist $\bar B\in\mathbb N$ with $\bar B\in O(M)$ and $\bar h\in\bar{\mathcal H}_{\bar B}$ s.t. $\bar h\notin\mathcal H_B$ unless $B\in\exp(N)$.
-Proof idea: (1) With $r_0=\dots=r_{L-1}=B=\bar B$ and filters $\mathbf a^{l,j,\gamma}=\mathbf e^\gamma$ for $l\in[L-1]$, the hidden convs 1..$L-1$ are passthrough and the pairwise poolings compose into global pooling — recovering the shallow network. (2) Canonical matricization of CP: $[\![\mathcal A^{\mathrm{CP}}]\!]=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}\otimes\mathbf a^{z,2}]\!]\odot\cdots\odot[\![\mathbf a^{z,N-1}\otimes\mathbf a^{z,N}]\!]$, each factor a rank-1 matrix, so $\mathrm{rank}[\![\mathcal A^{\mathrm{CP}}]\!]\le Z$. For the deep net, assume $r_0\ge M$ and assign: $\mathbf a^{0,j,\alpha}=\mathbf e^\alpha$ if $\alpha\in[M]$, else $\mathbf 0$; $\mathbf a^{1,j,\gamma}=\mathbf 1$ (all-ones) if $\gamma=1$, else $\mathbf 0$; for $l=2,\dots,L-1$: $\mathbf a^{l,j,\gamma}=\mathbf e^1$ if $\gamma=1$, else $\mathbf 0$; $\mathbf a^L=\mathbf e^1$. Then $[\![\Phi^{1,j,\gamma}]\!]=I_M$ for $\gamma=1$ (else $0$), and unrolling the recursion, $[\![\mathcal A^{\mathrm{HT}}]\!]=\underbrace{I_M\odot\cdots\odot I_M}_{N/2\text{ times}}=I_{M^{N/2}}$, of rank $M^{N/2}$.
-Exam relevance: the central depth-separation theorem for CACs — width-$O(M)$ deep vs. $\exp(N)$ shallow; be able to reproduce both the $\le Z$ rank bound and the identity-matricization assignment.
 
-**Thm 1 (Eckart–Young–Mirsky).** Let $A\in\mathbb R^{m_1,m_2}$ with singular values $\sigma_1(A)\ge\sigma_2(A)\ge\dots\ge\sigma_{\min\{m_1,m_2\}}(A)\ge0$. For any $r\in\{0,\dots,\min\{m_1,m_2\}\}$:
+**Proof idea:** (1) With $r_0=\dots=r_{L-1}=B=\bar B$ and filters $\mathbf a^{l,j,\gamma}=\mathbf e^\gamma$ for $l\in[L-1]$, the hidden convs 1..$L-1$ are passthrough and the pairwise poolings compose into global pooling — recovering the shallow network. (2) Canonical matricization of CP:
+
+$$[\![\mathcal A^{\mathrm{CP}}]\!]=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}\otimes\mathbf a^{z,2}]\!]\odot\cdots\odot[\![\mathbf a^{z,N-1}\otimes\mathbf a^{z,N}]\!]$$
+
+each factor a rank-1 matrix, so $\mathrm{rank}[\![\mathcal A^{\mathrm{CP}}]\!]\le Z$. For the deep net, assume $r_0\ge M$ and assign: $\mathbf a^{0,j,\alpha}=\mathbf e^\alpha$ if $\alpha\in[M]$, else $\mathbf 0$; $\mathbf a^{1,j,\gamma}=\mathbf 1$ (all-ones) if $\gamma=1$, else $\mathbf 0$; for $l=2,\dots,L-1$: $\mathbf a^{l,j,\gamma}=\mathbf e^1$ if $\gamma=1$, else $\mathbf 0$; $\mathbf a^L=\mathbf e^1$. Then $[\![\Phi^{1,j,\gamma}]\!]=I_M$ for $\gamma=1$ (else $0$), and unrolling the recursion,
+
+$$[\![\mathcal A^{\mathrm{HT}}]\!]=\underbrace{I_M\odot\cdots\odot I_M}_{N/2\text{ times}}=I_{M^{N/2}}$$
+
+of rank $M^{N/2}$.
+
+**Exam relevance:** the central depth-separation theorem for CACs — width-$O(M)$ deep vs. $\exp(N)$ shallow; be able to reproduce both the $\le Z$ rank bound and the identity-matricization assignment.
+
+**Thm 1 (Eckart–Young–Mirsky).** Let $A\in\mathbb R^{m_1,m_2}$ with singular values
+
+$$\sigma_1(A)\ge\sigma_2(A)\ge\dots\ge\sigma_{\min\{m_1,m_2\}}(A)\ge0$$
+
+For any $r\in\{0,\dots,\min\{m_1,m_2\}\}$:
 $$\min_{W\in\mathbb R^{m_1,m_2},\ \mathrm{rank}(W)\le r}\|W-A\|_F^2=\sum\nolimits_{i=r+1}^{\min\{m_1,m_2\}}\sigma_i(A)$$
 (as printed in the notes; the classical statement has $\sigma_i(A)^2$ on the right — the two coincide in the application below, where all $\sigma_i\in\{0,1\}$).
-Proof idea: classical low-rank approximation result [Eckart–Young 1936]; truncate the SVD.
+
+**Proof idea:** classical low-rank approximation result [Eckart–Young 1936]; truncate the SVD.
 
 **Result (inapproximability for CACs; Section 2.5).** Let $h\in\mathcal H_B$ with tensor $\mathcal A^{\mathrm{CP}}$, and let $\bar h\in\bar{\mathcal H}_{\bar B}$ be the Prop 6 deep function (canonical matricization $I_{M^{N/2}}$). Since $\mathrm{rank}[\![\mathcal A^{\mathrm{CP}}]\!]\le B$:
 $$D(h,\bar h)=\big\|[\![\mathcal A^{\mathrm{CP}}]\!]-I_{M^{N/2}}\big\|_F\ \ge\ \sqrt{\min_{W:\,\mathrm{rank}(W)\le B}\|W-I_{M^{N/2}}\|_F^2}=\sqrt{\sum\nolimits_{i=B+1}^{M^{N/2}}\sigma_i\big(I_{M^{N/2}}\big)}=\sqrt{M^{N/2}-B}.$$
 Hence for any $\epsilon>0$, $D(h,\bar h)\le\epsilon$ forces $B\ge M^{N/2}-\epsilon^2$: exponentially large.
-Proof idea: EYM applied with $A=I_{M^{N/2}}$ (all singular values 1).
-Exam relevance: inapproximability strengthening for CACs; note the distance is Frobenius/$\ell_2$ over all $M^N$ inputs (Def 6).
+
+**Proof idea:** EYM applied with $A=I_{M^{N/2}}$ (all singular values 1).
+
+**Exam relevance:** inapproximability strengthening for CACs; note the distance is Frobenius/$\ell_2$ over all $M^N$ inputs (Def 6).
 
 **Thm 2 (zero set of a polynomial; Caron–Traynor).** Let $p:\mathbb R^n\to\mathbb R$ be a polynomial. Then $p^{-1}(0):=\{\mathbf x\in\mathbb R^n:p(\mathbf x)=0\}$ is either all of $\mathbb R^n$ or has (Lebesgue) measure zero.
-Proof idea: cited [Caron & Traynor 2005]; induction on dimension.
+
+**Proof idea:** cited [Caron & Traynor 2005]; induction on dimension.
 
 **Result (completeness; Section 2.6).** $\mathrm{rank}\big([\![\mathcal A^{\mathrm{HT}}]\!]\big)=M^{N/2}$ for **almost all** parameter assignments of the deep network (with $r_0\ge M$), establishing **complete (exponential) expressive efficiency** of the deep CAC w.r.t. the shallow one.
-Proof idea: entries of $[\![\mathcal A^{\mathrm{HT}}]\!]$ are polynomials in the parameters, hence so is $\det([\![\mathcal A^{\mathrm{HT}}]\!])$; it is nonzero at the Prop 6 assignment, so it is not the zero polynomial; by Thm 2 its zero set has measure zero. Thus parameters drawn from any continuous distribution give $\det\ne0$ w.p. 1.
-Exam relevance: standard genericity argument — memorize the chain "polynomial entries → nonzero at one point → not zero polynomial → measure-zero zero set".
+
+**Proof idea:** entries of $[\![\mathcal A^{\mathrm{HT}}]\!]$ are polynomials in the parameters, hence so is $\det([\![\mathcal A^{\mathrm{HT}}]\!])$; it is nonzero at the Prop 6 assignment, so it is not the zero polynomial; by Thm 2 its zero set has measure zero. Thus parameters drawn from any continuous distribution give $\det\ne0$ w.p. 1.
+
+**Exam relevance:** standard genericity argument — memorize the chain "polynomial entries → nonzero at one point → not zero polynomial → measure-zero zero set".
 
 **Prop 7 (separation rank = matricization rank).** For $f:[M]^N\to\mathbb R$ with tensor $\mathcal A$ and any $I\subseteq[N]$:
 $$\mathrm{sep}[f;I]=\mathrm{rank}\big([\![\mathcal A]\!]_I\big).$$
-Proof idea: w.l.o.g. $I=[|I|]$ (permutation preserves both sides). ($\le$): a sum of $R$ separable terms gives $\mathcal A=\sum_{\nu=1}^R\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$; matricizing with linearity + Lemma 3 gives $[\![\mathcal A]\!]_I=\sum_\nu\mathrm{vec}[\mathcal B^\nu]\,\mathrm{vec}[\bar{\mathcal B}^\nu]^\top$, so rank $\le R$. ($\ge$): a rank-$r$ decomposition $[\![\mathcal A]\!]_I=\sum_{\nu=1}^r\mathbf v^\nu(\bar{\mathbf v}^\nu)^\top$ re-rolls into $\mathcal A=\sum_\nu\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$, i.e., $r$ separable summands — contradiction if $r<R$.
-Exam relevance: the two-directional proof (both inequalities) is a likely exam question; it converts inductive-bias questions into rank computations.
+
+**Proof idea:** w.l.o.g. $I=[|I|]$ (permutation preserves both sides). ($\le$): a sum of $R$ separable terms gives $\mathcal A=\sum_{\nu=1}^R\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$; matricizing with linearity + Lemma 3 gives $[\![\mathcal A]\!]_I=\sum_\nu\mathrm{vec}[\mathcal B^\nu]\,\mathrm{vec}[\bar{\mathcal B}^\nu]^\top$, so rank $\le R$. ($\ge$): a rank-$r$ decomposition $[\![\mathcal A]\!]_I=\sum_{\nu=1}^r\mathbf v^\nu(\bar{\mathbf v}^\nu)^\top$ re-rolls into $\mathcal A=\sum_\nu\mathcal B^\nu\otimes\bar{\mathcal B}^\nu$, i.e., $r$ separable summands — contradiction if $r<R$.
+
+**Exam relevance:** the two-directional proof (both inequalities) is a likely exam question; it converts inductive-bias questions into rank computations.
 
 **Result (dependencies modeled; Section 2.7.1).**
-- Shallow: matricizing the CP decomposition w.r.t. **any** $I\subseteq[N]$ (recursive Lemma 3) gives $[\![\mathcal A^{\mathrm{CP}}]\!]_I=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}]\!]_{I\cap\{1\}}\odot[\![\mathbf a^{z,2}]\!]_{(I-1)\cap\{1\}}\odot\cdots\odot[\![\mathbf a^{z,N}]\!]_{(I-(N-1))\cap\{1\}}$ (each factor a row/column vector), a sum of $Z$ rank-1 terms, hence $\mathrm{rank}([\![\mathcal A^{\mathrm{CP}}]\!]_I)\le Z$: the shallow network cannot model separation rank beyond its width **under any partition**.
+- Shallow: matricizing the CP decomposition w.r.t. **any** $I\subseteq[N]$ (recursive Lemma 3) gives
+
+$$[\![\mathcal A^{\mathrm{CP}}]\!]_I=\sum_{z=1}^Z a^{\mathrm{out}}_z\cdot[\![\mathbf a^{z,1}]\!]_{I\cap\{1\}}\odot[\![\mathbf a^{z,2}]\!]_{(I-1)\cap\{1\}}\odot\cdots\odot[\![\mathbf a^{z,N}]\!]_{(I-(N-1))\cap\{1\}}$$
+
+(each factor a row/column vector), a sum of $Z$ rank-1 terms, hence $\mathrm{rank}([\![\mathcal A^{\mathrm{CP}}]\!]_I)\le Z$: the shallow network cannot model separation rank beyond its width **under any partition**.
 - Deep, checkerboard: with $r_0\ge M$, $\mathrm{rank}([\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{check}}})=M^{N/2}$ (maximal) for almost all parameter assignments ⟹ $\mathrm{sep}[\,\cdot\,;I_{\mathrm{check}}]$ is exponential (maximal) for almost all functions realized.
-- Deep, halving: matricizing the last HT line w.r.t. $I_{\mathrm{half}}$ and noting $I_{\mathrm{half}}\cap[\frac N2]=[\frac N2]$, $(I_{\mathrm{half}}-\frac N2)\cap[\frac N2]=\emptyset$, gives $[\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}}=\sum_{\alpha=1}^{r_{L-1}}a^L_\alpha\cdot\mathrm{vec}[\Phi^{L-1,1,\alpha}]\,\mathrm{vec}[\Phi^{L-1,2,\alpha}]^\top$, hence $\mathrm{rank}([\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}})\le r_{L-1}$ and $\mathrm{sep}[\,\cdot\,;I_{\mathrm{half}}]\le$ width of hidden layer $L-1$, for **all** realizable functions.
-Proof idea: linearity of matricization + Lemma 3 throughout.
-Exam relevance: the punchline on inductive bias — deep CACs favor **local (interleaved) dependencies** over long-range ones; shallow CACs favor nothing (uniformly weak).
+- Deep, halving: matricizing the last HT line w.r.t. $I_{\mathrm{half}}$ and noting $I_{\mathrm{half}}\cap[\frac N2]=[\frac N2]$, $(I_{\mathrm{half}}-\frac N2)\cap[\frac N2]=\emptyset$, gives
+
+$$[\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}}=\sum_{\alpha=1}^{r_{L-1}}a^L_\alpha\cdot\mathrm{vec}[\Phi^{L-1,1,\alpha}]\,\mathrm{vec}[\Phi^{L-1,2,\alpha}]^\top$$
+
+hence $\mathrm{rank}([\![\mathcal A^{\mathrm{HT}}]\!]_{I_{\mathrm{half}}})\le r_{L-1}$ and $\mathrm{sep}[\,\cdot\,;I_{\mathrm{half}}]\le$ width of hidden layer $L-1$, for **all** realizable functions.
+
+**Proof idea:** linearity of matricization + Lemma 3 throughout.
+
+**Exam relevance:** the punchline on inductive bias — deep CACs favor **local (interleaved) dependencies** over long-range ones; shallow CACs favor nothing (uniformly weak).
 
 ## Techniques & tricks
 - **Passthrough constructions** to prove containment $\mathcal H_B\subseteq\bar{\mathcal H}_{\bar B}$: identity weight matrices + zero biases for ReLU nets; standard-basis filters $\mathbf a^{l,j,\gamma}=\mathbf e^\gamma$ for CACs (pairwise poolings then compose into global pooling). Monotonicity in width: zero out weights of excess neurons/feature maps.

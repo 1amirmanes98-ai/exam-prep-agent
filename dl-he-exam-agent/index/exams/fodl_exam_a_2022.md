@@ -33,11 +33,47 @@ $$\mathcal{V}_{k_1,\dots,k_N} = h\big(v^{(k_1)},\dots,v^{(k_N)}\big) \quad \text
 *רמז:* השתמשו בתת-סעיף b. כלומר, מצאו וקטורים $v^{(1)},\dots,v^{(D)} \in \mathbb{R}^D$ כך שהטנזור $\mathcal{V}$ המתאים להם שווה ל-$\mathcal{A}$.
 
 **Solution sketch:**
-**a.** יהי $R := \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$ ונכתוב פירוק דרגה $\mathrm{mat}(\mathcal{A};I) = \sum_{r=1}^R u_r \bar u_r^\top$. נגדיר $g_r((x^{(i)})_{i\in I}) := \sum_{d_1,\dots,d_{|I|}} \big(\prod_{i\le|I|} x^{(i)}_{d_i}\big)(u_r)_{\mathrm{row}(d_1,\dots,d_{|I|})}$ ו-$\bar g_r$ באופן אנלוגי עם $\bar u_r$ ואינדקסי עמודה. פיתוח $f$ רכיב-רכיב והצבת $\mathcal{A}_{d_1,\dots,d_N} = \sum_r (u_r)_{\mathrm{row}(\cdot)}(\bar u_r)_{\mathrm{col}(\cdot)}$ מפצלים את הסכום ל-$\sum_{r=1}^R g_r \cdot \bar g_r$, ולכן $\mathrm{sep}(f;I)\le R$.
+**a.** יהי $R := \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$ ונכתוב פירוק דרגה $\mathrm{mat}(\mathcal{A};I) = \sum_{r=1}^R u_r \bar u_r^\top$. נגדיר
 
-**b.** אם $\mathrm{sep}(h;I) = R'$ עם $h = \sum_{r=1}^{R'} g_r\bar g_r$, נגדיר $(\mathcal{Z}_r)_{k_1,\dots,k_{|I|}} := g_r(v^{(k_1)},\dots,v^{(k_{|I|})})$ ו-$(\bar{\mathcal{Z}}_r)_{k_{|I|+1},\dots,k_N} := \bar g_r(v^{(k_{|I|+1})},\dots,v^{(k_N)})$. הצבת $h$ על הרשת נותנת $\mathcal{V} = \sum_{r=1}^{R'} \mathcal{Z}_r \otimes \bar{\mathcal{Z}}_r$ (הרמז). המטריציזציה לינארית ו-$\mathrm{mat}(\mathcal{Z}_r\otimes\bar{\mathcal{Z}}_r;I) = \mathrm{vec}(\mathcal{Z}_r)\,\mathrm{vec}(\bar{\mathcal{Z}}_r)^\top$ מדרגה $\le 1$, ולכן $\mathrm{rank}\,\mathrm{mat}(\mathcal{V};I) \le R' = \mathrm{sep}(h;I)$ (תת-אדיטיביות של הדרגה).
+$$g_r((x^{(i)})_{i\in I}) := \sum_{d_1,\dots,d_{|I|}} \big(\prod_{i\le|I|} x^{(i)}_{d_i}\big)(u_r)_{\mathrm{row}(d_1,\dots,d_{|I|})}$$
 
-**c.** בחרו $K = D$ ו-$v^{(k)} := e_k$ (בסיס סטנדרטי). לפי רב-לינאריות, $f(e_{d_1},\dots,e_{d_N}) = \mathcal{A}_{d_1,\dots,d_N}$, ולכן $\mathcal{V} = \mathcal{A}$. החילו את (b) עם $h = f$ כדי לקבל $\mathrm{sep}(f;I) \ge \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$. יחד עם (a), זה נותן את הזהות הקלאסית $\mathrm{sep}(f;I) = \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$ המשמשת בניתוחי הפרדת-עומק של מודלים טנזוריים/קונבולוציוניים.
+ו-$\bar g_r$ באופן אנלוגי עם $\bar u_r$ ואינדקסי עמודה. פיתוח $f$ רכיב-רכיב והצבת $\mathcal{A}_{d_1,\dots,d_N} = \sum_r (u_r)_{\mathrm{row}(\cdot)}(\bar u_r)_{\mathrm{col}(\cdot)}$ מפצלים את הסכום ל-$\sum_{r=1}^R g_r \cdot \bar g_r$, ולכן $\mathrm{sep}(f;I)\le R$.
+
+**b.** אם $\mathrm{sep}(h;I) = R'$ עם $h = \sum_{r=1}^{R'} g_r\bar g_r$, נגדיר
+
+$$(\mathcal{Z}_r)_{k_1,\dots,k_{|I|}} := g_r(v^{(k_1)},\dots,v^{(k_{|I|})})$$
+
+ו-
+
+$$(\bar{\mathcal{Z}}_r)_{k_{|I|+1},\dots,k_N} := \bar g_r(v^{(k_{|I|+1})},\dots,v^{(k_N)})$$
+
+הצבת $h$ על הרשת נותנת
+
+$$\mathcal{V} = \sum_{r=1}^{R'} \mathcal{Z}_r \otimes \bar{\mathcal{Z}}_r$$
+
+(הרמז). המטריציזציה לינארית ו-
+
+$$\mathrm{mat}(\mathcal{Z}_r\otimes\bar{\mathcal{Z}}_r;I) = \mathrm{vec}(\mathcal{Z}_r)\,\mathrm{vec}(\bar{\mathcal{Z}}_r)^\top$$
+
+מדרגה $\le 1$, ולכן
+
+$$\mathrm{rank}\,\mathrm{mat}(\mathcal{V};I) \le R' = \mathrm{sep}(h;I)$$
+
+(תת-אדיטיביות של הדרגה).
+
+**c.** בחרו $K = D$ ו-$v^{(k)} := e_k$ (בסיס סטנדרטי). לפי רב-לינאריות,
+
+$$f(e_{d_1},\dots,e_{d_N}) = \mathcal{A}_{d_1,\dots,d_N}$$
+
+ולכן $\mathcal{V} = \mathcal{A}$. החילו את (b) עם $h = f$ כדי לקבל
+
+$$\mathrm{sep}(f;I) \ge \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)$$
+
+יחד עם (a), זה נותן את הזהות הקלאסית
+
+$$\boxed{\,\mathrm{sep}(f;I) = \mathrm{rank}\,\mathrm{mat}(\mathcal{A};I)\,}$$
+
+המשמשת בניתוחי הפרדת-עומק של מודלים טנזוריים/קונבולוציוניים.
 
 **💡 טריקים שימושיים:** חסם עליון: פירוק דרגה של $\mathrm{mat}(\mathcal A;I)$ *הוא* סכום מפריד; חסם תחתון: הציבו $h$ על רשת כדי לקבל $\mathcal V=\sum_r\mathcal Z_r\otimes\bar{\mathcal Z}_r$, ו-$\mathrm{mat}(\mathcal Z\otimes\bar{\mathcal Z})=\mathrm{vec}(\mathcal Z)\mathrm{vec}(\bar{\mathcal Z})^\top$ מדרגה $\leq1$; סגרו את הפער עם $v^{(k)}=e_k$ כך ש-$\mathcal V=\mathcal A$ (רב-לינאריות).
 
@@ -70,13 +106,23 @@ $$L(\theta) = \sum_{n=1}^{N} \ell(h_\theta(x_n), y_n)$$
 *רמז:* התבוננו באזורים של מרחב הפרמטרים שבהם אקטיבציית ReLU מאפסת את כל הנוירונים בשכבה הנסתרת.
 
 **Solution sketch:**
-**a.** gradient flow: $\dot v_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,\sigma(\langle w_m,x_n\rangle)$ וגם $\dot w_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,v_m\,\sigma'(\langle w_m,x_n\rangle)x_n$ ($\ell'$ = נגזרת בארגומנט הראשון). אז $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$ וגם $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$. זהות ההומוגניות-1 $z\,\sigma'(z) = \sigma(z)$ (תקפה ב-$z=0$ תחת המוסכמה) הופכת את שניהם לשווים $-2\sum_n \ell'(\cdot)\,v_m\,\sigma(\langle w_m,x_n\rangle)$. זהו חוק שימור ה-balancedness: $v_m(t)^2 - \|w_m(t)\|^2$ קבוע.
+**a.** gradient flow:
+
+$$\dot v_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,\sigma(\langle w_m,x_n\rangle)$$
+
+וגם
+
+$$\dot w_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,v_m\,\sigma'(\langle w_m,x_n\rangle)x_n$$
+
+($\ell'$ = נגזרת בארגומנט הראשון). אז $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$ וגם $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$. זהות ההומוגניות-1 $z\,\sigma'(z) = \sigma(z)$ (תקפה ב-$z=0$ תחת המוסכמה) הופכת את שניהם לשווים $-2\sum_n \ell'(\cdot)\,v_m\,\sigma(\langle w_m,x_n\rangle)$. זהו חוק שימור ה-balancedness: $v_m(t)^2 - \|w_m(t)\|^2$ קבוע.
 
 **b.** ב-$\theta=0$: $\partial L/\partial v_m \propto \sigma(\langle 0,x\rangle) = 0$ וגם $\partial L/\partial w_m \propto v_m = 0$, ולכן $\nabla L(0)=0$. שימו לב ש-$L(0) = y^2$.
 
 **c.** קחו $u := x/\|x\|$ ואת ההפרעה שבה רק $w_1 = \tfrac{\epsilon}{2}u$, $v_1 = \pm\tfrac{\epsilon}{2}$: אז $h_\theta(x) = \pm\tfrac{\epsilon^2}{4}\|x\|=: \pm c$. עם $v_1<0$: $L = (y+c)^2 > y^2$ (נותן את $\theta_1$). עם $v_1>0$ ו-$\epsilon$ קטן מספיק כך ש-$c < 2y$: $L = (y-c)^2 < y^2$ (נותן את $\theta_2$). לשניהם נורמה $<\epsilon$.
 
-**d.** קחו $\bar\theta$ עם $w_m := -x$ לכל $m$ (כך ש-$\langle w_m,x\rangle = -\|x\|^2 < 0$) ו-$v$ שרירותי (למשל $v=0$). עבור כל הפרעה קטנה, $\langle w_m',x\rangle$ נשאר שלילי, ולכן כל ה-ReLU-ים מפיקים $0$, $h\equiv 0$ בסביבה, ו-$L \equiv y^2$: $\bar\theta$ הוא מינימום מקומי. הוא "גרוע": $\theta^*$ עם $w_1 = x$, $v_1 = y/\|x\|^2$ (השאר אפס) נותן $h_{\theta^*}(x) = y$, כלומר $L(\theta^*) = 0 < y^2 = L(\bar\theta)$.
+**d.** קחו $\bar\theta$ עם $w_m := -x$ לכל $m$ (כך ש-$\langle w_m,x\rangle = -\|x\|^2 < 0$) ו-$v$ שרירותי (למשל $v=0$). עבור כל הפרעה קטנה, $\langle w_m',x\rangle$ נשאר שלילי, ולכן כל ה-ReLU-ים מפיקים $0$, $h\equiv 0$ בסביבה, ו-$L \equiv y^2$: $\bar\theta$ הוא מינימום מקומי. הוא "גרוע": $\theta^*$ עם $w_1 = x$, $v_1 = y/\|x\|^2$ (השאר אפס) נותן $h_{\theta^*}(x) = y$, כלומר
+
+$$L(\theta^*) = 0 < y^2 = L(\bar\theta)$$
 
 **💡 טריקים שימושיים:** זהות ההומוגניות $z\,\sigma'(z)=\sigma(z)$ מניעה את ה-balancedness $v_m^2-\|w_m\|^2=\mathrm{const}$; $\theta=0$ קריטית מכיוון ששני הגרדיאנטים החלקיים נושאים גורם $\sigma(0)$ או $v_m=0$; בנו אוכף עם בליטה מדרגה-1 הנותנת $h=\pm c$ (בחרו את הסימן); מינימום מקומי "גרוע" שוכן באזור *כל-ה-ReLU-כבויים* ($w_m=-x$) שבו $h\equiv0$ מקומית ולכן $L\equiv y^2$ בעוד שהגלובלי הוא $0$.
 
@@ -107,11 +153,23 @@ $$L_D(h_m) - L_S(h_m) \le \sqrt{\frac{\ln(2N/\delta_m)}{2(N-1)}}$$
 **d. (8 pts)** "נניח שאני משתמש באלגוריתם הלמידה המועדף עליי כדי ללמוד השערה עבור מאגר הנתונים CIFAR10. אני מקבל בחזרה השערה $h$ עם הפסד 0-1 אמפירי נמוך. אני רוצה להעריך עד כמה ההשערה שלי מכלילה מבלי להשתמש בקבוצת ולידציה. לשם כך, אני משתמש בחסם ה-PAC-Bayes מהתזכורת ובוחר התפלגויות $P$ ו-$Q$ המקצות הסתברות $1$ ל-$h$ ו-$0$ לכל שאר ההשערות. אני מבחין שהחסם קטן בהסתברות גבוהה. האם שיטת ההערכה שלי תקפה? אם לא, נמקו."
 
 **Solution sketch:**
-**a.** עבור כל $m$, החילו את תזכורת ה-PAC-Bayes עם prior $P := \delta_{h_m}$ (מסת נקודה) ופרמטר ביטחון $\delta_m$, ואז בחרו $Q := \delta_{h_m}$: איבר ה-KL מתאפס והתוחלות מתמוטטות, ונותנים $L_D(h_m)-L_S(h_m) \le \sqrt{\ln(2N/\delta_m)/(2(N-1))}$ עם הסתברות כישלון $\le \delta_m$. חסם איחוד מעל $m \in \mathbb{N}$: הסתברות הכישלון הכוללת $\le \sum_m \delta_m = \delta$, ולכן כל החסמים מתקיימים בו-זמנית בהסתברות $\ge 1-\delta$. (הוכחה חלופית חד-שלבית: prior $P(h_m) = \delta_m/\delta$, $Q = \delta_{h_m}$, ולכן $KL = \ln(\delta/\delta_m)$ וגם $\ln(\delta/\delta_m) + \ln(2N/\delta) = \ln(2N/\delta_m)$.)
+**a.** עבור כל $m$, החילו את תזכורת ה-PAC-Bayes עם prior $P := \delta_{h_m}$ (מסת נקודה) ופרמטר ביטחון $\delta_m$, ואז בחרו $Q := \delta_{h_m}$: איבר ה-KL מתאפס והתוחלות מתמוטטות, ונותנים
 
-**b.** הקצו את תקציב הביטחון רק ל-$\mathcal{H}'$: $\delta_m := \delta/|\mathcal{H}'|$ עבור $h_m \in \mathcal{H}'$ ו-$\delta_m := 0$ אחרת (בפרשנות שהחסם ריק/$+\infty$ מחוץ ל-$\mathcal{H}'$). תוצאה: בהסתברות $\ge 1-\delta$, $\forall h \in \mathcal{H}'$: $L_D(h)-L_S(h) \le \sqrt{\ln(2N|\mathcal{H}'|/\delta)/(2(N-1))}$ — החסם האחיד למחלקה סופית. דבר אינו מובטח מחוץ ל-$\mathcal{H}'$. (אם עומדים על חיוביות ממש של כל $\delta_m$, תנו ל-$\mathcal{H}'$ תקציב $(1-\lambda)\delta$ ופזרו $\lambda\delta$ גאומטרית בחוץ, $\lambda$ קטן.)
+$$L_D(h_m)-L_S(h_m) \le \sqrt{\ln(2N/\delta_m)/(2(N-1))}$$
 
-**c.** בחרו סדרה חיובית יורדת, למשל $\delta_m := \delta\,2^{-m}$: החסם $\sqrt{(\ln(2N/\delta) + m\ln 2)/(2(N-1))}$, מונוטוני עולה ב-$m$, ולכן הדוק יותר עבור השערות בעלות אינדקס נמוך (המועדפות על ידי האלגוריתם). כל סדרה יורדת סכימה (למשל $\delta\frac{6}{\pi^2 m^2}$) עובדת.
+עם הסתברות כישלון $\le \delta_m$. חסם איחוד מעל $m \in \mathbb{N}$: הסתברות הכישלון הכוללת $\le \sum_m \delta_m = \delta$, ולכן כל החסמים מתקיימים בו-זמנית בהסתברות $\ge 1-\delta$. (הוכחה חלופית חד-שלבית: prior $P(h_m) = \delta_m/\delta$, $Q = \delta_{h_m}$, ולכן $KL = \ln(\delta/\delta_m)$ וגם $\ln(\delta/\delta_m) + \ln(2N/\delta) = \ln(2N/\delta_m)$.)
+
+**b.** הקצו את תקציב הביטחון רק ל-$\mathcal{H}'$: $\delta_m := \delta/|\mathcal{H}'|$ עבור $h_m \in \mathcal{H}'$ ו-$\delta_m := 0$ אחרת (בפרשנות שהחסם ריק/$+\infty$ מחוץ ל-$\mathcal{H}'$). תוצאה: בהסתברות $\ge 1-\delta$, $\forall h \in \mathcal{H}'$:
+
+$$L_D(h)-L_S(h) \le \sqrt{\ln(2N|\mathcal{H}'|/\delta)/(2(N-1))}$$
+
+— החסם האחיד למחלקה סופית. דבר אינו מובטח מחוץ ל-$\mathcal{H}'$. (אם עומדים על חיוביות ממש של כל $\delta_m$, תנו ל-$\mathcal{H}'$ תקציב $(1-\lambda)\delta$ ופזרו $\lambda\delta$ גאומטרית בחוץ, $\lambda$ קטן.)
+
+**c.** בחרו סדרה חיובית יורדת, למשל $\delta_m := \delta\,2^{-m}$: החסם
+
+$$\sqrt{(\ln(2N/\delta) + m\ln 2)/(2(N-1))}$$
+
+מונוטוני עולה ב-$m$, ולכן הדוק יותר עבור השערות בעלות אינדקס נמוך (המועדפות על ידי האלגוריתם). כל סדרה יורדת סכימה (למשל $\delta\frac{6}{\pi^2 m^2}$) עובדת.
 
 **d.** השיטה אינה תקפה. ב-PAC-Bayes ה-prior $P$ חייב להיקבע **לפני** ראיית המדגם $S$. כאן $h$ הוא הפלט של אלגוריתם למידה שאומן על $S$, ולכן $P$ (וגם $Q$) תלויים ב-$S$. ולכן הערובה ההסתברותית של המשפט (מעל הגרלות של $S$ עבור $P$ קבוע) אינה חלה. ה"ארוחה חינם" של $KL=0$ היא בדיוק ה-prior תלוי-הנתונים הבלתי-חוקי. חלופות נכונות: קבעו prior מראש ושלמו $KL$/$\ln(1/\delta_m)$ כמו ב-(a)-(c), או העריכו הכללה עם נתונים שהופרשו (ולידציה).
 

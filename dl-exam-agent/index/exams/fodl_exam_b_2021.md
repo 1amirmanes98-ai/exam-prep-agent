@@ -74,13 +74,33 @@ i.e., the loss converges to 0 at an exponential rate. Do not use claims from cla
 *Hint:* First show that $\frac{d}{dt} L(w(t)) = -L(w(t)) \cdot 2N w(t)^{2-\frac{2}{N}}$.
 
 **Solution sketch:**
-**a.** $\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$. So under gradient flow $\frac{d}{dt}w_i^2 = 2w_i\dot{w}_i = -2L'(w)\prod_k w_k = -2L'(w)\,w(t)$ — identical for every $i$. Subtracting for $i,j$ gives $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (balancedness conservation).
+**a.**
 
-**b.** By (a), balanced initialization stays balanced: $w_i(t)^2 = w_j(t)^2$ for all $t$. Hence $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ in the regime $w(t) \geq 0$ considered). Product rule: $\dot{w} = \sum_i \big(\prod_{k\neq i} w_k\big)\dot{w}_i = -L'(w)\sum_i \big(\prod_{k\neq i}w_k\big)^2 = -L'(w)\sum_i w^2/w_i^2 = -L'(w)\, N\, w^{2-2/N}$, and $L'(w) = w - y$.
+$$\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$$
+
+So under gradient flow
+
+$$\begin{aligned} \frac{d}{dt}w_i^2 &= 2w_i\dot{w}_i \\ &= -2L'(w)\prod_k w_k \\ &= -2L'(w)\,w(t) \end{aligned}$$
+
+— identical for every $i$. Subtracting for $i,j$ gives $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (balancedness conservation).
+
+**b.** By (a), balanced initialization stays balanced: $w_i(t)^2 = w_j(t)^2$ for all $t$. Hence $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ in the regime $w(t) \geq 0$ considered). Product rule:
+
+$$\begin{aligned} \dot{w} &= \sum_i \big(\prod_{k\neq i} w_k\big)\dot{w}_i \\ &= -L'(w)\sum_i \big(\prod_{k\neq i}w_k\big)^2 \\ &= -L'(w)\sum_i w^2/w_i^2 \\ &= -L'(w)\, N\, w^{2-2/N} \end{aligned}$$
+
+and $L'(w) = w - y$.
 
 **c.** Gradient flow monotonicity: $L(w(t)) \leq L(w(0)) = L(c)$, i.e. $(w(t)-y)^2 \leq (c-y)^2$, i.e. $|w(t) - y| \leq y - c$ (as $c \in (0,y)$), which directly gives $c \leq w(t) \leq 2y - c$.
 
-**d.** Hint: $\frac{d}{dt}L(w(t)) = (w-y)\dot{w} = -N(w-y)^2 w^{2-2/N} = -2L(w(t))\cdot N w(t)^{2-2/N}$. Since $w(t) \geq c > 0$ by (c) and $2 - 2/N > 0$: $\frac{d}{dt}L(w(t)) \leq -2Nc^{2-2/N} L(w(t))$. Integrate (Grönwall / $\frac{d}{dt}\ln L \leq -2Nc^{2-2/N}$) to get the exponential bound.
+**d.** Hint:
+
+$$\begin{aligned} \frac{d}{dt}L(w(t)) &= (w-y)\dot{w} \\ &= -N(w-y)^2 w^{2-2/N} \\ &= -2L(w(t))\cdot N w(t)^{2-2/N} \end{aligned}$$
+
+Since $w(t) \geq c > 0$ by (c) and $2 - 2/N > 0$:
+
+$$\frac{d}{dt}L(w(t)) \leq -2Nc^{2-2/N} L(w(t))$$
+
+Integrate (Grönwall / $\frac{d}{dt}\ln L \leq -2Nc^{2-2/N}$) to get the exponential bound.
 
 **💡 Useful tricks:** "Do not use claims from class" ⇒ derive balancedness directly: $\frac{d}{dt}w_i^2=-2L'(w)w$ is identical for all $i$; balanced init ⇒ $w_i^2=w^{2/N}$; loss-monotonicity gives the barrier $w(t)\geq c$, which lower-bounds $w^{2-2/N}\geq c^{2-2/N}$; finish with $\frac{d}{dt}\ln L\leq-2Nc^{2-2/N}$ + Grönwall. (Identical to Moed C 2024 Q2.)
 
@@ -109,7 +129,11 @@ $$\forall h \in \mathcal{H}: \quad L_D(h) - L_S(h) \leq 2R(l \circ \mathcal{H} \
 **(b) (10 pts)** Denote by $GD(S) \in \mathcal{H}$ the hypothesis obtained from running gradient descent to minimize the sample error $L_S(\cdot)$. For the learned hypothesis, when the number of examples in the sample is increased, does the bound proven in the previous sub-part necessarily become smaller? That is, for a sample $S'$ with $|S'| > |S| = m$, will the bound for $GD(S')$ necessarily be smaller than the one obtained for $GD(S)$? Justify your answer.
 
 **Solution sketch:**
-**a.** For each integer $k \in \mathbb{N}$ apply the reminder bound to the restricted class $\mathcal{H}_k$ with confidence budget $\delta_k := \frac{6\delta}{\pi^2 k^2}$. Note $\sum_{k=1}^\infty \delta_k = \delta$ by the Basel fact. So a union bound gives all events simultaneously w.p. $\geq 1 - \delta$. On that event, for all $k$: $\forall h_\theta \in \mathcal{H}_k$, gap $\leq \frac{2k}{\sqrt m} + 4\sqrt{\frac{2\ln(4/\delta_k)}{m}}$, and $4/\delta_k = \frac{2\pi^2 k^2}{3\delta}$ — exactly the log term in the target. For arbitrary $h_\theta$, choose $k := \lceil \|\theta\| \rceil + 1$ if $\lceil\|\theta\|\rceil = 0$ else $k := \lceil\|\theta\|\rceil$. Then $h_\theta \in \mathcal{H}_k$ and $k \leq \|\theta\| + 1$. Monotonicity of both terms in $k$ yields the claimed bound with $\|\theta\|+1$.
+**a.** For each integer $k \in \mathbb{N}$ apply the reminder bound to the restricted class $\mathcal{H}_k$ with confidence budget $\delta_k := \frac{6\delta}{\pi^2 k^2}$. Note $\sum_{k=1}^\infty \delta_k = \delta$ by the Basel fact. So a union bound gives all events simultaneously w.p. $\geq 1 - \delta$. On that event, for all $k$: $\forall h_\theta \in \mathcal{H}_k$, gap
+
+$$\leq \frac{2k}{\sqrt m} + 4\sqrt{\frac{2\ln(4/\delta_k)}{m}}$$
+
+and $4/\delta_k = \frac{2\pi^2 k^2}{3\delta}$ — exactly the log term in the target. For arbitrary $h_\theta$, choose $k := \lceil \|\theta\| \rceil + 1$ if $\lceil\|\theta\|\rceil = 0$ else $k := \lceil\|\theta\|\rceil$. Then $h_\theta \in \mathcal{H}_k$ and $k \leq \|\theta\| + 1$. Monotonicity of both terms in $k$ yields the claimed bound with $\|\theta\|+1$.
 
 **b.** Not necessarily. The bound depends on $m$ *and* on the norm $\|\theta\|$ of the learned hypothesis. With a larger sample $S'$, gradient descent may converge to parameters of larger norm (fitting more examples typically requires larger $\|\theta\|$). So growth of $\|\theta(GD(S'))\|$ can outweigh the $1/\sqrt{m}$ decrease. Concluding point: the bound is *a posteriori* (data/algorithm dependent) — nothing in it is monotone in $m$ alone.
 

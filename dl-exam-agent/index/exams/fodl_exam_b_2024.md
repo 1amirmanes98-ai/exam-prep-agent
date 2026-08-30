@@ -47,13 +47,41 @@ $$\sum_{n=0}^{\infty} \frac{(bx)^n}{n!}$$
 **Solution sketch:**
 **1.** Two-condition course definition (exponential variant of expressive efficiency): (i) every function of the shallow family is realizable in the deep family with comparable size (here trivially, $\mathcal{H}_d = \overline{\mathcal{H}_d^1}$); (ii) there exists $h \in \overline{\mathcal{H}_{\bar d}^{L}}$ such that any $d$ with $h \in \mathcal{H}_d$ must be at least exponential in the deep network's size (its depth $L$), i.e. $d \geq c^L$ for some constant $c > 1$. (Exact quantifier phrasing per the course definition — (unverified).)
 
-**2.** Membership of every $h \in \mathcal{H}_d$: each $h \in \overline{\mathcal{H}_{\bar d}^{L}}$ is a composition of polynomials with zero constant term, hence a polynomial with zero constant term of degree $\leq \bar d^L$, i.e. $\overline{\mathcal{H}_{\bar d}^{L}} \subseteq \mathcal{H}_{\bar d^L}$. Hardness: $h^*(x) = x^{\bar d^L} \in \overline{\mathcal{H}_{\bar d}^{L}}$ — take every $a_i = e_1$ (select the top coordinate $x^{\bar d}$ of $\sigma_{\bar d}$), giving $((x^{\bar d})^{\bar d})^{\cdots} = x^{\bar d^L}$. A polynomial identity on $\mathbb{R}$ forces equal coefficients. So $h^* \in \mathcal{H}_d$ requires $d \geq \deg h^* = \bar d^L \geq 2^L$ — exponential in $L$. Together with the containment this gives exponential expressive efficiency.
+**2.** Membership of every $h \in \mathcal{H}_d$: each $h \in \overline{\mathcal{H}_{\bar d}^{L}}$ is a composition of polynomials with zero constant term, hence a polynomial with zero constant term of degree $\leq \bar d^L$, i.e.
+
+$$\overline{\mathcal{H}_{\bar d}^{L}} \subseteq \mathcal{H}_{\bar d^L}$$
+
+Hardness:
+
+$$h^*(x) = x^{\bar d^L} \in \overline{\mathcal{H}_{\bar d}^{L}}$$
+
+— take every $a_i = e_1$ (select the top coordinate $x^{\bar d}$ of $\sigma_{\bar d}$), giving $((x^{\bar d})^{\bar d})^{\cdots} = x^{\bar d^L}$. A polynomial identity on $\mathbb{R}$ forces equal coefficients. So $h^* \in \mathcal{H}_d$ requires
+
+$$d \geq \deg h^* = \bar d^L \geq 2^L$$
+
+— exponential in $L$. Together with the containment this gives exponential expressive efficiency.
 
 **3.** Definition: for every $f \in \mathcal{H}_{exp}$ and every $\epsilon > 0$ there exist $d \in \mathbb{N}$ and $h \in \mathcal{H}_d$ such that $dist(f, h) \leq \epsilon$.
 
-**4.** Every $h \in \mathcal{H}_d$ is a polynomial with zero constant term, so $\lim_{x \to 0^+} h(x) = h(0) = 0$, while $\lim_{x \to 0^+} e^{bx} = 1$. Hence $dist(e^{bx}, h) = \sup_{x \in (0,1)} |e^{bx} - h(x)| \geq \lim_{x \to 0^+} |e^{bx} - h(x)| = 1$ for every $d$ and every $h \in \mathcal{H}_d$. So no $f \in \mathcal{H}_{exp}$ can be approximated to accuracy $\epsilon < 1$. Not universal.
+**4.** Every $h \in \mathcal{H}_d$ is a polynomial with zero constant term, so $\lim_{x \to 0^+} h(x) = h(0) = 0$, while $\lim_{x \to 0^+} e^{bx} = 1$. Hence
 
-**5.** For $\bar h_b(x) = e^{bx} - 1 = \sum_{n=1}^{\infty} \frac{(bx)^n}{n!}$ (zero constant term), take the degree-$d$ truncation $p_d(x) := \sum_{n=1}^{d} \frac{b^n}{n!} x^n \in \mathcal{H}_d$. For $x \in (0,1)$: $|\bar h_b(x) - p_d(x)| \leq \sum_{n=d+1}^{\infty} \frac{|b|^n}{n!}$ — the tail of the convergent series for $e^{|b|}$, which $\to 0$ as $d \to \infty$. Given $\epsilon$, choose $d$ with tail $\leq \epsilon$; then $dist(\bar h_b, p_d) \leq \epsilon$. Universal.
+$$dist(e^{bx}, h) = \sup_{x \in (0,1)} |e^{bx} - h(x)| \geq \lim_{x \to 0^+} |e^{bx} - h(x)| = 1$$
+
+for every $d$ and every $h \in \mathcal{H}_d$. So no $f \in \mathcal{H}_{exp}$ can be approximated to accuracy $\epsilon < 1$. Not universal.
+
+**5.** For
+
+$$\bar h_b(x) = e^{bx} - 1 = \sum_{n=1}^{\infty} \frac{(bx)^n}{n!}$$
+
+(zero constant term), take the degree-$d$ truncation
+
+$$p_d(x) := \sum_{n=1}^{d} \frac{b^n}{n!} x^n \in \mathcal{H}_d$$
+
+For $x \in (0,1)$:
+
+$$|\bar h_b(x) - p_d(x)| \leq \sum_{n=d+1}^{\infty} \frac{|b|^n}{n!}$$
+
+— the tail of the convergent series for $e^{|b|}$, which $\to 0$ as $d \to \infty$. Given $\epsilon$, choose $d$ with tail $\leq \epsilon$; then $dist(\bar h_b, p_d) \leq \epsilon$. Universal.
 
 **💡 Useful tricks:** "Write the formal definition" wants the exact 2-condition course form (containment + super-polynomial hardness) — memorize it; composing zero-constant-term polynomials stays zero-constant-term of degree $\leq\bar d^L$ (containment), and a polynomial identity lets you equate coefficients for the degree/hardness bound; the $x\to0^+$ gap ($h(0)=0$ vs $e^{bx}\to1$) is the universality obstruction, and subtracting the constant ($e^{bx}-1$) + Taylor truncation removes it.
 
@@ -89,13 +117,35 @@ Suppose now that $x = e_1$ and $y = -1$, where $e_1 \in \mathbb{R}^k$ is a one-h
 **Solution sketch:**
 Setup remark: $\sum_t \sum_j a_j^{k-t} x_t$ is the end-to-end map of a *diagonal linear RNN* with transition matrix $\mathrm{diag}(a)$ (cf. Moed A 2024 Q1). The one-hot position of $x$ controls the effective "depth" (power of $a$) seen by the input.
 
-**1.** Chain rule on $l(a) = (h(a) - y)^2$ with $h(a) = \sum_t \sum_j a_j^{k-t} x_t$: $\frac{\partial h}{\partial a_i} = \sum_t (k-t) a_i^{k-t-1} x_t$. The $t = k$ term has exponent $0$ (a constant) so its derivative vanishes and the sum runs only to $k-1$. Negating gives the stated $\dot a_i(t)$.
+**1.** Chain rule on $l(a) = (h(a) - y)^2$ with $h(a) = \sum_t \sum_j a_j^{k-t} x_t$:
 
-**2.** $x = e_{k-1}$ keeps only $t = k-1$ (exponent $1$): $l(a(t)) = \big(\sum_{j=1}^d a_j(t) + 1\big)^2$ and $\dot a_i(t) = -2\big(\sum_{j=1}^d a_j(t) + 1\big)$ — identical for all $i$.
+$$\frac{\partial h}{\partial a_i} = \sum_t (k-t) a_i^{k-t-1} x_t$$
 
-**3.** Here $l$ is convex (square of an affine function of $a$). Its critical points: $\nabla l(a) = 2(\sum_j a_j + 1)\mathbb{1} = 0 \iff \sum_j a_j = -1 \iff l(a) = 0$ — every critical point is a global minimum. Combined with the given fact that gradient flow converges to a critical point, it converges to a global minimum from any initialization. (Explicit alternative: $s(t) := \sum_j a_j(t) + 1$ satisfies $\dot s = -2d\, s$, so $s(t) = s(0)e^{-2dt} \to 0$ and $l = s^2 \to 0$.)
+The $t = k$ term has exponent $0$ (a constant) so its derivative vanishes and the sum runs only to $k-1$. Negating gives the stated $\dot a_i(t)$.
 
-**4.** $x = e_1$ keeps only $t = 1$ (exponent $k-1$): $l(a(t)) = \big(\sum_{j=1}^d a_j(t)^{k-1} + 1\big)^2$ and $\dot a_i(t) = -2(k-1)\, a_i(t)^{k-2} \big(\sum_{j=1}^d a_j(t)^{k-1} + 1\big)$.
+**2.** $x = e_{k-1}$ keeps only $t = k-1$ (exponent $1$):
+
+$$l(a(t)) = \big(\sum_{j=1}^d a_j(t) + 1\big)^2$$
+
+and
+
+$$\dot a_i(t) = -2\big(\sum_{j=1}^d a_j(t) + 1\big)$$
+
+— identical for all $i$.
+
+**3.** Here $l$ is convex (square of an affine function of $a$). Its critical points:
+
+$$\nabla l(a) = 2(\sum_j a_j + 1)\mathbb{1} = 0 \iff \sum_j a_j = -1 \iff l(a) = 0$$
+
+— every critical point is a global minimum. Combined with the given fact that gradient flow converges to a critical point, it converges to a global minimum from any initialization. (Explicit alternative: $s(t) := \sum_j a_j(t) + 1$ satisfies $\dot s = -2d\, s$, so $s(t) = s(0)e^{-2dt} \to 0$ and $l = s^2 \to 0$.)
+
+**4.** $x = e_1$ keeps only $t = 1$ (exponent $k-1$):
+
+$$l(a(t)) = \big(\sum_{j=1}^d a_j(t)^{k-1} + 1\big)^2$$
+
+and
+
+$$\dot a_i(t) = -2(k-1)\, a_i(t)^{k-2} \big(\sum_{j=1}^d a_j(t)^{k-1} + 1\big)$$
 
 **5.** The answer depends on the parity of $k$ (the complete case analysis; the exam gives general $k$ — which case was intended for full credit is (unverified)):
 
@@ -155,9 +205,19 @@ $$P(Z_1, \ldots, Z_m \text{ are linearly independent}) = 1$$
 **Solution sketch:**
 **1.** Each of the $d$ entries of $w_h$ takes at most $2^B$ values ($B$ bits), so there are at most $(2^B)^d$ weight vectors, and distinct functions require distinct vectors: $|\mathcal{H}| \leq 2^{Bd}$ (attained when all bit patterns give distinct values — hence tightest).
 
-**2.** Fix $h$: $A_n := l(h(x_n), y_n)$ are i.i.d. in $[0,1]$ with $E[A_1] = L_D(h)$. Hoeffding gives $P(|L_S(h) - L_D(h)| \geq \epsilon) \leq 2e^{-2N\epsilon^2}$. Union bound over the finite $\mathcal{H}$ and solve $2|\mathcal{H}|e^{-2N\epsilon^2} = \delta$: $\Delta_1(N, \delta, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|/\delta)}{2N}} \to 0$.
+**2.** Fix $h$: $A_n := l(h(x_n), y_n)$ are i.i.d. in $[0,1]$ with $E[A_1] = L_D(h)$. Hoeffding gives
 
-**3.** $k$ ranges over the *countably infinite* $\mathbb{N}$, so a uniform confidence split is impossible. Use SRM weights $\delta_k := \frac{6\delta}{\pi^2 k^2}$ (so $\sum_{k=1}^{\infty} \delta_k = \delta$; a $\delta 2^{-k}$ split also works). Apply part 2 to each $\mathcal{H}_k$ (with $|\mathcal{H}_k| \leq |\mathcal{H}| \leq 2^{Bd}$): $\Delta_2(N, \delta, k) := \Delta_1(N, \delta_k, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|\pi^2 k^2 / (6\delta))}{2N}}$. Union bound over all $k$ gives (b); the $k^2$ inside the log gives strict monotonicity (c); and (a) holds since it is still $O(1/\sqrt{N})$.
+$$P(|L_S(h) - L_D(h)| \geq \epsilon) \leq 2e^{-2N\epsilon^2}$$
+
+Union bound over the finite $\mathcal{H}$ and solve $2|\mathcal{H}|e^{-2N\epsilon^2} = \delta$:
+
+$$\Delta_1(N, \delta, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|/\delta)}{2N}} \to 0$$
+
+**3.** $k$ ranges over the *countably infinite* $\mathbb{N}$, so a uniform confidence split is impossible. Use SRM weights $\delta_k := \frac{6\delta}{\pi^2 k^2}$ (so $\sum_{k=1}^{\infty} \delta_k = \delta$; a $\delta 2^{-k}$ split also works). Apply part 2 to each $\mathcal{H}_k$ (with $|\mathcal{H}_k| \leq |\mathcal{H}| \leq 2^{Bd}$):
+
+$$\Delta_2(N, \delta, k) := \Delta_1(N, \delta_k, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|\pi^2 k^2 / (6\delta))}{2N}}$$
+
+Union bound over all $k$ gives (b); the $k^2$ inside the log gives strict monotonicity (c); and (a) holds since it is still $O(1/\sqrt{N})$.
 
 **4.** Answer: $N = d$. Sufficiency: with $N = d$, the inputs $x_1, \ldots, x_d$ are almost surely linearly independent (reminder), hence span $\mathbb{R}^d$. Since $w^*$ attains $L_S = 0$, any ERM output $\hat w$ also attains $L_S(\hat h_S) = 0$; $l = 0 \iff$ equality forces $\hat w^\top x_n = (w^*)^\top x_n$ for all $n$, so $(\hat w - w^*) \perp$ a spanning set $\Rightarrow \hat w = w^* \Rightarrow L_D(\hat h_S) = 0$. Necessity: if $N \leq d - 1$, the inputs span a proper subspace; pick $0 \neq v$ orthogonal to it. Then $\hat w = w^* + v$ is also an empirical minimizer ($L_S = 0$), yet $v^\top x \sim N(0, \|v\|^2)$ is a.s. nonzero, so $l(\hat w^\top x, y) > 0$ a.s. and $L_D > 0$. ERM may return this $\hat w$, so the probability-1 guarantee fails. The minimal size is exactly $d$.
 

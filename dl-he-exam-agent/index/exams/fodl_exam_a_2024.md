@@ -35,11 +35,25 @@ $$\forall d \in \mathbb{N}:\ f \notin \mathcal{H}_d$$
 **Solution sketch:**
 **1.** כל $h \in \mathcal{H}_d$ הוא פונקציונל *לינארי* של הקלט: $h(x) = \sum_t w_t x_t$ עם $w_t = C^\top A^{L-t} B$. לכן $h(0) = 0$, וגם $h$ אדיטיבי/הומוגני. כל פונקציה רציפה לא-לינארית, למשל $f(x) = x_1^2$ (או $f \equiv 1$, מכיוון שכל $h$ מתאפס ב-$x = 0$), אינה נמצאת באף $\mathcal{H}_d$.
 
-**2.** ריפוד (padding): בהינתן $(A, B, C)$ עם $A$ אלכסונית בגודל $d$, ניקח $A' = \mathrm{diag}(A, 0) \in \mathbb{R}^{(d+1)\times(d+1)}$ ונרפד את $B, C$ ברכיב אפס. אזי $C'^\top A'^{L-t} B' = C^\top A^{L-t} B$ לכל $t$, ולכן אותה פונקציה ממומשת, מה שנותן $\mathcal{H}_d^{diag} \subseteq \mathcal{H}_{d+1}^{diag}$.
+**2.** ריפוד (padding): בהינתן $(A, B, C)$ עם $A$ אלכסונית בגודל $d$, ניקח
+
+$$A' = \mathrm{diag}(A, 0) \in \mathbb{R}^{(d+1)\times(d+1)}$$
+
+ונרפד את $B, C$ ברכיב אפס. אזי $C'^\top A'^{L-t} B' = C^\top A^{L-t} B$ לכל $t$, ולכן אותה פונקציה ממומשת, מה שנותן
+
+$$\mathcal{H}_d^{diag} \subseteq \mathcal{H}_{d+1}^{diag}$$
 
 **3.** ההכלה נובעת מ-(2). ממשות (strictness): עבור $d = 1$ סדרת המקדמים $w_t = cb\,a^{L-t}$ היא סדרה הנדסית. בפרט, אם המקדם האמצעי $w_{L-1} = cb\,a = 0$ אז $cb = 0$ או $a = 0$, מה שמכריח גם $w_L = 0$ או $w_{L-2} = 0$. ניקח את מקדמי המטרה $(w_{L-2}, w_{L-1}, w_L) = (1, 0, 1)$ (משתמש ב-$L \geq 3$): בלתי אפשרי ב-$\mathcal{H}_1^{diag}$ לפי האמור לעיל, אך ממומש ב-$\mathcal{H}_2^{diag}$ עם $a_1 = 1, a_2 = -1$ וגם $c_1 b_1 = c_2 b_2 = \tfrac{1}{2}$, מה שנותן $w_t = \tfrac{1 + (-1)^{L-t}}{2}$ (התבנית המתחלפת $1, 0, 1$). זה תואם את הרמז: העקבה/המקדמים של $A^t$ הם סדרה הנדסית יחידה עבור $d=1$ לעומת סכום של שתי סדרות הנדסיות עבור $d=2$.
 
-**4.** ($\subseteq$) מטריצות אלכסוניות הן סימטריות, ולכן $\mathcal{H}_d^{diag} \subseteq \mathcal{H}_d^{sym}$. ($\supseteq$) נכתוב מטריצה סימטרית $A = V D V^\top$ עם $V$ אורתוגונלית, $D$ אלכסונית. אזי $C^\top A^{L-t} B = (V^\top C)^\top D^{L-t} (V^\top B)$, ולכן החלפת $(A, B, C) \to (D, V^\top B, V^\top C)$ ממשת את אותה פונקציה עם מטריצת מעבר אלכסונית. שתי ההכלות נותנות שוויון.
+**4.** ($\subseteq$) מטריצות אלכסוניות הן סימטריות, ולכן
+
+$$\mathcal{H}_d^{diag} \subseteq \mathcal{H}_d^{sym}$$
+
+($\supseteq$) נכתוב מטריצה סימטרית $A = V D V^\top$ עם $V$ אורתוגונלית, $D$ אלכסונית. אזי
+
+$$C^\top A^{L-t} B = (V^\top C)^\top D^{L-t} (V^\top B)$$
+
+ולכן החלפת $(A, B, C) \to (D, V^\top B, V^\top C)$ ממשת את אותה פונקציה עם מטריצת מעבר אלכסונית. שתי ההכלות נותנות שוויון.
 
 **💡 טריקים שימושיים:** כל שאלת "האם המחלקה הזו אוניברסלית?" קורסת ברגע שמראים ש-$h$ *לינארי* בקלטים ($h(x)=\sum_t w_t x_t$) — ואז עד לא-לינארי או $h(0)=0$ הורג את האוניברסליות; החתימה של סדרה הנדסית $w_{t+1}w_{t-1}=w_t^2$ מפרידה את $d=1$; אלכסנו מטריצה סימטרית $A=VDV^\top$ ו*בלעו* את $V$ לתוך $B,C$.
 
@@ -81,11 +95,31 @@ $$\frac{d}{dt} \Lambda(t)_{r,r} = 4 \Lambda(t)_{r,r} \left\langle -2(W(t) - W^*)
 **(4) (5 pts)** הסבירו מדוע ניתן לצפות שהרצת gradient flow על $\phi$ עם אתחול קרוב לראשית $0 \in \mathbb{R}^{d \times d}$ מניבה, בתום האופטימיזציה, מטריצת end-to-end בעלת דרגה נמוכה בקירוב (תחת ההנחה ש-$L$ ניתנת למזעור באמצעות מטריצות בעלות דרגה נמוכה בקירוב). ההסבר יכול להיות איכותני.
 
 **Solution sketch:**
-**1.** טריק סימטריה: $\phi(U) = \phi(-U)$ לכל $U$. אילו $\phi$ הייתה קמורה, אז $\phi(0) = \phi\big(\tfrac{1}{2}U + \tfrac{1}{2}(-U)\big) \leq \tfrac{1}{2}\phi(U) + \tfrac{1}{2}\phi(-U) = \phi(U)$ לכל $U$, כלומר $0$ היה ממזער גלובלי של $\phi$. אבל $W^*$ היא PSD, ולכן $U^* := (W^*)^{1/2}$ מקיימת $U^* U^{*\top} = W^*$ וגם $\phi(U^*) = L(W^*) < L(0) = \phi(0)$ — סתירה.
+**1.** טריק סימטריה: $\phi(U) = \phi(-U)$ לכל $U$. אילו $\phi$ הייתה קמורה, אז
 
-**2.** גרדיאנט: $\nabla \phi(U) = 2\big[(UU^\top - W^*) + (UU^\top - W^*)^\top\big]U = 4(W - W^*)U$, תוך שימוש בסימטריה של $W = UU^\top$ ושל $W^*$. Gradient flow: $\dot U(t) = -4(W(t) - W^*)U(t)$. לייבניץ: $\dot W = \dot U U^\top + U \dot U^\top = -4(W - W^*)UU^\top - 4UU^\top(W - W^*) = -2[2(W - W^*)W + 2W(W - W^*)]$.
+$$\begin{aligned} \phi(0) &= \phi\big(\tfrac{1}{2}U + \tfrac{1}{2}(-U)\big) \\ &\leq \tfrac{1}{2}\phi(U) + \tfrac{1}{2}\phi(-U) \\ &= \phi(U) \end{aligned}$$
 
-**3.** נכתוב $\Lambda(t)_{r,r} = \lambda_r(t) = v_r(t)^\top W(t) v_r(t)$. בגזירה, איברי $\dot v_r$ מתאפסים מכיוון ש-$W v_r = \lambda_r v_r$ וגם $v_r^\top v_r = 1 \Rightarrow \dot v_r^\top v_r = 0$, ונותר $\dot \lambda_r = v_r^\top \dot W v_r$. נציב את (2): $v_r^\top \dot W v_r = -4\big[v_r^\top (W - W^*) W v_r + v_r^\top W (W - W^*) v_r\big] = -8 \lambda_r\, v_r^\top (W - W^*) v_r$. לפי זהויות העקבה זה שווה ל-$4 \lambda_r \langle -2(W - W^*), v_r v_r^\top \rangle$.
+לכל $U$, כלומר $0$ היה ממזער גלובלי של $\phi$. אבל $W^*$ היא PSD, ולכן $U^* := (W^*)^{1/2}$ מקיימת $U^* U^{*\top} = W^*$ וגם $\phi(U^*) = L(W^*) < L(0) = \phi(0)$ — סתירה.
+
+**2.** גרדיאנט:
+
+$$\nabla \phi(U) = 2\big[(UU^\top - W^*) + (UU^\top - W^*)^\top\big]U = 4(W - W^*)U$$
+
+תוך שימוש בסימטריה של $W = UU^\top$ ושל $W^*$. Gradient flow: $\dot U(t) = -4(W(t) - W^*)U(t)$. לייבניץ:
+
+$$\begin{aligned} \dot W &= \dot U U^\top + U \dot U^\top \\ &= -4(W - W^*)UU^\top - 4UU^\top(W - W^*) \\ &= -2[2(W - W^*)W + 2W(W - W^*)] \end{aligned}$$
+
+**3.** נכתוב
+
+$$\Lambda(t)_{r,r} = \lambda_r(t) = v_r(t)^\top W(t) v_r(t)$$
+
+בגזירה, איברי $\dot v_r$ מתאפסים מכיוון ש-$W v_r = \lambda_r v_r$ וגם $v_r^\top v_r = 1 \Rightarrow \dot v_r^\top v_r = 0$, ונותר $\dot \lambda_r = v_r^\top \dot W v_r$. נציב את (2):
+
+$$\begin{aligned} v_r^\top \dot W v_r &= -4\big[v_r^\top (W - W^*) W v_r + v_r^\top W (W - W^*) v_r\big] \\ &= -8 \lambda_r\, v_r^\top (W - W^*) v_r \end{aligned}$$
+
+לפי זהויות העקבה זה שווה ל-
+
+$$4 \lambda_r \langle -2(W - W^*), v_r v_r^\top \rangle$$
 
 **4.** משוואת ה-ODE של הערך העצמי $\dot \lambda_r \propto \lambda_r \cdot (\text{alignment with } -\nabla L)$ פירושה שכל ערך עצמי נע בקצב פרופורציוני לגודלו שלו (דינמיקה מכפלתית/מעריכית). עם אתחול קרוב-לאפס כל ה-$\lambda_r \approx 0$. הערכים העצמיים מוגברים בעצם אחד-אחד, רק בכיוונים הדרושים להקטנת $L$, בעוד שהיתר נותרים תקועים סביב $0$. לכן ה-$W$ הסופי הוא בעל דרגה נמוכה בקירוב — רגולריזציה מרומזת / למידת דרגה-נמוכה הדרגתית (חמדנית) של gradient flow על פירוק מטריצות.
 
@@ -142,11 +176,29 @@ $$\Delta_3(N, \delta, h) := \Delta_2(N, \delta, index(h)) + c \cdot \rho \cdot \
 **Solution sketch:**
 **1.** כל השערה נקבעת על ידי מטריצת הפרמטרים שלה $W_h$. יש לכל היותר $B^{d^2}$ מטריצות כאלה ($d^2$ רכיבים, לכל אחד לכל היותר $B$ ערכים אפשריים), וההעתקה ממטריצות על $\mathcal{H}$ היא על, ולכן $|\mathcal{H}| \leq B^{d^2}$.
 
-**2.** נקבע $h$: המשתנים $A_n := l(h(x_n), y_n)$ הם i.i.d. ב-$[0,1]$ עם $E[A_1] = L_D(h)$, ולכן Hoeffding נותן $P(|L_S(h) - L_D(h)| \geq \epsilon) \leq 2e^{-2N\epsilon^2}$. חסם איחוד על המחלקה (הסופית): הסתברות הכישלון $\leq 2|\mathcal{H}| e^{-2N\epsilon^2}$. השוואת ביטוי זה ל-$\delta$ ופתרון נותנים $\Delta_1(N, \delta, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|/\delta)}{2N}} \to 0$.
+**2.** נקבע $h$: המשתנים $A_n := l(h(x_n), y_n)$ הם i.i.d. ב-$[0,1]$ עם $E[A_1] = L_D(h)$, ולכן Hoeffding נותן
 
-**3.** פיצול ביטחון בסגנון SRM: נקצה $\delta_i := \delta \cdot 2^{-(i+1)}$ לתת-מחלקה $\mathcal{H}_i$ (כך ש-$\sum_{i=0}^{d} \delta_i < \delta$) ונחיל את סעיף 2 על כל $\mathcal{H}_i$ (בשימוש ב-$|\mathcal{H}_i| \leq |\mathcal{H}| \leq B^{d^2}$): $\Delta_2(N, \delta, i) := \sqrt{\frac{\ln(2 \cdot 2^{i+1} B^{d^2} / \delta)}{2N}}$. חסם איחוד על $i$ נותן את (b); המקדם $2^{i+1}$ הופך את החסם לעולה ממש ב-$i$ (c); והוא עדיין שואף לאפס כאשר $N \to \infty$ (a). (חלופה: פיצול אחיד $\delta/(d+1)$ בשילוב עם חסם ספירה עולה-ממש $|\mathcal{H}_i| \lesssim B^{2di}$ דרך טיעון מסוג skeleton/CUR — קבוע הספירה (לא מאומת).)
+$$P(|L_S(h) - L_D(h)| \geq \epsilon) \leq 2e^{-2N\epsilon^2}$$
 
-**4.** הבעיה: $\Delta_2$ עוזר ל-$h$ רק דרך הדרגה האמיתית של $W_h$ (ה-$i$ הקטן ביותר עם $h \in \mathcal{H}_i$). השערה שהאלגוריתם מחזיר היא בדרך כלל רק *קרובה* להשערה מדרגה נמוכה ($index(h)$ קטן) בעוד ש-$rank(W_h)$ עצמו יכול להיות גדול כמו $d$, ולכן חסם ה-$\Delta_2$ נותר גדול ואינו מתגמל את ההטיה לדרגה נמוכה של האלגוריתם. תיקון: תהי $\bar h \in \mathcal{H}_{index(h)}$ קרובה-$\epsilon$ ל-$h$. תכונת ה-$\rho$-Lipschitz של $l$ בארגומנט הראשון שלו נותנת $|l(h(x), y) - l(\bar h(x), y)| \leq \rho\epsilon$ נקודתית. לכן $|L_D(h) - L_D(\bar h)| \leq \rho\epsilon$ וגם $|L_S(\bar h) - L_S(h)| \leq \rho\epsilon$. על המאורע של סעיף 3: $L_D(h) - L_S(h) \leq \big(L_D(\bar h) - L_S(\bar h)\big) + 2\rho\epsilon \leq \Delta_2(N, \delta, index(h)) + 2\rho\epsilon$ — ולכן $c = 2$ עובד. תנאים: (a) $\lim_N \Delta_3 = 0 + 2\rho\epsilon = \mathcal{O}(\epsilon)$; (b) מתקיים על אותו מאורע בהסתברות $(1-\delta)$ כמו בסעיף 3; (c) המונוטוניות הממש של $\Delta_2$ ב-$i$ עוברת ל-$\Delta_3$ דרך $index(h)$.
+חסם איחוד על המחלקה (הסופית): הסתברות הכישלון $\leq 2|\mathcal{H}| e^{-2N\epsilon^2}$. השוואת ביטוי זה ל-$\delta$ ופתרון נותנים
+
+$$\Delta_1(N, \delta, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|/\delta)}{2N}} \to 0$$
+
+**3.** פיצול ביטחון בסגנון SRM: נקצה $\delta_i := \delta \cdot 2^{-(i+1)}$ לתת-מחלקה $\mathcal{H}_i$ (כך ש-$\sum_{i=0}^{d} \delta_i < \delta$) ונחיל את סעיף 2 על כל $\mathcal{H}_i$ (בשימוש ב-$|\mathcal{H}_i| \leq |\mathcal{H}| \leq B^{d^2}$):
+
+$$\Delta_2(N, \delta, i) := \sqrt{\frac{\ln(2 \cdot 2^{i+1} B^{d^2} / \delta)}{2N}}$$
+
+חסם איחוד על $i$ נותן את (b); המקדם $2^{i+1}$ הופך את החסם לעולה ממש ב-$i$ (c); והוא עדיין שואף לאפס כאשר $N \to \infty$ (a). (חלופה: פיצול אחיד $\delta/(d+1)$ בשילוב עם חסם ספירה עולה-ממש $|\mathcal{H}_i| \lesssim B^{2di}$ דרך טיעון מסוג skeleton/CUR — קבוע הספירה (לא מאומת).)
+
+**4.** הבעיה: $\Delta_2$ עוזר ל-$h$ רק דרך הדרגה האמיתית של $W_h$ (ה-$i$ הקטן ביותר עם $h \in \mathcal{H}_i$). השערה שהאלגוריתם מחזיר היא בדרך כלל רק *קרובה* להשערה מדרגה נמוכה ($index(h)$ קטן) בעוד ש-$rank(W_h)$ עצמו יכול להיות גדול כמו $d$, ולכן חסם ה-$\Delta_2$ נותר גדול ואינו מתגמל את ההטיה לדרגה נמוכה של האלגוריתם. תיקון: תהי $\bar h \in \mathcal{H}_{index(h)}$ קרובה-$\epsilon$ ל-$h$. תכונת ה-$\rho$-Lipschitz של $l$ בארגומנט הראשון שלו נותנת
+
+$$|l(h(x), y) - l(\bar h(x), y)| \leq \rho\epsilon$$
+
+נקודתית. לכן $|L_D(h) - L_D(\bar h)| \leq \rho\epsilon$ וגם $|L_S(\bar h) - L_S(h)| \leq \rho\epsilon$. על המאורע של סעיף 3:
+
+$$\begin{aligned} L_D(h) - L_S(h) &\leq \big(L_D(\bar h) - L_S(\bar h)\big) + 2\rho\epsilon \\ &\leq \Delta_2(N, \delta, index(h)) + 2\rho\epsilon \end{aligned}$$
+
+— ולכן $c = 2$ עובד. תנאים: (a) $\lim_N \Delta_3 = 0 + 2\rho\epsilon = \mathcal{O}(\epsilon)$; (b) מתקיים על אותו מאורע בהסתברות $(1-\delta)$ כמו בסעיף 3; (c) המונוטוניות הממש של $\Delta_2$ ב-$i$ עוברת ל-$\Delta_3$ דרך $index(h)$.
 
 **💡 טריקים שימושיים:** מחלקה סופית ⇒ Hoeffding לכל-השערה ואז חסם איחוד; "מעדיף דרגה-נמוכה/אינדקס-נמוך" מרמז על SRM — פצלו את התקציב כ-$\delta_i=\delta\,2^{-(i+1)}$ (סכים ⇒ עדיין תקף, וה-$2^{i+1}$ הופך אותו לעולה ממש ב-$i$); "ההשערות המוחזרות *קרובות* לדרגה נמוכה" מרמז על העברת Lipschitz $|L(h)-L(\bar h)|\leq\rho\epsilon$ לאיבר הכיסוי הקרוב ביותר.
 

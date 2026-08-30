@@ -35,11 +35,25 @@ For $d \in \mathbb{N}$ denote by $\mathcal{H}_d^{sym} \subseteq \mathcal{H}_d$ t
 **Solution sketch:**
 **1.** Every $h \in \mathcal{H}_d$ is a *linear* functional of the input: $h(x) = \sum_t w_t x_t$ with $w_t = C^\top A^{L-t} B$. Hence $h(0) = 0$, and $h$ is additive/homogeneous. Any continuous non-linear function, e.g. $f(x) = x_1^2$ (or $f \equiv 1$, since every $h$ vanishes at $x = 0$), is in no $\mathcal{H}_d$.
 
-**2.** Padding: given $(A, B, C)$ with $A$ diagonal of size $d$, take $A' = \mathrm{diag}(A, 0) \in \mathbb{R}^{(d+1)\times(d+1)}$ and pad $B, C$ with a zero entry. Then $C'^\top A'^{L-t} B' = C^\top A^{L-t} B$ for all $t$, so the same function is realized, giving $\mathcal{H}_d^{diag} \subseteq \mathcal{H}_{d+1}^{diag}$.
+**2.** Padding: given $(A, B, C)$ with $A$ diagonal of size $d$, take
+
+$$A' = \mathrm{diag}(A, 0) \in \mathbb{R}^{(d+1)\times(d+1)}$$
+
+and pad $B, C$ with a zero entry. Then $C'^\top A'^{L-t} B' = C^\top A^{L-t} B$ for all $t$, so the same function is realized, giving
+
+$$\mathcal{H}_d^{diag} \subseteq \mathcal{H}_{d+1}^{diag}$$
 
 **3.** Inclusion follows from (2). Strictness: for $d = 1$ the coefficient sequence $w_t = cb\,a^{L-t}$ is a geometric progression. In particular, if the middle coefficient $w_{L-1} = cb\,a = 0$ then $cb = 0$ or $a = 0$, forcing $w_L = 0$ or $w_{L-2} = 0$ as well. Take the target coefficients $(w_{L-2}, w_{L-1}, w_L) = (1, 0, 1)$ (uses $L \geq 3$): impossible in $\mathcal{H}_1^{diag}$ by the above, but realized in $\mathcal{H}_2^{diag}$ with $a_1 = 1, a_2 = -1$ and $c_1 b_1 = c_2 b_2 = \tfrac{1}{2}$, giving $w_t = \tfrac{1 + (-1)^{L-t}}{2}$ (the alternating $1, 0, 1$ pattern). This matches the hint: trace/coefficients of $A^t$ are a single geometric sequence for $d=1$ vs. a sum of two geometric sequences for $d=2$.
 
-**4.** ($\subseteq$) Diagonal matrices are symmetric, so $\mathcal{H}_d^{diag} \subseteq \mathcal{H}_d^{sym}$. ($\supseteq$) Write symmetric $A = V D V^\top$ with $V$ orthogonal, $D$ diagonal. Then $C^\top A^{L-t} B = (V^\top C)^\top D^{L-t} (V^\top B)$, so replacing $(A, B, C) \to (D, V^\top B, V^\top C)$ realizes the same function with a diagonal transition matrix. Both inclusions give equality.
+**4.** ($\subseteq$) Diagonal matrices are symmetric, so
+
+$$\mathcal{H}_d^{diag} \subseteq \mathcal{H}_d^{sym}$$
+
+($\supseteq$) Write symmetric $A = V D V^\top$ with $V$ orthogonal, $D$ diagonal. Then
+
+$$C^\top A^{L-t} B = (V^\top C)^\top D^{L-t} (V^\top B)$$
+
+so replacing $(A, B, C) \to (D, V^\top B, V^\top C)$ realizes the same function with a diagonal transition matrix. Both inclusions give equality.
 
 **💡 Useful tricks:** Any "is this class universal?" collapses once you show $h$ is *linear* in the inputs ($h(x)=\sum_t w_t x_t$) — then a nonlinear witness or $h(0)=0$ kills universality; the geometric-sequence signature $w_{t+1}w_{t-1}=w_t^2$ separates $d=1$; diagonalize symmetric $A=VDV^\top$ and *absorb* $V$ into $B,C$.
 
@@ -81,11 +95,31 @@ $$\frac{d}{dt} \Lambda(t)_{r,r} = 4 \Lambda(t)_{r,r} \left\langle -2(W(t) - W^*)
 **(4) (5 pts)** Explain why one may expect that running gradient flow over $\phi$ with an initialization close to the origin $0 \in \mathbb{R}^{d \times d}$ yields, at the end of optimization, an end-to-end matrix of approximately low rank (under the assumption that $L$ can be minimized with approximately low-rank matrices). The explanation may be qualitative.
 
 **Solution sketch:**
-**1.** Symmetry trick: $\phi(U) = \phi(-U)$ for all $U$. If $\phi$ were convex, then $\phi(0) = \phi\big(\tfrac{1}{2}U + \tfrac{1}{2}(-U)\big) \leq \tfrac{1}{2}\phi(U) + \tfrac{1}{2}\phi(-U) = \phi(U)$ for every $U$, i.e. $0$ would be a global minimizer of $\phi$. But $W^*$ is PSD, so $U^* := (W^*)^{1/2}$ satisfies $U^* U^{*\top} = W^*$ and $\phi(U^*) = L(W^*) < L(0) = \phi(0)$ — contradiction.
+**1.** Symmetry trick: $\phi(U) = \phi(-U)$ for all $U$. If $\phi$ were convex, then
 
-**2.** Gradient: $\nabla \phi(U) = 2\big[(UU^\top - W^*) + (UU^\top - W^*)^\top\big]U = 4(W - W^*)U$, using symmetry of $W = UU^\top$ and of $W^*$. Gradient flow: $\dot U(t) = -4(W(t) - W^*)U(t)$. Leibniz: $\dot W = \dot U U^\top + U \dot U^\top = -4(W - W^*)UU^\top - 4UU^\top(W - W^*) = -2[2(W - W^*)W + 2W(W - W^*)]$.
+$$\begin{aligned} \phi(0) &= \phi\big(\tfrac{1}{2}U + \tfrac{1}{2}(-U)\big) \\ &\leq \tfrac{1}{2}\phi(U) + \tfrac{1}{2}\phi(-U) \\ &= \phi(U) \end{aligned}$$
 
-**3.** Write $\Lambda(t)_{r,r} = \lambda_r(t) = v_r(t)^\top W(t) v_r(t)$. Differentiating, the $\dot v_r$ terms vanish because $W v_r = \lambda_r v_r$ and $v_r^\top v_r = 1 \Rightarrow \dot v_r^\top v_r = 0$, leaving $\dot \lambda_r = v_r^\top \dot W v_r$. Substitute (2): $v_r^\top \dot W v_r = -4\big[v_r^\top (W - W^*) W v_r + v_r^\top W (W - W^*) v_r\big] = -8 \lambda_r\, v_r^\top (W - W^*) v_r$. By the trace identities this equals $4 \lambda_r \langle -2(W - W^*), v_r v_r^\top \rangle$.
+for every $U$, i.e. $0$ would be a global minimizer of $\phi$. But $W^*$ is PSD, so $U^* := (W^*)^{1/2}$ satisfies $U^* U^{*\top} = W^*$ and $\phi(U^*) = L(W^*) < L(0) = \phi(0)$ — contradiction.
+
+**2.** Gradient:
+
+$$\nabla \phi(U) = 2\big[(UU^\top - W^*) + (UU^\top - W^*)^\top\big]U = 4(W - W^*)U$$
+
+using symmetry of $W = UU^\top$ and of $W^*$. Gradient flow: $\dot U(t) = -4(W(t) - W^*)U(t)$. Leibniz:
+
+$$\begin{aligned} \dot W &= \dot U U^\top + U \dot U^\top \\ &= -4(W - W^*)UU^\top - 4UU^\top(W - W^*) \\ &= -2[2(W - W^*)W + 2W(W - W^*)] \end{aligned}$$
+
+**3.** Write
+
+$$\Lambda(t)_{r,r} = \lambda_r(t) = v_r(t)^\top W(t) v_r(t)$$
+
+Differentiating, the $\dot v_r$ terms vanish because $W v_r = \lambda_r v_r$ and $v_r^\top v_r = 1 \Rightarrow \dot v_r^\top v_r = 0$, leaving $\dot \lambda_r = v_r^\top \dot W v_r$. Substitute (2):
+
+$$\begin{aligned} v_r^\top \dot W v_r &= -4\big[v_r^\top (W - W^*) W v_r + v_r^\top W (W - W^*) v_r\big] \\ &= -8 \lambda_r\, v_r^\top (W - W^*) v_r \end{aligned}$$
+
+By the trace identities this equals
+
+$$4 \lambda_r \langle -2(W - W^*), v_r v_r^\top \rangle$$
 
 **4.** The eigenvalue ODE $\dot \lambda_r \propto \lambda_r \cdot (\text{alignment with } -\nabla L)$ means each eigenvalue moves at a rate proportional to its own magnitude (multiplicative/exponential dynamics). With near-zero initialization all $\lambda_r \approx 0$. Eigenvalues get amplified essentially one at a time, only in directions needed to reduce $L$, while the rest remain stuck near $0$. Hence the final $W$ is approximately low-rank — implicit regularization / incremental (greedy) low-rank learning of gradient flow on matrix factorization.
 
@@ -142,11 +176,29 @@ $$\Delta_3(N, \delta, h) := \Delta_2(N, \delta, index(h)) + c \cdot \rho \cdot \
 **Solution sketch:**
 **1.** Every hypothesis is determined by its parameter matrix $W_h$. There are at most $B^{d^2}$ such matrices ($d^2$ entries, each with at most $B$ possible values), and the map from matrices onto $\mathcal{H}$ is surjective, so $|\mathcal{H}| \leq B^{d^2}$.
 
-**2.** Fix $h$: the variables $A_n := l(h(x_n), y_n)$ are i.i.d. in $[0,1]$ with $E[A_1] = L_D(h)$, so Hoeffding gives $P(|L_S(h) - L_D(h)| \geq \epsilon) \leq 2e^{-2N\epsilon^2}$. Union bound over the (finite) class: failure probability $\leq 2|\mathcal{H}| e^{-2N\epsilon^2}$. Setting this to $\delta$ and solving yields $\Delta_1(N, \delta, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|/\delta)}{2N}} \to 0$.
+**2.** Fix $h$: the variables $A_n := l(h(x_n), y_n)$ are i.i.d. in $[0,1]$ with $E[A_1] = L_D(h)$, so Hoeffding gives
 
-**3.** SRM-style confidence splitting: allocate $\delta_i := \delta \cdot 2^{-(i+1)}$ to sub-class $\mathcal{H}_i$ (so $\sum_{i=0}^{d} \delta_i < \delta$) and apply part 2 to each $\mathcal{H}_i$ (using $|\mathcal{H}_i| \leq |\mathcal{H}| \leq B^{d^2}$): $\Delta_2(N, \delta, i) := \sqrt{\frac{\ln(2 \cdot 2^{i+1} B^{d^2} / \delta)}{2N}}$. Union bound over $i$ gives (b); the $2^{i+1}$ factor makes the bound strictly increasing in $i$ (c); and it still vanishes as $N \to \infty$ (a). (Alternative: uniform split $\delta/(d+1)$ combined with a strictly-increasing counting bound $|\mathcal{H}_i| \lesssim B^{2di}$ via a skeleton/CUR-type argument — counting constant (unverified).)
+$$P(|L_S(h) - L_D(h)| \geq \epsilon) \leq 2e^{-2N\epsilon^2}$$
 
-**4.** The problem: $\Delta_2$ helps $h$ only through the actual rank of $W_h$ (the smallest $i$ with $h \in \mathcal{H}_i$). A hypothesis returned by the algorithm is typically only *close* to a low-rank hypothesis ($index(h)$ small) while $rank(W_h)$ itself can be as large as $d$, so the $\Delta_2$ bound stays large and does not reward the algorithm's low-rank bias. Fix: let $\bar h \in \mathcal{H}_{index(h)}$ be $\epsilon$-close to $h$. $\rho$-Lipschitzness of $l$ in its first argument gives $|l(h(x), y) - l(\bar h(x), y)| \leq \rho\epsilon$ pointwise. Hence $|L_D(h) - L_D(\bar h)| \leq \rho\epsilon$ and $|L_S(\bar h) - L_S(h)| \leq \rho\epsilon$. On part 3's event: $L_D(h) - L_S(h) \leq \big(L_D(\bar h) - L_S(\bar h)\big) + 2\rho\epsilon \leq \Delta_2(N, \delta, index(h)) + 2\rho\epsilon$ — so $c = 2$ works. Conditions: (a) $\lim_N \Delta_3 = 0 + 2\rho\epsilon = \mathcal{O}(\epsilon)$; (b) holds on the same probability-$(1-\delta)$ event as part 3; (c) strict monotonicity of $\Delta_2$ in $i$ transfers to $\Delta_3$ through $index(h)$.
+Union bound over the (finite) class: failure probability $\leq 2|\mathcal{H}| e^{-2N\epsilon^2}$. Setting this to $\delta$ and solving yields
+
+$$\Delta_1(N, \delta, |\mathcal{H}|) = \sqrt{\frac{\ln(2|\mathcal{H}|/\delta)}{2N}} \to 0$$
+
+**3.** SRM-style confidence splitting: allocate $\delta_i := \delta \cdot 2^{-(i+1)}$ to sub-class $\mathcal{H}_i$ (so $\sum_{i=0}^{d} \delta_i < \delta$) and apply part 2 to each $\mathcal{H}_i$ (using $|\mathcal{H}_i| \leq |\mathcal{H}| \leq B^{d^2}$):
+
+$$\Delta_2(N, \delta, i) := \sqrt{\frac{\ln(2 \cdot 2^{i+1} B^{d^2} / \delta)}{2N}}$$
+
+Union bound over $i$ gives (b); the $2^{i+1}$ factor makes the bound strictly increasing in $i$ (c); and it still vanishes as $N \to \infty$ (a). (Alternative: uniform split $\delta/(d+1)$ combined with a strictly-increasing counting bound $|\mathcal{H}_i| \lesssim B^{2di}$ via a skeleton/CUR-type argument — counting constant (unverified).)
+
+**4.** The problem: $\Delta_2$ helps $h$ only through the actual rank of $W_h$ (the smallest $i$ with $h \in \mathcal{H}_i$). A hypothesis returned by the algorithm is typically only *close* to a low-rank hypothesis ($index(h)$ small) while $rank(W_h)$ itself can be as large as $d$, so the $\Delta_2$ bound stays large and does not reward the algorithm's low-rank bias. Fix: let $\bar h \in \mathcal{H}_{index(h)}$ be $\epsilon$-close to $h$. $\rho$-Lipschitzness of $l$ in its first argument gives
+
+$$|l(h(x), y) - l(\bar h(x), y)| \leq \rho\epsilon$$
+
+pointwise. Hence $|L_D(h) - L_D(\bar h)| \leq \rho\epsilon$ and $|L_S(\bar h) - L_S(h)| \leq \rho\epsilon$. On part 3's event:
+
+$$\begin{aligned} L_D(h) - L_S(h) &\leq \big(L_D(\bar h) - L_S(\bar h)\big) + 2\rho\epsilon \\ &\leq \Delta_2(N, \delta, index(h)) + 2\rho\epsilon \end{aligned}$$
+
+— so $c = 2$ works. Conditions: (a) $\lim_N \Delta_3 = 0 + 2\rho\epsilon = \mathcal{O}(\epsilon)$; (b) holds on the same probability-$(1-\delta)$ event as part 3; (c) strict monotonicity of $\Delta_2$ in $i$ transfers to $\Delta_3$ through $index(h)$.
 
 **💡 Useful tricks:** Finite class ⇒ Hoeffding per-hypothesis then union bound; "prefers low-rank/low-index" cues SRM — split the budget as $\delta_i=\delta\,2^{-(i+1)}$ (summable ⇒ still valid, and the $2^{i+1}$ makes it strictly increasing in $i$); "returned hypotheses are *close* to low-rank" cues a Lipschitz transfer $|L(h)-L(\bar h)|\leq\rho\epsilon$ to the nearest cover member.
 

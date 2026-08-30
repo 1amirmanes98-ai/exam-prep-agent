@@ -13,7 +13,15 @@ Let $\mathcal{H}_B$ be the hypotheses space corresponding to a fully-connected s
 - **(8 pts)** If we omit biases from both models, does the expressive efficiency still hold? Prove your answer.
 
 **Solution sketch:**
-**i.** $\mathcal{H}_B = \{x \mapsto \sum_{i=1}^{B} w^{(2)}_i\, [\,w^{(1)}_i x + b^{(1)}_i\,]_+ + b^{(2)}\}$ with all parameters real. $\bar{\mathcal{H}}_{\bar B} = \{x \mapsto W_L\,\sigma(W_{L-1}\,\sigma(\cdots \sigma(W_1 x + b_1)\cdots) + b_{L-1}) + b_L\}$ with hidden widths $\bar B$ and $\sigma = $ entrywise ReLU $[\cdot]_+$.
+**i.**
+
+$$\mathcal{H}_B = \{x \mapsto \sum_{i=1}^{B} w^{(2)}_i\, [\,w^{(1)}_i x + b^{(1)}_i\,]_+ + b^{(2)}\}$$
+
+with all parameters real.
+
+$$\bar{\mathcal{H}}_{\bar B} = \{x \mapsto W_L\,\sigma(W_{L-1}\,\sigma(\cdots \sigma(W_1 x + b_1)\cdots) + b_{L-1}) + b_L\}$$
+
+with hidden widths $\bar B$ and $\sigma = $ entrywise ReLU $[\cdot]_+$.
 
 **ii.** Piece-counting argument: a shallow width-$B$ ReLU net is piecewise linear with at most $B + 1$ linear pieces (each hidden unit contributes one breakpoint). Separation construction: a small constant-width hat/triangle layer $\varphi$ (realizable with 2–3 ReLU units) doubles the number of oscillations under composition. Composing over $L-1$ hidden layers yields a "sawtooth" function with $2^{\Omega(L)}$ linear pieces (Telgarsky-style). Replicating it in the shallow family forces $B \geq 2^{\Omega(L)}$, i.e., exponential width. Also verify the containment direction of expressive efficiency: any shallow net is realized by a depth-$L$ net of comparable width by passing values forward with the ReLU identity trick $x = [x]_+ - [-x]_+$ (two channels per value).
 
@@ -44,17 +52,37 @@ Assume hereafter that $N = 2$.
 - **(8 pts)** Suppose we minimize $\phi(\cdot)$ by running gradient flow starting from an initialization $(w_1(0), w_2(0))$ that meets $w_1(0)^2 - w_2(0)^2 = c$ for some $c > 0$. Suppose also that gradient flow converges to a global minimum $(w_1(\infty), w_2(\infty))$ for which $w_1(\infty) > 0$. Derive closed-form expressions for $w_1(\infty)$ and $w_2(\infty)$.
 
 **Solution sketch:**
-**i.** $\phi : \mathbb{R}^N \to \mathbb{R}_{\geq 0}$, $\phi(w_1, \ldots, w_N) = L_S\big(\prod_{i=1}^N w_i\big) = \frac{1}{m}\big\|\underline{x}\cdot \prod_{i=1}^N w_i - \underline{y}\big\|^2$.
+**i.** $\phi : \mathbb{R}^N \to \mathbb{R}_{\geq 0}$,
 
-**ii.** $L_S$ is a strictly convex parabola with unique minimizer $w^* = \langle \underline x, \underline y\rangle / \|\underline x\|^2 > 0$. Pick two global minimizers of $\phi$ with product $w^*$, e.g. $(2, w^*/2, 1, \ldots, 1)$ and $(w^*/2, 2, 1, \ldots, 1)$. Their midpoint has end-to-end product $\big(\frac{2 + w^*/2}{2}\big)^2 \neq w^*$ (for suitable/generic choice), hence a strictly larger $\phi$ value than the endpoints' common (minimal) value — Jensen violated $\Rightarrow$ non-convex. (Equivalently: a convex function's minimizer set is convex, while $\{\prod_i w_i = w^*\}$ is not.)
+$$\phi(w_1, \ldots, w_N) = L_S\big(\prod_{i=1}^N w_i\big) = \frac{1}{m}\big\|\underline{x}\cdot \prod_{i=1}^N w_i - \underline{y}\big\|^2$$
+
+**ii.** $L_S$ is a strictly convex parabola with unique minimizer
+
+$$w^* = \langle \underline x, \underline y\rangle / \|\underline x\|^2 > 0$$
+
+Pick two global minimizers of $\phi$ with product $w^*$, e.g. $(2, w^*/2, 1, \ldots, 1)$ and $(w^*/2, 2, 1, \ldots, 1)$. Their midpoint has end-to-end product $\big(\frac{2 + w^*/2}{2}\big)^2 \neq w^*$ (for suitable/generic choice), hence a strictly larger $\phi$ value than the endpoints' common (minimal) value — Jensen violated $\Rightarrow$ non-convex. (Equivalently: a convex function's minimizer set is convex, while $\{\prod_i w_i = w^*\}$ is not.)
 
 **iii.** $\phi \geq L_S(w^*)$ everywhere with equality iff $\prod_i w_i = w^*$. The solution set contains $\{(\alpha, w^*/\alpha, 1, \ldots, 1) : \alpha \neq 0\}$ — infinitely many global minima.
 
-**iv.** $N=2$: $\nabla\phi(w_1,w_2) = L_S'(w_1w_2)\,(w_2, w_1)$. Critical points: either $w_1w_2 = w^*$ (global minima) or $(w_1,w_2) = (0,0)$. At the origin the Hessian is $\begin{pmatrix} 0 & L_S'(0) \\ L_S'(0) & 0\end{pmatrix}$ with $L_S'(0) = -\frac{2}{m}\langle \underline x, \underline y\rangle < 0$, so its eigenvalues are $\pm\frac{2}{m}\langle\underline x,\underline y\rangle$ — a strictly negative eigenvalue exists $\Rightarrow$ the only saddle is strict.
+**iv.** $N=2$:
+
+$$\nabla\phi(w_1,w_2) = L_S'(w_1w_2)\,(w_2, w_1)$$
+
+Critical points: either $w_1w_2 = w^*$ (global minima) or $(w_1,w_2) = (0,0)$. At the origin the Hessian is
+
+$$\begin{pmatrix} 0 & L_S'(0) \\ L_S'(0) & 0\end{pmatrix}$$
+
+with $L_S'(0) = -\frac{2}{m}\langle \underline x, \underline y\rangle < 0$, so its eigenvalues are $\pm\frac{2}{m}\langle\underline x,\underline y\rangle$ — a strictly negative eigenvalue exists $\Rightarrow$ the only saddle is strict.
 
 **v.** Every critical point is either the origin (a strict saddle, hence not a local minimum) or satisfies $w_1w_2 = w^*$ (global minimum) $\Rightarrow$ all local minima are global.
 
-**vi.** Balancedness is conserved under gradient flow ($\frac{d}{dt}(w_1^2 - w_2^2) = 0$), so $w_1(\infty)^2 - w_2(\infty)^2 = c$ together with $w_1(\infty)\,w_2(\infty) = w^*$. Solving with $w_1(\infty) > 0$: $w_1(\infty) = \sqrt{\tfrac{c + \sqrt{c^2 + 4(w^*)^2}}{2}}$, $w_2(\infty) = w^* / w_1(\infty)$, where $w^* = \langle \underline x, \underline y\rangle/\|\underline x\|^2$.
+**vi.** Balancedness is conserved under gradient flow ($\frac{d}{dt}(w_1^2 - w_2^2) = 0$), so $w_1(\infty)^2 - w_2(\infty)^2 = c$ together with $w_1(\infty)\,w_2(\infty) = w^*$. Solving with $w_1(\infty) > 0$:
+
+$$\boxed{\,w_1(\infty) = \sqrt{\tfrac{c + \sqrt{c^2 + 4(w^*)^2}}{2}}\,}$$
+
+$$\boxed{\,w_2(\infty) = w^* / w_1(\infty)\,}$$
+
+where $w^* = \langle \underline x, \underline y\rangle/\|\underline x\|^2$.
 
 **💡 Useful tricks:** Non-convexity is cleanest from the *minimizer set* $\{\prod_i w_i=w^*\}$ being non-convex (or Jensen at a midpoint); the same set gives infinitely many minima $\{(\alpha,w^*/\alpha,1,\dots)\}$; for $N=2$ the origin's Hessian has eigenvalues $\pm\frac2m\langle x,y\rangle$; conservation $w_1^2-w_2^2=c$ plus $w_1w_2=w^*$ solves the endpoint in closed form.
 
@@ -78,9 +106,21 @@ Assume now that the training set $S = \{(\underline{x}_i, y_i)\}_{i=1}^m$ is dra
 - **(5 pts)** If $\mathcal{D}$ was such that a label $y_i$ is independent of its instance $\underline{x}_i$, what would you expect from the Euclidean norm of the learned hypothesis? Explain your answer (qualitatively).
 
 **Solution sketch:**
-**i.** $\nabla L_S(\underline w) = \frac{1}{m}\sum_i \partial_2\ell(y_i, \langle \underline x_i, \underline w\rangle)\, \underline x_i \in V := \mathrm{span}\{\underline x_i\}$. With zero initialization, every GD iterate — hence the limit $\hat{\underline w}$ — lies in $V$. Global optimum $\Leftrightarrow$ $L_S = 0$ $\Leftrightarrow$ $\langle \underline x_i, \underline w\rangle = y_i\ \forall i$ (by the $\ell = 0$ iff equal-arguments property). Feasible since $d > m$ and the $\underline x_i$ are linearly independent. Orthogonal decomposition: any solution $\underline w = \underline w_V + \underline w_\perp$ satisfies the constraints through $\underline w_V$ alone, and $\|\underline w\|^2 = \|\underline w_V\|^2 + \|\underline w_\perp\|^2$. The solution lying in $V$ is unique (invertible $m \times m$ Gram matrix from linear independence) and hence has minimal norm. GD's limit is that solution.
+**i.**
 
-**ii.** Combine the reminder-style Rademacher bound with the given complexity estimate: w.p. $\geq 1 - \delta$, $\forall h \in \mathcal{H}_r$: $L_{\mathcal D}(h) - L_S(h) \leq \frac{2\rho\, r\, \max_i \|\underline x_i\|}{\sqrt m} + O\big(\sqrt{\ln(1/\delta)/m}\big)$. Make it norm-adaptive by a union bound over integer radii $r = 1, 2, \ldots$ with $\delta_r = \frac{6\delta}{\pi^2 r^2}$ and instantiate $r = \lceil\|\hat{\underline w}\|\rceil \leq \|\hat{\underline w}\| + 1$, giving a gap bound scaling with $\rho(\|\hat{\underline w}\|+1)\max_i\|\underline x_i\|/\sqrt m$ — smaller learned norm $\Rightarrow$ tighter bound.
+$$\nabla L_S(\underline w) = \frac{1}{m}\sum_i \partial_2\ell(y_i, \langle \underline x_i, \underline w\rangle)\, \underline x_i \in V := \mathrm{span}\{\underline x_i\}$$
+
+With zero initialization, every GD iterate — hence the limit $\hat{\underline w}$ — lies in $V$. Global optimum $\Leftrightarrow$ $L_S = 0$ $\Leftrightarrow$ $\langle \underline x_i, \underline w\rangle = y_i\ \forall i$ (by the $\ell = 0$ iff equal-arguments property). Feasible since $d > m$ and the $\underline x_i$ are linearly independent. Orthogonal decomposition: any solution $\underline w = \underline w_V + \underline w_\perp$ satisfies the constraints through $\underline w_V$ alone, and $\|\underline w\|^2 = \|\underline w_V\|^2 + \|\underline w_\perp\|^2$. The solution lying in $V$ is unique (invertible $m \times m$ Gram matrix from linear independence) and hence has minimal norm. GD's limit is that solution.
+
+**ii.** Combine the reminder-style Rademacher bound with the given complexity estimate: w.p. $\geq 1 - \delta$, $\forall h \in \mathcal{H}_r$:
+
+$$L_{\mathcal D}(h) - L_S(h) \leq \frac{2\rho\, r\, \max_i \|\underline x_i\|}{\sqrt m} + O\big(\sqrt{\ln(1/\delta)/m}\big)$$
+
+Make it norm-adaptive by a union bound over integer radii $r = 1, 2, \ldots$ with $\delta_r = \frac{6\delta}{\pi^2 r^2}$ and instantiate
+
+$$r = \lceil\|\hat{\underline w}\|\rceil \leq \|\hat{\underline w}\| + 1$$
+
+giving a gap bound scaling with $\rho(\|\hat{\underline w}\|+1)\max_i\|\underline x_i\|/\sqrt m$ — smaller learned norm $\Rightarrow$ tighter bound.
 
 **iii.** With labels independent of instances there is no low-norm linear rule correlating $\underline x$ with $y$. Interpolating $m$ effectively random labels forces the min-norm interpolator to have a *large* norm (growing with $m$/noise), so the bound above becomes loose — consistent with the fact that no generalization is possible in this setting.
 

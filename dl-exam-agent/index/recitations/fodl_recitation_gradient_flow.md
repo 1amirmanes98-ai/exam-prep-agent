@@ -16,19 +16,55 @@
 
 ## Worked problems / derivations
 **P1.** Show GF is the small-step limit of GD.
-Technique: view GD iterates "sampled" at multiples of $\eta$: $\frac{\theta_{t+\eta}-\theta_t}{\eta} = -\nabla f(\theta_t)$; taking $\eta\to 0$ turns the difference quotient into $\frac{d}{dt}\theta(t) = -\nabla f(\theta(t))$.
+Technique: view GD iterates "sampled" at multiples of $\eta$:
+
+$$\frac{\theta_{t+\eta}-\theta_t}{\eta} = -\nabla f(\theta_t)$$
+
+; taking $\eta\to 0$ turns the difference quotient into
+
+$$\frac{d}{dt}\theta(t) = -\nabla f(\theta(t))$$
 
 **P2.** Show GD is a first-order discretization of GF.
-Technique: Taylor-expand the flow: $\theta(t+\eta) = \theta(t) + \dot\theta(t)\eta + o(\eta) = \theta(t) - \eta\nabla f(\theta(t)) + o(\eta)$; dropping $o(\eta)$ gives the GD update (forward Euler).
+Technique: Taylor-expand the flow:
+
+$$\theta(t+\eta) = \theta(t) + \dot\theta(t)\eta + o(\eta) = \theta(t) - \eta\nabla f(\theta(t)) + o(\eta)$$
+
+; dropping $o(\eta)$ gives the GD update (forward Euler).
 
 **P3.** Closed-form GF solution for 1-D linear regression with one sample $x\in\mathbb{R}\setminus\{0\}$, $f(\theta)=\tfrac12(\theta x-y)^2$ (slide displays a $\tfrac1x$ prefactor, but the derivation uses $\nabla f(\theta)=(\theta x-y)x$).
-Technique: the ODE is linear: $\dot\theta(t) = -\theta(t)x^2 + xy$; separate variables $\frac{\dot\theta(t)}{\theta(t)x^2-xy}=-1$, integrate to $\frac{1}{x^2}\big(\ln|\theta(t)x^2-xy| - \ln|\theta(0)x^2-xy|\big) = -t$, exponentiate: $\theta(t) = \frac{y}{x} + \big(\theta(0)-\frac{y}{x}\big)e^{-x^2 t}$ — exponential convergence to the global minimizer $y/x$ at rate $x^2$. (The final slide's printed formula drops the "$+$"; the line above it is correct.)
+Technique: the ODE is linear:
+
+$$\dot\theta(t) = -\theta(t)x^2 + xy$$
+
+; separate variables
+
+$$\frac{\dot\theta(t)}{\theta(t)x^2-xy}=-1$$
+
+, integrate to
+
+$$\frac{1}{x^2}\big(\ln|\theta(t)x^2-xy| - \ln|\theta(0)x^2-xy|\big) = -t$$
+
+, exponentiate:
+
+$$\theta(t) = \frac{y}{x} + \big(\theta(0)-\frac{y}{x}\big)e^{-x^2 t}$$
+
+— exponential convergence to the global minimizer $y/x$ at rate $x^2$. (The final slide's printed formula drops the "$+$"; the line above it is correct.)
 
 **P4.** Monotonicity: $f(\theta(t))$ is non-increasing under GF.
-Technique: one-line chain rule: $\frac{d}{dt}f(\theta(t)) = \nabla f(\theta(t))^\top\dot\theta(t) = -\|\nabla f(\theta(t))\|_2^2 \le 0$.
+Technique: one-line chain rule:
+
+$$\frac{d}{dt}f(\theta(t)) = \nabla f(\theta(t))^\top\dot\theta(t) = -\|\nabla f(\theta(t))\|_2^2 \le 0$$
 
 **P5.** GF reaches an $\epsilon$-stationary point by time $T \ge \frac{f(\theta(0))-f^*}{\epsilon^2}$ (assuming $f^*:=\min_\theta f(\theta)\in\mathbb{R}$).
-Technique: fundamental theorem of calculus: $f(\theta(T))-f(\theta(0)) = -\int_0^T\|\nabla f(\theta(t))\|_2^2\,dt \le -T\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2^2$; rearrange to $\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2 \le \sqrt{\frac{f(\theta(0))-f^*}{T}}$ and set the RHS $\le\epsilon$.
+Technique: fundamental theorem of calculus:
+
+$$f(\theta(T))-f(\theta(0)) = -\int_0^T\|\nabla f(\theta(t))\|_2^2\,dt \le -T\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2^2$$
+
+; rearrange to
+
+$$\min_{t\in[0,T]}\|\nabla f(\theta(t))\|_2 \le \sqrt{\frac{f(\theta(0))-f^*}{T}}$$
+
+and set the RHS $\le\epsilon$.
 
 **P6.** Proposition: if $f\in C^1$ and $\lim_{t\to\infty}\theta(t)=\theta^*$, then $\theta^*$ is a critical point of $f$.
 Technique: stated as an exercise here ("straightforward"); proved in full in Recitation 8 (contradiction via continuity + fundamental theorem of calculus).

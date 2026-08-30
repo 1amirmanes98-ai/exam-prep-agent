@@ -61,11 +61,29 @@ $$\underline{\dot{u}}(t) := \tfrac{d}{dt}\underline{u}(t) = -H(t)\,(\underline{u
 - **(7 pts)** הסבירו (איכותית) מדוע התכנסות להפסד אפס אינה סבירה במשטר זה ($k < m$), אך סבירה תחת פרמטריזציית יתר, כלומר כאשר $k \gg m$.
 
 **Solution sketch:**
-**i.** gradient flow: $\underline{\dot w} = -\nabla\ell(\underline w) = -\sum_j (u_j - y_j)\, \frac{\partial f(\underline w, \underline x_j)}{\partial \underline w}$. כלל השרשרת לכל קואורדינטה: $\dot u_i = \big\langle \frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}, \underline{\dot w}\big\rangle = -\sum_j H_{ij}(t)(u_j - y_j)$.
+**i.** gradient flow:
 
-**ii.** יהי $\underline e := \underline u - \underline y$. עם $H$ קבועה סימטרית וחיובית-למחצה: $\underline{\dot e} = -H\underline e \Rightarrow \underline e(t) = e^{-Ht}\underline e(0)$. בבסיס העצמי האורתונורמלי של $H$, הרכיב ה-$i$ דועך כ-$e^{-\lambda_i t}$. $\ell(\underline w(t)) = \frac12\|\underline e(t)\|^2 = \frac12\sum_i e^{-2\lambda_i t}\,\langle \underline e(0), \underline v_i\rangle^2$. כל מחובר הוא $\leq \epsilon/m$ ברגע ש-$t \geq \frac{1}{2\lambda_i}\log\big(\frac{m\,\|\underline e(0)\|^2}{2\epsilon}\big)$ (בשימוש ב-$\langle \underline e(0), \underline v_i\rangle^2 \leq \|\underline e(0)\|^2$). קחו את המקסימום על $i$ וסכמו — ה-$m$ בתוך הלוג משלם עבור $m$ המחוברים.
+$$\begin{aligned} \underline{\dot w} &= -\nabla\ell(\underline w) \\ &= -\sum_j (u_j - y_j)\, \frac{\partial f(\underline w, \underline x_j)}{\partial \underline w} \end{aligned}$$
 
-**iii.** $H = JJ^\top$ כאשר $J \in \mathbb{R}^{m \times k}$ הוא היעקוביאן עם שורות $\frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}^\top$. לכן $\mathrm{rank}(H) \leq \mathrm{rank}(J) \leq k < m$, ולכן המטריצה הסימטרית חיובית-למחצה $H$ סינגולרית — ערך עצמי כלשהו שווה 0.
+כלל השרשרת לכל קואורדינטה:
+
+$$\begin{aligned} \dot u_i &= \big\langle \frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}, \underline{\dot w}\big\rangle \\ &= -\sum_j H_{ij}(t)(u_j - y_j) \end{aligned}$$
+
+**ii.** יהי $\underline e := \underline u - \underline y$. עם $H$ קבועה סימטרית וחיובית-למחצה:
+
+$$\underline{\dot e} = -H\underline e \Rightarrow \underline e(t) = e^{-Ht}\underline e(0)$$
+
+בבסיס העצמי האורתונורמלי של $H$, הרכיב ה-$i$ דועך כ-$e^{-\lambda_i t}$.
+
+$$\begin{aligned} \ell(\underline w(t)) &= \frac12\|\underline e(t)\|^2 \\ &= \frac12\sum_i e^{-2\lambda_i t}\,\langle \underline e(0), \underline v_i\rangle^2 \end{aligned}$$
+
+כל מחובר הוא $\leq \epsilon/m$ ברגע ש-$t \geq \frac{1}{2\lambda_i}\log\big(\frac{m\,\|\underline e(0)\|^2}{2\epsilon}\big)$ (בשימוש ב-$\langle \underline e(0), \underline v_i\rangle^2 \leq \|\underline e(0)\|^2$). קחו את המקסימום על $i$ וסכמו — ה-$m$ בתוך הלוג משלם עבור $m$ המחוברים.
+
+**iii.** $H = JJ^\top$ כאשר $J \in \mathbb{R}^{m \times k}$ הוא היעקוביאן עם שורות $\frac{\partial f(\underline w, \underline x_i)}{\partial \underline w}^\top$. לכן
+
+$$\mathrm{rank}(H) \leq \mathrm{rank}(J) \leq k < m$$
+
+ולכן המטריצה הסימטרית חיובית-למחצה $H$ סינגולרית — ערך עצמי כלשהו שווה 0.
 
 **iv.** כאשר $k < m$: רכיבי השארית הנמצאים במרחב האפס של $H$ אינם דועכים, ובאופן גנרי לא ניתן להתאים את כל $m$ התוויות על ידי $k < m$ פרמטרים — הפסד האימון נתקע מעל 0. כאשר $k \gg m$: באופן גנרי ל-$J$ יש דרגת שורות מלאה ולכן $H \succ 0$ ($\lambda_{\min} > 0$), הנותן התכנסות אקספוננציאלית להפסד אפס. יתר על כן, במשטר האולטרה-רחב (NTK) $H(t)$ אכן נשארת קרובה ל-$H(0)$, מה שמצדיק את הנחת הגרעין הקבוע.
 
@@ -92,7 +110,29 @@ $$\forall \underline{w} \in \mathbb{R}^k : L_{\mathcal{D}}(\underline{w}) - L_S(
 $$\forall \underline{w} \in \mathbb{R}^k : L_{\mathcal{D}}(\underline{w}) - L_S(\underline{w}) \leq \min_{r \in [k]}\left\{\Delta_r\left(m, \tfrac{\delta}{k}\right) + 2\rho \cdot |(\underline{w})_r|\right\}$$
 
 **Solution sketch:**
-**i.** עבור $\underline w$ שרירותי, הגדירו $\tilde{\underline w} \in W_r$ על ידי איפוס קואורדינטה $r$. אז $\|\underline w - \tilde{\underline w}\| = |(\underline w)_r|$. העברת Lipschitz: $|f(\underline w, \underline x) - f(\tilde{\underline w}, \underline x)| \leq \rho\,|(\underline w)_r|$ עבור כל $\underline x$, ולפי אי-שוויון המשולש ההפוך, הפסד $\ell_1$ (כלומר $|y - f(\cdot, \underline x)|$) הוא 1-Lipschitz בניבוי, ולכן נקודתית $\big|\,|y - f(\underline w,\underline x)| - |y - f(\tilde{\underline w},\underline x)|\,\big| \leq \rho\,|(\underline w)_r|$. מיצוע/לקיחת תוחלת נותנים $|L_S(\underline w) - L_S(\tilde{\underline w})| \leq \rho|(\underline w)_r|$ וגם $|L_{\mathcal D}(\underline w) - L_{\mathcal D}(\tilde{\underline w})| \leq \rho|(\underline w)_r|$. שרשרו את שלושת אי-השוויונות על מאורע ה-$1-\delta$ עבור $W_r$: $L_{\mathcal D}(\underline w) - L_S(\underline w) \leq \big[L_{\mathcal D}(\tilde{\underline w}) - L_S(\tilde{\underline w})\big] + 2\rho|(\underline w)_r| \leq \Delta_r(m,\delta) + 2\rho|(\underline w)_r|$.
+**i.** עבור $\underline w$ שרירותי, הגדירו $\tilde{\underline w} \in W_r$ על ידי איפוס קואורדינטה $r$. אז
+
+$$\|\underline w - \tilde{\underline w}\| = |(\underline w)_r|$$
+
+העברת Lipschitz:
+
+$$|f(\underline w, \underline x) - f(\tilde{\underline w}, \underline x)| \leq \rho\,|(\underline w)_r|$$
+
+עבור כל $\underline x$, ולפי אי-שוויון המשולש ההפוך, הפסד $\ell_1$ (כלומר $|y - f(\cdot, \underline x)|$) הוא 1-Lipschitz בניבוי, ולכן נקודתית
+
+$$\big|\,|y - f(\underline w,\underline x)| - |y - f(\tilde{\underline w},\underline x)|\,\big| \leq \rho\,|(\underline w)_r|$$
+
+מיצוע/לקיחת תוחלת נותנים
+
+$$|L_S(\underline w) - L_S(\tilde{\underline w})| \leq \rho|(\underline w)_r|$$
+
+וגם
+
+$$|L_{\mathcal D}(\underline w) - L_{\mathcal D}(\tilde{\underline w})| \leq \rho|(\underline w)_r|$$
+
+שרשרו את שלושת אי-השוויונות על מאורע ה-$1-\delta$ עבור $W_r$:
+
+$$\begin{aligned} L_{\mathcal D}(\underline w) - L_S(\underline w) &\leq \big[L_{\mathcal D}(\tilde{\underline w}) - L_S(\tilde{\underline w})\big] + 2\rho|(\underline w)_r| \\ &\leq \Delta_r(m,\delta) + 2\rho|(\underline w)_r| \end{aligned}$$
 
 **ii.** הפעילו את חלק (i) עבור כל $r \in [k]$ עם פרמטר ביטחון $\delta/k$. לפי חסם איחוד כל $k$ המאורעות מתקיימים בו-זמנית בהסתברות $\geq 1 - \delta$. על המאורע המשותף הזה חסם (i) מתקיים עבור *כל* $r$ בו-זמנית ועבור כל $\underline w$, ולכן ניתן לקחת את המינימום על $r \in [k]$ — הנותן את החסם המבוקש (בטעם SRM/למידה לא-אחידה: הקואורדינטה הטובה ביותר לאיפוס לכל השערה).
 

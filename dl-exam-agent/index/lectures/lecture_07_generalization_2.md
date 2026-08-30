@@ -38,37 +38,53 @@
 
 ## Key theorems & results
 **Prop 1 (linear regression: where span-of-gradients methods land).** Minimize $L_S(w)$ with $w^{(0)}=0$ and iterates satisfying $w^{(t+1)}-w^{(t)}\in\mathrm{span}(\{\nabla\ell_{(x_i,y_i)}(w):i\in[m],w\in\mathbb{R}^d\})$ (includes GD and SGD, with/without momentum). If the iterates converge to a global minimizer (zero loss), that limit is $X(X^\top X)^{-1}y$.
-Proof idea: $\nabla\ell_{(x_i,y_i)}(w)=(y_i-x_i^\top w)\cdot x_i\in\mathrm{span}(\{x_i\})$ ⇒ all iterates (and the limit — spans are topologically closed) lie in $\mathrm{span}(\{x_i\}_{i=1}^m)$, so $w^{(\infty)}=Xr$; zero loss ⇒ $X^\top Xr=y$ with $X^\top X$ invertible ($\mathrm{rank}(X)=m$) ⇒ $r=(X^\top X)^{-1}y$.
-Exam relevance: cite exactly which algorithms are covered and why the limit stays in the span.
+
+**Proof idea:** $\nabla\ell_{(x_i,y_i)}(w)=(y_i-x_i^\top w)\cdot x_i\in\mathrm{span}(\{x_i\})$ ⇒ all iterates (and the limit — spans are topologically closed) lie in $\mathrm{span}(\{x_i\}_{i=1}^m)$, so $w^{(\infty)}=Xr$; zero loss ⇒ $X^\top Xr=y$ with $X^\top X$ invertible ($\mathrm{rank}(X)=m$) ⇒ $r=(X^\top X)^{-1}y$.
+
+**Exam relevance:** cite exactly which algorithms are covered and why the limit stays in the span.
 
 **Lem 1 (minimal-norm characterization).** Among all zero-loss solutions of $L_S$, $X(X^\top X)^{-1}y$ is the one with minimal Euclidean norm.
-Proof idea: decompose a minimal-norm global minimizer $w^*=w_\parallel^*+w_\perp^*$ w.r.t. $\mathrm{span}(\{x_i\})$; $X^\top w^*=X^\top w_\parallel^*$ so $w_\parallel^*$ is also a global minimizer; Pythagoras forces $\|w_\perp^*\|=0$; in-span zero-loss solution is unique $=X(X^\top X)^{-1}y$.
+
+**Proof idea:** decompose a minimal-norm global minimizer $w^*=w_\parallel^*+w_\perp^*$ w.r.t. $\mathrm{span}(\{x_i\})$; $X^\top w^*=X^\top w_\parallel^*$ so $w_\parallel^*$ is also a global minimizer; Pythagoras forces $\|w_\perp^*\|=0$; in-span zero-loss solution is unique $=X(X^\top X)^{-1}y$.
 
 **Cor 1.** Under Prop 1's conditions, optimization converges to the minimal Euclidean norm solution. (Implicit regularization of gradient-based optimization in linear regression, zero init = $\ell_2$-norm minimization.)
 
 **Result (NTK regime).** Learned weights converge to $\Phi(\Phi^\top\Phi)^{-1}y$; prediction rule
+
 $$x\mapsto\big\langle\phi(x),\Phi(\Phi^\top\Phi)^{-1}y\big\rangle=[K_{NTK}(x,x_1),\dots,K_{NTK}(x,x_m)]^\top (H^*)^{-1}y .$$
+
 For **any** feature map $\psi$ realizing the NTK (with $\Psi:=[\psi(x_1),\dots,\psi(x_m)]$) the same rule equals $x\mapsto\langle\psi(x),\Psi(\Psi^\top\Psi)^{-1}y\rangle$ — the minimal-Euclidean-norm interpolating linear predictor in $\psi$'s feature space. Hence: implicit regularization of ultra-wide networks in the NTK regime = **norm minimization in the RKHS**.
-Exam relevance: the rule depends on the kernel only, not on the feature-map realization.
+
+**Exam relevance:** the rule depends on the kernel only, not on the feature-map realization.
 
 **Lem 2 ($\delta>0$).** $\delta:=\min_{\xi:\|\xi\|=1,\xi\perp u^*}\max_{i\in I}\langle\xi,z_i\rangle>0$.
-Proof idea: if some unit $\xi\perp u^*$ had $\max_{i\in I}\langle\xi,z_i\rangle\le0$, then $0=\langle\xi,u^*\rangle=\sum_{i\in I}\alpha_i^*\langle\xi,z_i\rangle$ with nonpositive summands and $\alpha_i^*>0$ forces $\langle\xi,z_i\rangle=0\ \forall i\in I$; since $\{z_i\}_{i\in I}$ spans $\mathbb{R}^d$, $\xi=0$ — contradiction.
+
+**Proof idea:** if some unit $\xi\perp u^*$ had $\max_{i\in I}\langle\xi,z_i\rangle\le0$, then $0=\langle\xi,u^*\rangle=\sum_{i\in I}\alpha_i^*\langle\xi,z_i\rangle$ with nonpositive summands and $\alpha_i^*>0$ forces $\langle\xi,z_i\rangle=0\ \forall i\in I$; since $\{z_i\}_{i\in I}$ spans $\mathbb{R}^d$, $\xi=0$ — contradiction.
 
 **Lem 3 (gradient pushes the perpendicular part back).** Let $w\in\mathbb{R}^d$ with $\langle w,u^*\rangle\ge0$ and $\|\Pi^\perp w\|\ge\frac{1+\ln(m)}{\delta}$. Then $\langle\Pi^\perp w,\nabla L_S(w)\rangle\ge 0$.
-Proof idea: pick support vector $z'\in\operatorname{argmax}_{z\in\{z_i\}_{i\in I}}\langle-\Pi^\perp w,z\rangle$, so $\langle-\Pi^\perp w,z'\rangle\ge\delta\|\Pi^\perp w\|$; split $\langle\Pi^\perp w,\nabla L_S(w)\rangle=\frac1m\sum_i e^{-\langle w,z_i\rangle}\langle-\Pi^\perp w,\Pi^\perp z_i\rangle$ into the $z'$ term, lower-bounded by $\frac1m e^{-\gamma\langle w,u^*\rangle}e^{\delta\|\Pi^\perp w\|}\delta\|\Pi^\perp w\|$ (using $z'=\Pi^\perp z'+\gamma u^*$), and the terms with $\langle\Pi^\perp w,\Pi^\perp z_i\rangle\ge0$, each lower-bounded by $-e^{-\gamma\langle w,u^*\rangle}\cdot\frac1e$ via $-\beta e^{-\beta}\ge-e^{-1}$; the threshold $\|\Pi^\perp w\|\ge\frac{1+\ln m}{\delta}$ makes the positive term dominate.
-Exam relevance: the exact threshold $\frac{1+\ln(m)}{\delta}$ and the role of the assumption $\langle w,u^*\rangle\ge 0$.
+
+**Proof idea:** pick support vector $z'\in\operatorname{argmax}_{z\in\{z_i\}_{i\in I}}\langle-\Pi^\perp w,z\rangle$, so $\langle-\Pi^\perp w,z'\rangle\ge\delta\|\Pi^\perp w\|$; split $\langle\Pi^\perp w,\nabla L_S(w)\rangle=\frac1m\sum_i e^{-\langle w,z_i\rangle}\langle-\Pi^\perp w,\Pi^\perp z_i\rangle$ into the $z'$ term, lower-bounded by $\frac1m e^{-\gamma\langle w,u^*\rangle}e^{\delta\|\Pi^\perp w\|}\delta\|\Pi^\perp w\|$ (using $z'=\Pi^\perp z'+\gamma u^*$), and the terms with $\langle\Pi^\perp w,\Pi^\perp z_i\rangle\ge0$, each lower-bounded by $-e^{-\gamma\langle w,u^*\rangle}\cdot\frac1e$ via $-\beta e^{-\beta}\ge-e^{-1}$; the threshold $\|\Pi^\perp w\|\ge\frac{1+\ln m}{\delta}$ makes the positive term dominate.
+
+**Exam relevance:** the exact threshold $\frac{1+\ln(m)}{\delta}$ and the role of the assumption $\langle w,u^*\rangle\ge 0$.
 
 **Thm 1 (GF on linear predictors → max margin).** Let $w(t)$ be a GF trajectory, $\dot w(t)=-\nabla L_S(w(t))$, with $\lim_{t\to\infty}L_S(w(t))=0$. Then
+
 $$\lim_{t\to\infty}\frac{w(t)}{\|w(t)\|}=u^*.$$
-Proof idea: loss $\to0$ ⇒ every $e^{-\langle w(t),z_i\rangle}\to0$ ⇒ $\|w(t)\|\to\infty$ and $\exists t_0$: $\langle w(t),z_i\rangle\ge0\ \forall i,t\ge t_0$ ⇒ $\langle w(t),u^*\rangle=\sum_i\alpha_i^*\langle w(t),z_i\rangle\ge0$; $\frac{d}{dt}\|\Pi^\perp w(t)\|^2=-2\langle\Pi^\perp w(t),\nabla L_S(w(t))\rangle\le0$ whenever $\|\Pi^\perp w(t)\|\ge\frac{1+\ln m}{\delta}$ (Lem 3) ⇒ $\|\Pi^\perp w(t)\|\le R:=\max\{\|\Pi^\perp w(t_0)\|,\frac{1+\ln m}{\delta}\}$ for all $t\ge t_0$ (else a mean-value-theorem contradiction at the last crossing of $R$); bounded $\|\Pi^\perp w\|$ + $\|w\|\to\infty$ ⇒ $w/\|w\|\to u^*$.
-Exam relevance: proof given in full — canonical exam material; note the loss infimum is not attained, only the direction converges.
+
+**Proof idea:** loss $\to0$ ⇒ every $e^{-\langle w(t),z_i\rangle}\to0$ ⇒ $\|w(t)\|\to\infty$ and $\exists t_0$: $\langle w(t),z_i\rangle\ge0\ \forall i,t\ge t_0$ ⇒ $\langle w(t),u^*\rangle=\sum_i\alpha_i^*\langle w(t),z_i\rangle\ge0$; $\frac{d}{dt}\|\Pi^\perp w(t)\|^2=-2\langle\Pi^\perp w(t),\nabla L_S(w(t))\rangle\le0$ whenever $\|\Pi^\perp w(t)\|\ge\frac{1+\ln m}{\delta}$ (Lem 3) ⇒ $\|\Pi^\perp w(t)\|\le R:=\max\{\|\Pi^\perp w(t_0)\|,\frac{1+\ln m}{\delta}\}$ for all $t\ge t_0$ (else a mean-value-theorem contradiction at the last crossing of $R$); bounded $\|\Pi^\perp w\|$ + $\|w\|\to\infty$ ⇒ $w/\|w\|\to u^*$.
+
+**Exam relevance:** proof given in full — canonical exam material; note the loss infimum is not attained, only the direction converges.
 
 **Thm 2 (GF on deep linear networks → max margin).** Let $(W_1(t),\dots,W_N(t))$ be a GF trajectory of $\phi(\cdot)$ from a **balanced initialization**, with $\lim_{t\to\infty}\phi(W_1(t),\dots,W_N(t))=0$. Then, viewing $W_{1:N}(t)\in\mathbb{R}^{1,d}$ as a vector,
+
 $$\lim_{t\to\infty}\frac{W_{1:N}(t)}{\|W_{1:N}(t)\|}=u^*.$$
-Proof idea: balancedness gives the E2E dynamics $\dot W_{1:N}=-\sum_{j=1}^N[W_{1:N}W_{1:N}^\top]^{\frac{j-1}{N}}\nabla\ell(W_{1:N})[W_{1:N}^\top W_{1:N}]^{\frac{N-j}{N}}$, which for a row vector $w(t):=W_{1:N}(t)$ becomes $\dot w=-\|w\|^{\frac{2(N-1)}{N}}\nabla L_S(w)-(N-1)\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle w$; suffices to show $\frac{\|\Pi^\perp w(t)\|^2}{\|w(t)\|^2}\to0$; via the quotient rule, when the ratio $\ge\epsilon$ and $\|w\|^2\ge\frac{(1+\ln m)^2}{\delta^2\epsilon}$, $\frac{d}{dt}\frac{\|\Pi^\perp w\|^2}{\|w\|^2}\le 2\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle\epsilon=-\frac{\epsilon}{N}\frac{d}{dt}\ln(\|w\|^2)<0$ (using Lem 3 and $\langle\nabla L_S(w),w\rangle=-\frac1m\sum_ie^{-\langle w,z_i\rangle}\langle w,z_i\rangle<0$); integrating, if the ratio stayed $\ge\epsilon$ the RHS drop would be $-\frac{\epsilon}{N}[\ln\|w(t')\|^2-\ln\|w(t)\|^2]\to-\infty$ — contradiction, so the ratio eventually drops below any $\epsilon$ and stays there.
-Exam relevance: statement + role of balanced initialization; the result holds for **any depth $N$** — same limit $u^*$.
+
+**Proof idea:** balancedness gives the E2E dynamics $\dot W_{1:N}=-\sum_{j=1}^N[W_{1:N}W_{1:N}^\top]^{\frac{j-1}{N}}\nabla\ell(W_{1:N})[W_{1:N}^\top W_{1:N}]^{\frac{N-j}{N}}$, which for a row vector $w(t):=W_{1:N}(t)$ becomes $\dot w=-\|w\|^{\frac{2(N-1)}{N}}\nabla L_S(w)-(N-1)\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle w$; suffices to show $\frac{\|\Pi^\perp w(t)\|^2}{\|w(t)\|^2}\to0$; via the quotient rule, when the ratio $\ge\epsilon$ and $\|w\|^2\ge\frac{(1+\ln m)^2}{\delta^2\epsilon}$, $\frac{d}{dt}\frac{\|\Pi^\perp w\|^2}{\|w\|^2}\le 2\|w\|^{-\frac2N}\langle\nabla L_S(w),w\rangle\epsilon=-\frac{\epsilon}{N}\frac{d}{dt}\ln(\|w\|^2)<0$ (using Lem 3 and $\langle\nabla L_S(w),w\rangle=-\frac1m\sum_ie^{-\langle w,z_i\rangle}\langle w,z_i\rangle<0$); integrating, if the ratio stayed $\ge\epsilon$ the RHS drop would be $-\frac{\epsilon}{N}[\ln\|w(t')\|^2-\ln\|w(t)\|^2]\to-\infty$ — contradiction, so the ratio eventually drops below any $\epsilon$ and stays there.
+
+**Exam relevance:** statement + role of balanced initialization; the result holds for **any depth $N$** — same limit $u^*$.
 
 **Exercise (E2E dynamics in vector form).** Given the E2E dynamics above with $W_{1:N}(t)\in\mathbb{R}^{1,d}$, prove
+
 $$\frac{d}{dt}W_{1:N}(t)=-\|W_{1:N}(t)\|_{Fro}^{\frac{2(N-1)}{N}}\cdot\nabla L_S(W_{1:N}(t))-(N-1)\|W_{1:N}(t)\|_{Fro}^{-\frac2N}\cdot\big\langle\nabla L_S(W_{1:N}(t)),W_{1:N}(t)\big\rangle\cdot W_{1:N}(t).$$
 
 **Extensions (1.3.4, stated results).** (i) The above is depth-oblivious — depths $1$, $2$, $\ge3$ give the same implicit bias, unlike practice; with certain "convolutional" variants of linear networks depth does change the implicit bias (Gunasekar et al. [1]). (ii) For homogeneous networks of order $N$, under certain conditions GD returns an approximate solution to $\max_\Theta\gamma(\Theta)$, i.e., maximizes the normalized margin (Lyu–Li [3]). (iii) Thm 2 extends to GD with decreasing learning rate and arbitrary (non-balanced) initialization; verified empirically (figure: GD on synthetic 2D separable data, depth-4 LNN and depth-1 predictor both converge to the max-margin direction; from Ji–Telgarsky, "GD Aligns the Layers of Deep Linear Networks").

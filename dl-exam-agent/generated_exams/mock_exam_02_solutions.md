@@ -17,7 +17,9 @@ $\le 1$: every column is a multiple of $\varphi^r$ (1 pt). By the reminder
 $u_1, \dots, u_k$ of the column space of $F$ and expand column $j$:
 $F_{:,j} = \sum_{i=1}^k \beta_{ij} u_i$. Setting $\psi^i := (\beta_{i1}, \dots,
 \beta_{iM})^\top$ gives, entrywise,
-$\big(\sum_{i=1}^k u_i (\psi^i)^\top\big)_{pj} = \sum_i (u_i)_p \beta_{ij} = F_{pj}$,
+
+$$\big(\sum_{i=1}^k u_i (\psi^i)^\top\big)_{pj} = \sum_i (u_i)_p \beta_{ij} = F_{pj}$$
+
 i.e. $F = \sum_{i=1}^k u_i (\psi^i)^\top$. Take $c_i = 1$, $\varphi^i = u_i$ for
 $i \le k$ and $c_i = 0$ for $k < i \le R$ (padding), so $F \in \mathcal{H}_R$
 (the $k = 0$ case $F = 0$: all $c_r = 0$). Alternative full credit: SVD
@@ -50,7 +52,10 @@ $$\min_{F \in \mathcal{H}_R} \|F - I_M\|_F^2
 (The class-printed EYM has $\sigma_i(A)$ where the classical statement has
 $\sigma_i(A)^2$; here all $\sigma_i = 1$, so both give $M - R$ — no penalty either
 way, but wrong handling of general $\sigma_i^2$ elsewhere would be an error.)
-Explicit minimizer (2 pts): $F^\star = \sum_{i=1}^R \mathbf{e}^i (\mathbf{e}^i)^\top$
+Explicit minimizer (2 pts):
+
+$$F^\star = \sum_{i=1}^R \mathbf{e}^i (\mathbf{e}^i)^\top$$
+
 (rank $R$, and $\|F^\star - I_M\|_F^2 = \#\{\text{deleted ones}\} = M - R$); any
 $\sum_{i=1}^R w_i w_i^\top$ with orthonormal $w_i$ works. Conclusion (2 pts): every
 $h \in \mathcal{H}_R$ has $D(h, \mathrm{identity}) = \|F_h - I_M\|_F \ge
@@ -118,13 +123,22 @@ $$\tfrac{d}{dt} \|e(t)\|^2 = 2 \langle e(t), \dot e(t) \rangle
 = -2 \, e(t)^\top H(t) \, e(t).$$
 PSD floor (3 pts): $H(t) \succeq \lambda I_N$ means $e^\top (H(t) - \lambda I) e \ge
 0$, i.e. $e^\top H(t) e \ge \lambda \|e\|^2$, so
-$\frac{d}{dt}\|e\|^2 \le -2\lambda \|e\|^2$. Integrating factor (2 pts):
+
+$$\frac{d}{dt}\|e\|^2 \le -2\lambda \|e\|^2$$
+
+Integrating factor (2 pts):
 $g(t) := e^{2\lambda t} \|e(t)\|^2$ has $g'(t) = e^{2\lambda t}\big(
 \frac{d}{dt}\|e\|^2 + 2\lambda \|e\|^2 \big) \le 0$, so $g(t) \le g(0)$, i.e.
-$\|e(t)\|^2 \le e^{-2\lambda t} \|e(0)\|^2$. Time bound (2 pts): $\ell(t) =
+
+$$\|e(t)\|^2 \le e^{-2\lambda t} \|e(0)\|^2$$
+
+Time bound (2 pts): $\ell(t) =
 \frac12 \|e(t)\|^2 \le \frac12 e^{-2\lambda t} \|e(0)\|^2 \le \epsilon$ once
 $e^{2\lambda t} \ge \frac{\|e(0)\|^2}{2\epsilon}$, i.e. for all
-$t \ge \frac{1}{2\lambda} \ln \frac{\|u(0) - y\|^2}{2 \epsilon}$ (if
+
+$$\boxed{\,t \ge \frac{1}{2\lambda} \ln \frac{\|u(0) - y\|^2}{2 \epsilon}\,}$$
+
+(if
 $\|e(0)\|^2 \le 2\epsilon$ the log is $\le 0$ and the claim is trivial). Traps: writing
 $e(t) = e^{-\int_0^t H} e(0)$ (invalid — $H(t)$ at different times need not commute;
 that is the point of the sub-part); differentiating $\|e\|$ instead of $\|e\|^2$
@@ -184,7 +198,9 @@ the $\pm$ pair absorbing the absolute value. Norm bound (1 pt):
 $\|v^j\|_2^2 = \sum_n x_{n,j}^2 \le N$ since $|x_{n,j}| \le \|x_n\|_\infty \le 1$.
 Massart (1 pt): $\mathbb{E}_\sigma \max_{v \in V} \langle \sigma, v \rangle \le
 \sqrt{N} \cdot \sqrt{2 \ln(2d)}$. Combine with part 1 (1 pt):
-$R(\mathcal{H}_B \circ S) \le \frac{B}{N} \sqrt{2 N \ln(2d)} = B \sqrt{2\ln(2d)/N}$.
+
+$$\boxed{\,R(\mathcal{H}_B \circ S) \le \frac{B}{N} \sqrt{2 N \ln(2d)} = B \sqrt{2\ln(2d)/N}\,}$$
+
 Traps: applying Massart to the infinite ball $\{w\}$ directly (0 for that step);
 forgetting the $\pm$ doubling ($\ln d$ instead of $\ln(2d)$: −1); norm bound $N$
 instead of $\sqrt{N}$.

@@ -31,7 +31,11 @@ Denote by $\widehat{\mathcal{H}}_M^L$ the hypothesis class obtained from $\mathc
 
 **b.** A depth-1 net is $x \mapsto \sum_{m=1}^M u_m\phi_\alpha(w_m x + b_m) + c$. Each neuron is piecewise linear with at most one breakpoint (at $-b_m/w_m$ if $w_m \ne 0$). A sum of such functions is piecewise linear with breakpoints contained in the union — at most $M$ breakpoints, hence at most $M+1$ segments.
 
-**c.** Key identity: $\mathrm{ReLU}(z) = \frac{1}{1-\alpha^2}\big(\phi_\alpha(z) + \alpha\,\phi_\alpha(-z)\big)$ (check separately for $z\ge0$, $z<0$). Take the ReLU network of width $M$ realizing $f$ (the allowed fact $f \in \widehat{\mathcal{H}}_M^L$) and replace each ReLU neuron by a pair of Leaky-ReLU neurons fed with pre-activations $z$ and $-z$ (duplicate the incoming row/bias with a sign flip). Absorb the coefficients $\frac{1}{1-\alpha^2}, \frac{\alpha}{1-\alpha^2}$ into the outgoing weights. Width doubles to $2M$, depth and computed function are unchanged. So $f \in \mathcal{H}_{2M}^L$.
+**c.** Key identity:
+
+$$\mathrm{ReLU}(z) = \frac{1}{1-\alpha^2}\big(\phi_\alpha(z) + \alpha\,\phi_\alpha(-z)\big)$$
+
+(check separately for $z\ge0$, $z<0$). Take the ReLU network of width $M$ realizing $f$ (the allowed fact $f \in \widehat{\mathcal{H}}_M^L$) and replace each ReLU neuron by a pair of Leaky-ReLU neurons fed with pre-activations $z$ and $-z$ (duplicate the incoming row/bias with a sign flip). Absorb the coefficients $\frac{1}{1-\alpha^2}, \frac{\alpha}{1-\alpha^2}$ into the outgoing weights. Width doubles to $2M$, depth and computed function are unchanged. So $f \in \mathcal{H}_{2M}^L$.
 
 **d1.** By (b), any $h \in \mathcal{H}_M^1$ is piecewise linear with $\le M+1$ segments. By (c) applied with $M+1$ in place of $M$, $h \in \mathcal{H}_{2(M+1)}^L$, i.e. $\bar M = 2M+2 = O(M)$.
 
@@ -78,13 +82,43 @@ Now assume $\mathcal{L}(\theta) = \sum_{n=1}^N (h_\theta(x_n) - y_n)^2$, that th
 *Hint:* Use the result of sub-part c.
 
 **Solution sketch:**
-**a.** Gradient flow gives $\dot v_m = -\sum_n \ell'(\cdot)\phi(\langle w_m,x_n\rangle)$, $\dot w_m = -\sum_n \ell'(\cdot)\,v_m\,\phi'(\langle w_m,x_n\rangle)\,x_n$. Then $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$, $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$, and the ReLU homogeneity identity $z\phi'(z) = \phi(z)$ makes both expressions coincide with the stated one.
+**a.** Gradient flow gives
 
-**b.** By (a), $v_m(t)^2 - \|w_m(t)\|^2$ is conserved. So balancedness persists: $|v_m(t)| = \|w_m(t)\|$ and $\sigma_m = v_m^2$. Differentiate $\sigma_m^2 = v_m^2\|w_m\|^2$ by the product rule, substitute (a), and use positive 1-homogeneity $\phi(\langle w_m,x\rangle) = \|w_m\|\,\phi(\langle w_m/\|w_m\|,x\rangle)$ (valid since $v_m \ne 0 \Rightarrow w_m \ne 0$). The identity $v_m^3\|w_m\| = \sigma_m^2\cdot\frac{v_m}{|v_m|}$ yields the stated ODE. If $v_m(t) = 0$ then $w_m(t) = 0$ by balancedness, and both derivatives in (a) vanish. So $\frac{d}{dt}\sigma_m^2 = 0$.
+$$\dot v_m = -\sum_n \ell'(\cdot)\phi(\langle w_m,x_n\rangle)$$
 
-**c.** If $v_m(\bar t)\le 0$ for some $\bar t$, continuity (IVT) gives a zero of $v_m$. The set $\{t: v_m(t)=0\}$ is closed and nonempty so $t_0 := \min$ exists, with $v_m > 0$ on $[0,t_0)$. On $[0,t_0)$, part (b) holds with $g(t) := -4\sum_n \ell'(h_{\theta(t)}(x_n),y_n)\,\phi(\langle w_m(t)/\|w_m(t)\|,x_n\rangle)$, which is continuous and bounded ($\theta(t)$ continuous on the compact $[0,t_0]$, $\ell'$ continuous, normalized $w_m$ has unit norm so $\phi(\langle\cdot,x_n\rangle)\le\|x_n\|$). Solving the linear ODE $\frac{d}{dt}\sigma_m^2 = g\,\sigma_m^2$: $\sigma_m(t)^2 = \sigma_m(0)^2 e^{\int_0^t g}\ \ge\ \sigma_m(0)^2 e^{-\sup|g|\,t_0} > 0$ on $[0,t_0)$ (note $\sigma_m(0)^2 = v_m(0)^4 > 0$). By continuity $\sigma_m(t_0)^2 > 0$, contradicting $\sigma_m(t_0) = |v_m(t_0)|\|w_m(t_0)\| = 0$. Hence $v_m(t) > 0$ for all $t$.
+$$\dot w_m = -\sum_n \ell'(\cdot)\,v_m\,\phi'(\langle w_m,x_n\rangle)\,x_n$$
 
-**d.** By (c), $v_m(t) > 0$ for all $m,t$, and $\phi \ge 0$. So $h_{\theta(t)}(x) \ge 0$ for every $x$. Then $\mathcal{L}(\theta(t)) \ge (h_{\theta(t)}(x_{\bar n}) - y_{\bar n})^2 \ge y_{\bar n}^2 > 0$ since $h \ge 0 > y_{\bar n}$. Take $\epsilon := y_{\bar n}^2$: no $t \ge 0$ achieves $\mathcal{L}(\theta(t)) < \epsilon$.
+Then $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$, $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$, and the ReLU homogeneity identity $z\phi'(z) = \phi(z)$ makes both expressions coincide with the stated one.
+
+**b.** By (a), $v_m(t)^2 - \|w_m(t)\|^2$ is conserved. So balancedness persists: $|v_m(t)| = \|w_m(t)\|$ and $\sigma_m = v_m^2$. Differentiate $\sigma_m^2 = v_m^2\|w_m\|^2$ by the product rule, substitute (a), and use positive 1-homogeneity
+
+$$\phi(\langle w_m,x\rangle) = \|w_m\|\,\phi(\langle w_m/\|w_m\|,x\rangle)$$
+
+(valid since $v_m \ne 0 \Rightarrow w_m \ne 0$). The identity
+
+$$v_m^3\|w_m\| = \sigma_m^2\cdot\frac{v_m}{|v_m|}$$
+
+yields the stated ODE. If $v_m(t) = 0$ then $w_m(t) = 0$ by balancedness, and both derivatives in (a) vanish. So $\frac{d}{dt}\sigma_m^2 = 0$.
+
+**c.** If $v_m(\bar t)\le 0$ for some $\bar t$, continuity (IVT) gives a zero of $v_m$. The set $\{t: v_m(t)=0\}$ is closed and nonempty so $t_0 := \min$ exists, with $v_m > 0$ on $[0,t_0)$. On $[0,t_0)$, part (b) holds with
+
+$$g(t) := -4\sum_n \ell'(h_{\theta(t)}(x_n),y_n)\,\phi(\langle w_m(t)/\|w_m(t)\|,x_n\rangle)$$
+
+which is continuous and bounded ($\theta(t)$ continuous on the compact $[0,t_0]$, $\ell'$ continuous, normalized $w_m$ has unit norm so $\phi(\langle\cdot,x_n\rangle)\le\|x_n\|$). Solving the linear ODE $\frac{d}{dt}\sigma_m^2 = g\,\sigma_m^2$:
+
+$$\begin{aligned} \sigma_m(t)^2 &= \sigma_m(0)^2 e^{\int_0^t g}\ \\ &\ge \ \sigma_m(0)^2 e^{-\sup|g|\,t_0} > 0 \end{aligned}$$
+
+on $[0,t_0)$ (note $\sigma_m(0)^2 = v_m(0)^4 > 0$). By continuity $\sigma_m(t_0)^2 > 0$, contradicting
+
+$$\sigma_m(t_0) = |v_m(t_0)|\|w_m(t_0)\| = 0$$
+
+Hence $v_m(t) > 0$ for all $t$.
+
+**d.** By (c), $v_m(t) > 0$ for all $m,t$, and $\phi \ge 0$. So $h_{\theta(t)}(x) \ge 0$ for every $x$. Then
+
+$$\begin{aligned} \mathcal{L}(\theta(t)) &\ge (h_{\theta(t)}(x_{\bar n}) - y_{\bar n})^2 \\ &\ge y_{\bar n}^2 > 0 \end{aligned}$$
+
+since $h \ge 0 > y_{\bar n}$. Take $\epsilon := y_{\bar n}^2$: no $t \ge 0$ achieves $\mathcal{L}(\theta(t)) < \epsilon$.
 
 **💡 Useful tricks:** Homogeneity $z\phi'(z)=\phi(z)$ ⇒ balancedness $v_m^2-\|w_m\|^2$ conserved; write $\sigma_m^2$'s ODE as $\frac{d}{dt}\sigma_m^2=g(t)\sigma_m^2$ with $g$ *bounded*, so $\sigma_m^2=\sigma_m(0)^2e^{\int g}>0$ never reaches $0$ ⇒ sign of $v_m$ is preserved; then $v_m>0,\ \phi\geq0\Rightarrow h\geq0$, so a negative label is unreachable.
 
@@ -121,9 +155,33 @@ Make sure to define $\Delta(N,\delta,r)$ explicitly in your answer.
 **c. (8 pts)** Suppose we ran algorithm $A$ on a training sample of size $N = 10^9$ and got back a hypothesis $h \in \mathcal{H}$ with complexity measure $R(h) = 1$. Are we guaranteed that the true loss $\mathcal{L}_D(h)$ will be low with high probability (e.g. above $0.9$)? Justify your answer.
 
 **Solution sketch:**
-**a.** $\nabla\mathcal{L}(w) = \frac{1}{N}\sum_n \ell'(\langle x_n,w\rangle - y_n)\,x_n \in \mathrm{span}\{x_1,\dots,x_N\}$. Since $w(0) = 0$, induction over GD updates gives $w(\bar t) \in \mathrm{span}\{x_n\}_{n=1}^N$. Because $\ell$ is invertible, the constraint $\ell(\langle x_n,w\rangle - y_n) = c_n$ is equivalent to the linear constraint $\langle x_n,w\rangle = y_n + \ell^{-1}(c_n)$. So the feasible set is an affine subspace $\{w: Xw = b\}$ ($X$ = matrix with rows $x_n^\top$), nonempty since it contains $w(\bar t)$. Decompose any feasible $w = w_\parallel + w_\perp$ (span of $\{x_n\}$ vs. its orthogonal complement). The constraints determine $w_\parallel$ uniquely (linear independence of $\{x_n\}$ makes $X$ restricted to the span invertible), and $\|w\|^2 = \|w_\parallel\|^2 + \|w_\perp\|^2$. Hence the unique norm minimizer is the feasible point with $w_\perp = 0$, which is exactly $w(\bar t)$.
+**a.**
 
-**b.** Stratify complexity levels: for $k \in \mathbb{N}$ apply the assumed bound with $r = k$ and confidence $\delta_k := \delta\,2^{-k}$ ($\sum_k \delta_k = \delta$). A union bound makes all levels hold simultaneously w.p. $\ge 1-\delta$. For any $h$, use level $k = \max\{\lceil R(h)\rceil, 1\}\le R(h)+1$. Explicit choice satisfying (1)-(3): $\Delta(N,\delta,r) := \sqrt{\dfrac{(r+1)(1+\ln 2) + \ln(1/\delta)}{N}}$ — it dominates the level-$k$ bound $\sqrt{(k + k\ln2 + \ln(1/\delta))/N}$ since $k \le r+1$, is strictly increasing in $r$, and tends to $0$ as $N \to \infty$. (Any summable allocation, e.g. $\delta_k \propto k^{-2}$, gives a variant.)
+$$\nabla\mathcal{L}(w) = \frac{1}{N}\sum_n \ell'(\langle x_n,w\rangle - y_n)\,x_n \in \mathrm{span}\{x_1,\dots,x_N\}$$
+
+Since $w(0) = 0$, induction over GD updates gives
+
+$$w(\bar t) \in \mathrm{span}\{x_n\}_{n=1}^N$$
+
+Because $\ell$ is invertible, the constraint $\ell(\langle x_n,w\rangle - y_n) = c_n$ is equivalent to the linear constraint
+
+$$\langle x_n,w\rangle = y_n + \ell^{-1}(c_n)$$
+
+So the feasible set is an affine subspace $\{w: Xw = b\}$ ($X$ = matrix with rows $x_n^\top$), nonempty since it contains $w(\bar t)$. Decompose any feasible $w = w_\parallel + w_\perp$ (span of $\{x_n\}$ vs. its orthogonal complement). The constraints determine $w_\parallel$ uniquely (linear independence of $\{x_n\}$ makes $X$ restricted to the span invertible), and
+
+$$\|w\|^2 = \|w_\parallel\|^2 + \|w_\perp\|^2$$
+
+Hence the unique norm minimizer is the feasible point with $w_\perp = 0$, which is exactly $w(\bar t)$.
+
+**b.** Stratify complexity levels: for $k \in \mathbb{N}$ apply the assumed bound with $r = k$ and confidence $\delta_k := \delta\,2^{-k}$ ($\sum_k \delta_k = \delta$). A union bound makes all levels hold simultaneously w.p. $\ge 1-\delta$. For any $h$, use level
+
+$$k = \max\{\lceil R(h)\rceil, 1\}\le R(h)+1$$
+
+Explicit choice satisfying (1)-(3):
+
+$$\Delta(N,\delta,r) := \sqrt{\dfrac{(r+1)(1+\ln 2) + \ln(1/\delta)}{N}}$$
+
+— it dominates the level-$k$ bound $\sqrt{(k + k\ln2 + \ln(1/\delta))/N}$ since $k \le r+1$, is strictly increasing in $r$, and tends to $0$ as $N \to \infty$. (Any summable allocation, e.g. $\delta_k \propto k^{-2}$, gives a variant.)
 
 **c.** No. The assumed bound (and $\Delta$) controls only the generalization **gap** $\mathcal{L}_D(h) - \mathcal{L}_S(h)$: with $N = 10^9$ and $R(h) = 1$ we get $\mathcal{L}_D(h) \le \mathcal{L}_S(h) + \text{(tiny)}$ w.h.p., but nothing in the assumptions guarantees that the empirical loss $\mathcal{L}_S(h)$ itself is small — algorithm $A$ is only assumed to return low-complexity, not low-loss, hypotheses. If $\mathcal{L}_S(h)$ is large, $\mathcal{L}_D(h)$ can be large. Hence low true loss is not guaranteed.
 

@@ -78,13 +78,33 @@ $$\forall t \geq 0: \quad L(w(t)) \leq L(w(0)) \exp\left(-2N c^{2 - \frac{2}{N}}
 **Solution sketch:**
 (זהה למועד ב 2021 שאלה 2 — ראו index/exams/fodl_exam_b_2021.md; רק חלוקת הנקודות שונה: 10/10/5/10 במקום 12/12/6/12.)
 
-**1.** $\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$, ולכן תחת gradient flow $\frac{d}{dt} w_i^2 = 2 w_i \dot w_i = -2 L'(w) \prod_k w_k = -2 L'(w)\, w(t)$ — זהה לכל $i$. חיסור עבור $i, j$ נותן $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (חוק שימור ה-balancedness).
+**1.**
 
-**2.** לפי (1), אתחול מאוזן נשאר מאוזן: $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ במשטר $w(t) \geq 0$ הנדון). כלל המכפלה: $\dot w = \sum_i \big(\prod_{k \neq i} w_k\big) \dot w_i = -L'(w) \sum_i \big(\prod_{k \neq i} w_k\big)^2 = -L'(w) \sum_i w^2 / w_i^2 = -N L'(w)\, w^{2 - 2/N}$, כאשר $L'(w) = w - y$.
+$$\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$$
+
+ולכן תחת gradient flow
+
+$$\frac{d}{dt} w_i^2 = 2 w_i \dot w_i = -2 L'(w) \prod_k w_k = -2 L'(w)\, w(t)$$
+
+— זהה לכל $i$. חיסור עבור $i, j$ נותן $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (חוק שימור ה-balancedness).
+
+**2.** לפי (1), אתחול מאוזן נשאר מאוזן: $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ במשטר $w(t) \geq 0$ הנדון). כלל המכפלה:
+
+$$\dot w = \sum_i \big(\prod_{k \neq i} w_k\big) \dot w_i = -L'(w) \sum_i \big(\prod_{k \neq i} w_k\big)^2 = -L'(w) \sum_i w^2 / w_i^2 = -N L'(w)\, w^{2 - 2/N}$$
+
+כאשר $L'(w) = w - y$.
 
 **3.** מונוטוניות זרימת-הגרדיאנט: $L(w(t)) \leq L(w(0)) = L(c)$, כלומר $|w(t) - y| \leq y - c$ (כיוון ש-$c \in (0, y)$), מה שנותן $c \leq w(t) \leq 2y - c$.
 
-**4.** שלב הרמז: $\frac{d}{dt} L(w(t)) = (w - y)\dot w = -N (w - y)^2 w^{2 - 2/N} = -2 L(w(t)) \cdot N w(t)^{2 - 2/N}$. מכיוון ש-$w(t) \geq c > 0$ לפי (3) ו-$2 - 2/N > 0$: $\frac{d}{dt} L(w(t)) \leq -2N c^{2 - 2/N} L(w(t))$. אינטגרציה ($\frac{d}{dt} \ln L \leq -2N c^{2-2/N}$, Grönwall) נותנת את החסם האקספוננציאלי.
+**4.** שלב הרמז:
+
+$$\frac{d}{dt} L(w(t)) = (w - y)\dot w = -N (w - y)^2 w^{2 - 2/N} = -2 L(w(t)) \cdot N w(t)^{2 - 2/N}$$
+
+מכיוון ש-$w(t) \geq c > 0$ לפי (3) ו-$2 - 2/N > 0$:
+
+$$\frac{d}{dt} L(w(t)) \leq -2N c^{2 - 2/N} L(w(t))$$
+
+אינטגרציה ($\frac{d}{dt} \ln L \leq -2N c^{2-2/N}$, Grönwall) נותנת את החסם האקספוננציאלי.
 
 **💡 טריקים שימושיים:** "אל תשתמשו בטענות מהכיתה" ⇒ גזרו את ה-balancedness מאפס: $\frac{d}{dt}w_i^2=-2L'(w)\,w$ *זהה לכל $i$*, ולכן הפרשים נשמרים; אתחול מאוזן ⇒ $w_i^2=w^{2/N}$; עובדת מונוטוניות-ההפסד נותנת את המחסום $w(t)\geq c$, שהוא מה שמאפשר לחסום מלרע $w^{2-2/N}\geq c^{2-2/N}$; סיימו עם $\frac{d}{dt}\ln L\leq -2Nc^{2-2/N}$ + Grönwall.
 
@@ -117,11 +137,29 @@ $$\forall h \in \mathcal{H}:\ L_\mathcal{D}(h) - L_S(h) \leq \Delta(N, \delta, |
 **(3) (11 pts)** נסמן ב-$\mathcal{F}_1, \ldots, \mathcal{F}_R \subset \mathcal{F}$ חלוקה שרירותית של $\mathcal{F}$ לתת-קבוצות זרות; כלומר, $\mathcal{F}_1 \cup \cdots \cup \mathcal{F}_R = \mathcal{F}$ ו-$\mathcal{F}_i \cap \mathcal{F}_j = \emptyset$ לכל $i \neq j \in \{1, \ldots, R\}$. נניח שברשותנו אלגוריתם למידה הנוטה להחזיר השערות $h \in \mathcal{H}$ שעבורן $f \in \arg\min_{f \in \mathcal{F}} \|h - f\|_\infty$ שוכנת בקבוצה $\mathcal{F}_i$ עם אינדקס $i$ קטן יחסית. גזרו חסם הכללה דומה לחסם מסעיף 2, אך מותאם לשימוש באלגוריתם זה. כלומר, עבור $h \in \mathcal{H}$: ככל שהאינדקס $i$ של הקבוצה $\mathcal{F}_i$ שבה שוכנת ההשערה מ-$\mathcal{F}$ הקרובה ביותר ל-$h$ קטן יותר, כך החסם עבור $h$ צריך להיות קטן יותר.
 
 **Solution sketch:**
-**1.** קבעו $f$: $A_n := l(f(x_n), y_n)$ הם i.i.d. ב-$[0,1]$ עם $E[A_1] = L_\mathcal{D}(f)$. Hoeffding נותן $P(|L_S(f) - L_\mathcal{D}(f)| \geq \epsilon') \leq 2e^{-2N\epsilon'^2}$. חסם איחוד מעל ה-$\mathcal{F}$ הסופית ופתרון $2|\mathcal{F}| e^{-2N\epsilon'^2} = \delta$: $\Delta(N, \delta, |\mathcal{F}|) = \sqrt{\frac{\ln(2|\mathcal{F}|/\delta)}{2N}} \to 0$.
+**1.** קבעו $f$: $A_n := l(f(x_n), y_n)$ הם i.i.d. ב-$[0,1]$ עם $E[A_1] = L_\mathcal{D}(f)$. Hoeffding נותן
 
-**2.** עבור $h \in \mathcal{H}$ קחו את נקודת הכיסוי שלה $f \in \mathcal{F}$ עם $\sup_x |h(x) - f(x)| \leq \epsilon$. תכונת ה-$\rho$-Lipschitz של $l$ בארגומנט הראשון שלה נותנת $|l(h(x), y) - l(f(x), y)| \leq \rho\epsilon$ נקודתית. מכאן $L_\mathcal{D}(h) \leq L_\mathcal{D}(f) + \rho\epsilon$ וגם $L_S(f) \leq L_S(h) + \rho\epsilon$. על המאורע של סעיף 1: $L_\mathcal{D}(h) - L_S(h) \leq \big(L_\mathcal{D}(f) - L_S(f)\big) + 2\rho\epsilon \leq \Delta(N, \delta, |\mathcal{F}|) + 2\rho\epsilon$, במידה אחידה מעל $\mathcal{H}$, בהסתברות $\geq 1 - \delta$.
+$$P(|L_S(f) - L_\mathcal{D}(f)| \geq \epsilon') \leq 2e^{-2N\epsilon'^2}$$
 
-**3.** שקלול ביטחון בסגנון SRM מעל התאים: הקצו $\delta_i := \delta \cdot 2^{-i}$ ל-$\mathcal{F}_i$ (כך ש-$\sum_{i=1}^{R} \delta_i < \delta$) והחילו את סעיף 1 על כל תא: בהסתברות $\geq 1 - \delta$, בו-זמנית $\forall i,\ \forall f \in \mathcal{F}_i$: $L_\mathcal{D}(f) - L_S(f) \leq \Delta(N, \delta 2^{-i}, |\mathcal{F}_i|)$. עבור $h$, יהי $i(h)$ אינדקס התא המכיל את נקודת הכיסוי הקרובה ביותר שלו $f$ (המקיימת $\|h - f\|_\infty \leq \epsilon$ לפי הנחת הכיסוי). העברת ה-Lipschitz מסעיף 2 נותנת $L_\mathcal{D}(h) - L_S(h) \leq \Delta\big(N, \delta 2^{-i(h)}, |\mathcal{F}_{i(h)}|\big) + 2\rho\epsilon$. החסם קטן ממש כאשר $i(h)$ קטֵן (חלק ביטחון גדול יותר $\delta 2^{-i}$; כדי שהמונוטוניות ב-$i$ תתקיים ללא תלות בגדלי התאים אפשר להחליף את $|\mathcal{F}_{i(h)}|$ ב-$|\mathcal{F}|$), בהתאמה להטיית האלגוריתם לכיוון תאים בעלי אינדקס קטן.
+חסם איחוד מעל ה-$\mathcal{F}$ הסופית ופתרון $2|\mathcal{F}| e^{-2N\epsilon'^2} = \delta$:
+
+$$\Delta(N, \delta, |\mathcal{F}|) = \sqrt{\frac{\ln(2|\mathcal{F}|/\delta)}{2N}} \to 0$$
+
+**2.** עבור $h \in \mathcal{H}$ קחו את נקודת הכיסוי שלה $f \in \mathcal{F}$ עם $\sup_x |h(x) - f(x)| \leq \epsilon$. תכונת ה-$\rho$-Lipschitz של $l$ בארגומנט הראשון שלה נותנת $|l(h(x), y) - l(f(x), y)| \leq \rho\epsilon$ נקודתית. מכאן $L_\mathcal{D}(h) \leq L_\mathcal{D}(f) + \rho\epsilon$ וגם $L_S(f) \leq L_S(h) + \rho\epsilon$. על המאורע של סעיף 1:
+
+$$L_\mathcal{D}(h) - L_S(h) \leq \big(L_\mathcal{D}(f) - L_S(f)\big) + 2\rho\epsilon \leq \Delta(N, \delta, |\mathcal{F}|) + 2\rho\epsilon$$
+
+במידה אחידה מעל $\mathcal{H}$, בהסתברות $\geq 1 - \delta$.
+
+**3.** שקלול ביטחון בסגנון SRM מעל התאים: הקצו $\delta_i := \delta \cdot 2^{-i}$ ל-$\mathcal{F}_i$ (כך ש-$\sum_{i=1}^{R} \delta_i < \delta$) והחילו את סעיף 1 על כל תא: בהסתברות $\geq 1 - \delta$, בו-זמנית $\forall i,\ \forall f \in \mathcal{F}_i$:
+
+$$L_\mathcal{D}(f) - L_S(f) \leq \Delta(N, \delta 2^{-i}, |\mathcal{F}_i|)$$
+
+עבור $h$, יהי $i(h)$ אינדקס התא המכיל את נקודת הכיסוי הקרובה ביותר שלו $f$ (המקיימת $\|h - f\|_\infty \leq \epsilon$ לפי הנחת הכיסוי). העברת ה-Lipschitz מסעיף 2 נותנת
+
+$$\boxed{\,L_\mathcal{D}(h) - L_S(h) \leq \Delta\big(N, \delta 2^{-i(h)}, |\mathcal{F}_{i(h)}|\big) + 2\rho\epsilon\,}$$
+
+החסם קטן ממש כאשר $i(h)$ קטֵן (חלק ביטחון גדול יותר $\delta 2^{-i}$; כדי שהמונוטוניות ב-$i$ תתקיים ללא תלות בגדלי התאים אפשר להחליף את $|\mathcal{F}_{i(h)}|$ ב-$|\mathcal{F}|$), בהתאמה להטיית האלגוריתם לכיוון תאים בעלי אינדקס קטן.
 
 **💡 טריקים שימושיים:** $\epsilon$-כיסוי סופי ⇒ Hoeffding + איחוד על $\mathcal F$ בלבד; העברה ל*כל* $\mathcal H$ דרך גשר ה-Lipschitz $2\rho\epsilon$; "אלגוריתם מעדיף תאים בעלי אינדקס נמוך" ⇒ משקל SRM $\delta_i=\delta 2^{-i}$ לכל תא בחלוקה.
 

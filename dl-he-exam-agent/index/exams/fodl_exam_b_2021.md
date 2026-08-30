@@ -74,13 +74,33 @@ $$\forall t \geq 0: \quad L(w(t)) \leq L(w(0)) \exp\left(-2N c^{2-\frac{2}{N}} \
 *רמז:* ראשית הראו ש-$\frac{d}{dt} L(w(t)) = -L(w(t)) \cdot 2N w(t)^{2-\frac{2}{N}}$.
 
 **Solution sketch:**
-**a.** $\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$. לכן תחת gradient flow $\frac{d}{dt}w_i^2 = 2w_i\dot{w}_i = -2L'(w)\prod_k w_k = -2L'(w)\,w(t)$ — זהה לכל $i$. חיסור עבור $i,j$ נותן $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (שימור balancedness).
+**a.**
 
-**b.** לפי (a), אתחול מאוזן נשאר מאוזן: $w_i(t)^2 = w_j(t)^2$ לכל $t$. מכאן $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ במשטר $w(t) \geq 0$ הנדון). כלל המכפלה: $\dot{w} = \sum_i \big(\prod_{k\neq i} w_k\big)\dot{w}_i = -L'(w)\sum_i \big(\prod_{k\neq i}w_k\big)^2 = -L'(w)\sum_i w^2/w_i^2 = -L'(w)\, N\, w^{2-2/N}$, וגם $L'(w) = w - y$.
+$$\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$$
+
+לכן תחת gradient flow
+
+$$\begin{aligned} \frac{d}{dt}w_i^2 &= 2w_i\dot{w}_i \\ &= -2L'(w)\prod_k w_k \\ &= -2L'(w)\,w(t) \end{aligned}$$
+
+— זהה לכל $i$. חיסור עבור $i,j$ נותן $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (שימור balancedness).
+
+**b.** לפי (a), אתחול מאוזן נשאר מאוזן: $w_i(t)^2 = w_j(t)^2$ לכל $t$. מכאן $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ במשטר $w(t) \geq 0$ הנדון). כלל המכפלה:
+
+$$\begin{aligned} \dot{w} &= \sum_i \big(\prod_{k\neq i} w_k\big)\dot{w}_i \\ &= -L'(w)\sum_i \big(\prod_{k\neq i}w_k\big)^2 \\ &= -L'(w)\sum_i w^2/w_i^2 \\ &= -L'(w)\, N\, w^{2-2/N} \end{aligned}$$
+
+וגם $L'(w) = w - y$.
 
 **c.** מונוטוניות gradient flow: $L(w(t)) \leq L(w(0)) = L(c)$, כלומר $(w(t)-y)^2 \leq (c-y)^2$, כלומר $|w(t) - y| \leq y - c$ (כיוון ש-$c \in (0,y)$), מה שנותן ישירות $c \leq w(t) \leq 2y - c$.
 
-**d.** רמז: $\frac{d}{dt}L(w(t)) = (w-y)\dot{w} = -N(w-y)^2 w^{2-2/N} = -2L(w(t))\cdot N w(t)^{2-2/N}$. מכיוון ש-$w(t) \geq c > 0$ לפי (c) ו-$2 - 2/N > 0$: $\frac{d}{dt}L(w(t)) \leq -2Nc^{2-2/N} L(w(t))$. אינטגרציה (Grönwall / $\frac{d}{dt}\ln L \leq -2Nc^{2-2/N}$) נותנת את החסם האקספוננציאלי.
+**d.** רמז:
+
+$$\begin{aligned} \frac{d}{dt}L(w(t)) &= (w-y)\dot{w} \\ &= -N(w-y)^2 w^{2-2/N} \\ &= -2L(w(t))\cdot N w(t)^{2-2/N} \end{aligned}$$
+
+מכיוון ש-$w(t) \geq c > 0$ לפי (c) ו-$2 - 2/N > 0$:
+
+$$\frac{d}{dt}L(w(t)) \leq -2Nc^{2-2/N} L(w(t))$$
+
+אינטגרציה (Grönwall / $\frac{d}{dt}\ln L \leq -2Nc^{2-2/N}$) נותנת את החסם האקספוננציאלי.
 
 **💡 טריקים שימושיים:** "אל תשתמשו בטענות מהכיתה" ⇒ גזרו את ה-balancedness ישירות: $\frac{d}{dt}w_i^2=-2L'(w)w$ זהה לכל $i$; אתחול מאוזן ⇒ $w_i^2=w^{2/N}$; מונוטוניות-ההפסד נותנת את המחסום $w(t)\geq c$, שחוסם מלרע $w^{2-2/N}\geq c^{2-2/N}$; סיימו עם $\frac{d}{dt}\ln L\leq-2Nc^{2-2/N}$ + Grönwall. (זהה למועד ג 2024 שאלה 2.)
 
@@ -109,7 +129,11 @@ $$\forall h \in \mathcal{H}: \quad L_D(h) - L_S(h) \leq 2R(l \circ \mathcal{H} \
 **(b) (10 pts)** נסמן ב-$GD(S) \in \mathcal{H}$ את ההשערה המתקבלת מהרצת gradient descent למזעור שגיאת המדגם $L_S(\cdot)$. עבור ההשערה הנלמדת, כאשר מספר הדוגמאות במדגם גדל, האם החסם שהוכח בתת-הסעיף הקודם בהכרח נעשה קטן יותר? כלומר, עבור מדגם $S'$ עם $|S'| > |S| = m$, האם החסם עבור $GD(S')$ בהכרח יהיה קטן יותר מזה שהתקבל עבור $GD(S)$? נמקו את תשובתכם.
 
 **Solution sketch:**
-**a.** עבור כל שלם $k \in \mathbb{N}$ החילו את חסם התזכורת על המחלקה המצומצמת $\mathcal{H}_k$ עם תקציב ביטחון $\delta_k := \frac{6\delta}{\pi^2 k^2}$. שימו לב ש-$\sum_{k=1}^\infty \delta_k = \delta$ לפי עובדת Basel. לכן חסם איחוד נותן את כל המאורעות בו-זמנית בהסתברות $\geq 1 - \delta$. על מאורע זה, לכל $k$: $\forall h_\theta \in \mathcal{H}_k$, הפער $\leq \frac{2k}{\sqrt m} + 4\sqrt{\frac{2\ln(4/\delta_k)}{m}}$, וגם $4/\delta_k = \frac{2\pi^2 k^2}{3\delta}$ — בדיוק איבר ה-log במטרה. עבור $h_\theta$ שרירותי, בחרו $k := \lceil \|\theta\| \rceil + 1$ אם $\lceil\|\theta\|\rceil = 0$ אחרת $k := \lceil\|\theta\|\rceil$. אז $h_\theta \in \mathcal{H}_k$ וגם $k \leq \|\theta\| + 1$. מונוטוניות של שני האיברים ב-$k$ נותנת את החסם הנטען עם $\|\theta\|+1$.
+**a.** עבור כל שלם $k \in \mathbb{N}$ החילו את חסם התזכורת על המחלקה המצומצמת $\mathcal{H}_k$ עם תקציב ביטחון $\delta_k := \frac{6\delta}{\pi^2 k^2}$. שימו לב ש-$\sum_{k=1}^\infty \delta_k = \delta$ לפי עובדת Basel. לכן חסם איחוד נותן את כל המאורעות בו-זמנית בהסתברות $\geq 1 - \delta$. על מאורע זה, לכל $k$: $\forall h_\theta \in \mathcal{H}_k$, הפער
+
+$$\leq \frac{2k}{\sqrt m} + 4\sqrt{\frac{2\ln(4/\delta_k)}{m}}$$
+
+וגם $4/\delta_k = \frac{2\pi^2 k^2}{3\delta}$ — בדיוק איבר ה-log במטרה. עבור $h_\theta$ שרירותי, בחרו $k := \lceil \|\theta\| \rceil + 1$ אם $\lceil\|\theta\|\rceil = 0$ אחרת $k := \lceil\|\theta\|\rceil$. אז $h_\theta \in \mathcal{H}_k$ וגם $k \leq \|\theta\| + 1$. מונוטוניות של שני האיברים ב-$k$ נותנת את החסם הנטען עם $\|\theta\|+1$.
 
 **b.** לא בהכרח. החסם תלוי ב-$m$ *וגם* בנורמה $\|\theta\|$ של ההשערה הנלמדת. עם מדגם גדול יותר $S'$, gradient descent עשוי להתכנס לפרמטרים בעלי נורמה גדולה יותר (התאמה למספר רב יותר של דוגמאות דורשת בדרך כלל $\|\theta\|$ גדול יותר). לכן גדילת $\|\theta(GD(S'))\|$ יכולה לגבור על הירידה של $1/\sqrt{m}$. נקודה מסכמת: החסם הוא *a posteriori* (תלוי-נתונים/אלגוריתם) — דבר בו אינו מונוטוני ב-$m$ לבדו.
 

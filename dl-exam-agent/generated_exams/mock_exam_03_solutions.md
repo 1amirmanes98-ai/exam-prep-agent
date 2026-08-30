@@ -26,7 +26,11 @@ interval incl. the $\alpha=0$ case; 2 assembling (continuity + minimality of Def
 *Traps:* claiming pieces add ($p+q$); forgetting the constant ($\alpha=0$) case;
 counting breakpoints of $f$ instead of their preimages under the affine map.
 
-**2. (4)** $h(x)=\sum_{i=1}^{w} v_i\,[u_i x+b_i]_+ + b^{(2)}$. A neuron with
+**2. (4)**
+
+$$h(x)=\sum_{i=1}^{w} v_i\,[u_i x+b_i]_+ + b^{(2)}$$
+
+A neuron with
 $u_i\ne0$ is affine on both sides of $\tau_i:=-b_i/u_i$ (its only possible
 breakpoint); a neuron with $u_i=0$ is constant. Off the set
 $T:=\{\tau_i: u_i\ne0\}$, $|T|\le w$, every neuron is locally affine, hence so is $h$
@@ -98,9 +102,15 @@ realized-has-$\le B+1$-pieces).
 **6. (10)** *Representation (4 pts).* Let $a$ := slope of $f$ on $(-\infty,t_1]$ and
 $b$ := its intercept there (so $f(x)=ax+b$ for $x\le t_1$); let $a_j$ denote the slope
 of $f$ on the $j$-th piece and set $c_i:=a_{i+1}-a_i$ (slope jumps). Define
-$\varphi(x):=ax+b+\sum_{i=1}^{p-1}c_i[x-t_i]_+$. Then: $\varphi=f$ on
+
+$$\varphi(x):=ax+b+\sum_{i=1}^{p-1}c_i[x-t_i]_+$$
+
+Then: $\varphi=f$ on
 $(-\infty,t_1]$; on the interior of the $(j{+}1)$-st piece $(t_j,t_{j+1})$,
-$\varphi'=a+\sum_{i\le j}c_i=a_1+\sum_{i=1}^{j}(a_{i+1}-a_i)=a_{j+1}=f'$ (telescoping).
+
+$$\varphi'=a+\sum_{i\le j}c_i=a_1+\sum_{i=1}^{j}(a_{i+1}-a_i)=a_{j+1}=f'$$
+
+(telescoping).
 So $\psi:=f-\varphi$ is continuous, vanishes on the first piece, and has zero
 derivative on the interior of every piece $\Rightarrow$ $\psi$ is constant on each
 piece, and by continuity the constants glue to $0$ across the breakpoints
@@ -126,7 +136,11 @@ forgetting that the affine term costs two neurons.
 
 ## Q2 — Gradient flow on a cubic reparameterization of linear regression (35)
 
-**1. (7)** $L(z)=\frac12\sum_{n=1}^N\big(\sum_{j=1}^d X_{nj}z_j^3-y_n\big)^2$. By the
+**1. (7)**
+
+$$L(z)=\frac12\sum_{n=1}^N\big(\sum_{j=1}^d X_{nj}z_j^3-y_n\big)^2$$
+
+By the
 chain rule,
 $$\frac{\partial L}{\partial z_i}
 =\sum_{n=1}^N\Big(\sum_j X_{nj}z_j^3-y_n\Big)\cdot X_{ni}\cdot 3z_i^2
@@ -181,7 +195,10 @@ landscape argument fails and sub-part 4 analyzes the trajectory instead.
 does not disprove convexity — must exhibit a non-global critical point or a chord
 violation); claiming $z=0$ is a local maximum (it is neither a max nor a min).
 
-**4. (10)** The flow is $\dot z=-L'(z)=-3z^2(z^3-1)=:\varphi(z)$.
+**4. (10)** The flow is
+
+$$\dot z=-L'(z)=-3z^2(z^3-1)=:\varphi(z)$$
+
 - *Sign (2 pts):* for $z\in(0,1)$: $z^2>0$ and $z^3-1<0$, so $\varphi(z)>0$.
 - *Confinement (3 pts):* $\hat z\equiv1$ solves the ODE ($\varphi(1)=0$). If
   $z(t^*)=1$ for some finite $t^*$, two distinct solutions pass through the point
@@ -220,9 +237,14 @@ uncapped grid point $\gamma$. If $\gamma\le1$ then $\gamma\in T$; if $\gamma>1$ 
 $1=\min(\gamma,1)\in T$ and $|\alpha-1|<|\alpha-\gamma|\le\epsilon$ (as
 $\alpha\le1<\gamma$). Either way $\alpha$ is within $\epsilon$ of a point of $T$.
 *Product (3 pts):* set $C_\epsilon:=T^d\subseteq\mathcal B$; then
-$|C_\epsilon|=|T|^d\le(\lceil1/\epsilon\rceil+1)^d$, and for $w\in\mathcal B$ choosing
+
+$$|C_\epsilon|=|T|^d\le(\lceil1/\epsilon\rceil+1)^d$$
+
+and for $w\in\mathcal B$ choosing
 $\tilde w$ coordinatewise gives
-$\|w-\tilde w\|_\infty=\max_i|w_i-\tilde w_i|\le\epsilon$.
+
+$$\|w-\tilde w\|_\infty=\max_i|w_i-\tilde w_i|\le\epsilon$$
+
 *Traps:* grid spacing $\epsilon$ instead of $2\epsilon$ (a radius-$\epsilon$ ball
 covers an interval of length $2\epsilon$) gives $\sim(2/\epsilon)^d$ points and
 misses the required size; cover points falling outside $[-1,1]^d$ (the statement
@@ -246,7 +268,9 @@ the failure bound is increasing in the class size.
 
 **3. (8)** Let $w\in\mathcal B$ and pick $\tilde w\in C_\epsilon$ with
 $\|w-\tilde w\|_\infty\le\epsilon$ (sub-part 1). Pointwise, for every $(x,y)$:
-$|\ell(h_w(x),y)-\ell(h_{\tilde w}(x),y)|\le\rho\|w-\tilde w\|_\infty\le\rho\epsilon$.
+
+$$|\ell(h_w(x),y)-\ell(h_{\tilde w}(x),y)|\le\rho\|w-\tilde w\|_\infty\le\rho\epsilon$$
+
 (2 pts) Averaging over the sample and over $D$ respectively:
 $$|L_S(w)-L_S(\tilde w)|\le\rho\epsilon\,,\qquad
 |L_D(w)-L_D(\tilde w)|=\big|\mathbb E[\ell_w-\ell_{\tilde w}]\big|
@@ -261,7 +285,10 @@ $$L_D(w)-L_S(w)=\underbrace{\big[L_D(w)-L_D(\tilde w)\big]}_{\le\rho\epsilon}
 transfer); re-applying probability per $w$ (the event must be fixed once — this is
 what "uniform" means); Jensen is not even needed, just $|\mathbb E[\cdot]|\le\mathbb E|\cdot|$.
 
-**4. (7)** Choose $\epsilon:=\min\big\{1,\ \tfrac{1}{\rho\sqrt N}\big\}\in(0,1]$.
+**4. (7)** Choose
+
+$$\epsilon:=\min\big\{1,\ \tfrac{1}{\rho\sqrt N}\big\}\in(0,1]$$
+
 (3 pts for any valid explicit choice + explicit bound.) For $N\ge1/\rho^2$ this gives
 $2\rho\epsilon=2/\sqrt N$ and
 $$\Delta(N,\delta)=

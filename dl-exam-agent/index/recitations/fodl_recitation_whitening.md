@@ -12,13 +12,33 @@
 
 ## Worked problems / derivations
 **P1.** Find $A \in \mathbb{R}^{d,d}, b \in \mathbb{R}^d$ such that $Y = AX + b$ satisfies $\mathbb{E}[Y]=0$ and $\mathbb{E}[YY^\top]=I_d$.
-Technique: $0 = A\mu + b \Rightarrow Y = A(X-\mu)$; then $I_d = \mathbb{E}[A(X-\mu)(X-\mu)^\top A^\top] = A\Sigma A^\top$. Plug the EVD $\Sigma = UDU^\top$ (PSD) and pick $A_{\mathrm{PCA}} = D^{-1/2}U^\top$.
+Technique:
+
+$$0 = A\mu + b \Rightarrow Y = A(X-\mu)$$
+
+; then
+
+$$I_d = \mathbb{E}[A(X-\mu)(X-\mu)^\top A^\top] = A\Sigma A^\top$$
+
+. Plug the EVD $\Sigma = UDU^\top$ (PSD) and pick $A_{\mathrm{PCA}} = D^{-1/2}U^\top$.
 
 **P2.** Show the whitening matrix is not unique and derive ZCA.
-Technique: if $A\Sigma A^\top = I$ then $(RA)\Sigma(RA)^\top = I$ for any unitary $R$. ZCA chooses $R = U$: $Y_{\mathrm{ZCA}} = UD^{-1/2}U^\top(X-\mu) = \Sigma^{-1/2}(X-\mu)$ — PCA whitening followed by undoing the decorrelating rotation. ZCA minimizes $\mathbb{E}\|Y-(X-\mu)\|_2^2$ over all whitened $Y$, i.e., stays closest to the (centered) original data.
+Technique: if $A\Sigma A^\top = I$ then $(RA)\Sigma(RA)^\top = I$ for any unitary $R$. ZCA chooses $R = U$:
+
+$$Y_{\mathrm{ZCA}} = UD^{-1/2}U^\top(X-\mu) = \Sigma^{-1/2}(X-\mu)$$
+
+— PCA whitening followed by undoing the decorrelating rotation. ZCA minimizes $\mathbb{E}\|Y-(X-\mu)\|_2^2$ over all whitened $Y$, i.e., stays closest to the (centered) original data.
 
 **P3.** Linear regression $f(w) = \tfrac{1}{2}\|X^\top w - y\|_2^2$, $X \in \mathbb{R}^{d,n}$, $n \ge d$, $\operatorname{rank}(XX^\top) = d$: quantify GD convergence and the effect of whitening.
-Technique: with step size $\eta = 1/\lambda_{\max}$, $\|w_t - w^*\|_2^2 \le (1 - \tfrac{1}{K})^t \|w_0 - w^*\|_2^2$ where $K = \lambda_{\max}(XX^\top)/\lambda_{\min}(XX^\top)$. Whitened data $\Rightarrow XX^\top = (n-1)I_d \Rightarrow K = 1 \Rightarrow$ convergence in a single step.
+Technique: with step size $\eta = 1/\lambda_{\max}$,
+
+$$\|w_t - w^*\|_2^2 \le (1 - \tfrac{1}{K})^t \|w_0 - w^*\|_2^2$$
+
+where
+
+$$K = \lambda_{\max}(XX^\top)/\lambda_{\min}(XX^\top)$$
+
+. Whitened data $\Rightarrow XX^\top = (n-1)I_d \Rightarrow K = 1 \Rightarrow$ convergence in a single step.
 
 ## Key formulas & facts
 - Setup: $\mathbb{E}[X] = \mu$, $\mathbb{E}[(X-\mu)(X-\mu)^\top] = \Sigma$; want $Y = A(X-\mu)$ with $A\Sigma A^\top = I$.

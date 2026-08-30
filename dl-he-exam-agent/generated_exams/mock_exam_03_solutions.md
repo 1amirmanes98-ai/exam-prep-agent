@@ -25,7 +25,11 @@ $f\circ g$ רציפה (הרכבה של פונקציות רציפות), ולחל�
 *מלכודות:* טענה שהמקטעים מתחברים ($p+q$); שכחת המקרה הקבוע ($\alpha=0$);
 ספירת נקודות השבירה של $f$ במקום המקורות שלהן תחת ההעתקה האפינית.
 
-**2. (4)** $h(x)=\sum_{i=1}^{w} v_i\,[u_i x+b_i]_+ + b^{(2)}$. נוירון עם
+**2. (4)**
+
+$$h(x)=\sum_{i=1}^{w} v_i\,[u_i x+b_i]_+ + b^{(2)}$$
+
+נוירון עם
 $u_i\ne0$ אפיני משני צדי $\tau_i:=-b_i/u_i$ (נקודת השבירה האפשרית היחידה שלו);
 נוירון עם $u_i=0$ קבוע. מחוץ לקבוצה
 $T:=\{\tau_i: u_i\ne0\}$, $|T|\le w$, כל נוירון אפיני מקומית, ולכן גם $h$
@@ -96,9 +100,15 @@ $(w+1)^{L'}\ge2^L$; בלקיחת $\ln$: $L'\ge L\ln2/\ln(w+1)$. (2 pts)
 **6. (10)** *ייצוג (4 pts).* יהי $a$ := השיפוע של $f$ על $(-\infty,t_1]$ ו-
 $b$ := החיתוך שלה שם (כך ש-$f(x)=ax+b$ עבור $x\le t_1$); יהי $a_j$ השיפוע
 של $f$ על המקטע ה-$j$ וקבעו $c_i:=a_{i+1}-a_i$ (קפיצות שיפוע). הגדירו
-$\varphi(x):=ax+b+\sum_{i=1}^{p-1}c_i[x-t_i]_+$. אז: $\varphi=f$ על
+
+$$\varphi(x):=ax+b+\sum_{i=1}^{p-1}c_i[x-t_i]_+$$
+
+אז: $\varphi=f$ על
 $(-\infty,t_1]$; בפנים המקטע ה-$(j{+}1)$ $(t_j,t_{j+1})$,
-$\varphi'=a+\sum_{i\le j}c_i=a_1+\sum_{i=1}^{j}(a_{i+1}-a_i)=a_{j+1}=f'$ (טלסקופיה).
+
+$$\varphi'=a+\sum_{i\le j}c_i=a_1+\sum_{i=1}^{j}(a_{i+1}-a_i)=a_{j+1}=f'$$
+
+(טלסקופיה).
 אז $\psi:=f-\varphi$ רציפה, מתאפסת על המקטע הראשון, ובעלת נגזרת
 אפס בפנים כל מקטע $\Rightarrow$ $\psi$ קבועה על כל מקטע, ולפי רציפות הקבועים
 מתדבקים ל-$0$ לרוחב נקודות השבירה $\Rightarrow$ $f\equiv\varphi$.
@@ -123,7 +133,11 @@ $d(f,h)=d(f,g)<\epsilon$.
 
 ## Q2 — gradient flow על רה-פרמטריזציה קובית של רגרסיה לינארית (35)
 
-**1. (7)** $L(z)=\frac12\sum_{n=1}^N\big(\sum_{j=1}^d X_{nj}z_j^3-y_n\big)^2$. לפי
+**1. (7)**
+
+$$L(z)=\frac12\sum_{n=1}^N\big(\sum_{j=1}^d X_{nj}z_j^3-y_n\big)^2$$
+
+לפי
 כלל השרשרת,
 $$\frac{\partial L}{\partial z_i}
 =\sum_{n=1}^N\Big(\sum_j X_{nj}z_j^3-y_n\Big)\cdot X_{ni}\cdot 3z_i^2
@@ -177,7 +191,10 @@ $L\big(\tfrac{0+1}{2}\big)=\tfrac12(\tfrac18-1)^2=\tfrac{49}{128}>\tfrac14
 אינו מפריך קמירות — יש להציג נקודה קריטית לא-גלובלית או הפרת מיתר); טענה ש-$z=0$
 הוא מקסימום מקומי (הוא אינו מקסימום ואינו מינימום).
 
-**4. (10)** הזרימה היא $\dot z=-L'(z)=-3z^2(z^3-1)=:\varphi(z)$.
+**4. (10)** הזרימה היא
+
+$$\dot z=-L'(z)=-3z^2(z^3-1)=:\varphi(z)$$
+
 - *סימן (2 pts):* עבור $z\in(0,1)$: $z^2>0$ ו-$z^3-1<0$, ולכן $\varphi(z)>0$.
 - *כליאה (3 pts):* $\hat z\equiv1$ פותר את המשוואה הדיפרנציאלית ($\varphi(1)=0$). אם
   $z(t^*)=1$ עבור $t^*$ סופי כלשהו, שני פתרונות שונים עוברים דרך הנקודה
@@ -215,9 +232,14 @@ $$T:=\big\{\min(-1+2\epsilon j,\ 1)\ :\ j=0,1,\dots,k\big\}\subseteq[-1,1]\,,\qq
 $1=\min(\gamma,1)\in T$ ו-$|\alpha-1|<|\alpha-\gamma|\le\epsilon$ (כיוון ש-
 $\alpha\le1<\gamma$). כך או כך $\alpha$ נמצא בטווח $\epsilon$ מנקודה של $T$.
 *מכפלה (3 pts):* קבעו $C_\epsilon:=T^d\subseteq\mathcal B$; אז
-$|C_\epsilon|=|T|^d\le(\lceil1/\epsilon\rceil+1)^d$, ועבור $w\in\mathcal B$ בחירת
+
+$$|C_\epsilon|=|T|^d\le(\lceil1/\epsilon\rceil+1)^d$$
+
+ועבור $w\in\mathcal B$ בחירת
 $\tilde w$ רכיב-רכיב נותנת
-$\|w-\tilde w\|_\infty=\max_i|w_i-\tilde w_i|\le\epsilon$.
+
+$$\|w-\tilde w\|_\infty=\max_i|w_i-\tilde w_i|\le\epsilon$$
+
 *מלכודות:* מרווח רשת $\epsilon$ במקום $2\epsilon$ (כדור ברדיוס-$\epsilon$
 מכסה קטע באורך $2\epsilon$) נותן $\sim(2/\epsilon)^d$ נקודות ומחמיץ את הגודל
 הנדרש; נקודות כיסוי הנופלות מחוץ ל-$[-1,1]^d$ (הטענה דורשת
@@ -241,7 +263,9 @@ $|C_\epsilon|=K^d$ כמדויק — רק $\le$ זמין, וזה בסדר כיו�
 
 **3. (8)** יהי $w\in\mathcal B$ ובחרו $\tilde w\in C_\epsilon$ עם
 $\|w-\tilde w\|_\infty\le\epsilon$ (תת-סעיף 1). נקודתית, עבור כל $(x,y)$:
-$|\ell(h_w(x),y)-\ell(h_{\tilde w}(x),y)|\le\rho\|w-\tilde w\|_\infty\le\rho\epsilon$.
+
+$$|\ell(h_w(x),y)-\ell(h_{\tilde w}(x),y)|\le\rho\|w-\tilde w\|_\infty\le\rho\epsilon$$
+
 (2 pts) בממוצע על המדגם ועל $D$ בהתאמה:
 $$|L_S(w)-L_S(\tilde w)|\le\rho\epsilon\,,\qquad
 |L_D(w)-L_D(\tilde w)|=\big|\mathbb E[\ell_w-\ell_{\tilde w}]\big|
@@ -256,7 +280,10 @@ $$L_D(w)-L_S(w)=\underbrace{\big[L_D(w)-L_D(\tilde w)\big]}_{\le\rho\epsilon}
 מועברים); החלה מחדש של הסתברות לכל $w$ (המאורע חייב להיקבע פעם אחת — זה מה ש-
 "אחיד" פירושו); Jensen אפילו לא נחוץ, רק $|\mathbb E[\cdot]|\le\mathbb E|\cdot|$.
 
-**4. (7)** בחרו $\epsilon:=\min\big\{1,\ \tfrac{1}{\rho\sqrt N}\big\}\in(0,1]$.
+**4. (7)** בחרו
+
+$$\epsilon:=\min\big\{1,\ \tfrac{1}{\rho\sqrt N}\big\}\in(0,1]$$
+
 (3 pts עבור כל בחירה מפורשת תקפה + חסם מפורש.) עבור $N\ge1/\rho^2$ זה נותן
 $2\rho\epsilon=2/\sqrt N$ ו-
 $$\Delta(N,\delta)=
