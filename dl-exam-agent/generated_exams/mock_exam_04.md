@@ -62,7 +62,8 @@ $x \in \mathbb{R}^L$.
    $\mathcal{H}_2^{anti} \subseteq \mathcal{H}_2$ the sub-class of hypotheses whose
    transition matrix is anti-symmetric, $A^\top = -A$, and by
    $\mathcal{S}_2^{anti}$ the corresponding set of coefficient sequences. Let
-   $J := \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$.
+
+   $$J := \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$$
 
    a. **(3 pts)** Show that every anti-symmetric $A \in \mathbb{R}^{2 \times 2}$
       equals $\omega J$ for some $\omega \in \mathbb{R}$, and prove that for every

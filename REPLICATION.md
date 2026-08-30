@@ -357,3 +357,26 @@ Process lessons that made this replication cheaper/faster:
 - **Verify once with a headless-Chromium script**, not screenshots-per-edit: zero console
   errors; KaTeX count > 0 on an exam page **and** on the raw quirks-mode fragment; a mock parses
   to the right pillars/total; localStorage survives reload. One run per phase.
+
+**UPDATE — translating an existing English index into a 2nd-language twin (from `dl-he-exam-agent/`,
+the FODL-in-Hebrew build — the 5th course).** When a polished English `index/` already exists and
+you want its Hebrew (RTL) twin, do NOT re-index from PDFs. Translate the existing files prose-only
+and gate every pair with an **EN↔HE math-parity check**: extract the ordered list of `$…$`/`$$…$$`
+spans from both files (mask `\text{}`/`\operatorname{}` args, which are the only in-math strings you
+may translate) and require them byte-identical. That one check keeps math, `## Q`/`**Pillar:**`/ref
+markers, and the flashcard-lead COUNT intact for free, so the built DATA stays structurally identical
+(a numeric/id/pillar **deep-compare of the two `<script id="data">` payloads** should report 0 diffs).
+Extra lessons from this course:
+- **Hebrew-only pedagogy is written WITHOUT `$`.** Hints, step-labels, archetype-recipe steps, and
+  "במילים" glosses are Hebrew prose only — no new math spans — so they never perturb the parity gate
+  or the EN↔HE deep-compare. Add them in a separate pass AFTER translation+parity are green.
+- **Readability reflow must be done in LOCKSTEP on both twins** (promote/stack/box the identical span
+  in EN and HE), or parity breaks. A `content_preserved` signature check per side proves it was pure
+  reflow (no math token changed) before you trust it.
+- **A zip-only English index can be restored from its built DATA.** If `index/` was never tracked
+  (only `docs/index.html` + `figures.js`), reverse the `<script id="data">` JSON back into source
+  markdown (deep-compare must be 0 diffs) rather than re-indexing — then translate from that.
+- **Pin one recurring English term with the user.** A domain term rendered both ways across ~20 files
+  ("gradient flow" vs a Hebrew calque) reads as sloppy; ask once, then normalize (mind Hebrew
+  prefixes ש/ב/ל/מ/ו/כ). Benign quirk: KaTeX wraps a Hebrew `\text{}` run in one extra node, so the
+  `examKaTeX` smoke count can differ by ±1 between twins with 0 render failures — not a content diff.

@@ -1,0 +1,105 @@
+# Lecture 9 – Generalization 4
+- **File:** materials/lectures/lecture_09_generalization_4.pdf | **Text:** materials/text/lectures/lecture_09_generalization_4.txt
+- **Pillar:** Generalization
+- **One-paragraph summary:** Presents the **volume hypothesis**, a nascent alternative (not contradictory, but conceptually very different) to implicit regularization: for "natural" data distributions, DL architectures are such that the set of solutions fitting the training data consists **mostly of generalizing solutions**, so *any* algorithm that fits the data — even randomly sampling a zero-training-loss solution — likely generalizes; generalization then stems from the loss landscape/architecture, not from special properties of gradient-based optimization. Formalization: fix a prior $P(\cdot)$ over parameters and study the posterior probability of $\epsilon_D$-generalization $P(L_D(\theta)\le\epsilon_D \mid L_S(\theta)\le\epsilon_S)$. Empirical evidence is mixed (Chiang et al. corroborate; Peleg–Hein find architecture-dependence), and the lecture's matrix-factorization theory matches the nuance: with a Gaussian-generated prior and fixed depth, as **width** $k\to\infty$ conditioning on low training loss improves the generalization probability by only $O(1/\sqrt{k})$ over the prior — the volume hypothesis **fails** (posterior no better than chance). The proof runs through exact independence of the train/generalization events for an i.i.d. Gaussian matrix, convexity of the loss sublevel sets, and a quantitative CLT (Favaro et al.) placing the product matrix within convex distance $c/\sqrt{k}$ of a Gaussian. In contrast, with a **normalized** prior, rank-1 unit-Frobenius ground truth and RIP, increasing **depth** makes the posterior generalize perfectly: the probability that the generalization loss exceeds a constant times the training threshold decays inversely with depth — the volume hypothesis **holds** for deep, narrow factorizations.
+
+## Outline
+1. **The Volume Hypothesis.** Concept, contrast with implicit regularization, mixed empirical evidence (Chiang et al. [1] pro; Peleg–Hein [3] nuanced: may depend on width/depth).
+   - 1.1 **Abstract Formulation.** Prior $P$ over $\Theta$; posterior conditioned on $\{L_S(\theta)\le\epsilon_S\}$; posterior probability of $\epsilon_D$-generalization (Eq. (1)).
+   - 1.2 **Matrix Factorization as a Theoretical Testbed.** Matrix sensing (as in Lecture 8) with equal hidden widths $k$; generalization loss $L_{gen}$ measured on the orthogonal complement of the measurement span; Gaussian-generated priors with/without normalization (Def 1).
+     - 1.2.1 **Increasing Width: Volume Hypothesis Fails.** Thm 1: posterior-minus-prior generalization probability is $O(1/\sqrt{k})$; proof via independence for i.i.d. Gaussian (Lem 1), convexity (Lem 2), convex-distance transfer (Lem 3), and a quantitative CLT for products of random matrices (Thm 2, Favaro et al.).
+     - 1.2.2 **Increasing Depth: Volume Hypothesis Holds.** Thm 3: with normalized prior, rank-1 $W^*$, RIP — posterior generalization becomes perfect as depth grows.
+
+## Key definitions
+**Def (volume hypothesis, informal).** DL architectures are such that, for "natural" data distributions, the set of solutions fitting the training data contains mostly generalizing solutions; hence any optimization algorithm that fits the training data is likely to generalize — in particular, a solution selected at random from the zero-/low-training-loss set generalizes w.h.p. (Contrast: implicit regularization credits special properties of gradient-based optimization.)
+
+**Def (abstract formulation).** $S=\{(x_i,y_i)\}_{i=1}^m\sim D^m$ i.i.d.; $f_\theta:X\to Y$ the network's input–output map, $\theta\in\Theta$; loss $\ell:Y\times Y\to\mathbb{R}_{\ge0}$; $L_S(\theta)=\frac1m\sum_{i=1}^m\ell(f_\theta(x_i),y_i)$, $L_D(\theta)=\mathbb{E}_{(x,y)\sim D}[\ell(f_\theta(x),y)]$. Fix a prior $P(\cdot)$ over $\Theta$ and a training threshold $\epsilon_S>0$; the **posterior** is $P(\theta \mid L_S(\theta)\le\epsilon_S)$. For $\epsilon_D>0$, the event of **$\epsilon_D$-generalization** is $\{\theta: L_D(\theta)\le\epsilon_D\}$; the object of interest is the **posterior probability of $\epsilon_D$-generalization** (Eq. (1)):
+
+$$P\big(L_D(\theta)\le\epsilon_D \,\big|\, L_S(\theta)\le\epsilon_S\big),$$
+
+quantifying how common (per the prior) generalizing solutions are among those fitting the data. The volume hypothesis asserts it is high.
+
+**Def (MF testbed).** Same matrix sensing setting as Lecture 8: $X\in\mathbb{R}^{d,d'}$, $Y=\mathbb{R}$, $\ell(y,\hat y)=\frac12(y-\hat y)^2$, $H=\{X\mapsto\langle X,W\rangle : W\in\mathbb{R}^{d,d'}\}$; realizability $y=\langle X,W^*\rangle$ w.p. 1 with $\mathrm{rank}(W^*)=r<\min\{d,d'\}$; $m<d\cdot d'$. Overparameterized training objective $\phi_S(W_1,\dots,W_N)=L_S(W_NW_{N-1}\cdots W_1)$ with $L_S(W)=\frac{1}{2m}\sum_i(\langle X_i,W\rangle-y_i)^2$ and **equal hidden widths** $d_1=\dots=d_{N-1}=:k$.
+
+**Def (generalization loss).** Any $W$ minimizing the empirical loss coincides with $W^*$ on $\mathrm{span}\{X_i\}_{i=1}^m$; hence generalization is evaluated on instances orthogonal to that span. With $B\subset\mathbb{R}^{d,d'}$ an orthonormal basis of the orthogonal complement of $\mathrm{span}\{X_i\}_{i=1}^m$:
+
+$$L_{gen}:\mathbb{R}^{d,d'}\to\mathbb{R}_{\ge0},\qquad L_{gen}(W):=\frac{1}{2|B|}\sum_{X\in B}\big(\langle X,W\rangle-\langle X,W^*\rangle\big)^2$$
+
+(independent of the choice of $B$); overparameterized version $\phi_{gen}(W_1,\dots,W_N)=L_{gen}(W_NW_{N-1}\cdots W_1)$.
+
+**Def 1 (Gaussian-generated priors).** Let $N(\cdot;0,\sigma^2)$ be the zero-mean Gaussian over $\mathbb{R}$ with variance $\sigma^2>0$. $P(\cdot)$ is **generated by $N(\cdot;0,\sigma^2)$** if $(W_1,\dots,W_N)\sim P$ implies $W_1,\dots,W_N$ are statistically independent and, for every $j\in[N]$, the entries of $W_j$ are independently distributed per $N(\cdot;0,\frac{\sigma^2}{d_j})$, where $d_j$ = number of **columns** of $W_j$. $P(\cdot)$ is **generated by $N(\cdot;0,\sigma^2)$ with normalization** if it can be implemented by drawing $(W_1,\dots,W_N)$ from a distribution generated by $N(\cdot;0,\sigma^2)$ and then, for all $j\in[N]$, dividing each entry of $W_j$ by $\|W_NW_{N-1}\cdots W_1\|_{Fro}^{1/N}$.
+
+**Def 2 (convex distance).** For $d$-dimensional random vectors $Y,Z$ over $\mathbb{R}^d$:
+
+$$\mathrm{Dist}_{convex}(Y,Z):=\sup_B\,\big|\Pr(Y\in B)-\Pr(Z\in B)\big|,$$
+
+supremum over all **convex** sets $B\subset\mathbb{R}^d$; extended to random matrices via their flattened vector representations.
+
+## Key theorems & results
+**Thm 1 (increasing width ⇒ volume hypothesis fails).** Let $P(\cdot)$ be generated by $N(\cdot;0,\sigma^2)$ (Def 1), $\epsilon_{train},\epsilon_{gen}>0$. Regarding $P$ as prior and conditioning on $\{\phi_S(W_1,\dots,W_N)<\epsilon_{train}\}$: there exists $k_0$ such that for any width $k\ge k_0$,
+
+$$P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\,\big|\,\phi_S(W_1,\dots,W_N)<\epsilon_{train}\big)-P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\big)=O\big(\tfrac{1}{\sqrt{k}}\big).$$
+
+I.e., as $k$ grows (depth fixed), drawing from the posterior generalizes no better than drawing from the prior while disregarding the data ("no better than chance").
+Proof idea (3 parts): (i) for an i.i.d. Gaussian matrix $W_{iid}$ the low-train and low-generalization events are exactly independent (Lem 1); (ii) if the factorization $W_N\cdots W_1$ is close to $W_{iid}$ in convex distance, near-independence transfers since the relevant events are convex sets (Lem 2, Lem 3); (iii) the closeness holds by a quantitative CLT (Thm 2).
+
+**Lem 1 (exact independence for $W_{iid}$).** For $W_{iid}\in\mathbb{R}^{d,d'}$ with i.i.d. zero-mean finite-variance Gaussian entries:
+
+$$\Pr\big(L_{gen}(W_{iid})<\epsilon_{gen},\,L_S(W_{iid})<\epsilon_{train}\big)=\Pr\big(L_{gen}(W_{iid})<\epsilon_{gen}\big)\cdot\Pr\big(L_S(W_{iid})<\epsilon_{train}\big).$$
+
+**Proof idea:** test matrices $X\in B$ are orthogonal to $X_1,\dots,X_m$; for a vector $Z$ of i.i.d. zero-centered Gaussians and orthogonal fixed vectors $v_1,v_2$, $\langle Z,v_1\rangle,\langle Z,v_2\rangle$ are independent — so $L_S(W_{iid})$ and $L_{gen}(W_{iid})$ are functions of independent Gaussian families.
+
+**Lem 2 (convexity of sublevel sets).** $W_S:=\{W\in\mathbb{R}^{d,d'}:L_S(W)<\epsilon_{train}\}$ and $W_{gen}:=\{W\in\mathbb{R}^{d,d'}:L_{gen}(W)<\epsilon_{gen}\}$ are convex.
+
+**Proof idea:** each loss is a sum of terms $\frac12(\langle X,W\rangle-c)^2$ — affine maps composed with the convex $x\mapsto x^2$ — hence convex; sublevel sets of convex functions are convex; intersections of convex sets are convex (used for the joint event).
+
+**Lem 3 (convex-distance transfer).** Let $\epsilon_{gen},\epsilon_{train},c>0$, $W_{iid}$ as above, and $k_0:=\big(\frac{c}{\Pr(L_S(W_{iid})<\epsilon_{train})}\big)^2$. For any $k\ge k_0$, if $\mathrm{Dist}_{convex}(W_NW_{N-1}\cdots W_1,\,W_{iid})\le\frac{c}{\sqrt{k}}$ then
+
+$$P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\,\big|\,\phi_S(W_1,\dots,W_N)<\epsilon_{train}\big)\le P\big(\phi_{gen}(W_1,\dots,W_N)<\epsilon_{gen}\big)+\frac{\frac{3c}{\sqrt{k}}}{\Pr(L_S(W_{iid})<\epsilon_{train})-\frac{c}{\sqrt{k}}}.$$
+
+**Proof idea:** the three events (train, gen, joint) are convex, so each of their probabilities under $W_N\cdots W_1$ is within $\frac{c}{\sqrt k}$ of its $W_{iid}$ counterpart; write the conditional as a ratio, substitute, factor the joint via Lem 1's independence, and collect the error terms.
+
+**Thm 2 (quantitative CLT; Thm 3.6 of Favaro et al. [2], adapted).** Let $P(\cdot)$ be generated by $N(\cdot;0,\sigma^2)$. Recursively define $V^{(j)}\in\mathbb{R}^{d',d'}$ for $j=2,\dots,N$ by
+
+$$\forall\alpha,\beta\in[d']:\quad V^{(j)}_{\alpha\beta}=\mathbb{E}[z_\alpha\cdot z_\beta],\qquad \begin{pmatrix}z_\alpha\\ z_\beta\end{pmatrix}\sim N\left(0,\begin{pmatrix}V^{(j-1)}_{\alpha\alpha} & V^{(j-1)}_{\alpha\beta}\\ V^{(j-1)}_{\alpha\beta} & V^{(j-1)}_{\beta\beta}\end{pmatrix}\right),$$
+
+with initial matrix $V^{(1)}\in\mathbb{R}^{d',d'}$ given by $V^{(1)}_{\alpha\beta}=\mathbb{E}\big[[W_1]_{1\alpha}\cdot[W_1]_{1\beta}\big]$. For $\alpha\in[d']$ let $\Gamma_\alpha$ be a zero-centered Gaussian vector (notes write "$m$-dimensional"; its indices run over $r\in[d]$, matching the $d$-dimensional columns) with covariance
+
+$$\forall\alpha,\beta\in[d'],\ r,r'\in[d]:\quad \mathrm{Cov}\big((\Gamma_\alpha)_r,(\Gamma_\beta)_{r'}\big)=\mathbb{1}[r=r']\cdot V^{(N)}_{\alpha\beta}.$$
+
+If $V^{(j)}$ is invertible for every $j\in[N]$, then there exists $c>0$ depending on $d,d',N,\sigma^2$ such that for any $k\in\mathbb{N}$:
+
+$$\mathrm{Dist}_{convex}\Big(\big([W_NW_{N-1}\cdots W_1]_{:\alpha}\big)_{\alpha\in[d']},\,\big(\Gamma_\alpha\big)_{\alpha\in[d']}\Big)\le\frac{c}{\sqrt{k}},$$
+
+where $[W_N\cdots W_1]_{:\alpha}$ is the $\alpha$-th column and both collections are regarded as $d'\cdot d$-dimensional random vectors. (Exercise: show this implies $\mathrm{Dist}_{convex}(W_NW_{N-1}\cdots W_1,W_{iid})\le\frac{c}{\sqrt k}$, the condition Lem 3 requires.)
+
+**Exam relevance:** know the roles — $c$ independent of $k$; invertibility of $V^{(j)}$ required; convergence is to an i.i.d.-like Gaussian as width grows.
+
+**Thm 3 (increasing depth ⇒ volume hypothesis holds).** Suppose $W^*$ satisfies $\|W^*\|_F=1$ and $\mathrm{rank}(W^*)=1$; the training instances $\{X_i\}_{i=1}^m$ satisfy a mild regularity ("restricted isometry") property; and $P(\cdot)$ is generated by $N(\cdot;0,\sigma^2)$ **with normalization** (Def 1). Then there exists $c\in\mathbb{R}_{>0}$ such that for any $\epsilon_{train}\in\mathbb{R}_{>0}$ and any depth of the factorization:
+
+$$1-P\big(\phi_{gen}(W_1,\dots,W_d)<\epsilon_{train}\,c \,\big|\, \phi_S(W_1,\dots,W_d)<\epsilon_{train}\big)=O\big(\tfrac{1}{d}\big),$$
+
+as displayed in the notes — where the displayed $d$ denotes the **depth** (number of factors $W_1,\dots,W_d$; the theorem's preamble calls the depth $N$). I.e., with probability tending to 1 as depth grows, the generalization loss is no greater than a constant times the threshold set for the empirical loss — posterior generalization becomes perfect.
+
+**Exam relevance:** contrast with Thm 1; note the extra assumptions (normalized prior, rank-1 unit-norm $W^*$, RIP) and that the generalization threshold is $c\cdot\epsilon_{train}$, tied to the training threshold.
+
+## Techniques & tricks
+- Formalizing "volume" as a **posterior probability under a prior**: condition a parameter prior on the low-training-loss event; the hypothesis = this conditional probability of generalization is high. (Random "guess-and-check" viewpoint on training.)
+- Measuring generalization only on an orthonormal basis of the **orthogonal complement** of $\mathrm{span}\{X_i\}$ — the part of $W$ not pinned down by fitting the data; basis-independence of $L_{gen}$.
+- Exact independence from **orthogonality under i.i.d. Gaussians**: projections of an i.i.d. Gaussian vector onto orthogonal directions are independent — makes conditioning on the training event vacuous for $W_{iid}$.
+- **Convex distance** as the right comparison metric: the train/gen/joint events are convex (sublevel sets of convex quadratics; intersections stay convex), so a bound on $\mathrm{Dist}_{convex}$ uniformly controls all three probabilities.
+- **Quantitative CLT for products of random matrices**: as width $k\to\infty$, $W_N\cdots W_1$ Gaussianizes at rate $1/\sqrt{k}$ (constant depending on $d,d',N,\sigma^2$, not $k$); layer-wise covariance recursion $V^{(1)}\to V^{(N)}$.
+- Perturbation algebra on conditional probabilities: when numerator and denominator of a ratio each shift by at most $\frac{c}{\sqrt k}$, the conditional shifts by at most $\frac{3c/\sqrt k}{\Pr(\cdot)-c/\sqrt k}$; threshold $k_0=(c/\Pr(L_S(W_{iid})<\epsilon_{train}))^2$ keeps the denominator positive.
+- **Prior normalization** (divide every entry of each $W_j$ by $\|W_N\cdots W_1\|_{Fro}^{1/N}$) to fix the end-to-end scale — the ingredient enabling the depth result.
+
+## Exam-relevant nuggets
+- Volume hypothesis vs implicit regularization: **not contradictory, conceptually different** — generalization from the abundance ("volume") of generalizing solutions among data-fitting ones vs from special properties of gradient-based optimization. Under the volume hypothesis, even a randomly selected data-fitting solution generalizes w.h.p.
+- Empirical status is **mixed**: Chiang et al. [1] corroborate; Peleg–Hein [3] nuanced — validity may depend on architectural features (width and/or depth). The MF theory matches: **fails for wide (fixed depth), holds for deep (fixed width)** — a likely "compare and contrast" exam question.
+- Definition traps: prior entry variance is $\frac{\sigma^2}{d_j}$ with $d_j$ = number of **columns** of $W_j$; normalization divides by $\|W_N\cdots W_1\|_{Fro}^{1/N}$ (the $1/N$-th power); hidden widths all equal $k$; $L_{gen}$ uses $\frac{1}{2|B|}$ and squared differences to $\langle X,W^*\rangle$.
+- Why $L_{gen}$ is the right test: any empirical-loss minimizer already agrees with $W^*$ on $\mathrm{span}\{X_i\}$ — so generalization is exactly about the orthogonal complement.
+- Thm 1 (width) fine print: fixed depth $N$; holds for all $k\ge k_0$ with $k_0=\big(\frac{c}{\Pr(L_S(W_{iid})<\epsilon_{train})}\big)^2$; conclusion is posterior-minus-prior $=O(1/\sqrt k)$ — "no better than chance," not "does not generalize."
+- Lem 1's independence is **exact**, not asymptotic — the $O(1/\sqrt k)$ error comes only from the CLT step (Thm 2).
+- Convexity (Lem 2) is what makes $\mathrm{Dist}_{convex}$ the operative metric; remember the chain: convex events → convex distance controls probabilities → transfer lemma (Lem 3).
+- Thm 2 constants: $c=c(d,d',N,\sigma^2)$, independent of $k$; requires all $V^{(j)}$ invertible; statement is about the collection of columns flattened to a $d'\cdot d$-dimensional vector. (Note the notes describe $\Gamma_\alpha$ as "$m$-dimensional" while its coordinates are indexed by $r\in[d]$.)
+- Thm 3 (depth) assumptions checklist: $\mathrm{rank}(W^*)=1$, $\|W^*\|_F=1$, RIP-type regularity of $\{X_i\}$, prior **with normalization**. Conclusion: $1-P(\phi_{gen}<c\,\epsilon_{train}\mid\phi_S<\epsilon_{train})=O(1/\text{depth})$; the generalization threshold scales with the training threshold ($c\,\epsilon_{train}$). Beware the notes' notation clash: the display writes $W_1,\dots,W_d$ and $O(\frac1d)$ with $d$ = depth, while the preamble says "any depth $N\in\mathbb{N}$".
+- Two exercises flagged in the notes (plausible exam fodder): prove Thm 2 implies $\mathrm{Dist}_{convex}(W_N\cdots W_1,W_{iid})\le c/\sqrt k$; and (from the proof of Lem 1) why orthogonal Gaussian projections are independent.
