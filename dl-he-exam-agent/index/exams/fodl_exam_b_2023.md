@@ -36,8 +36,8 @@ $$\operatorname{sign}(z)=\begin{cases}1, & z\ge0\\ 0, & z<0\end{cases}$$
 
 **⚠️ שים לב:** ההגדרה דורשת את שני הכיוונים — הכלה פולינומית בכיוון אחד וגם התפוצצות אקספוננציאלית בחזרה; ציון של אחד בלבד מפסיד נקודות. הצדיקו את מונוטוניות ה-VC לפני השימוש בה; ב-(3) $5C$ עדיין פולינומי; ב-(4) אי-השוויון החמור $k>d$ הוא שאוסר ניפוץ.
 
-## Q2 (39 pts) — זרימת גרדיאנט על פרמטריזציית-יתר של מכפלת Hadamard (רשת לינארית אלכסונית)
-**Topics:** רשת לינארית, זרימת גרדיאנט, balancedness, חוקי שימור, קמירות, פירוק מטריצות | **Pillar:** Optimization | **Difficulty:** 4
+## Q2 (39 pts) — gradient flow על פרמטריזציית-יתר של מכפלת Hadamard (רשת לינארית אלכסונית)
+**Topics:** רשת לינארית, gradient flow, balancedness, חוקי שימור, קמירות, פירוק מטריצות | **Pillar:** Optimization | **Difficulty:** 4
 **Maps to:** lecture_04_optimization_2, lecture_05_optimization_3, fodl_recitation_gradient_flow
 **Statement (English translation):**
 תהי $L:\mathbb{R}^d\to\mathbb{R}$ פונקציית הפסד קמורה וגזירה ברציפות. עבור $N\ge2$ נגדיר את פונקציית המטרה הבאה:
@@ -50,7 +50,7 @@ $$\frac{\partial}{\partial u_j}\phi(u_1,\dots,u_N)=\Big(\odot_{n\ne j}\,u_n\Big)
 
 2. **(8 pts)** הניחו ש-$L$ מקבלת את ערכה המינימלי בנקודה $w^*\in\mathbb{R}^d$ וש-$L(0)>L(w^*)$. הוכיחו ש-$\phi$ **אינה** קמורה.
 
-כעת הניחו שזרימת גרדיאנט מורצת על $\phi$ עם אתחול $u_1(0),\dots,u_N(0)\in\mathbb{R}^d$, ונסמן ב-$w(t)$ את הווקטור מקצה-לקצה בזמן $t\ge0$, כלומר $w(t)=\odot_{n=1}^N u_n(t)$.
+כעת הניחו ש-gradient flow מורצת על $\phi$ עם אתחול $u_1(0),\dots,u_N(0)\in\mathbb{R}^d$, ונסמן ב-$w(t)$ את הווקטור מקצה-לקצה בזמן $t\ge0$, כלומר $w(t)=\odot_{n=1}^N u_n(t)$.
 
 3. **(8 pts)** הוכיחו ש-
 $$\frac{d}{dt}\big[u_i^2(t)\big]=\frac{d}{dt}\big[u_j^2(t)\big]=-2\,w(t)\odot\nabla L(w(t))$$
@@ -72,7 +72,7 @@ $$L(w(t))\le L(w(0))\cdot\exp\Big(-2Nc^{\,2-\frac{2}{N}}\cdot t\Big),$$
 
 **2.** בראשית $(0,\dots,0)$, כל גרדיאנט-בלוק מכיל מכפלת Hadamard של $N-1\ge1$ וקטורי אפס. לכן $\nabla\phi=0$: הראשית היא נקודה קריטית. אבל $\phi(0)=L(0)>L(w^*)=\phi(w^*,\mathbf1,\dots,\mathbf1)$. לכן הראשית אינה מינימום גלובלי. בפונקציה קמורה וגזירה כל נקודה קריטית היא מינימום גלובלי. לפיכך $\phi$ אינה קמורה.
 
-**3.** $\frac{d}{dt}u_j^2=2\,u_j\odot\dot u_j=-2\,u_j\odot\big(\odot_{n\ne j}u_n\big)\odot\nabla L(w)=-2\,w\odot\nabla L(w)$ — אותו ביטוי לכל $j$ (זהו חוק שימור ה-balancedness: $u_i^2(t)-u_j^2(t)$ שמור תחת זרימת גרדיאנט).
+**3.** $\frac{d}{dt}u_j^2=2\,u_j\odot\dot u_j=-2\,u_j\odot\big(\odot_{n\ne j}u_n\big)\odot\nabla L(w)=-2\,w\odot\nabla L(w)$ — אותו ביטוי לכל $j$ (זהו חוק שימור ה-balancedness: $u_i^2(t)-u_j^2(t)$ שמור תחת gradient flow).
 
 **4.** לפי (3) והאתחול המאוזן החיובי, $u_i^2(t)-u_j^2(t)\equiv0$, ומרציפות הרכיבים נשארים באותו סימן. לכן $u_1(t)=\cdots=u_N(t)=:u(t)$ לכל $t$. אז $w=u^{\,N}$ (רכיב-רכיב), וגם $\dot w=N\,u^{N-1}\odot\dot u=-N\,u^{2N-2}\odot\nabla L(w)=-N\,w^{2-\frac2N}\odot\nabla L(w)$.
 

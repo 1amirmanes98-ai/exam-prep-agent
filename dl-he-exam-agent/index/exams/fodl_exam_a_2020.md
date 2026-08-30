@@ -24,7 +24,7 @@
 **⚠️ שים לב:** הוכיחו את שני הכיוונים של היעילות הביטויית (הכלה פולינומית וגם קושי אקספוננציאלי); נסחו את חסם המקטעים במדויק ($\leq B+1$); (iii) התשובה *מתהפכת* ללא הטיות — $f$ הומוגנית בעלת נקודת שבירה יחידה ב-$0$, ולכן רשת רדודה ברוחב 2 מספיקה ואף הפרדה אינה שורדת.
 
 ## Q2 (45 pts) — נוף האופטימיזציה ו-gradient flow של רשת לינארית בעומק $N$ ורוחב 1 על רגרסיה חד-ממדית
-**Topics:** רשת לינארית, קמירות, זרימת גרדיאנט, balancedness, חוקי שימור, אוכף ממש, פירוק מטריצות | **Pillar:** Optimization | **Difficulty:** 3
+**Topics:** רשת לינארית, קמירות, gradient flow, balancedness, חוקי שימור, אוכף ממש, פירוק מטריצות | **Pillar:** Optimization | **Difficulty:** 3
 **Maps to:** lecture_03_optimization_1, lecture_04_optimization_2, fodl_recitation_gradient_flow
 **Statement (English translation):**
 יהיו $\underline{x} = (x_1, x_2, \ldots, x_m) \in \mathbb{R}^m$ ו-$\underline{y} = (y_1, y_2, \ldots, y_m) \in \mathbb{R}^m$ וקטורים המחזיקים דוגמאות אימון חד-ממדיות ותוויות, בהתאמה. הניחו $\underline{x} \neq 0$, $\langle \underline{x}, \underline{y} \rangle > 0$, ושקלו את הפסד $\ell_2$ האמפירי מעל מודלים לינאריים:

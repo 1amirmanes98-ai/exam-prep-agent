@@ -44,7 +44,7 @@ $$d(f_1, f_2) = \sup_{x \in [0,1]} |f_1(x) - f_2(x)|$$
 **⚠️ שים לב:** (a) טפלו במקרה יחידת-הקבוע $w_i=0$; (b) ודאו שהסכום מצטמצם טלסקופית ל-$\alpha_j$ על כל קטע; (c) ההגדרה הפורמלית זקוקה ל"$\exists B$ התלוי ב-$\epsilon$"; (d) זה תקין ש-$B$ גדל כאשר $1/\delta$ קטן.
 
 ## Q2 (42 pts) — פירוק מטריצות סימטרי: אי-קמירות, דינמיקת gradient flow מקצה-לקצה, והטיה לדרגה נמוכה
-**Topics:** פירוק מטריצות, זרימת גרדיאנט, קמירות, רגולריזציה סמויה, רשת לינארית | **Pillar:** Optimization | **Difficulty:** 4
+**Topics:** פירוק מטריצות, gradient flow, קמירות, רגולריזציה סמויה, רשת לינארית | **Pillar:** Optimization | **Difficulty:** 4
 **Maps to:** lecture_05_optimization_3, lecture_08_generalization_3, fodl_recitation_gradient_flow
 **Statement (English translation):**
 תהי $L: \mathbb{R}^{d,d} \to \mathbb{R}$ פונקציית הפסד קמורה וגזירה ברציפות המשיגה את ערכה המינימלי בנקודה (מטריצה) $W^* \in \mathbb{R}^{d,d}$ שהיא סימטרית, חיובית-למחצה, ו**אינה** $0 \in \mathbb{R}^{d,d}$; כלומר, $L(0) > L(W^*)$. יתר על כן, הניחו ש-$\nabla L(W) = \nabla L(W)^\top$ עבור כל $W \in \mathbb{R}^{d,d}$. הגדירו את פונקציית המטרה הבאה:

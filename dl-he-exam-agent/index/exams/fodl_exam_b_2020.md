@@ -41,7 +41,7 @@ $$A = \sum_{z=1}^{Z} a_z \cdot \underline{a}^{z,1} \otimes \underline{a}^{z,2} \
 **⚠️ שים לב:** (v) המכשול הוא ש*סכום* של טנזורים סימטריים נשאר סימטרי בעוד שקיימים טנזורים לא-סימטריים עבור $M,N\geq2$ — צטטו רכיב א-סימטרי קונקרטי; (vi) הוכיחו את שתי ההכלות, ושימו לב שכיוון ה-$\supseteq$ זקוק לסימנים הנישאים על ידי $a_z$ (לא על ידי $\underline a^z$, שמכפלתו החיצונית תמיד חיובית-למחצה).
 
 ## Q2 (35 pts) — דינמיקת ניבוי של gradient flow ($\dot{u} = -H(u-y)$) והתכנסות תחת גרעין קבוע
-**Topics:** זרימת גרדיאנט, NTK, פרמטריזציית יתר, קצב התכנסות, התכנסות לינארית | **Pillar:** Optimization | **Difficulty:** 4
+**Topics:** gradient flow, NTK, פרמטריזציית יתר, קצב התכנסות, התכנסות לינארית | **Pillar:** Optimization | **Difficulty:** 4
 **Maps to:** lecture_05_optimization_3, fodl_recitation_gradient_flow
 **Statement (English translation):**
 עבור $k, d \in \mathbb{N}$, תהי $f : \mathbb{R}^k \times \mathbb{R}^d \to \mathbb{R}$ פונקציה גזירה ברציפות המייצגת רשת נוירונים, כך ש-$f(\underline{w}, \underline{x})$ מייצג את פלט הרשת כאשר המשקלים $= \underline{w}$ והקלט $= \underline{x}$. בהינתן קבוצת אימון $\{(\underline{x}_i, y_i)\}_{i=1}^m \subseteq \mathbb{R}^d \times \mathbb{R}$, נניח שאנו מאמנים על ידי הרצת gradient flow על הפסד $\ell_2$:

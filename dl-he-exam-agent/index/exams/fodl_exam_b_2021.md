@@ -41,8 +41,8 @@ $$\mathcal{H}_B^L = \left\{ x \mapsto W_{L+1}\,\sigma\!\big(W_L\,\sigma(\cdots \
 
 **⚠️ שים לב:** (a) כתבו $\bar B \in O(B)$, לא $\mathrm{poly}(B)$; (b) ודאו שהשכבות המוכנסות מקיימות $W_i \geq 0$; (c) טענו במפורש ששכבות מאוחרות אינן מוסיפות נקודות שבירה; (d) הוכיחו שוויון $\mathcal{H}_B^L = \mathcal{H}_B^1$ — "לא" סתמי מזכה במעט.
 
-## Q2 (42 pts) — זרימת גרדיאנט על רשת לינארית סקלרית בעומק $N$: balancedness והתכנסות אקספוננציאלית
-**Topics:** זרימת גרדיאנט, רשת לינארית, balancedness, חוקי שימור, פירוק מטריצות | **Pillar:** Optimization | **Difficulty:** 3
+## Q2 (42 pts) — gradient flow על רשת לינארית סקלרית בעומק $N$: balancedness והתכנסות אקספוננציאלית
+**Topics:** gradient flow, רשת לינארית, balancedness, חוקי שימור, פירוק מטריצות | **Pillar:** Optimization | **Difficulty:** 3
 **Maps to:** lecture_04_optimization_2, fodl_recitation_gradient_flow, fodl_recitation_optimization_1
 **Statement (English translation):**
 יהי $y > 0$. הגדירו את פונקציית ההפסד:
@@ -53,7 +53,7 @@ $$L : \mathbb{R} \to \mathbb{R}, \quad L(w) = \frac{1}{2}(w - y)^2$$
 
 $$\phi : \mathbb{R}^N \to \mathbb{R}, \quad \phi(w_1, \ldots, w_N) = L\big(\Pi_{i=1}^N w_i\big)$$
 
-נניח שזרימת גרדיאנט מורצת על $\phi(\cdot)$ עם אתחול $w_1(0), \ldots, w_N(0) \in \mathbb{R}$, ונסמן ב-$w(t)$ את הסקלר ה"מקצה-לקצה" בזמן $t \geq 0$, כלומר $w(t) = \Pi_{i=1}^N w_i(t)$.
+נניח ש-gradient flow מורצת על $\phi(\cdot)$ עם אתחול $w_1(0), \ldots, w_N(0) \in \mathbb{R}$, ונסמן ב-$w(t)$ את הסקלר ה"מקצה-לקצה" בזמן $t \geq 0$, כלומר $w(t) = \Pi_{i=1}^N w_i(t)$.
 
 **(a) (12 pts)** הוכיחו ש-$w_i(t)^2 - w_j(t)^2 = w_i(0)^2 - w_j(0)^2$ לכל $i, j \in \{1, \ldots, N\}$ ו-$t \geq 0$. אל תשתמשו בטענות מהכיתה בפתרון.
 
@@ -63,7 +63,7 @@ $$\phi : \mathbb{R}^N \to \mathbb{R}, \quad \phi(w_1, \ldots, w_N) = L\big(\Pi_{
 
 יהי $w(0) = c$ והניחו $c \in (0, y)$.
 
-**(c) (6 pts)** הוכיחו ש-$w(t) \geq c$ לכל $t \geq 0$. מותר לכם להשתמש בעובדה שבאופן כללי, תחת זרימת גרדיאנט פונקציית המטרה מונוטונית לא-עולה (כפונקציה של $t$).
+**(c) (6 pts)** הוכיחו ש-$w(t) \geq c$ לכל $t \geq 0$. מותר לכם להשתמש בעובדה שבאופן כללי, תחת gradient flow פונקציית המטרה מונוטונית לא-עולה (כפונקציה של $t$).
 
 **(d) (12 pts)** הוכיחו ש:
 
@@ -74,11 +74,11 @@ $$\forall t \geq 0: \quad L(w(t)) \leq L(w(0)) \exp\left(-2N c^{2-\frac{2}{N}} \
 *רמז:* ראשית הראו ש-$\frac{d}{dt} L(w(t)) = -L(w(t)) \cdot 2N w(t)^{2-\frac{2}{N}}$.
 
 **Solution sketch:**
-**a.** $\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$. לכן תחת זרימת גרדיאנט $\frac{d}{dt}w_i^2 = 2w_i\dot{w}_i = -2L'(w)\prod_k w_k = -2L'(w)\,w(t)$ — זהה לכל $i$. חיסור עבור $i,j$ נותן $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (שימור balancedness).
+**a.** $\frac{\partial \phi}{\partial w_i} = L'(w)\prod_{k \neq i} w_k$. לכן תחת gradient flow $\frac{d}{dt}w_i^2 = 2w_i\dot{w}_i = -2L'(w)\prod_k w_k = -2L'(w)\,w(t)$ — זהה לכל $i$. חיסור עבור $i,j$ נותן $\frac{d}{dt}(w_i^2 - w_j^2) = 0$ (שימור balancedness).
 
 **b.** לפי (a), אתחול מאוזן נשאר מאוזן: $w_i(t)^2 = w_j(t)^2$ לכל $t$. מכאן $w_i(t)^2 = |w(t)|^{2/N}$ ($= w(t)^{2/N}$ במשטר $w(t) \geq 0$ הנדון). כלל המכפלה: $\dot{w} = \sum_i \big(\prod_{k\neq i} w_k\big)\dot{w}_i = -L'(w)\sum_i \big(\prod_{k\neq i}w_k\big)^2 = -L'(w)\sum_i w^2/w_i^2 = -L'(w)\, N\, w^{2-2/N}$, וגם $L'(w) = w - y$.
 
-**c.** מונוטוניות זרימת גרדיאנט: $L(w(t)) \leq L(w(0)) = L(c)$, כלומר $(w(t)-y)^2 \leq (c-y)^2$, כלומר $|w(t) - y| \leq y - c$ (כיוון ש-$c \in (0,y)$), מה שנותן ישירות $c \leq w(t) \leq 2y - c$.
+**c.** מונוטוניות gradient flow: $L(w(t)) \leq L(w(0)) = L(c)$, כלומר $(w(t)-y)^2 \leq (c-y)^2$, כלומר $|w(t) - y| \leq y - c$ (כיוון ש-$c \in (0,y)$), מה שנותן ישירות $c \leq w(t) \leq 2y - c$.
 
 **d.** רמז: $\frac{d}{dt}L(w(t)) = (w-y)\dot{w} = -N(w-y)^2 w^{2-2/N} = -2L(w(t))\cdot N w(t)^{2-2/N}$. מכיוון ש-$w(t) \geq c > 0$ לפי (c) ו-$2 - 2/N > 0$: $\frac{d}{dt}L(w(t)) \leq -2Nc^{2-2/N} L(w(t))$. אינטגרציה (Grönwall / $\frac{d}{dt}\ln L \leq -2Nc^{2-2/N}$) נותנת את החסם האקספוננציאלי.
 

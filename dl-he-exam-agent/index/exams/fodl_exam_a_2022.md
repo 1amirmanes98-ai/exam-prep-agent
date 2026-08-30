@@ -43,8 +43,8 @@ $$\mathcal{V}_{k_1,\dots,k_N} = h\big(v^{(k_1)},\dots,v^{(k_N)}\big) \quad \text
 
 **⚠️ שים לב:** (a) ו-(b)/(c) הם שני אי-השוויונות ה*הפוכים* — שמרו עליהם מובחנים; החסם התחתון נשען על כך שהמטריציזציה *לינארית* ושהדרגה תת-אדיטיבית; ב-(c) בחירת הבסיס הסטנדרטי היא כל הטריק — הצדיקו את $f(e_{d_1},\dots,e_{d_N})=\mathcal A_{d_1\dots d_N}$.
 
-## Q2 (40 pts) — שימור בזרימת גרדיאנט ונוף ההפסד של רשתות ReLU עם שכבה נסתרת אחת
-**Topics:** זרימת גרדיאנט, balancedness, חוקי שימור, אתחול, נקודות אוכף, מינימות מקומיות | **Pillar:** Optimization | **Difficulty:** 4
+## Q2 (40 pts) — שימור ב-gradient flow ונוף ההפסד של רשתות ReLU עם שכבה נסתרת אחת
+**Topics:** gradient flow, balancedness, חוקי שימור, אתחול, נקודות אוכף, מינימות מקומיות | **Pillar:** Optimization | **Difficulty:** 4
 **Maps to:** lecture_03_optimization_1, lecture_04_optimization_2, fodl_recitation_gradient_flow
 **Statement (English translation):**
 תהי $\mathcal{H}$ מחלקת ההשערות של רשתות נוירונים עם שכבה נסתרת אחת ברוחב $M \in \mathbb{N}$, קלט $D \in \mathbb{N}$-ממדי, פלט חד-ממדי (כלומר $X = \mathbb{R}^D$, $Y = \mathbb{R}$ כאשר $X$ הוא מרחב הקלט ו-$Y$ מרחב הפלט), אקטיבציית ReLU על נוירוני השכבה הנסתרת, וללא biases. פורמלית:
@@ -57,7 +57,7 @@ $$\mathcal{H} = \left\{ x \mapsto \sum_{m=1}^{M} v_m\,\sigma(\langle w_m, x\rang
 
 $$L(\theta) = \sum_{n=1}^{N} \ell(h_\theta(x_n), y_n)$$
 
-**a. (12 pts)** נניח שזרימת גרדיאנט מורצת על $L$ עם אתחול $\theta_0 \in \mathbb{R}^{MD+M}$. נסמן ב-$\theta(t)$, ובהתאמה ב-$\{w_m(t), v_m(t)\}_{m=1}^M$, את פרמטרי הרשת בזמן $t \ge 0$. לשם פשטות, מותר להניח שהזרימה קיימת ומוגדרת היטב, ו-$\frac{d}{dz}\sigma(0) := 0$, כלומר אי-הגזירות של ReLU ב-$0$ אינה "מפריעה". הוכיחו שלכל $m \in \{1,\dots,M\}$: $\ \frac{d}{dt} v_m(t)^2 = \frac{d}{dt} \|w_m(t)\|^2$.
+**a. (12 pts)** נניח ש-gradient flow מורצת על $L$ עם אתחול $\theta_0 \in \mathbb{R}^{MD+M}$. נסמן ב-$\theta(t)$, ובהתאמה ב-$\{w_m(t), v_m(t)\}_{m=1}^M$, את פרמטרי הרשת בזמן $t \ge 0$. לשם פשטות, מותר להניח שהזרימה קיימת ומוגדרת היטב, ו-$\frac{d}{dz}\sigma(0) := 0$, כלומר אי-הגזירות של ReLU ב-$0$ אינה "מפריעה". הוכיחו שלכל $m \in \{1,\dots,M\}$: $\ \frac{d}{dt} v_m(t)^2 = \frac{d}{dt} \|w_m(t)\|^2$.
 
 כעת הניחו $L(\theta) = (h_\theta(x) - y)^2$ עבור $x \in \mathbb{R}^D,\ y \in \mathbb{R}$ עם $x \neq 0,\ y > 0$. כלומר, הניחו שמדגם האימון מכיל דוגמה יחידה, שהיא שונה מאפס ובעלת תיוג חיובי, וההפסד ריבועי.
 
@@ -70,7 +70,7 @@ $$L(\theta) = \sum_{n=1}^{N} \ell(h_\theta(x_n), y_n)$$
 *רמז:* התבוננו באזורים של מרחב הפרמטרים שבהם אקטיבציית ReLU מאפסת את כל הנוירונים בשכבה הנסתרת.
 
 **Solution sketch:**
-**a.** זרימת גרדיאנט: $\dot v_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,\sigma(\langle w_m,x_n\rangle)$ וגם $\dot w_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,v_m\,\sigma'(\langle w_m,x_n\rangle)x_n$ ($\ell'$ = נגזרת בארגומנט הראשון). אז $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$ וגם $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$. זהות ההומוגניות-1 $z\,\sigma'(z) = \sigma(z)$ (תקפה ב-$z=0$ תחת המוסכמה) הופכת את שניהם לשווים $-2\sum_n \ell'(\cdot)\,v_m\,\sigma(\langle w_m,x_n\rangle)$. זהו חוק שימור ה-balancedness: $v_m(t)^2 - \|w_m(t)\|^2$ קבוע.
+**a.** gradient flow: $\dot v_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,\sigma(\langle w_m,x_n\rangle)$ וגם $\dot w_m = -\sum_n \ell'(h_\theta(x_n),y_n)\,v_m\,\sigma'(\langle w_m,x_n\rangle)x_n$ ($\ell'$ = נגזרת בארגומנט הראשון). אז $\frac{d}{dt}v_m^2 = 2v_m\dot v_m$ וגם $\frac{d}{dt}\|w_m\|^2 = 2\langle w_m,\dot w_m\rangle$. זהות ההומוגניות-1 $z\,\sigma'(z) = \sigma(z)$ (תקפה ב-$z=0$ תחת המוסכמה) הופכת את שניהם לשווים $-2\sum_n \ell'(\cdot)\,v_m\,\sigma(\langle w_m,x_n\rangle)$. זהו חוק שימור ה-balancedness: $v_m(t)^2 - \|w_m(t)\|^2$ קבוע.
 
 **b.** ב-$\theta=0$: $\partial L/\partial v_m \propto \sigma(\langle 0,x\rangle) = 0$ וגם $\partial L/\partial w_m \propto v_m = 0$, ולכן $\nabla L(0)=0$. שימו לב ש-$L(0) = y^2$.
 
