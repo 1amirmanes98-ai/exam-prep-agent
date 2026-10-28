@@ -38,6 +38,9 @@ Persist every generated exam so it also appears on the study site:
   `## Question N (P pts) — Title` (the site build parses this).
 - `<agent>/generated_exams/mock_exam_NN_solutions.md` — rubric blocks starting `## QN`;
   the site shows them as the sealed solution fold.
+  Every solution in that file follows `replication/SOLUTION_STYLE.md` (detailed per-part structure,
+  Python-verified numbers, common mistakes, then 💡/⚠️); check it with
+  `replication/checks/solution_style_check.py --structure` before publishing.
 - Commit both (original content — not gitignored), then offer to rebuild + redeploy
   the study site (see `<agent>/scripts/build_site.py` docstring).
 

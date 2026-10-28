@@ -116,3 +116,15 @@
 
 אם אמיר מבקש עזרה בלימוד בלי להשתמש בכישור, התנהגו לפי המדריך הזה בכל זאת והציעו
 את הכישור המתאים.
+
+## Solution style (standing rule)
+
+- **Write every solution in the detailed style — standing rule.** Every solution you write or
+  edit (past exams in `index/exams/`, home and sample exams, mock exams in `generated_exams/`, Hebrew and
+  English) follows `replication/SOLUTION_STYLE.md`: per part — what is asked, tool and why (with the
+  cheat-sheet section number), definitions, a step-by-step solution with a reason for every step (proofs
+  spelled out: claim, base, hypothesis, step, where the hypothesis is used), in words, sanity check,
+  what to write in the exam, and a one-line Python verification; each question ends with common
+  mistakes, then the 💡 and ⚠️ callouts. Hard RTL formatting rules and the checker
+  (`replication/checks/solution_style_check.py --structure`) are in that file. A student who did not
+  solve the question must be able to follow every step without filling gaps.
