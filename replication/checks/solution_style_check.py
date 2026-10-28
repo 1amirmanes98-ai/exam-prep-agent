@@ -28,7 +28,7 @@ LABELS = {
 }
 MISTAKES = {"he": "**טעויות נפוצות.**", "en": "**Common mistakes.**"}
 # part leaders: RL letters "**(a)", DL numbers "**1." (mocks: "**1. (10)")
-LEAD = r"\*\*(?:\(([a-z])\)|(\d+)\.)"
+LEAD = r"\*\*(?:\(([a-z])\)|(\d+(?:\.?[a-z])?)\.?(?=[\s(]))"
 
 
 def spans(s):
@@ -106,7 +106,7 @@ def heb_mixed(text):
 
 def structure(sol, lang):
     problems = []
-    parts = re.split(r"(?m)^(?=\*\*(?:\([a-z]\)|\d+\.))", sol)
+    parts = re.split(r"(?m)^(?=\*\*(?:\([a-z]\)|\d+(?:\.?[a-z])?\.?[\s(]))", sol)
     parts = [p for p in parts if re.match(LEAD, p)]
     if not parts:
         problems.append("no part leaders (**(a)** or **1.**)")
