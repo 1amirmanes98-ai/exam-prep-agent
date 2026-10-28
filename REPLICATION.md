@@ -120,7 +120,8 @@ first Pages deploy may fail "Resource not accessible" → user sets Settings →
 
 ## Phase 5 — Optional extras (defer until the user asks)
 
-Mock exams (generate ONE, solve-first, numeric sanity-check — ≈40k each);
+Mock exams (generate ONE, solve-first, numeric sanity-check — ≈40k each; solutions in the detailed
+style of `replication/SOLUTION_STYLE.md` with `**Hint:**` + `**Full solution:**` per question);
 **cheat sheet** → `index/CHEATSHEET.md` in **INDEX_FORMAT.md FORMAT E** (populates the
 Memorize tab; ~40–55 grounded items — generate it AFTER the exams are indexed so the
 `Seen in` refs are real; skipping it ships a live but **empty** Memorize tab); figures
