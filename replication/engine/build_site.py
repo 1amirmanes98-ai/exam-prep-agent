@@ -261,7 +261,8 @@ def parse_mock(path: Path) -> dict:
 
     Format contract: questions start with '## Question N (P pts) — Title'; the
     sibling file <stem>_solutions.md holds rubric blocks starting '## QN'.
-    Pillars follow the exam template by slot: Q1 Expressiveness, Q2 Optimization,
+    Pillars follow the exam template by slot (mockSlotByQ), unless the question
+    carries its own `**Pillar:** X` line. Default slots: Q1 Expressiveness, Q2 Optimization,
     Q3 Generalization.
     """
     text = path.read_text(encoding="utf-8")
@@ -290,10 +291,14 @@ def parse_mock(path: Path) -> dict:
         fm = re.search(r"\*\*Full solution[^:]*:\*\*\s*(.+)", sol, re.DOTALL)
         hint = hm.group(1).strip() if hm else ""
         full = fm.group(1).strip() if fm else sol
+        pm = re.search(r"^\*\*Pillar:\*\*\s*([A-Za-z/ ]+?)\s*$\n?", body, re.MULTILINE)
+        if pm:
+            body = (body[:pm.start()] + body[pm.end():]).strip()
         exam["questions"].append({
             "n": qnum, "pts": int(m.group(2)), "title": m.group(3).strip(),
             "topics": [],
-            "pillar": CONFIG["mockSlotByQ"].get(str(qnum), CONFIG["slots"][-1]),
+            "pillar": canon_pillar(pm.group(1)) if pm else
+                      CONFIG["mockSlotByQ"].get(str(qnum), CONFIG["slots"][-1]),
             "difficulty": 0, "maps_to": "",
             "statement": body, "hint": hint, "sketch": full,
         })
