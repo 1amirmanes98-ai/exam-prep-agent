@@ -86,6 +86,10 @@ Parser contract: items under **Key definitions** must each start with `**Def (` 
 
 ## FORMAT C — Exams → `index/exams/<id>.md`
 
+> **Solutions:** the `**Solution sketch:**` of every question is written in the detailed per-part
+> style of `replication/SOLUTION_STYLE.md` (8 labelled elements per part, common mistakes, then 💡/⚠️),
+> verified with `replication/checks/solution_style_check.py --structure`.
+
 The **filename is the ref id** the site links topics to. Use the convention the build script
 expects for your course — commonly `a_YYYY.md` / `b_YYYY.md` for the two sittings and
 `example.md` for a sample exam (some courses prefix, e.g. `fodl_exam_a_2023.md`; match the

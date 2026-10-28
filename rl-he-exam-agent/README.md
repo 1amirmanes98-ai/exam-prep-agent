@@ -29,3 +29,5 @@ bash replication/checks/run_all.sh docs/rl-he/index.html --rtl --figs --memo
 ```
 
 התוכן (חומרי הקורס והאינדקס) שייך ליוצריו ונשמר מחוץ ל-git.
+
+**פתרונות:** כל פתרון (מבחני עבר, מבחני בית ומבחני דוגמה) נכתב לפי `replication/SOLUTION_STYLE.md` — שמונה רכיבים לכל סעיף, אימות ב-Python, טעויות נפוצות ואז 💡/⚠️ — ונבדק ב-`replication/checks/solution_style_check.py --structure`.

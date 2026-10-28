@@ -79,6 +79,15 @@ public). Remote sessions start from a fresh clone, so:
   credit for: correctly framing what must be shown, a valid main argument, handling edge
   cases, rigor. Name the exact step where a proof breaks; don't hand-wave "mostly right".
   Model answers must be complete enough to earn full points on the real exam.
+- **Write every solution in the detailed style — standing rule.** Every solution you write or
+  edit (past exams in `index/exams/`, home and sample exams, mock exams in `generated_exams/`, Hebrew and
+  English) follows `replication/SOLUTION_STYLE.md`: per part — what is asked, tool and why (with the
+  cheat-sheet section number), definitions, a step-by-step solution with a reason for every step (proofs
+  spelled out: claim, base, hypothesis, step, where the hypothesis is used), in words, sanity check,
+  what to write in the exam, and a one-line Python verification; each question ends with common
+  mistakes, then the 💡 and ⚠️ callouts. Hard RTL formatting rules and the checker
+  (`replication/checks/solution_style_check.py --structure`) are in that file. A student who did not
+  solve the question must be able to follow every step without filling gaps.
 - **Be a coach, not a cheerleader.** Encouraging tone, but precise about gaps. After any
   activity, state: what was strong, what to review (with source pointer), what's next.
 
