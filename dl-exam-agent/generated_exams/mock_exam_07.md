@@ -1,4 +1,4 @@
-# FODL Mock Exam 7 (generated 2026-10-28)
+# FODL Mock Exam 7 (generated 2026-10-28) (Q2 replaced 2026-11-01)
 
 **Format matches the real exam:** 3 hours · no aid material · 3 questions · 105 points
 (max grade 100 — the 5 extra points are slack, as in recent years).
@@ -89,69 +89,86 @@ for every $x \in X_n$. Two hypothesis classes, both sized by their number of hid
 
 ---
 
-## Question 2 (35 pts) — Learning a $k$-step memory with a scalar linear RNN
+## Question 2 (35 pts) — Gradient flow on a deep linear network with a vector input: balancedness, end-to-end dynamics and a margin
 
-Fix integers $L \ge 3$ and $k \in \{2, \dots, L-1\}$, and a target $y > 0$. A *scalar linear
-RNN* with recurrence $\lambda \in \mathbb{R}$ and read-out $c \in \mathbb{R}$ receives
-$x = (x_1, \dots, x_L) \in \mathbb{R}^L$ and computes
+Fix $d \in \mathbb{N}$, a depth $N \ge 3$ and a vector $\beta \in \mathbb{R}^d \setminus \{0\}$, and let
 
-$$s_0 := 0, \qquad s_t := \lambda\, s_{t-1} + x_t \;\; (t \in [L]), \qquad
-h_{\lambda,c}(x) := c\, s_L .$$
+$$\ell : \mathbb{R}^d \to \mathbb{R}_{\ge 0}, \qquad \ell(w) := \tfrac12 \|w - \beta\|^2 .$$
 
-(Convention: $\lambda^0 := 1$, also for $\lambda = 0$.) The training set is the single
-example $(x, y)$ with $x = e_{L-k}$, the one-hot sequence whose only nonzero entry is
-$x_{L-k} = 1$: the network must output $y$ at time $L$ in response to an impulse it saw
-$k$ steps earlier. The objective is the squared loss
+(By Lecture 4 this is, up to an additive constant, the squared loss of a linear predictor
+$x \mapsto \langle w, x \rangle$ on whitened data, with $\beta^\top = \Lambda_{yx}$.) We
+overparameterize $w$ by a linear neural network of depth $N$ with input dimension $d$, output
+dimension $1$ and **all hidden widths equal to $1$**: the first layer is
+$W_1 = u^\top \in \mathbb{R}^{1 \times d}$ and the other layers are scalars
+$W_j = a_j \in \mathbb{R}$, $j = 2, \dots, N$. The parameters are
+$\theta := (u, a_2, \dots, a_N) \in \mathbb{R}^{d + N - 1}$, the end-to-end vector is
 
-$$\ell(\lambda, c) := \tfrac12 \big( h_{\lambda,c}(e_{L-k}) - y \big)^2 ,$$
+$$w := a_N a_{N-1} \cdots a_2\, u \in \mathbb{R}^d ,$$
 
-and gradient flow
-$\dot\lambda = -\partial_\lambda \ell$, $\dot c = -\partial_c \ell$ is run from
-$(\lambda(0), c(0)) = (\lambda_0, c_0)$. You may assume that the flow exists for all
-$t \ge 0$ and that through every point of $\mathbb{R}^2$ passes exactly one solution
-(forward and backward in time). Write $r(t) := c(t)\lambda(t)^k - y$ for the residual.
+so that $W_{1:N} = w^\top$, and the objective is $\phi(\theta) := \ell(w)$. Gradient flow
+$\dot\theta(t) = -\nabla\phi(\theta(t))$ is run from $\theta(0)$, and $w(t)$ denotes the end-to-end vector at time $t$. You may assume
+that the flow exists for all $t \ge 0$ and that through every point of $\mathbb{R}^{d+N-1}$
+passes exactly one solution (forward and backward in time). Write $\pi := a_2 a_3 \cdots a_N$
+and $\pi_{-j} := \prod_{i \in \{2, \dots, N\} \setminus \{j\}} a_i$.
 
-1. **(6 pts)** Prove that $s_L = \sum_{t=1}^{L} \lambda^{L-t} x_t$ for every input, hence
-   $\ell(\lambda, c) = \tfrac12 (c \lambda^k - y)^2$, and derive the flow
+1. **(7 pts)** *The landscape.*
 
-   $$\dot\lambda = -k\, c\, \lambda^{k-1}\, r, \qquad \dot c = -\lambda^k\, r .$$
+   a. **(4 pts)** Prove that $\nabla_u \phi = \pi\, \nabla\ell(w)$ and
+      $\partial_{a_j}\phi = \pi_{-j} \langle \nabla\ell(w), u \rangle$. Deduce that $\theta = 0$
+      is a critical point of $\phi$ with $\phi(0) > \min\phi$, and conclude that $\phi$ is
+      **not** convex.
 
-2. **(7 pts)** Prove that every point $(0, c)$, $c \in \mathbb{R}$, is a critical point of
-   $\ell$ with $\ell(0, c) = y^2/2$, while $\min \ell = 0$; conclude that $\ell$ is **not**
-   convex. Prove further that if $\lambda_0 = 0$ then $\ell(\lambda(t), c(t)) = y^2/2$ for
-   all $t \ge 0$ (an RNN initialized with no recurrence never learns this memory).
+   b. **(3 pts)** Prove that the Hessian of $\phi$ at $\theta = 0$ is the zero matrix, and that
+      $\theta = 0$ is neither a local minimum nor a local maximum. In one sentence: what does
+      this say about the landscape approach of Lecture 3?
 
-3. **(8 pts)** Prove that $\lambda(t)^2 - k\, c(t)^2$ is constant along the flow, and that
-   if $\lambda_0 \neq 0$ then $\lambda(t)$ never vanishes and keeps the sign of
-   $\lambda_0$. Deduce: if $\lambda_0 > 0$, $c_0 < 0$ and $\lambda_0^2 < k c_0^2$, then
-   $\ell(\lambda(t), c(t)) > y^2/2$ for every $t \ge 0$ — gradient flow does not converge
-   to the global minimum.
+2. **(8 pts)** *Conservation laws.*
 
-4. **(10 pts)** *Global convergence from positive initializations.* Assume
-   $\lambda_0 > 0$ and $c_0 > 0$.
+   a. **(5 pts)** Consider a **general** depth-$N$ linear network
+      $\psi(W_1, \dots, W_N) := L(W_N \cdots W_1)$ with a continuously differentiable $L$, and
+      recall from Lecture 3 that
+      $\nabla_{W_j}\psi = W_{j+1:N}^\top\, \nabla L(W_{1:N})\, W_{1:j-1}^\top$, where
+      $W_{i:k} := W_k \cdots W_i$ and an empty product is the identity. Prove that along gradient
+      flow over $\psi$, for every $j \in [N-1]$, the matrix
+      $W_{j+1}(t)^\top W_{j+1}(t) - W_j(t)\, W_j(t)^\top$ does not depend on $t$. Do not use
+      Lemma 1 of Lecture 4.
 
-   a. **(2 pts)** Prove that $\dot r = -P(t)\, r$ with
+   b. **(3 pts)** Back to our network. Deduce that $a_j(t)^2 - \|u(t)\|^2$ is constant in $t$
+      for every $j \in \{2, \dots, N\}$, and verify directly that
+      $\frac{d}{dt} a_j^2 = \frac{d}{dt} \|u\|^2 = -2 \langle \nabla\ell(w), w \rangle$.
 
-      $$P(t) := \lambda(t)^{2k-2} \big( \lambda(t)^2 + k^2 c(t)^2 \big) \ge 0 ,$$
+3. **(9 pts)** *End-to-end dynamics.* Assume from now on a **balanced** initialization:
+   $a_j(0)^2 = \|u(0)\|^2$ for every $j \in \{2, \dots, N\}$.
 
-      and that $r(t)$ never changes sign.
+   a. **(6 pts)** Prove that for every $t \ge 0$ with $w(t) \ne 0$, writing $w = w(t)$,
 
-   b. **(5 pts)** *Under-fitting start*, $c_0 \lambda_0^k < y$. Prove that $\lambda(t)$ and
-      $c(t)$ are non-decreasing (in particular stay positive), and that
+      $$\dot w(t) = -\|w\|^{2 - \frac{2}{N}} \Big( \nabla\ell(w) + (N-1)\, \frac{\langle \nabla\ell(w), w \rangle}{\|w\|^2}\, w \Big),$$
 
-      $$\ell(\lambda(t), c(t)) \;\le\; \ell(\lambda_0, c_0)\, \exp\!\big( -2 P_0\, t \big),
-      \qquad P_0 := \lambda_0^{2k-2} \big( \lambda_0^2 + k^2 c_0^2 \big).$$
+      and that $\dot w(t) = 0$ whenever $w(t) = 0$. Do not use Theorem 1 of Lecture 4.
 
-   c. **(3 pts)** *Over-fitting start*, $c_0 \lambda_0^k > y$. Prove that
+   b. **(3 pts)** Write part a as $\dot w = -P_w \nabla\ell(w)$ with a symmetric matrix $P_w$.
+      Find the eigenvalues and eigenvectors of $P_w$, check them against Lecture 4, Prop 1
+      (applied to the $1 \times d$ matrix $w^\top$), and say in one sentence which directions of
+      motion depth amplifies.
 
-      $$\ell(\lambda(t), c(t)) \le \ell(\lambda_0, c_0) \exp\!\big( -2 y^2 t / c_0^2 \big) .$$
+4. **(7 pts)** *Convergence from a margin.* Keep the balanced initialization and assume
+   $\|w(0) - \beta\| < \|\beta\|$ (by Lecture 4, this means that $w(0)$ has a deficiency
+   margin). Set $c := \|\beta\| - \|w(0) - \beta\| > 0$.
 
-5. **(4 pts)** *Vanishing gradients.* Let $y \ge 1$ and initialize
-   $\lambda_0 = c_0 = \varepsilon \in (0,1)$. Show that
-   $\|\nabla \ell(\lambda_0, c_0)\| \le (k+1)\, y\, \varepsilon^k$ and that the rate
-   guaranteed in part 4b equals $2(1 + k^2)\varepsilon^{2k}$. In one or two sentences,
-   interpret this for learning long-range memory (large $k$) with a small recurrent
-   initialization.
+   a. **(3 pts)** Prove that $\|w(t)\| \ge c$ for all $t \ge 0$. You may use that gradient flow
+      never increases the objective.
+
+   b. **(4 pts)** Prove that for all $t \ge 0$
+
+      $$\ell(w(t)) \;\le\; \ell(w(0))\, \exp\!\big( -2\, c^{\,2 - \frac{2}{N}}\, t \big) .$$
+
+      Do not use Theorem 2 of Lecture 4.
+
+5. **(4 pts)** *The margin cannot be dropped.* Keep the balanced initialization, but now let
+   $w(0) = -\gamma\beta$ for some $\gamma > 0$. Prove that $\ell(w(t)) > \frac12\|\beta\|^2$ for
+   every $t \ge 0$, i.e. gradient flow never even gets below the loss of the zero predictor.
+   *Hint:* first show that $w(t) \ne 0$ for all $t$, then follow the component of $w(t)$
+   orthogonal to $\beta$.
 
 ---
 

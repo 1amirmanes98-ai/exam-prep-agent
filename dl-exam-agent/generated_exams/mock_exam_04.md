@@ -1,4 +1,4 @@
-# FODL Mock Exam 4 (generated 2026-07-06)
+# FODL Mock Exam 4 (generated 2026-07-06) (Q1 replaced 2026-11-01)
 
 **Format matches the real exam:** 3 hours · no aid material · 3 questions · 105 points
 (max grade 100 — the 5 extra points are slack, as in recent years).
@@ -9,91 +9,111 @@ Solutions & grading rubric: `mock_exam_04_solutions.md` — **do not open before
 
 ---
 
-## Question 1 (40 pts) — Linear RNNs: scalar state and anti-symmetric transitions
+## Question 1 (40 pts) — Leaky-ReLU networks: exact representation, universality, and narrow deep nets
 
-Fix $L \in \mathbb{N}_{\ge 3}$. For $d \in \mathbb{N}$, a *linear RNN hypothesis* with
-state dimension $d$ receives a sequence of $L$ real numbers
-$x = (x_1, \dots, x_L) \in \mathbb{R}^L$ and outputs $h(x) \in \mathbb{R}$ via
+Throughout, inputs and outputs are scalars ($\mathcal{X} = \mathcal{Y} = \mathbb{R}$), a
+constant $\alpha \in (0,1)$ is fixed, and
 
-$$s_0(x) = 0 \in \mathbb{R}^d, \qquad
-  \forall t \in [L]:\; s_t(x) = A\, s_{t-1}(x) + B\, x_t, \qquad
-  h(x) = C^\top s_L(x),$$
+$$\sigma(z) := \max\{z,\ \alpha z\}$$
 
-with weights $A \in \mathbb{R}^{d \times d}$ (the *transition matrix*) and
-$B, C \in \mathbb{R}^d$. Denote by $\mathcal{H}_d$ the class of all such hypotheses.
-Throughout, $A^0 := I_d$ (in particular $\lambda^0 := 1$ for scalars, including
-$\lambda = 0$). Say that $h$ *realizes the coefficient sequence*
-$a = (a_1, \dots, a_L) \in \mathbb{R}^L$ if $h(x) = \sum_{t=1}^{L} a_t x_t$ for every
-$x \in \mathbb{R}^L$.
+is the *leaky-ReLU* activation; $[z]_+ := \max\{0, z\}$ denotes the ReLU. For
+$B \in \mathbb{N}$ let
 
-1. **(10 pts)** Prove that every $h \in \mathcal{H}_d$ with weights $A, B, C$
-   realizes the coefficient sequence
+$$\mathcal{H}_B := \Big\{\, x \mapsto c + \sum_{i=1}^{B} v_i\, \sigma(w_i x + b_i) \;:\;
+w_i, b_i, v_i, c \in \mathbb{R} \,\Big\}$$
 
-   $$a_t = C^\top A^{L-t} B, \qquad t \in [L],$$
+be the class of one-hidden-layer leaky-ReLU networks of width $B$. You may use freely that
+$\mathcal{H}_B \subseteq \mathcal{H}_{B'}$ whenever $B \le B'$ (set the extra output weights
+to $0$).
 
-   and that this is the *only* coefficient sequence $h$ realizes. Conclude that
-   $\mathcal{H}_d$ is not universal with respect to the set of continuous functions:
-   exhibit a continuous $f : \mathbb{R}^L \to \mathbb{R}$ such that
-   $f \notin \mathcal{H}_d$ for every $d \in \mathbb{N}$, and prove it.
-   *Hint:* consider a product of coordinates.
+*Reminder (Lecture 2, Def. 1):* a continuous $g : \mathbb{R} \to \mathbb{R}$ is **piecewise
+linear (PWL)** if there exist $-\infty =: c_0 < c_1 < \dots < c_{N-1} < c_N := \infty$ such
+that $g$ is affine on every $[c_{j-1}, c_j]$; the **number of linear pieces** of $g$ is the
+minimal such $N$. If $g$ has $p \ge 2$ pieces, a minimal partition has breakpoints
+$t_1 < \dots < t_{p-1}$; write $s_0$ for the slope of $g$ on $(-\infty, t_1]$ and $s_i$ for
+its slope on $[t_i, t_{i+1}]$, $i \in [p-1]$, with $t_p := \infty$. By minimality,
+$s_i \ne s_{i-1}$ for every $i \in [p-1]$.
 
-   By part 1, $\mathcal{H}_d$ is identified with the set of coefficient sequences it
-   realizes: $\;\mathcal{S}_d := \{a \in \mathbb{R}^L : \text{some } h \in
-   \mathcal{H}_d \text{ realizes } a\}$.
+Distances are measured by $d(f_1, f_2) := \int_0^1 |f_1(x) - f_2(x)|\, dx$, and $\mathcal{F}$
+denotes the set of continuous functions $\mathbb{R} \to \mathbb{R}$.
 
-2. **(9 pts)** *Scalar state.* Prove that
+1. **(8 pts)** *Leaky-ReLU identities and the piece count.*
 
-   $$\mathcal{S}_1 \;=\; \Big\{\, a \in \mathbb{R}^L \;:\; \exists\, p, \lambda \in
-   \mathbb{R} \;\; \text{s.t.} \;\; \forall t \in [L]:\; a_t = p\, \lambda^{L-t}
-   \,\Big\},$$
+   a. **(3 pts)** Prove that for every $z \in \mathbb{R}$:
 
-   i.e. exactly the sequences that are geometric when read backwards from $a_L = p$
-   with ratio $\lambda$ (both directions of the set equality must be proved; note the
-   admissible degenerate patterns: $p = 0$ gives the zero sequence, $\lambda = 0$
-   gives $(0, \dots, 0, p)$, and $\lambda < 0$ gives alternating signs).
+      $$\begin{aligned}
+      \sigma(z) - \sigma(-z) &= (1+\alpha)\, z, \\
+      \sigma(z) - \alpha z &= (1-\alpha)\, [z]_+, \\
+      \sigma(z) + \sigma(-z) &= (1-\alpha)\, |z|.
+      \end{aligned}$$
 
-3. **(9 pts)** Prove that $\mathcal{H}_1$ is strictly contained in $\mathcal{H}_2$
-   (equivalently $\mathcal{S}_1 \subsetneq \mathcal{S}_2$).
-   *Hint:* first show that every $a \in \mathcal{S}_1$ satisfies
-   $a_{t+1}\, a_{t-1} = a_t^2$ for every $t \in \{2, \dots, L-1\}$. Which sequences
-   realizable with $d = 2$ violate this?
+   b. **(5 pts)** Prove that every $h \in \mathcal{H}_B$ is PWL with at most $B + 1$ linear
+      pieces.
 
-4. **(12 pts)** *Anti-symmetric transitions.* Denote by
-   $\mathcal{H}_2^{anti} \subseteq \mathcal{H}_2$ the sub-class of hypotheses whose
-   transition matrix is anti-symmetric, $A^\top = -A$, and by
-   $\mathcal{S}_2^{anti}$ the corresponding set of coefficient sequences. Let
+2. **(10 pts)** *Exact representation with few neurons.*
 
-   $$J := \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$$
+   a. **(7 pts)** Let $f$ be PWL with $p \ge 2$ pieces (notation of the reminder). Prove
+      that $f \in \mathcal{H}_p$, and that even $f \in \mathcal{H}_{p-1}$ whenever
+      $s_0 = \alpha\, s_{p-1}$. Prove also that every affine function belongs to
+      $\mathcal{H}_2$, and conclude, together with part 1b, that
+      $\bigcup_{B \in \mathbb{N}} \mathcal{H}_B$ is **exactly** the set of PWL functions.
+      You may use without proof the decomposition behind Prop. 1 of Lecture 2 (proved in
+      Home Assignment 2): for every $x \in \mathbb{R}$,
 
-   a. **(3 pts)** Show that every anti-symmetric $A \in \mathbb{R}^{2 \times 2}$
-      equals $\omega J$ for some $\omega \in \mathbb{R}$, and prove that for every
-      $k \in \mathbb{N}_0$
+      $$f(x) = f(t_1) + s_0\,(x - t_1) + \sum_{i=1}^{p-1} (s_i - s_{i-1})\, [x - t_i]_+ .$$
 
-      $$J^k \;=\; \cos\!\Big(\frac{k\pi}{2}\Big)\, I_2 \;+\;
-        \sin\!\Big(\frac{k\pi}{2}\Big)\, J$$
+      *Hint:* part 1a turns each ReLU into one leaky neuron plus an affine term; collect
+      all the affine terms and pay for them with a single extra neuron.
 
-      (in particular the powers of $J$ cycle with period $4$:
-      $I_2, J, -I_2, -J, I_2, \dots$). Note that $A^{L-t}$ is a matrix **power**,
-      not a matrix exponential.
+   b. **(3 pts)** Prove that every non-constant $h \in \mathcal{H}_1$ is PWL with exactly
+      $2$ pieces, whose slopes $s_0, s_1$ are non-zero, have the same sign, and satisfy
+      $s_0 = \alpha s_1$ or $s_1 = \alpha s_0$. Deduce that $[x]_+ \notin \mathcal{H}_1$ —
+      so the width $p$ of part 2a cannot be lowered to $p - 1$ for every $f$ — although a
+      single **ReLU** neuron computes $[x]_+$.
 
-   b. **(5 pts)** Prove the characterization
+3. **(12 pts)** *Universality (Lecture 2, §1.3).*
 
-      $$\mathcal{S}_2^{anti} \;=\; \Big\{\, a \in \mathbb{R}^L \;:\; \exists\,
-      \omega, \alpha, \beta \in \mathbb{R} \;\; \text{s.t.} \;\;
-      \forall k \in \{0, \dots, L-1\}:\;
-      a_{L-k} = \omega^k \Big( \alpha \cos\!\Big(\frac{k\pi}{2}\Big) +
-      \beta \sin\!\Big(\frac{k\pi}{2}\Big) \Big) \Big\}$$
+   a. **(3 pts)** Define formally the expression: "the family
+      $(\mathcal{H}_B)_{B \in \mathbb{N}}$ is $\mathcal{F}$-universal in the sense of
+      $d(\cdot, \cdot)$."
 
-      — geometric sequences carrying the period-$4$ sign pattern
-      $(\alpha, \beta, -\alpha, -\beta, \alpha, \dots)$ when read backwards from
-      $a_L$ (both directions must be proved).
+   b. **(6 pts)** Prove that this universality holds. Do **not** cite Lemma 1 of
+      Lecture 2 — prove the approximation step yourself; results of part 2 may be used.
+      *Hint:* a continuous $f$ is uniformly continuous on $[0,1]$ (Heine–Cantor): for every
+      $\epsilon > 0$ there is $\delta > 0$ such that $|f(x_1) - f(x_2)| < \epsilon$ for all
+      $x_1, x_2 \in [0,1]$ with $|x_1 - x_2| < \delta$. Interpolate $f$ on a fine grid.
 
-   c. **(4 pts)** Exhibit a coefficient sequence realizable by $\mathcal{H}_2$ —
-      in fact even by $\mathcal{H}_1$ — that is **not** realizable by
-      $\mathcal{H}_2^{anti}$, and prove both claims. Conclude that
-      $\mathcal{H}_2^{anti} \subsetneq \mathcal{H}_2$.
-      *Hint:* how are $a_t$ and $a_{t-2}$ related for sequences in
-      $\mathcal{S}_2^{anti}$?
+   c. **(3 pts)** *Width versus accuracy.* Assume moreover that $f$ is $K$-Lipschitz on
+      $[0,1]$, i.e. $|f(x_1) - f(x_2)| \le K |x_1 - x_2|$ for all $x_1, x_2 \in [0,1]$.
+      Prove that for every integer $n \ge 2$ there is $h \in \mathcal{H}_n$ with
+
+      $$d(f, h) \le \frac{K}{3n},$$
+
+      and deduce a width that guarantees $d(f, h) \le \epsilon$.
+
+4. **(10 pts)** *Narrow deep networks are not universal.* For $L \in \mathbb{N}$ let
+   $\mathcal{N}_L$ be the class of **width-1** leaky-ReLU networks with $L$ hidden layers:
+
+   $$\mathcal{N}_L := \Big\{\, x \mapsto a_{L+1}\, z_L(x) + b_{L+1} \;:\;
+   a_1, b_1, \dots, a_{L+1}, b_{L+1} \in \mathbb{R} \,\Big\},$$
+
+   where $z_0(x) := x$ and $z_l(x) := \sigma\big(a_l\, z_{l-1}(x) + b_l\big)$ for
+   $l \in [L]$. (In particular $\mathcal{N}_1 = \mathcal{H}_1$.)
+
+   a. **(4 pts)** Prove that every $h \in \mathcal{N}_L$ is monotone on $\mathbb{R}$, i.e.
+      non-decreasing or non-increasing.
+
+   b. **(6 pts)** Let $f(x) := |2x - 1|$. Prove that for every $L \in \mathbb{N}$ and every
+      $h \in \mathcal{N}_L$:
+
+      $$d(f, h) \ge \frac18 .$$
+
+      Conclude that $\bigcup_{L \in \mathbb{N}} \mathcal{N}_L$ is **not** $\mathcal{F}$-universal
+      in the sense of $d(\cdot,\cdot)$, however deep the networks — whereas
+      $f \in \mathcal{H}_2$ (show this). In one sentence: what does this say about trading
+      width for depth?
+      *Hint:* for a non-decreasing $h$, compare the errors at $x$ and at $x + \frac14$ for
+      $x \in [0, \frac14]$.
 
 ---
 
