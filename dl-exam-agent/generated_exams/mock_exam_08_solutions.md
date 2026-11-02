@@ -1,13 +1,13 @@
 # Mock Exam 8 — solutions & grading rubric
 
 **⚠️ Spoilers. Attempt `mock_exam_08.md` first.** Tutor: grade against this rubric;
-verified numerically on 2026-10-28 (Q1: closed form vs. direct recursion on random RNNs;
-symmetric→diagonal re-parameterization exact to $10^{-11}$; Hankel ranks: random elements of
-$\mathcal S(\mathcal H_d^{diag})$ have $\mathrm{rank}\,H_{d+1}=d$ and the witness
-$\sum_{i\le d+1} i^k$ has rank $d+1$, $d=1,\dots,5$; best least-squares fit of $(-1)^k$ by
-non-negative exponential sums has residual $\ge 1$ for $d=L-1$ and $\approx 10^{-13}$ for
-$d=L$, $L=3,\dots,6$; rotation sequence equals $\cos(k\pi/3)$, has Hankel rank $2$, and its
-real two-node fits on $c_0,\dots,c_3$ have residual $\ge0.2236$ (infimum, approached only as the two nodes merge at $1$); the recurrence system has $s=\tau=1$, discriminant $-3$. Q2: finite-difference
+verified numerically on 2026-10-28 (Q1, replaced on 2026-11-01 and re-verified then: $\mathrm{rank}(A\odot B)=\mathrm{rank}A\cdot\mathrm{rank}B$ on 500
+random low-rank pairs; the canonical matricization of $G^{\otimes N/2}$ equals $G^{\odot N/2}$, with rank $\rho^{N/2}$,
+and its halving matricization has rank $1$; the width-$\rho$ HT assignment and a layer-by-layer
+network evaluation reproduce $f_G$ up to $N=16$; the $\rho^{N/2}$-term CP tensor equals $f_G$, and random CP
+tensors never exceed canonical rank $Z$; random HT nets never exceed halving rank $r_{L-1}$; the palindrome's
+halving matricization is a permutation matrix of rank $M^{N/2}$, and the mirror re-ordering maps it to
+$f_{I_M}$ exactly. Q2: finite-difference
 gradient check; Euler (step $10^{-5}$) on the matrix flow with random $Q$ and
 $\mu=(3,1,0,-2)$: $Q^\top UQ$ stays diagonal to $10^{-14}$, eigenvalues match the closed forms
 to $3\cdot10^{-5}$, limit $W^*_+$; random search never goes below $\sum_{\mu_r<0}\mu_r^2=4$;
@@ -15,443 +15,431 @@ small-init limits at $t_\alpha$ for $\alpha=10^{-2},\dots,10^{-16}$; direct flow
 $W^*$. Q3: Lipschitz-in-parameters lemma on 3000 random ReLU nets of depth $1$–$5$ — max ratio
 $1.000$, attained on a scalar chain; cover-count arithmetic and $j(\theta)\le\log_2\max\{1,2M\}$).
 
-## Q1 — Linear RNNs: exponential sums, Hankel rank and rotations (40)
+## Q1 — Deep versus shallow tensor decompositions: Kronecker ranks and pooling geometry (40)
 
-**Hint:** Everything flows from the useful fact: the hypothesis is a *linear* functional, so
-compare it with $|x_1|$ at two mirror-image points. For diagonal (and, after an orthogonal
-change of basis, symmetric) transitions, ask what $C^\top A^k B$ looks like as a function of
-$k$ — each eigenvalue contributes one geometric term. For the Hankel matrix, look for a
-factorization through a $d$-dimensional space indexed by the eigenvalues. For the
-non-negative case, think of $k$ as a continuous variable and count sign changes. For the
-rotation, any two-term exponential sum obeys a two-term linear recurrence — what does that
-recurrence's characteristic polynomial look like?
+**Hint:** Every rank question here becomes a question about a matricization: split the tensor into outer products, turn each outer product into a Kronecker product with Lemma 3, and count ranks. For part 1, invertible matrices do not change the rank, and a Kronecker product of invertible matrices is invertible, so you only need the rank of one very sparse 0/1 matrix. For part 2b, look at which coordinates each factor of $f_G$ reads. For part 3, copy the class assignment that produced the identity matricization, but let layer $0$ carry the rank-one pieces of $G$. For part 4b, expand a product of sums. For part 5, write down the matricization w.r.t. $I_{half}$ of the palindrome and ask how many ones each row has; then ask which positions should be pooled first.
 
 **Full solution:**
 
-**1. (8) Quantitative non-universality**
+**1. (7) Kronecker rank**
 
-**What is asked.** Show that every linear RNN, of every state dimension, is at sup-distance at least $1$ from $f(x)=|x_1|$ on the cube, that the value $1$ is attained, and conclude that the union of the classes is not universal. The answer is a proof.
+**What is asked.** Prove that the rank of a Kronecker product is the product of the ranks, for matrices of any sizes, without quoting Lemma 2. The answer is a proof.
 
-**Tool and why.** The useful fact makes every $h$ a linear functional of $x$, and a linear functional is odd, while $|x_1|$ is even. Comparing the two at the mirror points $e_1$ and $-e_1$ forces an error. The conclusion is then read off the definition of universality (cheat sheet §4).
+**Tool and why.** The rank normal form together with the mixed-product property (cheat sheet §3 for rank, §6 for the Kronecker facts; Recitation: Kronecker product, P1–P2). The normal form replaces $A$ and $B$ by the simplest matrices of the same ranks, and the mixed-product property shows that this replacement can be done inside the Kronecker product without changing its rank.
 
-**Definitions.** Let $a_t$ be the coefficient of $x_t$:
+**Definitions.** Let $r:=\mathrm{rank}\,A$ and $s:=\mathrm{rank}\,B$. By the rank normal form there are invertible $P\in\mathbb R^{m_1\times m_1}$, $Q\in\mathbb R^{m_2\times m_2}$, $P'\in\mathbb R^{n_1\times n_1}$ and $Q'\in\mathbb R^{n_2\times n_2}$ with
 
-$$a_t:=C^\top A^{L-t}B,\qquad t\in[L],$$
+$$PAQ=J_r,\qquad P'BQ'=J_s,$$
 
-so that $h(x)=\sum_ta_tx_t$. Only $a_1$ will matter, because the mirror points move only the coordinate $x_1$.
+where $J_r$ has the size of $A$ and $J_s$ has the size of $B$. They are introduced to move from $A$ and $B$ to the 0/1 matrices $J_r$ and $J_s$.
 
 **Solution.**
 
-Step 1, the mirror points are admissible: all coordinates of $e_1$ and $-e_1$ lie in $\{-1,0,1\}$, so both points lie in $[-1,1]^L$.
-
-Step 2, the values at the mirror points: by the useful fact, $h(e_1)=a_1$ and $h(-e_1)=-a_1$. By definition of $f$, $f(e_1)=1$ and $f(-e_1)=1$.
-
-Step 3, the bound: the sup over the cube is at least the larger of the two errors at these points, a maximum is at least an average, and then the triangle inequality applies:
+Step 1, a Kronecker product of invertible matrices is invertible: by the mixed-product property and $I_m\odot I_n=I_{mn}$,
 
 $$\begin{aligned}
-\sup_{x\in[-1,1]^L}|h(x)-f(x)|&\ge\max\{|a_1-1|,\ |a_1+1|\}\\
-&\ge\tfrac12\big(|1-a_1|+|1+a_1|\big)\\
-&\ge\tfrac12\big|(1-a_1)+(1+a_1)\big|\\
-&=1.
+(P\odot P')(P^{-1}\odot P'^{-1})&=(PP^{-1})\odot(P'P'^{-1})\\
+&=I_{m_1}\odot I_{n_1}\\
+&=I_{m_1n_1}.
 \end{aligned}$$
 
-In the first line, the error at $-e_1$ is $|-a_1-1|$, which is $|a_1+1|$. Nothing about $d$, $A$, $B$ or $C$ was used except linearity, so the bound holds for every $d$ and every $h\in\mathcal H_d$.
+So $P\odot P'$ is invertible, and in the same way $Q\odot Q'$ is invertible.
 
-Step 4, attainment: take $C=0$ and any $A$, $B$. Then $h\equiv0$, which is in $\mathcal H_d$, and
-
-$$\sup_{x\in[-1,1]^L}\big|0-|x_1|\big|=1,$$
-
-attained at $x=e_1$. So the constant $1$ cannot be improved.
-
-Step 5, conclusion: universality (Lecture 2, Def 1) would require, for this continuous $f$ on the compact cube and for every $\epsilon>0$, some $h$ in the class with sup-error at most $\epsilon$. Every $h\in\bigcup_d\mathcal H_d$ lies in some $\mathcal H_d$, so by step 3 its error is at least $1$. With $\epsilon=\tfrac12$ no $h$ qualifies, so $\bigcup_d\mathcal H_d$ is not universal. In particular $f\notin\mathcal H_d$ for every $d$.
-
-**In words.** A linear map must give opposite answers at $e_1$ and $-e_1$, while $|x_1|$ gives the same answer $1$ at both. Whatever $h$ outputs at $e_1$, it misses $1$ by at least $1$ at one of the two points.
-
-**Sanity check.** For $a_1=1$ the network is exact at $e_1$, but the error at $-e_1$ is $|-1-1|$, which is $2$. For $a_1=0$ both errors equal $1$. So the smallest possible value of $\max\{|a_1-1|,|a_1+1|\}$ is $1$, at $a_1=0$, which is the attained value of step 4.
-
-**What to write in the exam.**
-
-- Mirror points (3 pts): $h$ is linear, $h(\pm e_1)=\pm a_1$, while $f(\pm e_1)=1$.
-- Inequality (2 pts): the error is at least $\max\{|a_1-1|,|a_1+1|\}$, which is at least $1$ by averaging and the triangle inequality.
-- Attainment (1 pt): $C=0$ gives $h\equiv0$, with error exactly $1$.
-- Conclusion (2 pts): the bound holds for every $h$ in every $\mathcal H_d$, so accuracy $\tfrac12$ is impossible and the union is not universal.
-
-*Verified: 2000 random RNNs ($d\le4$, $L=5$): the closed form matches the recursion, and $\max\{|a_1-1|,|a_1+1|\}$ never drops below $1$ (smallest value found $1.000$).*
-
-**2a. (4) Diagonal transitions give exponential sums**
-
-**What is asked.** Prove that the reversed coefficient sequences of diagonal RNNs are exactly the sequences $c_k=\sum_ip_i\lambda_i^k$, in both directions, and the same with $\lambda\in\mathbb R^d_{\ge0}$ for $\mathcal H_d^{diag+}$. The answer is a two-sided set equality.
-
-**Tool and why.** Powers of a diagonal matrix act entrywise (cheat sheet §3, matrix powers). This turns $C^\top A^kB$ into an explicit sum, and the converse is a direct construction.
-
-**Definitions.** For $A=\mathrm{diag}(\lambda)$ put $p_i:=C_iB_i$, the weight with which the eigenvalue $\lambda_i$ enters. We introduce it because $B_i$ and $C_i$ only ever appear through this product.
-
-**Solution.**
-
-Step 1, powers of a diagonal matrix: by induction on $k$, $A^k=\mathrm{diag}(\lambda_1^k,\dots,\lambda_d^k)$. This includes $k=0$, where both sides are $I_d$ with the convention $0^0=1$.
-
-Step 2, inclusion $\subseteq$: by step 1,
-
-$$c_k=C^\top A^kB=\sum_{i=1}^dC_i\lambda_i^kB_i=\sum_{i=1}^dp_i\lambda_i^k,$$
-
-so the sequence of any $h\in\mathcal H_d^{diag}$ has the stated form, with these $p$ and $\lambda$.
-
-Step 3, inclusion $\supseteq$: given $p,\lambda\in\mathbb R^d$, choose $A=\mathrm{diag}(\lambda)$, $B=\mathbf 1$ and $C=p$. Then $C_iB_i$ is exactly the given $p_i$, and step 2 gives $c_k=\sum_ip_i\lambda_i^k$. The hypothesis is in $\mathcal H_d^{diag}$ because $A$ is diagonal.
-
-Step 4, the non-negative class: step 2 applied to a diagonal $A$ with non-negative entries gives $\lambda\in\mathbb R^d_{\ge0}$. In step 3, if the given $\lambda$ is non-negative, then $A=\mathrm{diag}(\lambda)$ has a non-negative diagonal, so the construction stays in $\mathcal H_d^{diag+}$.
-
-**In words.** In the eigenbasis each state coordinate evolves on its own and is multiplied by $\lambda_i$ at every step, so each coordinate contributes one geometric sequence to the coefficients.
-
-**Sanity check.** For $d=1$ and $A=(a)$ the sequence is $c_k=CBa^k$, the geometric progression of the cheat sheet's geometric-sequence rank trick.
-
-**What to write in the exam.**
-
-- Inclusion $\subseteq$ (2 pts): $A^k=\mathrm{diag}(\lambda_i^k)$, so $c_k=\sum_iC_iB_i\lambda_i^k$; set $p_i=C_iB_i$.
-- Inclusion $\supseteq$ (2 pts): take $A=\mathrm{diag}(\lambda)$, $B=\mathbf 1$, $C=p$.
-- Non-negative class: the same two lines with $\lambda\in\mathbb R^d_{\ge0}$; the constructed $A$ has a non-negative diagonal.
-
-*Verified: 500 random diagonal RNNs ($d=4$, $L=5$): $C^\top A^kB$ equals $\sum_iC_iB_i\lambda_i^k$ to machine precision.*
-
-**2b. (4) Symmetric equals diagonal**
-
-**What is asked.** Prove $\mathcal H_d^{sym}=\mathcal H_d^{diag}$ as classes of functions. The answer is two inclusions.
-
-**Tool and why.** The spectral theorem for symmetric matrices and matrix powers through the eigendecomposition (cheat sheet §3). The orthogonal change of basis can be absorbed into $B$ and $C$, which are free parameters.
-
-**Definitions.** For a symmetric $A$, write $A=VDV^\top$ with $V$ orthogonal and $D$ real diagonal. We need $V$ to move the RNN into the eigenbasis of $A$.
-
-**Solution.**
-
-Step 1, inclusion $\mathcal H_d^{diag}\subseteq\mathcal H_d^{sym}$: every diagonal matrix is symmetric.
-
-Step 2, powers: since $V^\top V=I$, induction on $k$ gives $A^k=VD^kV^\top$. The base $k=0$ holds because $VV^\top=I$, and the step is
-
-$$A^{k+1}=VD^kV^\top VDV^\top=VD^{k+1}V^\top.$$
-
-Step 3, absorb $V$: for every $k$,
-
-$$c_k=C^\top VD^kV^\top B=(V^\top C)^\top D^k(V^\top B).$$
-
-Step 4, inclusion $\mathcal H_d^{sym}\subseteq\mathcal H_d^{diag}$: the triple $(D,V^\top B,V^\top C)$ has a diagonal transition and, by step 3, the same reversed coefficient sequence as $(A,B,C)$, hence computes the same function.
-
-**In words.** A symmetric RNN is a diagonal RNN written in rotated coordinates for the state. Rotating the input vector $B$ and the output vector $C$ back removes the difference.
-
-**Sanity check.** Take $A=\begin{pmatrix}0&1\\1&0\end{pmatrix}$, with eigenvalues $1$ and $-1$, and $B=e_1$, $C=e_1$. The sequence $c_k=e_1^\top A^ke_1$ is $1,0,1,0,\dots$, and indeed it equals $\tfrac12\cdot1^k+\tfrac12(-1)^k$, a diagonal realization with two terms.
-
-**What to write in the exam.**
-
-- Inclusion $\mathcal H_d^{diag}\subseteq\mathcal H_d^{sym}$ (1 pt): diagonal matrices are symmetric.
-- Inclusion $\mathcal H_d^{sym}\subseteq\mathcal H_d^{diag}$ (3 pts): $A=VDV^\top$, so $A^k=VD^kV^\top$ and $c_k=(V^\top C)^\top D^k(V^\top B)$.
-- Hence $(D,V^\top B,V^\top C)$ is a diagonal RNN that computes the same function.
-
-*Verified: 500 random symmetric $A$ with $d=4$: the re-parameterized triple reproduces $c_0,\dots,c_4$ to $10^{-11}$.*
-
-**3a. (5) Hankel rank at most $d$**
-
-**What is asked.** For an exponential sum with $d$ terms, show $\mathrm{rank}\,H_m(c)\le d$ for every $m$ with $2m-1\le L$. The answer is a proof.
-
-**Tool and why.** The rank of a product is at most its inner dimension (cheat sheet §3, rank). Following the hint, we factor $H_m(c)$ through $\mathbb R^d$, with one coordinate per eigenvalue.
-
-**Definitions.** By part 2a write $c_k=\sum_{l=1}^dp_l\lambda_l^k$. Let $V\in\mathbb R^{d\times m}$ be
-
-$$V_{l,j}:=\lambda_l^{\,j},\qquad l\in[d],\ j\in\{0,\dots,m-1\}.$$
-
-Row $l$ lists the first $m$ powers of $\lambda_l$. We introduce it because $c_{i+j}$ splits into a power $i$ times a power $j$.
-
-**Solution.**
-
-Step 1, the entries are defined: for $i,j\le m-1$ we have $i+j\le2m-2$, and $2m-2\le L-1$ by the assumption $2m-1\le L$. So $c_{i+j}$ is one of the given coefficients.
-
-Step 2, the factorization: using $\lambda^{i+j}=\lambda^i\lambda^j$, valid also for $\lambda=0$ with $0^0=1$,
-
-$$\big(V^\top\mathrm{diag}(p)\,V\big)_{i,j}=\sum_{l=1}^d\lambda_l^{\,i}\,p_l\,\lambda_l^{\,j}=c_{i+j}=\big(H_m(c)\big)_{i,j}.$$
-
-So $H_m(c)=V^\top\mathrm{diag}(p)\,V$.
-
-Step 3, the rank: a product has rank at most the rank of each factor, and $V$ has only $d$ rows, so
-
-$$\mathrm{rank}\,H_m(c)\le\mathrm{rank}\,V\le d.$$
-
-**In words.** Each eigenvalue contributes one rank-one matrix $p_l\,v_lv_l^\top$, where $v_l=(1,\lambda_l,\dots,\lambda_l^{m-1})$. Then $d$ eigenvalues give at most $d$ rank-one pieces.
-
-**Sanity check.** For $d=1$, $c_k=pa^k$, and $H_2(c)$ has rows $(p,pa)$ and $(pa,pa^2)$. The second row is $a$ times the first, so the rank is $1$; the determinant is $p^2a^2-p^2a^2$, which is $0$.
-
-**What to write in the exam.**
-
-- Indices: $i+j\le2m-2$, which is at most $L-1$, so $H_m(c)$ is defined.
-- Factorization (3 pts): $H_m(c)=V^\top\mathrm{diag}(p)\,V$ with $V_{l,j}=\lambda_l^{\,j}$.
-- Rank (2 pts): $V$ has $d$ rows, so the rank is at most $d$.
-
-*Verified: for $d=1,\dots,5$ with $L=2d+1$ and random $p,\lambda$: $H_{d+1}(c)$ equals $V^\top\mathrm{diag}(p)\,V$ and has rank $d$.*
-
-**3b. (4) A strict hierarchy when $L\ge2d+1$**
-
-**What is asked.** Prove $\mathcal H_d^{diag}\subseteq\mathcal H_{d+1}^{diag}$, and that the inclusion is strict when $L\ge2d+1$. The answer is a proof with an explicit witness.
-
-**Tool and why.** The inclusion is zero padding. Strictness uses the Hankel test of part 3a, with a Vandermonde matrix making the witness's Hankel matrix invertible (cheat sheet §3, rank; §4, strict hierarchies).
-
-**Definitions.** The witness from the hint is
-
-$$c_k:=\sum_{i=1}^{d+1}i^{\,k},\qquad k\in\{0,\dots,L-1\},$$
-
-and $m:=d+1$ is the size of the Hankel matrix we test.
-
-**Solution.**
-
-Step 1, inclusion: given $c_k=\sum_{i=1}^dp_i\lambda_i^k$, append $\lambda_{d+1}=0$ and $p_{d+1}=0$. The extra term is $0$ for every $k$, including $k=0$, because $p_{d+1}=0$. By part 2a the same sequence lies in $\mathcal S(\mathcal H_{d+1}^{diag})$.
-
-Step 2, the witness is in the bigger class: it is an exponential sum with the $d+1$ nodes $\lambda_i=i$ and weights $p_i=1$, so by part 2a it lies in $\mathcal S(\mathcal H_{d+1}^{diag})$.
-
-Step 3, $m=d+1$ is admissible: $2m-1=2d+1$, and $2d+1\le L$ by assumption.
-
-Step 4, the Hankel matrix is invertible: by the computation of part 3a, with nodes $1,\dots,d+1$ and $p=\mathbf 1$,
-
-$$H_{d+1}(c)=V^\top V,\qquad V_{l,j}=l^{\,j}.$$
-
-Here $V$ is the square Vandermonde matrix of the pairwise distinct nodes $1,\dots,d+1$, invertible by the reminder. So $V^\top V$ is invertible and $\mathrm{rank}\,H_{d+1}(c)$ equals $d+1$.
-
-Step 5, strictness: if $c$ were in $\mathcal S(\mathcal H_d^{diag})$, part 3a would give $\mathrm{rank}\,H_{d+1}(c)\le d$, contradicting step 4. So $c$ is in the bigger class but not the smaller one, and
-
-$$\boxed{\mathcal H_d^{diag}\subsetneq\mathcal H_{d+1}^{diag}}$$
-
-**In words.** The Hankel rank counts how many geometric sequences are really needed. Here $d+1$ distinct nodes with non-zero weights need all $d+1$ terms, provided the sequence is long enough to show it.
-
-**Sanity check.** For $d=1$, $c=(2,3,5,\dots)$ and
-
-$$\det\begin{pmatrix}2&3\\3&5\end{pmatrix}=10-9=1,$$
-
-which is non-zero, so the rank is $2$. The length condition is genuinely needed: if $L\le d$, the $L\times L$ Vandermonde system with nodes $1,\dots,L$ realizes every $c\in\mathbb R^L$ with $L$ terms, so both classes are all of $\mathbb R^L$ and no inclusion can be strict.
-
-**What to write in the exam.**
-
-- Inclusion (1 pt): pad with $\lambda_{d+1}=0$ and $p_{d+1}=0$.
-- Witness (3 pts): $c_k=\sum_{i\le d+1}i^k$ is in the bigger class, and $m=d+1$ is admissible since $2d+1\le L$.
-- Then $H_{d+1}(c)=V^\top V$ with $V$ an invertible Vandermonde matrix, so its rank is $d+1$, and part 3a excludes $\mathcal H_d^{diag}$.
-
-*Verified: exact ranks in sympy for $d=1,\dots,5$: the witness has rank $d+1$ (determinants $1$ and $4$ for $d=1,2$), while random sums with $d$ terms have rank $d$.*
-
-**4a. (4) An exponential sum with $m$ terms has at most $m-1$ zeros**
-
-**What is asked.** Prove that $g(s)=\sum_jq_je^{\mu_js}$ with strictly increasing exponents and $q\ne0$ has at most $m-1$ distinct real zeros. The answer is a proof by induction.
-
-**Tool and why.** Induction on $m$ with Rolle's theorem, as the hint says. Multiplying by $e^{-\mu_1s}$ turns the first term into a constant, which differentiation then removes, so the derivative has one term fewer. This is a calculus lemma; it feeds the separation of part 4b (cheat sheet §4).
-
-**Definitions.** For the induction step put
-
-$$\tilde g(s):=e^{-\mu_1s}g(s)=q_1+\sum_{j=2}^mq_je^{(\mu_j-\mu_1)s}.$$
-
-It has the same zeros as $g$, because $e^{-\mu_1s}$ is positive.
-
-**Solution.**
-
-**Claim.** For every $m\in\mathbb N$, every such $g$ with $q\ne0$ has at most $m-1$ distinct real zeros. The induction is on the number of terms $m$, upward from $m=1$.
-
-**Base.** For $m=1$, $g(s)=q_1e^{\mu_1s}$ with $q_1\ne0$, which never vanishes. So it has $0$ zeros, and $0$ is $m-1$.
-
-**Hypothesis.** For some $m\ge2$, every exponential sum with $m-1$ strictly increasing exponents and a non-zero coefficient vector has at most $m-2$ distinct real zeros.
-
-**Step.** Suppose, for contradiction, that $g$ has $m$ distinct zeros, listed in increasing order as $s_1,\dots,s_m$.
-
-Case 1, the coefficients $q_2,\dots,q_m$ are all zero: then $q_1\ne0$ and $g=q_1e^{\mu_1s}$ has no zeros at all, a contradiction.
-
-Case 2, some $q_j$ with $j\ge2$ is non-zero: $\tilde g$ has the same $m$ zeros. By Rolle's theorem, $\tilde g'$ vanishes somewhere strictly between $s_i$ and $s_{i+1}$, for each $i\in[m-1]$. These open intervals are disjoint, so $\tilde g'$ has at least $m-1$ distinct zeros. Differentiating removes the constant $q_1$:
-
-$$\tilde g'(s)=\sum_{j=2}^mq_j(\mu_j-\mu_1)\,e^{(\mu_j-\mu_1)s}.$$
-
-This is an exponential sum with the $m-1$ strictly increasing exponents $\mu_j-\mu_1$. Its coefficients $q_j(\mu_j-\mu_1)$ are not all zero, because each $\mu_j-\mu_1$ is positive and some $q_j$ is non-zero. Here we use the hypothesis: $\tilde g'$ has at most $m-2$ zeros, contradicting the $m-1$ zeros found above.
-
-So $g$ has at most $m-1$ distinct zeros.
-
-**In words.** Each term of an exponential sum buys at most one sign change, just as a polynomial of degree $m-1$ has at most $m-1$ roots. Dividing by the smallest exponential and differentiating peels off one term at a time.
-
-**Sanity check.** The bound is attained. The sum with $m=3$ terms
-
-$$g(s)=e^{2s}-3e^s+2=(e^s-1)(e^s-2)$$
-
-has exactly the $2$ zeros $s=0$ and $s=\ln2$.
-
-**What to write in the exam.**
-
-- Base (1 pt): a single term $q_1e^{\mu_1s}$ with $q_1\ne0$ has no zeros.
-- Step (3 pts): if $g$ had $m$ zeros, so would $e^{-\mu_1s}g$; by Rolle its derivative, a sum of $m-1$ exponentials with coefficients $q_j(\mu_j-\mu_1)$, has $m-1$ zeros, contradicting the hypothesis.
-- Treat separately the case where only $q_1$ is non-zero.
-
-*Verified: 3000 random sums with at most $4$ terms, sign changes counted on a fine grid over $[-15,15]$: never more than $m-1$; the example above has exactly $2$.*
-
-**4b. (4) The alternating sequence needs $L$ non-negative nodes**
-
-**What is asked.** Show $c^{alt}\in\mathcal S(\mathcal H_1^{diag})$, that $c^{alt}\in\mathcal S(\mathcal H_d^{diag+})$ exactly when $d\ge L$, and conclude the strict inclusion for $d\in\{1,\dots,L-1\}$. The answer is a proof.
-
-**Tool and why.** Part 2a reduces membership to an exponential-sum identity. With non-negative nodes, $\lambda^k=e^{k\ln\lambda}$ extends to a function of a continuous variable $s$; the intermediate value theorem turns sign changes into zeros, and part 4a caps their number (cheat sheet §4, separation by counting). The converse is a Vandermonde system.
-
-**Definitions.** Suppose $c^{alt}_k=\sum_{i=1}^dp_i\lambda_i^k$ with all $\lambda_i\ge0$. Let $\nu_1,\dots,\nu_m$ be the distinct positive values among the $\lambda_i$, in increasing order, and merge equal nodes:
-
-$$q_j:=\sum_{i:\,\lambda_i=\nu_j}p_i,\qquad g(s):=\sum_{j=1}^mq_je^{s\ln\nu_j}.$$
-
-The exponents $\ln\nu_j$ are strictly increasing, so $g$ has the form of part 4a. The zero nodes are left out of $g$ on purpose: $0^k$ is $1$ at $k=0$ and $0$ afterwards, which no exponential reproduces.
-
-**Solution.**
-
-Step 1, membership in $\mathcal H_1^{diag}$: $\lambda=-1$ and $p=1$ give $c_k=(-1)^k$, by part 2a.
-
-Step 2, $g$ matches the sequence: since $0^k=0$ for $k\ge1$, we have $g(k)=c^{alt}_k$ for every $k\ge1$, and also for $k=0$ when no $\lambda_i$ is $0$.
-
-Step 3, case A, no $\lambda_i$ equals $0$: then $m\le d$, and $g(k)=(-1)^k$ for $k=0,\dots,L-1$. Since $g(0)=1$, $g$ is not identically zero, so $q\ne0$. Consecutive values $g(k)$ and $g(k+1)$ have opposite signs, so by the intermediate value theorem $g$ has a zero in each interval $(k,k+1)$, for $k=0,\dots,L-2$. These are $L-1$ distinct zeros. Part 4a gives $L-1\le m-1$, so $m\ge L$, and hence $d\ge L$ because $d\ge m$.
-
-Step 4, case B, some $\lambda_i$ equals $0$: then at most $d-1$ nodes are positive, so $m\le d-1$, and $g(k)=(-1)^k$ for $k=1,\dots,L-1$. Since $g(1)=-1$, again $q\ne0$. The intermediate value theorem gives a zero in each interval $(k,k+1)$ for $k=1,\dots,L-2$, that is, $L-2$ distinct zeros. Part 4a gives $L-2\le m-1$, and together with $m-1\le d-2$ we get $d\ge L$.
-
-Step 5, direction $\Rightarrow$: in both cases $d\ge L$.
-
-Step 6, direction $\Leftarrow$: let $d\ge L$. Take the nodes $\nu_l=l$ for $l\in[L]$ and the $L\times L$ Vandermonde matrix $V_{l,k}=l^{\,k}$, with $k\in\{0,\dots,L-1\}$. It is invertible by the reminder, so the system $V^\top p=c^{alt}$ has a solution $p\in\mathbb R^L$, which says $\sum_lp_l\,l^k=(-1)^k$ for every $k$. Pad with $d-L$ terms having $\lambda_i=0$ and $p_i=0$. All nodes are non-negative, so $c^{alt}\in\mathcal S(\mathcal H_d^{diag+})$.
-
-Step 7, conclusion: $\mathcal H_d^{diag+}\subseteq\mathcal H_d^{diag}$ trivially. For $d\in\{1,\dots,L-1\}$, the sequence $c^{alt}$ lies in $\mathcal S(\mathcal H_1^{diag})$, hence in $\mathcal S(\mathcal H_d^{diag})$ after padding as in part 3b, but not in $\mathcal S(\mathcal H_d^{diag+})$ by step 5, since $d<L$. So
-
-$$\boxed{\mathcal H_d^{diag+}\subsetneq\mathcal H_d^{diag}},\qquad d\in\{1,\dots,L-1\}.$$
-
-**In words.** A positive node gives a sequence that never changes sign, and part 4a says that $m$ such terms produce at most $m-1$ sign changes. The alternating sequence changes sign $L-1$ times, so it needs $L$ non-negative terms, while a single negative eigenvalue does it alone.
-
-**Sanity check.** For $L=3$, the Vandermonde solution with nodes $1,2,3$ is $p=(6,-8,3)$. Indeed $6-8+3=1$, then $6-16+9=-1$, then $6-32+27=1$. It uses $3$ nodes, exactly the threshold $L$.
-
-**What to write in the exam.**
-
-- Membership in $\mathcal H_1^{diag}$ (½ pt): $\lambda=-1$, $p=1$.
-- Direction $\Rightarrow$ (2½ pts): merge the positive nodes into $g(s)=\sum_jq_je^{s\ln\nu_j}$; the intermediate value theorem gives $L-1$ zeros, or $L-2$ when a zero node exists, which itself uses up one node; part 4a then forces $d\ge L$.
-- Direction $\Leftarrow$ (½ pt): an invertible Vandermonde system with nodes $1,\dots,L$, padded with zero terms.
-- Conclusion (½ pt): $c^{alt}$ separates the two classes for every $d\in\{1,\dots,L-1\}$.
-
-*Verified: exact Vandermonde solutions in sympy for $L=3,\dots,7$ (for example $p=(6,-8,3)$ when $L=3$); a grid search over non-negative nodes gives a best least-squares residual of at least $1.04$ with $L-1$ nodes and $0$ with $L$ nodes, for $L=3,4,5$.*
-
-**5a. (2) The coefficients of the rotation RNN**
-
-**What is asked.** Show that $A=R$, $B=e_1$, $C=e_1$ give $c_k=\cos(k\pi/3)$. The answer is a short computation.
-
-**Tool and why.** Powers of a rotation are rotations by multiples of the angle (matrix powers, cheat sheet §3). The coefficient is then a single matrix entry.
-
-**Definitions.** Let $R_\theta$ be the rotation by angle $\theta$:
-
-$$R_\theta:=\begin{pmatrix}\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta\end{pmatrix},$$
-
-so that $R=R_{\pi/3}$.
-
-**Solution.**
-
-Step 1, composition: multiplying out and using the angle-addition formulas,
-
-$$R_\theta R_\varphi=R_{\theta+\varphi}.$$
-
-Step 2, powers: by induction on $k$, $R^k=R_{k\pi/3}$. The base is $R^0=I$, which is $R_0$, and the step is $R^{k+1}=R_{k\pi/3}R_{\pi/3}$, which is $R_{(k+1)\pi/3}$ by step 1.
-
-Step 3, the coefficient: $c_k=e_1^\top R^ke_1$ is the top-left entry of $R_{k\pi/3}$, which is $\cos(k\pi/3)$. So $c=(1,\tfrac12,-\tfrac12,-1,\dots)$.
-
-**In words.** The state starts at $e_1$ and turns by $60$ degrees at each step; reading its first coordinate gives the cosine of the accumulated angle.
-
-**Sanity check.** $R^6=I$, since six turns by $\pi/3$ make a full turn. So the sequence has period $6$: $c_6=c_0$, and both equal $1$.
-
-**What to write in the exam.**
-
-- Rotations compose by adding angles, so by induction $R^k=R_{k\pi/3}$.
-- Hence $c_k$ is the top-left entry of $R_{k\pi/3}$, which is $\cos(k\pi/3)$.
-
-*Verified: exact powers $R^k$ in sympy for $k=0,\dots,6$: the top-left entries are $1,\tfrac12,-\tfrac12,-1,-\tfrac12,\tfrac12,1$.*
-
-**5b. (4) The rotation is not a symmetric RNN**
-
-**What is asked.** Prove $h^{rot}\notin\mathcal H_2^{sym}$ and conclude $\mathcal H_2^{sym}\subsetneq\mathcal H_2$. The answer is a proof by contradiction.
-
-**Tool and why.** By part 2b it suffices to exclude $\mathcal H_2^{diag}$. A two-term exponential sum satisfies a two-term linear recurrence whose characteristic roots are its nodes, which are real for a real diagonal RNN. We read the recurrence's coefficients off the data and find complex roots (cheat sheet §3, eigenvalues and matrix powers).
-
-**Definitions.** Suppose $c_k=p_1\lambda_1^k+p_2\lambda_2^k$ with real $\lambda_1,\lambda_2$. Put
-
-$$s:=\lambda_1+\lambda_2,\qquad\tau:=\lambda_1\lambda_2,$$
-
-so that $\lambda_1$ and $\lambda_2$ are the two roots of $z^2-sz+\tau$. These are the unknowns that the data will determine.
-
-**Solution.**
-
-Step 1, the recurrence: for every $k\in\{0,\dots,L-3\}$,
-
-$$c_{k+2}-s\,c_{k+1}+\tau\,c_k=\sum_{i=1}^2p_i\lambda_i^k\big(\lambda_i^2-s\lambda_i+\tau\big)=0,$$
-
-because each bracket is the characteristic polynomial evaluated at one of its roots. This also holds for $\lambda_i=0$, with $0^0=1$.
-
-Step 2, two equations: $L\ge4$ allows $k=0$ and $k=1$. With $c_0=1$, $c_1=\tfrac12$, $c_2=-\tfrac12$ and $c_3=-1$ from part 5a:
+Step 2, moving to the normal forms: applying the mixed-product property twice,
 
 $$\begin{aligned}
-k=0:&\quad -\tfrac12-\tfrac12 s+\tau=0,\\
-k=1:&\quad -1+\tfrac12 s+\tfrac12\tau=0.
+(P\odot P')(A\odot B)(Q\odot Q')&=\big((PA)\odot(P'B)\big)(Q\odot Q')\\
+&=(PAQ)\odot(P'BQ')\\
+&=J_r\odot J_s.
 \end{aligned}$$
 
-Step 3, solve: the first equation gives $\tau=\tfrac12(1+s)$. Substituting into the second,
+Step 3, the rank is unchanged: multiplying a matrix on the left or on the right by an invertible matrix does not change its rank. By steps 1 and 2,
 
-$$\begin{aligned}
--1+\tfrac12s+\tfrac14(1+s)&=0\\
-\tfrac34s-\tfrac34&=0\\
-s&=1,
-\end{aligned}$$
+$$\mathrm{rank}(A\odot B)=\mathrm{rank}(J_r\odot J_s).$$
 
-and then $\tau=1$.
+Step 4, the entries of $J_r\odot J_s$: by definition of the Kronecker product, the block in block-row $i\in[m_1]$ and block-column $k\in[m_2]$ is $(J_r)_{i,k}\,J_s$. It is nonzero only when $i=k$ and $i\le r$, and then it equals $J_s$, whose ones sit at the local positions $(t,t)$ with $t\in[s]$. So the ones of $J_r\odot J_s$ are exactly at the global positions
 
-Step 4, contradiction: real roots require a non-negative discriminant, but
+$$\big((i-1)n_1+t,\ (i-1)n_2+t\big),\qquad i\in[r],\ t\in[s],$$
 
-$$(\lambda_1-\lambda_2)^2=s^2-4\tau=1-4=-3<0.$$
+and all other entries are $0$. There are exactly $rs$ such positions.
 
-So no real $\lambda_1,\lambda_2$ exist, and $h^{rot}\notin\mathcal H_2^{diag}$. By part 2b, $h^{rot}\notin\mathcal H_2^{sym}$.
+Step 5, distinct rows and columns: because $t\le s$ and $s\le n_1$, the row index $(i-1)n_1+t$ determines the pair $(i,t)$ uniquely (it is division with remainder by $n_1$). Likewise, because $s\le n_2$, the column index determines $(i,t)$. So no two ones share a row or a column.
 
-Step 5, conclusion: $h^{rot}\in\mathcal H_2$ by construction, since its weights have state dimension $2$. So $h^{rot}$ is in $\mathcal H_2$ but not in $\mathcal H_2^{sym}$, and $\mathcal H_2^{sym}\subsetneq\mathcal H_2$.
+Step 6, the rank: by step 5, each of the $rs$ nonzero rows is a distinct standard basis row vector, and these are linearly independent; all other rows are zero. Hence $\mathrm{rank}(J_r\odot J_s)=rs$, and by step 3
 
-**In words.** The sequence $\cos(k\pi/3)$ equals $\tfrac12(\omega^k+\bar\omega^k)$ with $\omega=e^{i\pi/3}$, so it needs the complex eigenvalue pair $e^{\pm i\pi/3}$. A symmetric matrix has only real eigenvalues, while a rotation supplies exactly this pair.
+$$\mathrm{rank}(A\odot B)=rs=\mathrm{rank}(A)\cdot\mathrm{rank}(B).$$
 
-**Sanity check.** The recovered polynomial $z^2-z+1$ has roots $\tfrac12\pm\tfrac{\sqrt3}{2}i$, which are exactly the eigenvalues of $R$. So the recurrence recovered the true dynamics.
+If $r=0$ or $s=0$ there are no ones at all, and both sides are $0$, so this case is included.
+
+**In words.** Up to invertible changes of basis on both sides, $A$ is "$r$ ones on the diagonal" and $B$ is "$s$ ones on the diagonal". The Kronecker product then places a copy of the $s$ ones in each of the $r$ diagonal blocks, which gives $rs$ independent ones.
+
+**Sanity check.** Take $A=I_2$ (rank $2$) and $B$ the $2\times2$ all-ones matrix (rank $1$). Then $A\odot B$ is block-diagonal with two copies of $B$, of rank $2$, which is $2\cdot1$. In the other order, $B\odot A$ is the $2\times2$ block matrix with $I_2$ in every block, whose rows repeat in pairs, so its rank is also $2$, even though the two products are different matrices.
 
 **What to write in the exam.**
 
-- By part 2b it suffices to exclude $\mathcal H_2^{diag}$.
-- Recurrence (2 pts): two real nodes give $c_{k+2}-sc_{k+1}+\tau c_k=0$, with $s=\lambda_1+\lambda_2$ and $\tau=\lambda_1\lambda_2$.
-- Contradiction (2 pts): the equations for $k=0$ and $k=1$ (this needs $L\ge4$) give $s=1$ and $\tau=1$, so the discriminant is $-3$ and the nodes are not real.
-- Conclusion: $h^{rot}$ is in $\mathcal H_2$ but not in $\mathcal H_2^{sym}$.
+- Normal form (2 pts): $PAQ=J_r$ and $P'BQ'=J_s$ with invertible $P,Q,P',Q'$.
+- Reduction (2 pts): $P\odot P'$ and $Q\odot Q'$ are invertible by the mixed product, and $(P\odot P')(A\odot B)(Q\odot Q')=J_r\odot J_s$, so the ranks agree.
+- Counting (3 pts): the ones of $J_r\odot J_s$ sit at $((i-1)n_1+t,(i-1)n_2+t)$, in distinct rows and columns, so the rank is $rs$.
 
-*Verified: sympy solves the two recurrence equations to $s=1$ and $\tau=1$, with discriminant $-3$; the eigenvalues of $R$ are $\tfrac12\pm\tfrac{\sqrt3}{2}i$, and $R$ is not symmetric.*
+*Verified: 500 random pairs of low-rank matrices with sizes up to $5\times5$ have $\mathrm{rank}(A\odot B)=\mathrm{rank}A\cdot\mathrm{rank}B$; for three size choices $J_r\odot J_s$ has exactly $rs$ ones at the listed positions, at most one per row and column; $(P\odot Q)(P^{-1}\odot Q^{-1})=I_4$ exactly in sympy.*
 
-**5c. (1) Why the Hankel test cannot help**
+**2a. (5) Canonical matricization of $f_G$**
 
-**What is asked.** One or two sentences explaining why the Hankel-rank test of part 3 cannot prove part 5b. The answer is an explanation.
+**What is asked.** Show that the canonical matricization of $\mathcal A_{f_G}$ is the $N/2$-fold Kronecker power of $G$, and deduce that the separation rank of $f_G$ w.r.t. $I_{odd}$ is $\rho^{N/2}$. The answer is a proof and the value $\rho^{N/2}$.
 
-**Tool and why.** Factor the Hankel matrix of a general, not necessarily diagonal, RNN, as in part 3a (cheat sheet §3, rank of a product).
+**Tool and why.** Lemma 3 for canonical matricizations, Prop 7 and part 1 (cheat sheet §6; Lecture 2, §2.4 and §2.7). The tensor $\mathcal A_{f_G}$ is an outer product of order-2 tensors, all of even order, which is exactly the case where Lemma 3 turns $\otimes$ into $\odot$.
 
-**Definitions.** For $(A,B,C)\in\mathcal H_2$, let $\mathcal O\in\mathbb R^{m\times2}$ have rows $C^\top A^i$ and $\Gamma\in\mathbb R^{2\times m}$ have columns $A^jB$, for $i,j\in\{0,\dots,m-1\}$.
+**Definitions.** For $k\in\mathbb N$ let $G^{\otimes k}$ be the outer product of $k$ copies of $G$ (an order-$2k$ tensor) and $G^{\odot k}$ the Kronecker product of $k$ copies (an $M^k\times M^k$ matrix). So $\mathcal A_{f_G}=G^{\otimes N/2}$; the entry of $G^{\otimes N/2}$ at $(d_1,\dots,d_N)$ is $\prod_jG_{d_{2j-1},d_{2j}}$ by definition of the outer product, which is $f_G(d_1,\dots,d_N)$.
 
 **Solution.**
 
-Step 1, a factorization for every RNN: for all $i,j$,
+Step 1, **Claim.** For every $k\in\mathbb N$,
 
-$$c_{i+j}=C^\top A^{i+j}B=(C^\top A^i)(A^jB),$$
+$$[\![G^{\otimes k}]\!]=G^{\odot k}.$$
 
-so $H_m(c)=\mathcal O\,\Gamma$.
+We prove it by induction on $k$, upwards from $k=1$.
 
-Step 2, the rank: the inner dimension is $2$, so $\mathrm{rank}\,H_m(c)\le2$ for every $h\in\mathcal H_2$, including $h^{rot}$.
+**Base.** For $k=1$ the tensor $G$ has order $2$, and its canonical matricization puts mode $1$ in the rows and mode $2$ in the columns, so $[\![G]\!]=G$.
 
-Step 3, conclusion: the Hankel rank of $h^{rot}$ is at most $2$, exactly like that of every element of $\mathcal H_2^{diag}$, so the test cannot tell them apart. It sees the state dimension, not whether the eigenvalues are real.
+**Hypothesis.** For some $k\ge1$, $[\![G^{\otimes k}]\!]=G^{\odot k}$.
 
-**In words.** The Hankel rank counts how many modes a sequence uses, not what kind of modes. A complex-conjugate pair counts as two modes, just like two real ones.
+**Step.** Write $G^{\otimes(k+1)}=G\otimes G^{\otimes k}$, an outer product of tensors of orders $2$ and $2k$, both even. By Lemma 3 for canonical matricizations, and then by the base and the hypothesis (the only place it is used),
 
-**Sanity check.** For $h^{rot}$, $H_2(c)$ has rows $(1,\tfrac12)$ and $(\tfrac12,-\tfrac12)$, with determinant $-\tfrac12-\tfrac14=-\tfrac34$, so its rank is $2$. When $L\ge5$, $H_3(c)$ also has rank $2$. Both are within the bound of part 3a for $d=2$.
+$$\begin{aligned}
+[\![G^{\otimes(k+1)}]\!]&=[\![G]\!]\odot[\![G^{\otimes k}]\!]\\
+&=G\odot G^{\odot k}\\
+&=G^{\odot(k+1)}.
+\end{aligned}$$
+
+Step 2, the matricization of $f_G$: by step 1 with $k=N/2$, $[\![\mathcal A_{f_G}]\!]=G^{\odot N/2}$, as required.
+
+Step 3, its rank: by part 1 applied $N/2-1$ times (induction on the number of factors, since $\mathrm{rank}(G\odot G^{\odot k})=\rho\cdot\mathrm{rank}\,G^{\odot k}$),
+
+$$\mathrm{rank}\,G^{\odot N/2}=\rho^{N/2}.$$
+
+Step 4, the separation rank: by Prop 7 and steps 2–3,
+
+$$\mathrm{sep}(f_G;I_{odd})=\mathrm{rank}\,[\![\mathcal A_{f_G}]\!]=\rho^{N/2}.$$
+
+**In words.** $f_G$ couples each odd position with the even position next to it through $G$, and the odd-versus-even split cuts all $N/2$ couplings at once. Each cut coupling costs a factor $\rho$, and the costs multiply.
+
+**Sanity check.** For $G=I_M$ (so $\rho=M$) we get
+
+$$[\![\mathcal A]\!]=I_M\odot\cdots\odot I_M=I_{M^{N/2}},$$
+
+exactly the full-rank matricization of the class proof of Prop 6. For $\rho=1$ the function is a product of one-variable factors, and its separation rank is $1$.
 
 **What to write in the exam.**
 
-- Every $h\in\mathcal H_2$ has $H_m(c)=\mathcal O\,\Gamma$ with inner dimension $2$, so its Hankel rank is at most $2$.
-- So $h^{rot}$ passes the same test as the diagonal RNNs with $d=2$: the test sees the state dimension, not whether the eigenvalues are real.
+- Base (1 pt): $[\![G]\!]=G$.
+- Induction (2 pts): $G^{\otimes(k+1)}=G\otimes G^{\otimes k}$, orders even, so Lemma 3 gives $[\![G^{\otimes(k+1)}]\!]=G\odot G^{\odot k}$.
+- Rank (1 pt): part 1 repeatedly gives $\rho^{N/2}$.
+- Separation rank (1 pt): by Prop 7, $\mathrm{sep}(f_G;I_{odd})=\rho^{N/2}$.
 
-*Verified: exact computation in sympy for the rotation sequence: $\det H_2(c)=-\tfrac34$ and $\mathrm{rank}\,H_3(c)=2$.*
+*Verified: for $(M,\rho,N)$ with $M\in\{2,3,4\}$, every $\rho\le M$ and $N\in\{2,4,8\}$, the canonical matricization computed by transpose-and-reshape equals the Kronecker power exactly, and its rank is $\rho^{N/2}$.*
+
+**2b. (3) Separation rank w.r.t. the halving partition**
+
+**What is asked.** Show that $f_G$ is a product of one function of the first half of the inputs and one function of the second half, and that it is not the zero function. The answer is the value $1$ with a proof.
+
+**Tool and why.** The definition of separation rank directly (cheat sheet §6). An upper bound needs one explicit separable representation, and a lower bound needs only that $f_G\ne0$.
+
+**Definitions.** Let $g:[M]^{N/2}\to\mathbb R$ be
+
+$$g(c_1,\dots,c_{N/2}):=\prod_{j=1}^{N/4}G_{c_{2j-1},\,c_{2j}},$$
+
+which is well defined because $N/2$ is even (as $N\ge4$). It is $f_G$ written for half as many inputs.
+
+**Solution.**
+
+Step 1, no pair is split: the pairs $\{2j-1,2j\}$ with $j\le N/4$ lie inside $I_{half}$, and those with $j>N/4$ lie inside its complement, because $N/2$ is even.
+
+Step 2, the factorization: by step 1, the product defining $f_G$ splits into the factors with $j\le N/4$ and the factors with $j>N/4$, so
+
+$$f_G(d_1,\dots,d_N)=g(d_1,\dots,d_{N/2})\cdot g(d_{N/2+1},\dots,d_N).$$
+
+This is one separable term, so $\mathrm{sep}(f_G;I_{half})\le1$.
+
+Step 3, $f_G\ne0$: since $\rho\ge1$, $G$ has an entry $G_{a,b}\ne0$. At the input $(a,b,a,b,\dots,a,b)$ every factor equals $G_{a,b}$, so
+
+$$f_G(a,b,\dots,a,b)=G_{a,b}^{N/2}\ne0.$$
+
+Step 4, conclusion: a separation rank of $0$ would mean $f_G$ is the empty sum, i.e. the zero function, which step 3 rules out. Hence $\mathrm{sep}(f_G;I_{half})=1$.
+
+**In words.** The halving cut does not separate any of the coupled pairs, so the two halves of the input do not interact at all.
+
+**Sanity check.** Through Prop 7 the same answer reads $\mathrm{rank}\,[\![\mathcal A_{f_G}]\!]_{I_{half}}=1$: by Lemma 3 this matricization is $\mathrm{vec}(G^{\otimes N/4})\,\mathrm{vec}(G^{\otimes N/4})^\top$, a nonzero rank-one matrix.
+
+**What to write in the exam.**
+
+- Factorization (2 pts): no pair crosses the middle, so $f_G=g(d_1,\dots,d_{N/2})\cdot g(d_{N/2+1},\dots,d_N)$, and the separation rank is at most $1$.
+- Nonzero (1 pt): $f_G(a,b,\dots,a,b)$ equals $G_{a,b}^{N/2}$, which is not $0$.
+
+*Verified: for the same grid of $(M,\rho,N)$ with $N\ge4$, the matricization w.r.t. $I_{half}$ has rank exactly $1$.*
+
+**3. (8) A small deep network for $f_G$**
+
+**What is asked.** Find explicit weights for the deep network, with every hidden width equal to $\rho$, whose tensor is $\mathcal A_{f_G}$, and prove it. The answer is an assignment plus an induction over the levels.
+
+**Tool and why.** The HT recursion (Prop 4) and the passthrough assignment from the proof of Prop 6 (cheat sheet §6; Lecture 2, §2.4). In class, basis vectors at layer $0$ and an all-ones filter at layer $1$ produced $I_M$ in every pair; replacing the basis vectors by the rank-one pieces of $G$ produces $G$ in every pair instead.
+
+**Definitions.** Let $\mathbf 1\in\mathbb R^\rho$ be the all-ones vector and $\mathbf e^1\in\mathbb R^\rho$ the first standard basis vector. The assignment, with $r_l=\rho$ for every $l$, is:
+
+- layer $0$: $\mathbf a^{0,2j-1,\alpha}=\mathbf u^\alpha$ and $\mathbf a^{0,2j,\alpha}=\mathbf v^\alpha$, for $j\in[N/2]$ and $\alpha\in[\rho]$;
+- layer $1$: $\mathbf a^{1,j,1}=\mathbf 1$ and $\mathbf a^{1,j,\gamma}=\mathbf 0$ for $\gamma\ge2$;
+- layers $l\in\{2,\dots,L-1\}$: $\mathbf a^{l,j,1}=\mathbf e^1$ and $\mathbf a^{l,j,\gamma}=\mathbf 0$ for $\gamma\ge2$;
+- output: $\mathbf a^L=\mathbf e^1$.
+
+Only channel $1$ is used above layer $0$; the other channels are switched off.
+
+**Solution.**
+
+Step 1, **Claim.** For every $l\in[L-1]$ and $j\in[N/2^l]$,
+
+$$\Phi^{l,j,1}=G^{\otimes2^{l-1}},$$
+
+and $\Phi^{l,j,\gamma}=0$ for $\gamma\ge2$. We prove it by induction on $l$, upwards from $l=1$.
+
+**Base.** For $l=1$ and $\gamma=1$ every coefficient $a^{1,j,1}_\alpha$ is $1$, so
+
+$$\begin{aligned}
+\Phi^{1,j,1}&=\sum_{\alpha=1}^{\rho}\mathbf u^\alpha\otimes\mathbf v^\alpha\\
+&=\sum_{\alpha=1}^{\rho}\mathbf u^\alpha(\mathbf v^\alpha)^\top\\
+&=G,
+\end{aligned}$$
+
+because the outer product of two vectors is the matrix $\mathbf u\mathbf v^\top$. For $\gamma\ge2$ all coefficients are $0$, so $\Phi^{1,j,\gamma}=0$.
+
+**Hypothesis.** For some $l\in\{2,\dots,L-1\}$ the claim holds at level $l-1$.
+
+**Step.** For $\gamma=1$ the coefficient vector $\mathbf e^1$ keeps only $\alpha=1$, and then the hypothesis (the only place it is used) gives
+
+$$\begin{aligned}
+\Phi^{l,j,1}&=\Phi^{l-1,2j-1,1}\otimes\Phi^{l-1,2j,1}\\
+&=G^{\otimes2^{l-2}}\otimes G^{\otimes2^{l-2}}\\
+&=G^{\otimes2^{l-1}}.
+\end{aligned}$$
+
+For $\gamma\ge2$ all coefficients are $0$, so $\Phi^{l,j,\gamma}=0$.
+
+Step 2, the output: $\mathbf a^L=\mathbf e^1$ keeps only $\alpha=1$, and the claim at level $L-1$ gives
+
+$$\begin{aligned}
+\mathcal A&=\Phi^{L-1,1,1}\otimes\Phi^{L-1,2,1}\\
+&=G^{\otimes2^{L-2}}\otimes G^{\otimes2^{L-2}}\\
+&=G^{\otimes N/2},
+\end{aligned}$$
+
+since $2^{L-1}=N/2$. This is $\mathcal A_{f_G}$, so the network realizes $f_G$. When $L=2$ the middle layers do not exist and the claim is just the base, so the argument is unchanged.
+
+Step 3, the size: every hidden width is $\rho$, and $\rho\le M$ because $G$ is $M\times M$. So $f_G$ lies in the deep class of width $\rho$, which is $O(M)$.
+
+**In words.** Layer $0$ together with the first pooling builds $G$ on each adjacent pair, and every later layer just multiplies the results of neighbouring blocks. The network never has to hold more than the $\rho$ rank-one pieces of a single $G$.
+
+**Sanity check.** For $G=I_M$ take $\mathbf u^\alpha$ and $\mathbf v^\alpha$ both equal to $\mathbf e^\alpha$, $\alpha\in[M]$: this is exactly the class assignment of Prop 6, and the network then realizes $f_{I_M}$, whose canonical matricization is $I_{M^{N/2}}$. For $N=4$ the deep network computes $\big(\sum_\alpha u^\alpha_{d_1}v^\alpha_{d_2}\big)\big(\sum_\alpha u^\alpha_{d_3}v^\alpha_{d_4}\big)=G_{d_1,d_2}G_{d_3,d_4}$.
+
+**What to write in the exam.**
+
+- Assignment (3 pts): layer $0$ gets $\mathbf u^\alpha$ on odd positions and $\mathbf v^\alpha$ on even ones; layer $1$ gets $\mathbf 1$ in channel $1$; higher layers and the output get $\mathbf e^1$ in channel $1$; all other channels are $\mathbf 0$.
+- Base (2 pts): $\Phi^{1,j,1}=\sum_\alpha\mathbf u^\alpha(\mathbf v^\alpha)^\top$, which is $G$.
+- Step and output (2 pts): $\Phi^{l,j,1}=\Phi^{l-1,2j-1,1}\otimes\Phi^{l-1,2j,1}$, which is $G^{\otimes2^{l-1}}$ by the hypothesis, hence $\mathcal A=G^{\otimes N/2}$.
+- Size (1 pt): all widths are $\rho\le M$.
+
+*Verified: the HT recursion with this assignment, and an independent layer-by-layer evaluation of the network (conv, then pairwise product pooling) on random inputs, both reproduce $f_G$ to machine precision for $(M,\rho,N)$ = (3,2,4), (3,2,8), (2,2,8), (4,3,4), (3,1,8), (2,1,4), (2,2,16).*
+
+**4a. (5) Every shallow tensor has canonical rank at most $Z$**
+
+**What is asked.** Prove that the canonical matricization of every CP tensor with $Z$ terms has rank at most $Z$, and deduce that the shallow network needs $Z\ge\rho^{N/2}$ to realize $f_G$. The answer is a proof.
+
+**Tool and why.** Linearity of matricization, Lemma 3 and part 1, then subadditivity of the rank (cheat sheet §6; Lecture 2, proof of Prop 6). Each CP term is an outer product of vectors, which Lemma 3 turns into a Kronecker product of rank-one matrices.
+
+**Definitions.** For one term write $\mathcal T_z:=\mathbf a^{z,1}\otimes\cdots\otimes\mathbf a^{z,N}$, so that $\mathcal A=\sum_za_z\mathcal T_z$.
+
+**Solution.**
+
+Step 1, group the factors in adjacent pairs: by associativity of the outer product,
+
+$$\mathcal T_z=(\mathbf a^{z,1}\otimes\mathbf a^{z,2})\otimes(\mathbf a^{z,3}\otimes\mathbf a^{z,4})\otimes\cdots\otimes(\mathbf a^{z,N-1}\otimes\mathbf a^{z,N}),$$
+
+an outer product of $N/2$ order-2 tensors.
+
+Step 2, matricize one term: by Lemma 3 for canonical matricizations, applied repeatedly exactly as in part 2a (all orders are even),
+
+$$[\![\mathcal T_z]\!]=\big(\mathbf a^{z,1}(\mathbf a^{z,2})^\top\big)\odot\big(\mathbf a^{z,3}(\mathbf a^{z,4})^\top\big)\odot\cdots\odot\big(\mathbf a^{z,N-1}(\mathbf a^{z,N})^\top\big),$$
+
+because the canonical matricization of the order-2 tensor $\mathbf a\otimes\mathbf b$ is the matrix $\mathbf a\mathbf b^\top$.
+
+Step 3, each term has rank at most $1$: every factor $\mathbf a\mathbf b^\top$ has rank at most $1$, so by part 1 the rank of $[\![\mathcal T_z]\!]$ is a product of numbers in $\{0,1\}$, hence at most $1$.
+
+Step 4, sum over the terms: by linearity of matricization and subadditivity of the rank,
+
+$$\begin{aligned}
+\mathrm{rank}\,[\![\mathcal A]\!]&=\mathrm{rank}\sum_{z=1}^Za_z[\![\mathcal T_z]\!]\\
+&\le\sum_{z=1}^Z\mathrm{rank}\,[\![\mathcal T_z]\!]\\
+&\le Z.
+\end{aligned}$$
+
+Step 5, consequence for $f_G$: if the shallow network of width $Z$ realizes $f_G$, then its tensor is $\mathcal A_{f_G}$, and by part 2a and step 4
+
+$$\rho^{N/2}=\mathrm{rank}\,[\![\mathcal A_{f_G}]\!]\le Z.$$
+
+**In words.** Global product pooling multiplies one value per position, so each hidden unit computes a fully separable function, which has rank one under every cut. The width counts how many such pieces are added up, and a sum of $Z$ rank-one matrices has rank at most $Z$.
+
+**Sanity check.** With $N=2$ the bound reads $\mathrm{rank}\le Z$ for $Z$ outer products of two vectors, which is the familiar fact about sums of rank-one matrices. Random CP tensors with $Z<M^{N/2}$ have canonical rank exactly $Z$, so the bound cannot be improved in general.
+
+**What to write in the exam.**
+
+- One term (2 pts): by Lemma 3, $[\![\mathcal T_z]\!]$ is a Kronecker product of the matrices $\mathbf a^{z,2j-1}(\mathbf a^{z,2j})^\top$, each of rank at most $1$.
+- Part 1 (1 pt): so each term has rank at most $1$.
+- Sum (1 pt): linearity and subadditivity give $\mathrm{rank}\,[\![\mathcal A]\!]\le Z$.
+- Consequence (1 pt): realizing $f_G$ forces $Z\ge\rho^{N/2}$ by part 2a.
+
+*Verified: random CP tensors with $(M,N,Z)$ = (3,4,5), (2,8,7), (3,4,9), (2,8,20) have canonical rank $5,7,9,16$ respectively, never above $Z$ (the last is capped by $2^4=16$).*
+
+**4b. (4) Width $\rho^{N/2}$ suffices**
+
+**What is asked.** Give explicit shallow weights with $Z=\rho^{N/2}$ that realize $f_G$, prove it, and compare with the deep network. The answer is a construction plus the conclusion.
+
+**Tool and why.** Expanding a product of sums (distributivity), together with the CP form of the shallow network (cheat sheet §6). Each factor of $f_G$ is a sum of $\rho$ separable terms, and multiplying the $N/2$ factors out produces $\rho^{N/2}$ fully separable terms, which is exactly a CP decomposition.
+
+**Definitions.** Index the hidden units by multi-indices $z=(\alpha_1,\dots,\alpha_{N/2})\in[\rho]^{N/2}$, so there are $\rho^{N/2}$ units. For unit $z$ set $a_z=1$, and for $j\in[N/2]$
+
+$$\mathbf a^{z,2j-1}=\mathbf u^{\alpha_j},\qquad\mathbf a^{z,2j}=\mathbf v^{\alpha_j}.$$
+
+**Solution.**
+
+Step 1, each factor of $f_G$ is a sum: from $G=\sum_\alpha\mathbf u^\alpha(\mathbf v^\alpha)^\top$, entry by entry,
+
+$$G_{d_{2j-1},d_{2j}}=\sum_{\alpha=1}^{\rho}u^\alpha_{d_{2j-1}}v^\alpha_{d_{2j}}.$$
+
+Step 2, expand the product: multiplying the $N/2$ sums of step 1 and choosing one index $\alpha_j$ from each factor,
+
+$$\begin{aligned}
+f_G(d_1,\dots,d_N)&=\prod_{j=1}^{N/2}\sum_{\alpha=1}^{\rho}u^\alpha_{d_{2j-1}}v^\alpha_{d_{2j}}\\
+&=\sum_{(\alpha_1,\dots,\alpha_{N/2})}\ \prod_{j=1}^{N/2}u^{\alpha_j}_{d_{2j-1}}v^{\alpha_j}_{d_{2j}}.
+\end{aligned}$$
+
+Step 3, this is the network output: with the assignment above, the term of unit $z$ is $\prod_j u^{\alpha_j}_{d_{2j-1}}v^{\alpha_j}_{d_{2j}}$, the entry of $\mathbf u^{\alpha_1}\otimes\mathbf v^{\alpha_1}\otimes\cdots\otimes\mathbf u^{\alpha_{N/2}}\otimes\mathbf v^{\alpha_{N/2}}$ at $(d_1,\dots,d_N)$. Summing over all $z$ with $a_z=1$ gives the right-hand side of step 2, so the network realizes $f_G$ with $Z=\rho^{N/2}$.
+
+Step 4, the smallest shallow width: by part 4a no smaller $Z$ works, so the smallest width of a shallow network realizing $f_G$ is exactly $\rho^{N/2}$.
+
+Step 5, comparison with the deep network: by part 3 the deep network realizes $f_G$ with all widths $\rho\le M$. For $\rho\ge2$ the shallow network needs
+
+$$Z=\rho^{N/2}\ge2^{N/2},$$
+
+which is exponential in $N$. In parameters (formula of class, Lecture 2, §2.2) the deep network has $MN\rho+(N-2)\rho^2+\rho$ parameters and the shallow one $(NM+1)\rho^{N/2}$.
+
+**In words.** Without depth, the only way to build a product of $N/2$ coupled pairs is to multiply out every combination of the pieces of each pair. Depth lets the network form each pair once and then multiply the pairs, so the pieces never have to be combined explicitly.
+
+**Sanity check.** For $\rho=1$ both networks need width $1$, and indeed $f_G$ is then a single product of one-variable factors, so there is no separation. For $(M,\rho,N)=(2,2,16)$ the deep network has $64+56+2=122$ parameters, while the shallow one has $33\cdot2^8=8448$.
+
+**What to write in the exam.**
+
+- Construction (2 pts): units indexed by $(\alpha_1,\dots,\alpha_{N/2})\in[\rho]^{N/2}$, filters $\mathbf u^{\alpha_j}$ at position $2j-1$ and $\mathbf v^{\alpha_j}$ at position $2j$, output weights $1$.
+- Proof (1 pt): expanding $\prod_j\sum_\alpha u^\alpha_{d_{2j-1}}v^\alpha_{d_{2j}}$ gives exactly the sum of the units' products.
+- Conclusion (1 pt): the minimal shallow width is $\rho^{N/2}$ against deep width $\rho$, exponential in $N$ for $\rho\ge2$.
+
+*Verified: the $\rho^{N/2}$-term CP tensor equals $\mathcal A_{f_G}$ to machine precision for $(M,\rho,N)$ = (3,2,4), (2,2,8), (4,3,4), (3,3,4); the parameter counts 34, 74, 58, 69, 31, 11, 122 of the deep networks in part 3 match the formula $MN\rho+(N-2)\rho^2+\rho$.*
+
+**5a. (5) The deep network and the palindrome**
+
+**What is asked.** Prove that the deep network's tensors have rank at most $r_{L-1}$ under the halving partition, compute the separation rank of the palindrome under that partition, and deduce a lower bound on $r_{L-1}$. The answer is a proof and the value $M^{N/2}$.
+
+**Tool and why.** The last line of the HT recursion with Lemma 3, then a direct look at the matricization of $P$ and Prop 7 (cheat sheet §6; Lecture 2, §2.7.1). The last pooling of the deep network joins the left half and the right half of the input only once, through $r_{L-1}$ channels, so the halving cut is exactly where its rank is limited.
+
+**Definitions.** For a tensor $\mathcal T$ of order $n$, $\mathrm{vec}(\mathcal T)$ is the column vector $[\![\mathcal T]\!]_{[n]}$ (all modes in the rows). Write $n:=N/2$.
+
+**Solution.**
+
+Step 1, matricize one term of the last line: with $I=I_{half}$, which is $[n]$, and two tensors of order $n$, Lemma 3 has $I\cap[n]=[n]$ and $(I-n)\cap[n]=\emptyset$, so
+
+$$[\![\Phi^{L-1,1,\alpha}\otimes\Phi^{L-1,2,\alpha}]\!]_{I_{half}}=\mathrm{vec}(\Phi^{L-1,1,\alpha})\odot\mathrm{vec}(\Phi^{L-1,2,\alpha})^\top.$$
+
+Step 2, a column times a row: the Kronecker product of a column vector $\mathbf x$ and a row vector $\mathbf y^\top$ is the matrix $\mathbf x\mathbf y^\top$ (its $i$-th block is the row $x_i\mathbf y^\top$), whose rank is at most $1$.
+
+Step 3, the bound: by linearity of matricization and subadditivity of the rank, summing the $r_{L-1}$ terms of the last line gives
+
+$$\mathrm{rank}\,[\![\mathcal A]\!]_{I_{half}}\le r_{L-1}.$$
+
+Step 4, the matricization of $P$: the row of $[\![\mathcal A_P]\!]_{I_{half}}$ is indexed by $(d_1,\dots,d_n)$ and the column by $(d_{n+1},\dots,d_N)$. Writing the condition $d_i=d_{N+1-i}$ with $i=n+1-k$ for $k\in[n]$, it says $d_{n+k}=d_{n+1-k}$, so the entry is $1$ exactly when the column tuple is the reversal of the row tuple,
+
+$$(d_{n+1},\dots,d_N)=(d_n,d_{n-1},\dots,d_1),$$
+
+and $0$ otherwise.
+
+Step 5, its rank: reversal is a bijection of $[M]^n$, so every row has exactly one entry $1$ and every column has exactly one entry $1$. The matrix is therefore a permutation matrix of size $M^n$, which is invertible, and
+
+$$\mathrm{rank}\,[\![\mathcal A_P]\!]_{I_{half}}=M^{N/2}.$$
+
+Step 6, conclusion: by Prop 7, $\mathrm{sep}(P;I_{half})=M^{N/2}$, the largest possible value for an $M^{N/2}\times M^{N/2}$ matrix. If the deep network realizes $P$, then step 3 applied to $\mathcal A_P$ gives
+
+$$M^{N/2}=\mathrm{rank}\,[\![\mathcal A_P]\!]_{I_{half}}\le r_{L-1}.$$
+
+**In words.** The palindrome ties every position of the left half to its mirror image in the right half, so all of its dependence crosses the middle. The contiguous deep network sees the two halves interact only at the very last pooling, so all of that dependence has to pass through the $r_{L-1}$ channels there.
+
+**Sanity check.** For $N=4$ and $M=2$,
+
+$$P(d)=\mathbb 1[d_1=d_4]\,\mathbb 1[d_2=d_3],$$
+
+and $[\![\mathcal A_P]\!]_{I_{half}}$ is the $4\times4$ permutation matrix sending $(d_1,d_2)$ to $(d_2,d_1)$, of rank $4$, which is $2^2$. The bound is also attainable in size: writing each indicator as $\sum_\alpha e^\alpha_{d_i}e^\alpha_{d_{N+1-i}}$ and expanding as in part 4b gives a shallow network of width $M^{N/2}$ for $P$, and by Prop 6(1) a deep network of width $M^{N/2}$ contains it.
+
+**What to write in the exam.**
+
+- Bound (2 pts): by Lemma 3 each term of the last HT line matricizes to $\mathrm{vec}(\Phi^{L-1,1,\alpha})\mathrm{vec}(\Phi^{L-1,2,\alpha})^\top$, of rank at most $1$, so the rank is at most $r_{L-1}$.
+- Matricization of $P$ (2 pts): entry $1$ exactly when the column tuple is the reversal of the row tuple, so it is a permutation matrix of rank $M^{N/2}$.
+- Conclusion (1 pt): $\mathrm{sep}(P;I_{half})=M^{N/2}$ by Prop 7, hence $r_{L-1}\ge M^{N/2}$.
+
+*Verified: for random deep networks with $(M,N,r)$ = (2,8,2), (3,4,2), (2,8,1), (3,4,3) the halving rank never exceeds $r$; the halving matricization of $P$ is a permutation matrix of rank $M^{N/2}$ for $(M,N)$ = (2,4), (3,4), (2,8), (3,8).*
+
+**5b. (3) Mirror pooling realizes the palindrome cheaply**
+
+**What is asked.** Find a re-ordering $\pi$ of the input positions that turns $P$ into $f_{I_M}$, deduce that the deep network fed with the re-ordered input realizes $P$ with all widths $M$, and give a one-sentence interpretation. The answer is an explicit $\pi$, a short proof and one sentence.
+
+**Tool and why.** Part 3 with $G=I_M$, and the inductive-bias discussion of class (cheat sheet §6; Lecture 2, §2.7.1). Feeding the network a re-ordered input is the same as choosing which positions are pooled together first.
+
+**Definitions.** For $j\in[N/2]$ let $\pi(2j-1):=j$ and $\pi(2j):=N+1-j$, i.e. $\pi$ lists the positions in the order $1,N,2,N-1,\dots,N/2,N/2+1$.
+
+**Solution.**
+
+Step 1, $\pi$ is a permutation: the odd slots take the values $1,\dots,N/2$ and the even slots the values $N/2+1,\dots,N$, each exactly once.
+
+Step 2, the identity: by the definition of $f_{I_M}$ and of $\pi$,
+
+$$\begin{aligned}
+f_{I_M}(d_{\pi(1)},\dots,d_{\pi(N)})&=\prod_{j=1}^{N/2}\mathbb 1\big[d_{\pi(2j-1)}=d_{\pi(2j)}\big]\\
+&=\prod_{j=1}^{N/2}\mathbb 1\big[d_j=d_{N+1-j}\big]\\
+&=P(d_1,\dots,d_N).
+\end{aligned}$$
+
+Step 3, the network: by part 3 with $G=I_M$ (so $\rho=M$, and $\mathbf u^\alpha$, $\mathbf v^\alpha$ both equal $\mathbf e^\alpha$), the deep network with all widths $M$ realizes $f_{I_M}$. Fed with $(d_{\pi(1)},\dots,d_{\pi(N)})$ it therefore outputs $P(d_1,\dots,d_N)$ by step 2. Its first pooling multiplies positions $j$ and $N+1-j$, i.e. it is the deep network with mirror pooling.
+
+Step 4, interpretation: the dependencies a deep network models cheaply are those between positions pooled together early, so contiguous pooling favours local dependencies (part 5a: the palindrome costs width $M^{N/2}$) while mirror pooling favours mirror-symmetric ones (width $M$).
+
+**In words.** Nothing about the palindrome is hard in itself; it is hard only for a network that pools the wrong positions together. Re-ordering the input changes which pairs meet first, and the same small network then suffices.
+
+**Sanity check.** For $N=4$, $\pi$ lists $1,4,2,3$, and
+
+$$f_{I_M}(d_1,d_4,d_2,d_3)=\mathbb 1[d_1=d_4]\,\mathbb 1[d_2=d_3],$$
+
+which is $P$. This matches the class experiment, where mirror pooling won on the symmetry task and square pooling on the closedness task.
+
+**What to write in the exam.**
+
+- Permutation (1 pt): $\pi(2j-1)=j$, $\pi(2j)=N+1-j$, and then $f_{I_M}(d_{\pi(1)},\dots,d_{\pi(N)})=P(d)$.
+- Network (1 pt): part 3 with $G=I_M$ gives width $M$ for the re-ordered input, i.e. mirror pooling.
+- Interpretation (1 pt): positions pooled together early can be strongly dependent at low cost, so pooling geometry sets which dependencies are cheap.
+
+*Verified: for $(M,N)$ = (2,4), (3,4), (2,8), (3,8), $P(d)=f_{I_M}(d_{\pi(1)},\dots,d_{\pi(N)})$ at every one of the $M^N$ inputs.*
 
 **Common mistakes.**
 
-- In part 1, arguing only that "$h$ is linear and $f$ is not". That shows $f\notin\mathcal H_d$, but not the quantitative bound and not the attainment, and loses 2 points.
-- In part 2b, claiming that $A$ and $D$ give the same function without transforming $B$ and $C$ into $V^\top B$ and $V^\top C$. In part 4b, merging the two cases and forgetting the zero node, which acts only at $k=0$ and costs one sign change, or invoking part 4a without checking $q\ne0$.
-- In part 5, trying the Hankel rank (it cannot separate, part 5c), using only the equation for $k=0$ (one equation, two unknowns), or not saying where $L\ge4$ is used.
+- In part 1, quoting the SVD lemma that is being proved, or forgetting to show that $P\odot P'$ is invertible before saying that the rank is unchanged.
+- In part 2b, writing only the factorization and not checking that $f_G\ne0$ (a separation rank can be $0$). In part 4a, bounding a single CP term and forgetting the subadditivity step, or bounding the rank of the Kronecker product by a sum instead of a product.
+- In part 5a, using the canonical partition instead of $I_{half}$ (the deep network can have full canonical rank), or claiming the deep network is limited under every partition. In part 5b, applying $\pi$ in the wrong direction, which pairs $d_j$ with the wrong partner.
 
-**💡 Useful tricks:** A linear functional is pinned down by its values at $\pm e_1$ — mirror points give a quantitative non-approximation bound; diagonal/symmetric $A$ ⇒ reversed coefficients are exponential sums $\sum_ip_i\lambda_i^k$ (absorb $V$ into $B,C$); Hankel $=V^\top\mathrm{diag}(p)V$ ⇒ rank $\le d$, and a Vandermonde witness shows strictness; multiply by $e^{-\mu_1s}$ then Rolle ⇒ at most $m-1$ zeros, so many sign changes force many non-negative nodes; two real nodes ⇒ a recurrence with real characteristic roots.
+**💡 Useful tricks:** Rank of a Kronecker product: normal forms $PAQ=J_r$ plus the mixed product reduce everything to $J_r\odot J_s$, whose ones never share a row or column; canonical matricization of an outer product of even-order tensors is the Kronecker product of their matricizations, so $[\![G^{\otimes k}]\!]=G^{\odot k}$ with rank $\rho^k$; one explicit separable product plus "$f\ne0$" gives separation rank exactly $1$; the class assignment for $I_{M^{N/2}}$ works for any $G$ once layer $0$ carries its rank-one pieces; expanding a product of $N/2$ sums of $\rho$ terms gives the matching shallow upper bound $\rho^{N/2}$; the last HT line bounds the halving rank by $r_{L-1}$, and a permutation matrix has full rank.
 
-**⚠️ Watch out:** (1) prove the bound for *every* $h$ and every $d$, and show it is attained; (3) the Hankel matrix needs $2m-1\le L$ — the strict hierarchy needs $L\ge2d+1$; (4) the $\lambda_i=0$ node only affects $c_0$ — handle it as a separate case and check $q\ne0$ before using the zero-count lemma; (5) the Hankel rank cannot separate real from complex eigenvalues at the same $d$ — use the two-term recurrence, which needs $L\ge4$.
+**⚠️ Watch out:** in this course $\odot$ is the Kronecker product and $\otimes$ the outer product; Lemma 3's simple form $[\![\mathcal T\otimes\bar{\mathcal T}]\!]=[\![\mathcal T]\!]\odot[\![\bar{\mathcal T}]\!]$ needs both orders even; part 2b needs $N\ge4$ so that $N/2$ is even and no pair crosses the middle; the shallow bound holds under every partition, while the deep network's weakness is specific to $I_{half}$ — the part-3 network has rank $\rho^{N/2}$ under $I_{odd}$.
 
 ## Q2 — Symmetric factorization with an indefinite target (35)
 
@@ -1119,11 +1107,10 @@ Step 4, the connection to class: such networks can fit random labels (Lectures 6
 ## Grading notes
 - Total 105; per-part partial credit as marked. Hints used during attempt: −20% of that
   sub-part.
-- Common traps to check: Q1.1 only "linear vs. non-linear" without the quantitative bound or
-  without attainment; Q1.2b forgetting to transform $B,C$; Q1.3 ignoring the condition
-  $2m-1\le L$ / $L\ge2d+1$; Q1.4a Rolle applied to $g$ itself; Q1.4b the $\lambda_i=0$ case or
-  the $q\ne0$ check skipped; Q1.5 using the Hankel rank (cannot work) or a single recurrence
-  equation; Q2.1 missing "only if"; Q2.2b assuming the eigenbasis is fixed instead of proving
+- Common traps to check: Q1.1 quoting the SVD lemma being proved, or not showing $P\odot P'$ invertible; Q1.2b not checking
+  $f_G\ne0$; Q1.3 an assignment of the wrong width or no induction over the levels; Q1.4a no subadditivity
+  step; Q1.4b missing the matching upper bound; Q1.5a using $I_{odd}$ instead of $I_{half}$; Q1.5b $\pi$
+  applied in the wrong direction; Q2.1 missing "only if"; Q2.2b assuming the eigenbasis is fixed instead of proving
   it via uniqueness; Q2.3b closed form not verified or denominator not shown positive; Q2.3d
   claiming convergence to $W^*$; Q2.4 sign of the exponent $8\mu c-2$; Q3.1 exponent $K$
   instead of $K-1$ or wrong norm inequality; Q3.2 data-dependent cover or single

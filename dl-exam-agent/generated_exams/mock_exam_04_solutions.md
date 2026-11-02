@@ -1,335 +1,433 @@
 # Mock Exam 4 — solutions & grading rubric
 
 **⚠️ Spoilers. Attempt `mock_exam_04.md` first.** Tutor: grade against this rubric;
-verified numerically on 2026-07-06 (Q1: matrix-power identities and least-squares
-realizability fits — misfit of the all-ones sequence by the anti-symmetric class
-$\ge 1$ uniformly in $\omega$; Q2 flow on the part-4 dataset: $v^2 - \|w\|^2$ drift
+verified numerically on 2026-07-06 (Q1, re-verified 2026-11-01: the leaky-ReLU identities
+and the width-$p$ construction in exact fractions on 1500 random PWL targets, the
+interpolation bound $K/(3n)$, monotonicity of 3000 random width-1 deep nets and their
+distance $\ge \frac18$ from $|2x-1|$; Q2 flow on the part-4 dataset: $v^2 - \|w\|^2$ drift
 $\sim 5\text{e-}6$ at Euler step $10^{-5}$, loss plateaus at exactly $0.5$;
 Q3: Gaussian-KL Monte-Carlo agrees with $\|w\|^2/(2\sigma^2)$ to $10^{-3}$).
 
-## Q1 — Linear RNNs: scalar state and anti-symmetric transitions (40)
+## Q1 — Leaky-ReLU networks: exact representation, universality, and narrow deep nets (40)
+
+**Hint:** Write one leaky neuron as a multiple of a ReLU plus a linear term, and write the identity map as a difference of two leaky neurons with opposite inputs; then a ReLU decomposition of a piecewise linear function becomes a leaky network, and the real question is how many neurons the leftover linear terms cost when they are collected together. For a single neuron, compare its slopes on the two sides of its kink. For universality, interpolate on a grid so fine that uniform continuity makes neighbouring values close, and check that the interpolant has few pieces. For the width-1 networks, ask what one layer does to the order of two inputs, and then look for a target that goes down and then up.
 
 **Full solution:**
 
-**1. (10) Closed form, uniqueness and non-universality**
+**1.a (3) Three leaky-ReLU identities**
 
-**What is asked.** Three things: prove by induction that a linear RNN computes $h(x) = \sum_t a_t x_t$ with $a_t = C^\top A^{L-t} B$; prove that no other coefficient sequence describes the same $h$; and exhibit one continuous $f$ that lies outside $\mathcal{H}_d$ for every $d$. The answer is three short proofs and an explicit $f$.
+**What is asked.** Prove three identities that hold for every real $z$. The answer is a proof by cases.
 
-**Tool and why.** The recursion is first order in $t$, so induction on $t$ unrolls it. Uniqueness follows by plugging in the unit inputs. Non-universality is shown by a single witness (cheat sheet §4), and linearity is the property every hypothesis has and a product of coordinates lacks.
+**Tool and why.** Case analysis on the sign of $z$ (cheat sheet §5, the leaky-ReLU conversions of the recitation on expressiveness, P3–P4). The activation is affine on each side of $0$, so two cases settle all three identities.
 
-**Definitions.** For weights $A, B, C$ let
-
-$$a_t := C^\top A^{L-t} B, \qquad t \in [L].$$
-
-We introduce these numbers because they will turn out to be the coefficients of $h$. Let $e_t \in \mathbb{R}^L$ be the input with $1$ in position $t$ and $0$ elsewhere; it isolates one coefficient. The witness is $f(x) := x_1 x_2$, a product of two coordinates.
+**Definitions.** No new notation. We use the two branches of $\sigma$, derived in Step 1.
 
 **Solution.**
 
-Step 1, the claim to prove: for every $t \in \{0, \dots, L\}$ and every input $x$,
+Step 1, the two branches: if $z\ge0$ then $\alpha z\le z$, because $\alpha<1$, so $\sigma(z)=z$. If $z\le0$ then $\alpha z\ge z$, so $\sigma(z)=\alpha z$. At $z=0$ both formulas give $0$, so they agree.
 
-$$s_t(x) = \sum_{\tau=1}^{t} A^{t-\tau} B\, x_\tau .$$
-
-For $t = 0$ the sum is empty and equals $0$. We prove the claim by induction on $t$, from $0$ upwards.
-
-**Base.** For $t = 0$: $s_0(x) = 0$ by definition, and the empty sum is $0$.
-
-**Hypothesis.** For some $t \in [L]$ the claim holds at $t-1$.
-
-**Step.** Using the recursion and then the hypothesis on $s_{t-1}$ (the only place it is used):
+Step 2, case $z\ge0$: then $-z\le0$, so $\sigma(-z)=-\alpha z$ by Step 1, and both $[z]_+$ and $|z|$ equal $z$. Hence
 
 $$\begin{aligned}
-s_t(x) &= A\, s_{t-1}(x) + B\, x_t \\
-&= A \sum_{\tau=1}^{t-1} A^{t-1-\tau} B\, x_\tau + B\, x_t \\
-&= \sum_{\tau=1}^{t-1} A^{t-\tau} B\, x_\tau + A^{0} B\, x_t \\
-&= \sum_{\tau=1}^{t} A^{t-\tau} B\, x_\tau .
+\sigma(z)-\sigma(-z)&=z+\alpha z=(1+\alpha)z,\\
+\sigma(z)-\alpha z&=(1-\alpha)z=(1-\alpha)[z]_+,\\
+\sigma(z)+\sigma(-z)&=z-\alpha z=(1-\alpha)|z|.
 \end{aligned}$$
 
-The third row multiplies $A$ into each term, and uses $A^0 := I_d$ for the new term.
-
-Step 2, the output: apply $C^\top$ to the claim at $t = L$.
-
-$$h(x) = C^\top s_L(x) = \sum_{t=1}^{L} C^\top A^{L-t} B\, x_t = \sum_{t=1}^{L} a_t x_t .$$
-
-So $h$ realizes $a$, and in particular $h$ is a linear function of $x$.
-
-Step 3, uniqueness: suppose $h$ also realizes some $a'$. Plug in $x = e_t$. Every term but the $t$-th vanishes, so $h(e_t) = a_t$ and also $h(e_t) = a'_t$. Hence $a'_t = a_t$ for every $t$.
-
-Step 4, the witness is continuous: $f(x) = x_1 x_2$ is a polynomial. Both coordinates exist since $L \ge 3$.
-
-Step 5, the witness is not a hypothesis: suppose $f \in \mathcal{H}_d$ for some $d$. By Step 2, $f(x) = \sum_t c_t x_t$ for some coefficients $c$. Evaluate at three inputs:
+Step 3, case $z<0$: then $-z>0$, so $\sigma(-z)=-z$ and $\sigma(z)=\alpha z$; also $[z]_+=0$ and $|z|=-z$. Hence
 
 $$\begin{aligned}
-c_1 &= f(e_1) = 1 \cdot 0 = 0, \\
-c_2 &= f(e_2) = 0 \cdot 1 = 0, \\
-c_1 + c_2 &= f(e_1 + e_2) = 1 \cdot 1 = 1 .
+\sigma(z)-\sigma(-z)&=\alpha z+z=(1+\alpha)z,\\
+\sigma(z)-\alpha z&=0=(1-\alpha)[z]_+,\\
+\sigma(z)+\sigma(-z)&=\alpha z-z=(1-\alpha)|z|.
 \end{aligned}$$
 
-The first two rows give $c_1 + c_2 = 0$, contradicting the third. Since $d$ was arbitrary, $f \notin \mathcal{H}_d$ for every $d \in \mathbb{N}$.
+The two cases cover $\mathbb{R}$, so the identities hold for every $z$.
 
-**In words.** A linear RNN has no non-linearity anywhere: the state is a weighted sum of the inputs, and so is the output. A weighted sum is additive, while a product of two inputs is not.
+**In words.** A leaky neuron is a scaled ReLU plus a linear term, $\sigma(z)=(1-\alpha)[z]_++\alpha z$. Two leaky neurons with opposite inputs give the identity map (their difference) or the absolute value (their sum).
 
-**Sanity check.** Take $d = 1$, $L = 3$ and all three weights equal to $1$. The formula gives $a = (1, 1, 1)$, so $h(x) = x_1 + x_2 + x_3$. Running the recursion by hand on $x = (2, 0, 5)$ gives states $2, 2, 7$ and output $7$, which equals $2 + 0 + 5$.
+**Sanity check.** With $\alpha=\frac12$ and $z=-2$: $\sigma(-2)=-1$ and $\sigma(2)=2$. The difference is $-3$, which is $\frac32\cdot(-2)$; the sum is $1$, which is $\frac12\cdot|-2|$. Letting $\alpha\to0$ recovers the ReLU facts $[z]_+-[-z]_+=z$ and $[z]_++[-z]_+=|z|$.
 
 **What to write in the exam.**
 
-- Induction on $t$: $s_t = \sum_{\tau \le t} A^{t-\tau} B x_\tau$, base $t = 0$, step via the recursion (4 pts).
-- Hence $h(x) = \sum_t a_t x_t$ with $a_t = C^\top A^{L-t} B$.
-- Uniqueness: $h(e_t) = a_t$ (2 pts).
-- Witness $f = x_1 x_2$: linearity would force $f(e_1 + e_2)$ to equal $f(e_1) + f(e_2)$, which is $0$, but it is $1$; this holds for every $d$ (4 pts).
+- Branches (1 pt): $\sigma(z)=z$ for $z\ge0$ and $\sigma(z)=\alpha z$ for $z\le0$, because $\alpha<1$.
+- Cases (2 pts): substitute in each case and simplify, as in Steps 2 and 3.
 
-*Verified: for 300 random $(d, L, A, B, C, x)$ the recursion matches $\sum_t a_t x_t$ and $h(e_t) = a_t$ to $10^{-12}$; the best linear least-squares fit of $x_1 x_2$ on Gaussian inputs has mean squared error $1.01$, not $0$ (NumPy).*
+*Verified: the three identities hold exactly (Python fractions) on 20000 random rational pairs $(z,\alpha)$, including $z=0$.*
 
-**2. (9) The scalar-state class is the backwards-geometric sequences**
+**1.b (5) Every network in $\mathcal{H}_B$ is PWL with at most $B+1$ pieces**
 
-**What is asked.** Prove that $\mathcal{S}_1$ is exactly the set of sequences of the form $p\,\lambda^{L-t}$, in both directions, and see that the degenerate patterns are included. The answer is a two-direction proof.
+**What is asked.** Show that every $h\in\mathcal{H}_B$ is continuous and affine on each of at most $B+1$ closed intervals covering $\mathbb{R}$. The answer is a proof.
 
-**Tool and why.** Part 1 gives the coefficients of every hypothesis. With $d = 1$ all weights are numbers, so $A^{L-t}$ is an ordinary power (cheat sheet §3, matrix powers). For the reverse direction we pick weights that realize a given $(p, \lambda)$.
+**Tool and why.** Breakpoint counting, the converse half of Prop. 1 of Lecture 2 (Home Assignment 2, P1.1; Exam 2022 Moed B, Q1b; cheat sheet §5). Each neuron bends at most once, and a sum of functions can bend only where a summand bends.
 
-**Definitions.** With $d = 1$ write the weights as numbers $A = \lambda$, $B = b$, $C = c$. Let $G$ denote the right-hand set of the claim, the set of all sequences $p\,\lambda^{L-t}$ with $p, \lambda \in \mathbb{R}$.
+**Definitions.** Write $u_i(x):=w_ix+b_i$ for the pre-activation of neuron $i$. Let $P$ be the set of points $-b_i/w_i$ over the neurons with $w_i\ne0$; these are the only candidate kinks. Let $k:=|P|$, so $k\le B$, and list the points of $P$ in increasing order:
+
+$$\tau_1<\tau_2<\dots<\tau_k.$$
+
+Let $I_0:=(-\infty,\tau_1]$, $I_j:=[\tau_j,\tau_{j+1}]$ for $j\in[k-1]$, and $I_k:=[\tau_k,\infty)$. They are closed, cover $\mathbb{R}$, and number $k+1$.
 
 **Solution.**
 
-Step 1, $\mathcal{S}_1 \subseteq G$: take any $h \in \mathcal{H}_1$. By part 1 its sequence is
+Step 1, neurons with $w_i=0$: then $v_i\sigma(u_i(x))=v_i\sigma(b_i)$ for every $x$, a constant, which is affine on every interval.
 
-$$a_t = c\, \lambda^{L-t}\, b = (cb)\, \lambda^{L-t} .$$
+Step 2, neurons with $w_i\ne0$ keep one sign on each interval: $u_i$ is affine with the single zero $-b_i/w_i$, which belongs to $P$. No point of $P$ lies in the interior of an interval $I_j$, so $u_i$ does not vanish there and, being continuous, keeps one strict sign on the interior. By continuity it is $\ge0$ on all of $I_j$ or $\le0$ on all of $I_j$, endpoints included.
 
-Numbers commute, which moves $b$ next to $c$. With $p := cb$ this is in $G$. The convention $\lambda^0 := 1$ is what gives $a_L = cb$ also when $\lambda = 0$.
+Step 3, each neuron is affine on each interval: by Step 1 of 1.a, on $I_j$ the neuron equals $v_iu_i(x)$ if $u_i\ge0$ there, and $\alpha v_iu_i(x)$ if $u_i\le0$ there. Either way it is affine on $I_j$; at a point where $u_i=0$ both formulas agree, so the closed endpoints cause no conflict.
 
-Step 2, $G \subseteq \mathcal{S}_1$: given $p, \lambda$, choose $A = \lambda$, $B = 1$, $C = p$. By part 1,
+Step 4, the network: on each $I_j$, $h$ is the constant $c$ plus a sum of affine functions, hence affine. Also $h$ is continuous, as a sum of compositions of continuous functions ($\sigma$ is continuous because its two branches agree at $0$).
 
-$$a_t = p \cdot \lambda^{L-t} \cdot 1 = p\, \lambda^{L-t} .$$
+Step 5, counting: $h$ fits Def. 1 with the $k+1$ intervals $I_0,\dots,I_k$. The number of pieces is the minimal such count, so it is at most $k+1$, and $k+1\le B+1$. If $k=0$, $h$ is affine on $\mathbb{R}$: one piece.
 
-So every sequence of $G$ is realized by some $h \in \mathcal{H}_1$.
+**In words.** A leaky neuron is a line bent once, at the point where its input crosses $0$. A width-$B$ network adds $B$ such lines, so it can bend only at $B$ places, which cut the line into at most $B+1$ straight pieces.
 
-Step 3, the degenerate patterns: they need no separate argument, since Steps 1 and 2 hold for all real $p, \lambda$. Concretely, $p = 0$ gives the zero sequence; $\lambda = 0$ gives $(0, \dots, 0, p)$ because $0^{L-t} = 0$ for $t < L$ and $0^0 = 1$; and $\lambda < 0$ gives alternating signs.
-
-**In words.** A one-dimensional state is multiplied by the same number $\lambda$ at every step. An input that entered $L-t$ steps before the end was multiplied $L-t$ times, so its weight is $\lambda^{L-t}$ times a fixed factor.
-
-**Sanity check.** With $L = 3$, $p = 1$, $\lambda = 2$ the formula gives $a = (4, 2, 1)$: the sequence is geometric when read backwards from $a_3 = 1$. With $L = 4$, $p = 3$, $\lambda = 0$ it gives $(0, 0, 0, 3)$. Both agree with running the recursion.
+**Sanity check.** For $B=1$ and $h=\sigma$ there are exactly $2$ pieces, slopes $\alpha$ and $1$, so the bound $B+1$ is attained. If two neurons share a kink, or their bends cancel, there are fewer pieces; that is why the claim is "at most".
 
 **What to write in the exam.**
 
-- Inclusion one way: $a_t = c\lambda^{L-t} b$, which is $(cb)\lambda^{L-t}$, so $p := cb$ (4 pts).
-- Inclusion the other way: weights $A = \lambda$, $B = 1$, $C = p$ realize $p\lambda^{L-t}$ (4 pts).
-- Remark: $p = 0$, $\lambda = 0$ (with $\lambda^0 = 1$) and $\lambda < 0$ are all covered (1 pt).
+- Kinks (2 pts): the neuron with $w_i\ne0$ changes branch only at $-b_i/w_i$; the neuron with $w_i=0$ is constant.
+- Pieces (2 pts): between consecutive kinks every pre-activation keeps one sign, so every neuron and hence $h$ is affine there; $h$ is continuous.
+- Count (1 pt): at most $B$ kinks give at most $B+1$ pieces.
 
-*Verified: for 200 random $(L, \lambda, b, c)$, a fifth of them with $\lambda = 0$, the coefficients of the recursion equal $cb\,\lambda^{L-t}$ to $10^{-14}$; the two examples above were reproduced exactly (NumPy).*
+*Verified: 1500 random networks ($B\le6$, about 15% zero input weights, random $\alpha$, exact fractions); the number of pieces, counted by slope changes, never exceeds $B+1$.*
 
-**3. (9) Strict inclusion of $\mathcal{H}_1$ in $\mathcal{H}_2$**
+**2.a (7) A PWL function with $p$ pieces is in $\mathcal{H}_p$**
 
-**What is asked.** Two claims: $\mathcal{S}_1 \subseteq \mathcal{S}_2$, and one sequence in $\mathcal{S}_2$ that is not in $\mathcal{S}_1$. The answer is a proof with an explicit witness.
+**What is asked.** Build, for a PWL $f$ with $p\ge2$ pieces, a leaky network with $p$ neurons equal to $f$ everywhere, with only $p-1$ neurons when $s_0=\alpha s_{p-1}$; show that affine functions are in $\mathcal{H}_2$; and conclude that the union of the classes is the set of PWL functions. The answer is a construction with a proof.
 
-**Tool and why.** The inclusion is zero padding: an unused extra state coordinate changes nothing (cheat sheet §4). For strictness we need a property that every sequence in $\mathcal{S}_1$ has; by part 2 they are geometric, and a geometric sequence satisfies the three-term identity of the hint (cheat sheet §3, geometric-sequence trick). A sum of two geometric sequences with different ratios breaks it.
+**Tool and why.** Substitute 1.a (second identity) into the given ReLU decomposition (cheat sheet §5, "PWL = affine + sum of ReLUs"). Each ReLU becomes one leaky neuron plus an affine term. The affine terms are then collected into a single affine function and built with 1.a (first identity) at the point $t_1$, where one of the two neurons it needs already exists. This is cheaper than the recitation's two leaky neurons per ReLU, which gives width $2(p-1)$ plus the affine part (compare Exam 2022 Moed B, Q1c, width $2M$).
 
-**Definitions.** Given scalar weights $(\lambda, b, c)$, the padded weights are
+**Definitions.** For $i\in[p-1]$ let $c_i:=s_i-s_{i-1}$, the slope jump at $t_i$. Introduce the slope and the constant of the leftover affine part:
 
-$$A' := \begin{pmatrix} \lambda & 0 \\ 0 & 0 \end{pmatrix}, \qquad B' := \begin{pmatrix} b \\ 0 \end{pmatrix}, \qquad C' := \begin{pmatrix} c \\ 0 \end{pmatrix}.$$
+$$A:=\frac{s_0-\alpha s_{p-1}}{1-\alpha},\qquad q:=f(t_1)+\frac{\alpha}{1-\alpha}\sum_{i=1}^{p-1}c_i\,(t_i-t_1).$$
 
-The witness is the sequence $a_t := 1 + 2^{L-t}$, a sum of two backwards-geometric sequences with ratios $1$ and $2$.
+They are well defined because $\alpha<1$.
 
 **Solution.**
 
-Step 1, inclusion: $A'$ is diagonal, so $A'^k$ is diagonal with entries $\lambda^k$ and $0^k$. The second coordinate has $0$ in both $B'$ and $C'$, so it contributes nothing:
+Step 1, one ReLU as one leaky neuron: apply the second identity of 1.a with $z=x-t_i$ and divide by $1-\alpha$, which is positive:
 
-$$C'^\top A'^{k} B' = c\, \lambda^k\, b + 0 \cdot 0^k \cdot 0 = c\, \lambda^k\, b .$$
+$$[x-t_i]_+=\frac{\sigma(x-t_i)-\alpha\,(x-t_i)}{1-\alpha}.$$
 
-With $k = L-t$ the padded network has the same coefficients as the scalar one. By part 1 it computes the same function, so $\mathcal{H}_1 \subseteq \mathcal{H}_2$.
+Step 2, substitute into the decomposition:
 
-Step 2, the identity: let $a \in \mathcal{S}_1$, so $a_t = p\,\lambda^{L-t}$ by part 2. For $t \in \{2, \dots, L-1\}$ both neighbours exist, and adding the exponents gives
+$$f(x)=\sum_{i=1}^{p-1}\frac{c_i}{1-\alpha}\,\sigma(x-t_i)+f(t_1)+s_0(x-t_1)-\frac{\alpha}{1-\alpha}\sum_{i=1}^{p-1}c_i\,(x-t_i).$$
+
+Step 3, collect the affine terms: write $x-t_i$ as $(x-t_1)+(t_1-t_i)$. The terms with $x-t_1$ have total coefficient
 
 $$\begin{aligned}
-a_{t+1}\, a_{t-1} &= p\,\lambda^{L-t-1} \cdot p\,\lambda^{L-t+1} \\
-&= p^2\, \lambda^{2(L-t)} \\
-&= a_t^2 .
+s_0-\frac{\alpha}{1-\alpha}\sum_{i=1}^{p-1}c_i&=s_0-\frac{\alpha\,(s_{p-1}-s_0)}{1-\alpha}\\
+&=\frac{s_0(1-\alpha)+\alpha s_0-\alpha s_{p-1}}{1-\alpha}\\
+&=A,
 \end{aligned}$$
 
-All exponents are non-negative here, so this also holds when $p = 0$ or $\lambda = 0$.
+where the sum of the jumps telescopes to $s_{p-1}-s_0$. The remaining constants add up to $q$, by its definition. Hence, for every $x$,
 
-Step 3, the witness is in $\mathcal{S}_2$: take $A = \mathrm{diag}(1, 2)$, $B = (1, 1)^\top$ and $C = (1, 1)^\top$. Then $A^{L-t} = \mathrm{diag}(1, 2^{L-t})$, so
+$$f(x)=\sum_{i=1}^{p-1}\frac{c_i}{1-\alpha}\,\sigma(x-t_i)+A\,(x-t_1)+q.$$
 
-$$C^\top A^{L-t} B = 1 \cdot 1^{L-t} + 1 \cdot 2^{L-t} = 1 + 2^{L-t} .$$
+Step 4, the affine part from two neurons at $t_1$: the first identity of 1.a with $z=x-t_1$, divided by $1+\alpha$, gives
 
-Step 4, the witness violates the identity: use $t = L-1$, which lies in $\{2, \dots, L-1\}$ because $L \ge 3$. The three entries involved are
+$$x-t_1=\frac{\sigma(x-t_1)-\sigma(t_1-x)}{1+\alpha}.$$
 
-| entry | value |
-|---|---|
-| $a_L$ | $1 + 2^0 = 2$ |
-| $a_{L-1}$ | $1 + 2^1 = 3$ |
-| $a_{L-2}$ | $1 + 2^2 = 5$ |
+Step 5, merge the neurons at $t_1$: the term $\sigma(x-t_1)$ already appears in Step 3 (index $i=1$), so
 
-so
+$$f(x)=\Big(\frac{c_1}{1-\alpha}+\frac{A}{1+\alpha}\Big)\sigma(x-t_1)-\frac{A}{1+\alpha}\,\sigma(t_1-x)+\sum_{i=2}^{p-1}\frac{c_i}{1-\alpha}\,\sigma(x-t_i)+q.$$
 
-$$a_L\, a_{L-2} = 10 \ne 9 = a_{L-1}^2 .$$
+Step 6, read off the network: with output bias $q$ and
 
-Step 5, conclusion: by Step 2 the witness is not in $\mathcal{S}_1$, and by Step 3 it is in $\mathcal{S}_2$. Together with Step 1, $\mathcal{S}_1 \subsetneq \mathcal{S}_2$, which means $\mathcal{H}_1 \subsetneq \mathcal{H}_2$.
-
-**In words.** One state coordinate can remember the past with one decay rate. Two coordinates can mix two decay rates, and a mixture of two rates is no longer a single geometric sequence.
-
-**Sanity check.** Other witnesses work the same way. The Jordan block $A = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$ with $B = (0, 1)^\top$ and $C = (1, 0)^\top$ gives the arithmetic sequence $a_t = L - t$; for $L = 5$ it is $(4, 3, 2, 1, 0)$, and $a_5 a_3 = 0$ while $a_4^2 = 1$.
-
-**What to write in the exam.**
-
-- Zero padding: $C'^\top A'^k B' = c\lambda^k b$, so $\mathcal{H}_1 \subseteq \mathcal{H}_2$ (2 pts).
-- Identity for $t \in \{2, \dots, L-1\}$: $a_{t+1}a_{t-1} = a_t^2$, by adding the exponents of $p\lambda^{L-t}$ (3 pts).
-- Witness $a_t = 1 + 2^{L-t}$, realized by $A = \mathrm{diag}(1,2)$ and $B$, $C$ both equal to $(1,1)^\top$ (3 pts).
-- Violation at $t = L-1$: $a_L a_{L-2} = 10$ but $a_{L-1}^2 = 9$, hence strict inclusion (1 pt).
-
-*Verified: for $L = 3, \dots, 8$ the recursion with these weights gives $1 + 2^{L-t}$, with $a_L a_{L-2} = 10$ and $a_{L-1}^2 = 9$; padding reproduces the scalar coefficients exactly on 100 random instances; SymPy simplifies the identity residual to $0$.*
-
-**4.a (3) Anti-symmetric matrices and the powers of $J$**
-
-**What is asked.** Show that a $2 \times 2$ anti-symmetric matrix is a multiple of $J$, and prove the formula for $J^k$ for every $k \ge 0$. The answer is a short computation plus an induction.
-
-**Tool and why.** Anti-symmetry is four scalar equations, so we solve them entry by entry. For the powers, $J^2 = -I_2$ makes the sequence of powers repeat every four steps, so an induction on $k$ with step $4$ (or step $1$) closes the formula.
-
-**Definitions.** Write the entries of $A$ as $A_{ij}$, and let $\omega := A_{12}$. For each $k \ge 0$ let $R_k$ denote the right-hand side of the claimed formula, $\cos(k\pi/2)\, I_2 + \sin(k\pi/2)\, J$.
-
-**Solution.**
-
-Step 1, the form of $A$: $A^\top = -A$ compares entry $(i, j)$ with entry $(j, i)$. On the diagonal $A_{11} = -A_{11}$, so $A_{11} = 0$, and likewise $A_{22} = 0$. Off the diagonal $A_{21} = -A_{12}$. Hence
-
-$$A = \begin{pmatrix} 0 & \omega \\ -\omega & 0 \end{pmatrix} = \omega J .$$
-
-Step 2, the first powers: a direct product gives
-
-$$J^2 = \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix} \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix} = \begin{pmatrix} -1 & 0 \\ 0 & -1 \end{pmatrix} = -I_2 .$$
-
-Therefore
-
-$$J^3 = J^2 J = -J, \qquad J^4 = (J^2)^2 = I_2 .$$
-
-Step 3, **Claim.** $J^k = R_k$ for every $k \in \mathbb{N}_0$. We prove it by induction on $k$, from $0$ upwards, in steps of $4$ after checking the first four values.
-
-**Base.** For $k = 0, 1, 2, 3$ the cosine and sine values are listed below, and they match Step 2.
-
-| $k$ | $\cos(k\pi/2)$ | $\sin(k\pi/2)$ | $R_k$ |
+| neuron | $w$ | $b$ | $v$ |
 |---|---|---|---|
-| $0$ | $1$ | $0$ | $I_2$ |
-| $1$ | $0$ | $1$ | $J$ |
-| $2$ | $-1$ | $0$ | $-I_2$ |
-| $3$ | $0$ | $-1$ | $-J$ |
+| $1$ | $1$ | $-t_1$ | $\frac{c_1}{1-\alpha}+\frac{A}{1+\alpha}$ |
+| $i\in\{2,\dots,p-1\}$ | $1$ | $-t_i$ | $\frac{c_i}{1-\alpha}$ |
+| $p$ | $-1$ | $t_1$ | $-\frac{A}{1+\alpha}$ |
 
-**Hypothesis.** For some $k \ge 0$, $J^k = R_k$.
+the network computes the right-hand side of Step 5, which equals $f(x)$ for every $x$. It has $p$ neurons, so $f\in\mathcal{H}_p$.
 
-**Step.** By Step 2, $J^4 = I_2$, so $J^{k+4} = J^k$, and by the hypothesis this equals $R_k$. Cosine and sine have period $2\pi$, and adding $4$ to $k$ adds $2\pi$ to the angle, so $R_{k+4} = R_k$. Hence $J^{k+4} = R_{k+4}$. Starting from each of the four base cases, this reaches every $k$.
+Step 7, the case $s_0=\alpha s_{p-1}$: then $A=0$, neuron $p$ has output weight $0$ and can be removed, and neuron $1$ has weight $\frac{c_1}{1-\alpha}$. So $f\in\mathcal{H}_{p-1}$.
 
-**In words.** $J$ is a rotation by a quarter turn. Four quarter turns bring you back, and the cosine and sine simply record which of the four positions you are in.
+Step 8, affine functions: let $f(x)=sx+r$. By the first identity of 1.a with $z=x$,
 
-**Sanity check.** $k = 5$: the formula gives $\cos(5\pi/2) I_2 + \sin(5\pi/2) J = J$, and indeed $J^5 = J^4 J$, which is $J$.
+$$f(x)=\frac{s}{1+\alpha}\,\sigma(x)-\frac{s}{1+\alpha}\,\sigma(-x)+r,$$
+
+two neurons, so $f\in\mathcal{H}_2$.
+
+Step 9, the characterization: by 1.b every member of every $\mathcal{H}_B$ is PWL. Conversely a PWL function with one piece is affine, hence in $\mathcal{H}_2$ by Step 8, and one with $p\ge2$ pieces is in $\mathcal{H}_p$ by Step 6. Therefore
+
+$$\boxed{\bigcup_{B\in\mathbb{N}}\mathcal{H}_B=\{\text{PWL functions}\}}$$
+
+**In words.** Each leaky neuron is a ReLU in disguise plus a straight line. All the stray straight lines add up to one straight line, and a straight line costs two leaky neurons; but one of those two can be the neuron that already bends at $t_1$, so the total is only one extra neuron.
+
+**Sanity check.** Take $\alpha=\frac12$ and $f=[x]_+$: $p=2$, $t_1=0$, $s_0=0$, $s_1=1$, so $A=-1$ and $q=0$. The table gives $h(x)=\frac43\sigma(x)+\frac23\sigma(-x)$. For $x>0$ this is $\frac43x-\frac13x=x$, and for $x<0$ it is $\frac23x-\frac23x=0$. These are exactly the recitation's coefficients $\frac{1}{1-\alpha^2}$ and $\frac{\alpha}{1-\alpha^2}$. A three-piece check, $f(x)=|x|+[x-1]_+$ with $\alpha=\frac12$: the table gives $\frac43\sigma(x)+2\sigma(x-1)+\frac83\sigma(-x)+1$, which at $x=-3$ equals $-2-4+8+1=3$, that is $f(-3)$.
 
 **What to write in the exam.**
 
-- Anti-symmetry forces a zero diagonal and $A_{21} = -A_{12}$, so $A = \omega J$ (1 pt).
-- Then $J^2 = -I_2$, $J^3 = -J$, $J^4 = I_2$.
-- Formula checked for $k = 0, 1, 2, 3$; both sides are $4$-periodic in $k$, so it holds for all $k$ (2 pts).
+- ReLU to leaky (2 pts): by 1.a, each $[x-t_i]_+$ equals $\frac{\sigma(x-t_i)-\alpha(x-t_i)}{1-\alpha}$.
+- Affine leftover (2 pts): it is $A(x-t_1)+q$, with $A$ from the telescoping sum of the jumps.
+- Width $p$ (2 pts): build $A(x-t_1)$ from $\sigma(x-t_1)$ and $\sigma(t_1-x)$, merge the first one with neuron $1$, and give the table.
+- Rest (1 pt): $A=0$ when $s_0=\alpha s_{p-1}$; affine functions use two neurons; with 1.b, the union is the PWL set.
 
-*Verified: SymPy solves $A^\top + A = 0$ to $A = A_{12} J$, and checks $J^k = \cos(k\pi/2) I_2 + \sin(k\pi/2) J$ exactly for $k = 0, \dots, 40$.*
+*Verified: on 1500 random PWL targets ($p$ from $2$ to $7$, random $\alpha$, exact fractions) the table's network equals $f$ at 40 random points and next to every breakpoint; in 495 cases with $s_0=\alpha s_{p-1}$ it uses $p-1$ neurons; both worked examples were evaluated exactly.*
 
-**4.b (5) Characterization of $\mathcal{S}_2^{anti}$**
+**2.b (3) The single-neuron class $\mathcal{H}_1$, and $[x]_+\notin\mathcal{H}_1$**
 
-**What is asked.** Prove both directions of the stated set equality: every anti-symmetric RNN gives a sequence of the form $\omega^k(\alpha\cos + \beta\sin)$, and every such triple $(\omega, \alpha, \beta)$ is realized by one. The answer is a two-direction proof.
+**What is asked.** Describe the slopes of a non-constant one-neuron network and deduce that the ReLU is not one. The answer is a proof.
 
-**Tool and why.** Part 1 gives the coefficients, part 4.a gives $A = \omega J$ and the powers of $J$. A number commutes with matrices, so $A^k = \omega^k J^k$ (cheat sheet §3, matrix powers). For the reverse direction we choose $B$ and $C$ to produce any given pair $(\alpha, \beta)$.
+**Tool and why.** Compute the slopes on both sides of the neuron's kink, split by the sign of $w$ (cheat sheet §5). A single neuron has no freedom left once its two slopes are tied by $\alpha$.
 
-**Definitions.** Index positions from the end: $k := L - t$, so $k = 0$ is the last position. For weights $B, C$ define the two numbers
-
-$$\alpha := C^\top B, \qquad \beta := C^\top J B .$$
-
-They are the two "readouts" that the formula of 4.a reduces everything to. Let $e_1 = (1, 0)^\top$.
+**Definitions.** Let $h(x)=c+v\,\sigma(wx+b)$ and, when $w\ne0$, let $t:=-b/w$, the kink.
 
 **Solution.**
 
-Step 1, one direction: let $h \in \mathcal{H}_2^{anti}$. By 4.a, $A = \omega J$ for some $\omega$, so $A^k = \omega^k J^k$, including $k = 0$ where both sides are $I_2$. By part 1 and the formula of 4.a,
+Step 1, non-constant forces $v\ne0$ and $w\ne0$: if $v=0$ then $h=c$, and if $w=0$ then $h=c+v\sigma(b)$; both are constant.
 
-$$\begin{aligned}
-a_{L-k} &= C^\top A^k B \\
-&= \omega^k\, C^\top J^k B \\
-&= \omega^k \Big( \cos(\tfrac{k\pi}{2})\, C^\top B + \sin(\tfrac{k\pi}{2})\, C^\top J B \Big) \\
-&= \omega^k \Big( \alpha \cos(\tfrac{k\pi}{2}) + \beta \sin(\tfrac{k\pi}{2}) \Big).
-\end{aligned}$$
+Step 2, case $w>0$: for $x\le t$ the input $wx+b$ is $\le0$, so $h(x)=c+\alpha v(wx+b)$ with slope $\alpha vw$; for $x\ge t$ it is $\ge0$, slope $vw$. So $s_1=vw$, which is non-zero, and $s_0=\alpha s_1$.
 
-The third row distributes $C^\top \cdot B$ over the two terms of $J^k$. So $a$ is in the stated set.
+Step 3, case $w<0$: dividing by $w<0$ flips the inequality, so for $x\le t$ the input is $\ge0$, slope $vw$, and for $x\ge t$ it is $\le0$, slope $\alpha vw$. So $s_0=vw$, which is non-zero, and $s_1=\alpha s_0$.
 
-Step 2, the other direction: given $(\omega, \alpha, \beta)$, choose
+Step 4, exactly two pieces with same-sign slopes: in both cases the slopes are non-zero and differ, because $\alpha\ne1$, so $h$ is not affine and has at least $2$ pieces; by 1.b it has at most $2$. The slopes have the same sign because $\alpha>0$.
 
-$$A := \omega J, \qquad B := e_1, \qquad C := (\alpha, -\beta)^\top .$$
+Step 5, the ReLU: $[x]_+$ is not constant, and its slope on $(-\infty,0]$ is $0$. By Step 4 a non-constant member of $\mathcal{H}_1$ has no zero slope, so $[x]_+\notin\mathcal{H}_1$. It has $p=2$ pieces, and 2.a puts it in $\mathcal{H}_2$, so for this $f$ the width $p$ cannot be lowered to $p-1$. With ReLU activation it is a single neuron.
 
-$A$ is anti-symmetric because $J$ is. Now $C^\top B = \alpha$. Also $J e_1$ is the first column of $J$, namely $(0, -1)^\top$, so
+**In words.** One leaky neuron is never flat on either side: it is a bent line whose two slopes have the same sign and ratio exactly $\alpha$. So it is strictly monotone, and it can never switch off the way a ReLU does.
 
-$$C^\top J B = \alpha \cdot 0 + (-\beta)(-1) = \beta .$$
-
-Step 3, closing the converse: Step 1 applies to these weights and gives exactly
-
-$$a_{L-k} = \omega^k \Big( \alpha \cos(\tfrac{k\pi}{2}) + \beta \sin(\tfrac{k\pi}{2}) \Big)$$
-
-with the prescribed $\alpha$ and $\beta$. So every sequence of the set is in $\mathcal{S}_2^{anti}$.
-
-**In words.** An anti-symmetric step rotates the state by a quarter turn and scales it by $\omega$. Read backwards, the coefficients cycle through $\alpha, \beta, -\alpha, -\beta$ while being multiplied by $\omega$ each step: a geometric sequence with a period-$4$ sign pattern, not a smooth sinusoid.
-
-**Sanity check.** With $\omega = 0$ we get $A = 0$, so only the last input reaches the output, with weight $C^\top B = \alpha$. The formula agrees: $k = 0$ gives $\omega^0 \alpha = \alpha$, and every $k \ge 1$ gives $0$.
+**Sanity check.** The activation itself, $h=\sigma$, has slopes $\alpha$ and $1$, so $s_0=\alpha s_1$, as in Step 2. Conversely, a two-piece $f$ with $s_0=\alpha s_1$ lies in $\mathcal{H}_1$ by the last claim of 2.a, so the slope condition is the whole story for the case $w>0$.
 
 **What to write in the exam.**
 
-- One direction: $A^k = \omega^k J^k$, then 4.a gives the form with $\alpha = C^\top B$, $\beta = C^\top J B$ (3 pts).
-- Other direction: $A = \omega J$, $B = e_1$, $C = (\alpha, -\beta)^\top$ give $C^\top B = \alpha$ and $C^\top J B = \beta$ (2 pts).
-- Note: $A^{L-t}$ is a matrix power, not the exponential $e^{(L-t)A}$.
+- Setup (1 pt): non-constant means $v\ne0$ and $w\ne0$; the kink is $t=-b/w$.
+- Slopes (1 pt): $w>0$ gives $s_0=\alpha s_1$, and $w<0$ gives $s_1=\alpha s_0$, both non-zero, so two pieces.
+- ReLU (1 pt): its left slope is $0$, impossible for a non-constant member of $\mathcal{H}_1$.
 
-*Verified: for 300 random $(L, \omega, \alpha, \beta)$, a fifth with $\omega = 0$, the recursion with these weights matches the formula, and for random $B, C$ the forward direction matches with $\alpha = C^\top B$, $\beta = C^\top J B$, both to $10^{-13}$ (NumPy).*
+*Verified: 3000 random non-constant neurons (exact fractions): the measured slopes always satisfy $s_0=\alpha s_1$ or $s_1=\alpha s_0$ and have the same sign.*
 
-**4.c (4) A sequence outside $\mathcal{S}_2^{anti}$**
+**3.a (3) Definition of universality**
 
-**What is asked.** Find a sequence that $\mathcal{H}_1$ (hence $\mathcal{H}_2$) realizes but $\mathcal{H}_2^{anti}$ does not, prove both claims, and conclude strict inclusion. The answer is a witness plus two proofs.
+**What is asked.** Write the formal definition, with the quantifiers in the right order. The answer is a definition.
 
-**Tool and why.** By 4.b every sequence in $\mathcal{S}_2^{anti}$ has an explicit form. Two steps of the sign pattern flip the sign, which gives the relation $a_{t-2} = -\omega^2 a_t$ of the hint and therefore a sign constraint. A witness only has to break that constraint.
+**Tool and why.** Def. 1 of Lecture 1 as used in Lecture 2, §1.3 (cheat sheet §4). The content is the order of the quantifiers: the width is chosen after the target and the accuracy.
 
-**Definitions.** The witness is the all-ones sequence $\mathbf{1} := (1, 1, \dots, 1)$. Throughout, let $a \in \mathcal{S}_2^{anti}$ have parameters $(\omega, \alpha, \beta)$ as in 4.b.
+**Definitions.** No new notation; $\mathcal{F}$, $d$ and $\mathcal{H}_B$ are from the statement.
 
 **Solution.**
 
-Step 1, two steps back: let $k \in \{0, \dots, L-3\}$, so that both positions $L-k$ and $L-k-2$ lie in $[L]$. Adding $\pi$ to an angle flips the sign of both cosine and sine, and $\tfrac{(k+2)\pi}{2}$ is $\tfrac{k\pi}{2} + \pi$. Hence
+Step 1, the definition: the family $(\mathcal{H}_B)_{B\in\mathbb{N}}$ is $\mathcal{F}$-universal in the sense of $d(\cdot,\cdot)$ if
 
-$$\begin{aligned}
-a_{L-k-2} &= \omega^{k+2} \Big( \alpha \cos\tfrac{(k+2)\pi}{2} + \beta \sin\tfrac{(k+2)\pi}{2} \Big) \\
-&= -\,\omega^2\, \omega^{k} \Big( \alpha \cos\tfrac{k\pi}{2} + \beta \sin\tfrac{k\pi}{2} \Big) \\
-&= -\,\omega^2\, a_{L-k} .
-\end{aligned}$$
+$$\forall f\in\mathcal{F}\ \ \forall\epsilon>0\ \ \exists B\in\mathbb{N}\ \ \exists h\in\mathcal{H}_B:\ \ d(f,h)<\epsilon.$$
 
-With $t := L - k$ this reads $a_{t-2} = -\omega^2 a_t$ for every $t \in \{3, \dots, L\}$.
+Step 2, reading it: $B$ may depend on both $f$ and $\epsilon$. Only the values on $[0,1]$ enter $d$, so $h$ is unconstrained outside $[0,1]$. Writing $\le\epsilon$ gives an equivalent notion (apply it with $\epsilon/2$).
 
-Step 2, the sign constraint: multiply by $a_t$.
+**In words.** Whatever continuous target and tolerance you pick, some finite width gets within that tolerance in average absolute error on $[0,1]$.
 
-$$a_t\, a_{t-2} = -\,\omega^2\, a_t^2 \le 0 .$$
-
-So two entries that are two steps apart are never both strictly positive.
-
-Step 3, the witness is in $\mathcal{S}_2$: by part 2 with $p = 1$ and $\lambda = 1$, $\mathbf{1} \in \mathcal{S}_1$. By the padding of part 3, $\mathbf{1} \in \mathcal{S}_2$. Directly: $A = I_2$, $B = e_1$ and $C = e_1$ give $C^\top A^{L-t} B = 1$ for every $t$.
-
-Step 4, the witness is not in $\mathcal{S}_2^{anti}$: since $L \ge 3$, position $L-2$ exists, and $\mathbf{1}$ has $a_L\, a_{L-2} = 1$, which is positive. This contradicts Step 2. Equivalently, $\alpha = a_L$, which is $1$, and Step 1 would force $1 = -\omega^2$, which has no real solution.
-
-Step 5, conclusion: $\mathcal{S}_2^{anti} \subseteq \mathcal{S}_2$ by definition, and $\mathbf{1}$ lies in the difference. Hence $\mathcal{H}_2^{anti} \subsetneq \mathcal{H}_2$.
-
-**In words.** Two quarter turns make a half turn, which is multiplication by $-1$. So whatever an anti-symmetric RNN does to an input, it does the opposite to an input two steps earlier (up to the positive factor $\omega^2$). It cannot even give all inputs the same weight.
-
-**Sanity check.** The restriction does not go the other way: the two classes $\mathcal{S}_1$ and $\mathcal{S}_2^{anti}$ are incomparable. For $L = 3$ the parameters $(\omega, \alpha, \beta) = (1, 1, 0)$ give $(-1, 0, 1)$, which is anti-realizable, yet $a_2^2 = 0$ while $a_1 a_3 = -1$, so it is not in $\mathcal{S}_1$ by part 3. Also, for $L = 3, 4, 6$ the best anti-symmetric fit to $\mathbf{1}$ has squared error $1, 2, 4$, never $0$.
+**Sanity check.** The swapped order, one width for all targets, is false: by 1.b every $h\in\mathcal{H}_B$ has at most $B+1$ pieces, and the inapproximability argument of Lecture 2, §1.4, uses only this piece count, so the sawtooth $g^{\circ L-1}$ stays at distance at least $\frac18-B\cdot2^{-L-2}-3\cdot2^{-L-1}$ from $\mathcal{H}_B$, close to $\frac18$ for large $L$.
 
 **What to write in the exam.**
 
-- From 4.b with the angle shift by $\pi$: $a_{t-2} = -\omega^2 a_t$ for $t \in \{3, \dots, L\}$ (2 pts).
-- Hence $a_t a_{t-2} \le 0$.
-- Witness $\mathbf{1}$: in $\mathcal{S}_1$ with $p = 1$ and $\lambda = 1$, hence in $\mathcal{S}_2$; but $a_L a_{L-2} = 1$ (2 pts).
-- Conclude $\mathcal{H}_2^{anti} \subsetneq \mathcal{H}_2$.
+- Definition (3 pts): for every $f\in\mathcal{F}$ and $\epsilon>0$ there are $B\in\mathbb{N}$ and $h\in\mathcal{H}_B$ with $d(f,h)<\epsilon$.
+- Remark: $B$ depends on $f$ and $\epsilon$.
 
-*Verified: on 300 random anti-symmetric instances $a_{t-2} + \omega^2 a_t$ is below $10^{-13}$ and $a_t a_{t-2}$ never exceeds $0$; numerical minimization of the squared distance from $\mathbf{1}$ over $(\omega, \alpha, \beta)$ gives exactly $1, 2, 4$ for $L = 3, 4, 6$ (NumPy, SciPy).*
+*Verified: definitional part; the quantifier order is the one used in 3.b, where each target and tolerance get their own width.*
+
+**3.b (6) Proof of universality**
+
+**What is asked.** Prove that every continuous $f$ can be approximated in $d$ to any accuracy by a leaky network of some width, proving the approximation step rather than citing Lemma 1. The answer is a proof.
+
+**Tool and why.** Lecture 2, §1.3: uniform continuity on $[0,1]$ (Heine–Cantor, the given hint) plus linear interpolation on a fine grid (cheat sheet §5, density of PWL functions). Part 2.a turns the interpolant into a network, so the approximation step is all that remains.
+
+**Definitions.** Fix $f\in\mathcal{F}$ and $\epsilon>0$. Let $\delta>0$ be given by uniform continuity, choose an integer $n\ge2$ with $1/n<\delta$, and put the grid points $c_j:=j/n$ for $j=0,\dots,n$. Let $g$ be the function that is affine on each $[c_{j-1},c_j]$ with $g(c_j)=f(c_j)$, and that continues the affine formula of the first cell to $(-\infty,0]$ and that of the last cell to $[1,\infty)$.
+
+**Solution.**
+
+Step 1, $g$ is PWL with at most $n$ pieces: neighbouring cells share their grid value, so $g$ is continuous, and it is affine on the $n$ intervals $(-\infty,c_1]$, $[c_1,c_2]$, …, $[c_{n-1},\infty)$.
+
+Step 2, $g$ is a network of width $n$: let $p\le n$ be its number of pieces. If $p\ge2$, then $g\in\mathcal{H}_p$ by 2.a, and $\mathcal{H}_p\subseteq\mathcal{H}_n$. If $p=1$, $g$ is affine, so $g\in\mathcal{H}_2$ by 2.a, and $\mathcal{H}_2\subseteq\mathcal{H}_n$ because $n\ge2$. Set $h:=g$.
+
+Step 3, $g$ is a convex combination of two nearby values: fix $x\in[c_{j-1},c_j]$ and let $\lambda:=n(c_j-x)$, which lies in $[0,1]$. Because $g$ is affine on the cell,
+
+$$g(x)=\lambda f(c_{j-1})+(1-\lambda)f(c_j).$$
+
+Step 4, the pointwise bound: both $|x-c_{j-1}|$ and $|x-c_j|$ are at most $1/n$, which is below $\delta$, so by uniform continuity both $|f(x)-f(c_{j-1})|$ and $|f(x)-f(c_j)|$ are below $\epsilon$. Writing $f(x)=\lambda f(x)+(1-\lambda)f(x)$ and using the triangle inequality,
+
+$$\begin{aligned}
+|f(x)-g(x)|&\le\lambda\,|f(x)-f(c_{j-1})|+(1-\lambda)\,|f(x)-f(c_j)|\\
+&<\lambda\epsilon+(1-\lambda)\epsilon\\
+&=\epsilon.
+\end{aligned}$$
+
+Step 5, integrate: the cells cover $[0,1]$, so $|f-g|<\epsilon$ on all of $[0,1]$. The function $|f-g|$ is continuous on the compact $[0,1]$, so it attains a maximum $m$, and $m<\epsilon$. Hence
+
+$$d(f,h)=\int_0^1|f(x)-g(x)|\,dx\le m<\epsilon.$$
+
+Step 6, conclusion: for every $f\in\mathcal{F}$ and $\epsilon>0$ we found $B=n$ and $h\in\mathcal{H}_n$ with $d(f,h)<\epsilon$, which is the definition of 3.a.
+
+**In words.** On a fine enough grid a continuous function hardly moves inside a cell, so the straight segment joining its two end values stays close to it. That segment chain is PWL with as many pieces as cells, and part 2 says a leaky network with that many neurons computes it exactly.
+
+**Sanity check.** We even proved the stronger sup-norm statement on $[0,1]$, which implies the $L^1$ one, as in the sign-network exams (Exam 2021 Moed A, Q1d; Exam 2024 Moed C, Q1(4)). For $f(x)=x^2$ and $n=4$ the interpolation error in $d$ is exactly $\frac{1}{96}$, that is $\frac{1}{6n^2}$.
+
+**What to write in the exam.**
+
+- Grid (1 pt): $\delta$ from uniform continuity; $n\ge2$ with $1/n<\delta$; $g$ interpolates $f$ at $j/n$, extended affinely outside $[0,1]$.
+- Membership (2 pts): $g$ is PWL with at most $n$ pieces, so $g\in\mathcal{H}_n$ by part 2.
+- Bound (2 pts): $g(x)$ is a convex combination of $f(c_{j-1})$ and $f(c_j)$, both within $\epsilon$ of $f(x)$.
+- Conclusion (1 pt): $|f-g|<\epsilon$ on $[0,1]$, so $d(f,g)<\epsilon$.
+
+*Verified: numpy interpolation of several continuous targets on grids of $n$ from $2$ to $40$ cells; the measured errors are below the bounds, and for $x^2$ the error equals $\frac{1}{6n^2}$ to $10^{-8}$.*
+
+**3.c (3) A width that guarantees accuracy $\epsilon$ for $K$-Lipschitz targets**
+
+**What is asked.** For a $K$-Lipschitz $f$ and $n\ge2$, find $h\in\mathcal{H}_n$ with $d(f,h)\le\frac{K}{3n}$, and turn this into a width for accuracy $\epsilon$. The answer is a proof and a formula.
+
+**Tool and why.** The same interpolant $g$ as in 3.b, with the convex-combination bound of Step 4 made quantitative by the Lipschitz constant, then integrated cell by cell (cheat sheet §5).
+
+**Definitions.** Use $g$, $c_j$ and $\lambda$ from 3.b. For $x$ in the cell $[c_{j-1},c_j]$ let $u:=x-c_{j-1}$, the distance from the left grid point; then $c_j-x=\frac1n-u$ and $\lambda=1-nu$.
+
+**Solution.**
+
+Step 1, the pointwise bound: as in 3.b, Step 4, but with $|f(x)-f(c)|\le K|x-c|$:
+
+$$\begin{aligned}
+|f(x)-g(x)|&\le\lambda Ku+(1-\lambda)K\Big(\frac1n-u\Big)\\
+&=K\Big[(1-nu)\,u+nu\Big(\frac1n-u\Big)\Big]\\
+&=2Kn\,u\Big(\frac1n-u\Big).
+\end{aligned}$$
+
+Step 2, integrate over one cell: substituting $u$ for $x$,
+
+$$\int_0^{1/n}2Kn\,u\Big(\frac1n-u\Big)du=2Kn\cdot\frac{1}{6n^3}=\frac{K}{3n^2},$$
+
+using $\int_0^a u(a-u)\,du=\frac{a^3}{6}$ with $a=1/n$.
+
+Step 3, sum over the $n$ cells:
+
+$$d(f,g)\le n\cdot\frac{K}{3n^2}=\frac{K}{3n},$$
+
+and $g\in\mathcal{H}_n$ by 3.b, Step 2.
+
+Step 4, the width: $d(f,g)\le\epsilon$ as soon as $\frac{K}{3n}\le\epsilon$, so the width
+
+$$\boxed{n=\max\Big\{2,\ \Big\lceil\frac{K}{3\epsilon}\Big\rceil\Big\}}$$
+
+suffices.
+
+**In words.** For a Lipschitz target the needed width grows only like $1/\epsilon$: halving the error costs twice the neurons. Plain continuity in 3.b gives no rate, because $\delta$ can be arbitrarily small.
+
+**Sanity check.** For $f(x)=x^2$ on $[0,1]$, $K=2$, the true error $\frac{1}{6n^2}$ is far below $\frac{2}{3n}$. The worst Lipschitz case, a tent of slope $K$ in every cell with zeros at the grid points, has error exactly $\frac{K}{4n}$, so the constant $\frac13$ is within a factor $\frac43$ of the best possible.
+
+**What to write in the exam.**
+
+- Bound (1 pt): $|f-g|\le2Kn\,u(\frac1n-u)$ on a cell, from the convex combination and the Lipschitz condition.
+- Integral (1 pt): $\frac{K}{3n^2}$ per cell, $\frac{K}{3n}$ in total.
+- Width (1 pt): $n=\max\{2,\lceil K/(3\epsilon)\rceil\}$.
+
+*Verified: sympy confirms the identity of Step 1 and the cell integral $\frac{1}{3n^2}$; numpy on 80 (target, $K$, $n$) combinations finds the error at most $0.58$ of $\frac{K}{3n}$, and exactly $\frac{K}{4n}$ for the tent-per-cell target.*
+
+**4.a (4) Width-1 networks are monotone**
+
+**What is asked.** Prove that every function in $\mathcal{N}_L$ is non-decreasing or non-increasing on $\mathbb{R}$. The answer is an induction over the layers.
+
+**Tool and why.** Induction on the layer index, as for the passthrough and composition arguments of Lecture 2 (cheat sheet §5). With width $1$ every layer is a map from one number to one number, and such a map built from monotone pieces is monotone.
+
+**Definitions.** Call a function *monotone of type $+$* if it is non-decreasing and *of type $-$* if it is non-increasing; constant functions are of both types. Let $u_l(x):=a_lz_{l-1}(x)+b_l$, the pre-activation of layer $l$.
+
+**Solution.**
+
+Step 1, $\sigma$ is increasing: on $z\ge0$ it is $z$, on $z\le0$ it is $\alpha z$ with $\alpha>0$, and the two branches agree at $0$. So $z\le z'$ implies $\sigma(z)\le\sigma(z')$.
+
+Step 2, an affine map of a monotone function: if $g$ is monotone, then $ag+b$ is monotone, of the same type when $a\ge0$ and of the opposite type when $a\le0$, because multiplying an inequality by a non-positive number reverses it, and adding $b$ keeps it.
+
+**Claim.** For every $l\in\{0,\dots,L\}$ the function $z_l$ is monotone. The induction is on $l$, upwards.
+
+**Base.** $z_0(x)=x$ is non-decreasing.
+
+**Hypothesis.** $z_{l-1}$ is monotone for some $l\in[L]$.
+
+**Step.** By the hypothesis and Step 2, $u_l=a_lz_{l-1}+b_l$ is monotone; this is where the hypothesis is used. If $u_l$ is non-decreasing and $x\le x'$, then $u_l(x)\le u_l(x')$, and Step 1 gives $z_l(x)\le z_l(x')$. If $u_l$ is non-increasing, the same argument gives $z_l(x)\ge z_l(x')$. So $z_l$ is monotone, of the type of $u_l$.
+
+Step 3, the output: $h=a_{L+1}z_L+b_{L+1}$ is monotone by the claim with $l=L$ and Step 2.
+
+**In words.** A width-1 network passes a single number from layer to layer, and every layer either keeps or reverses the order of any two inputs. Composing order-keeping and order-reversing maps can only keep or reverse order, never produce a "down then up" shape.
+
+**Sanity check.** For $L=1$ this is the monotonicity of $\mathcal{H}_1$ seen in 2.b (two slopes of the same sign). An example of type $-$: $\sigma(-\sigma(x))$, since the inner layer is increasing and the outer layer reverses order.
+
+**What to write in the exam.**
+
+- Activation (1 pt): $\sigma$ is non-decreasing (both branches increase, as $\alpha>0$).
+- Induction (2 pts): if $z_{l-1}$ is monotone, so is $a_lz_{l-1}+b_l$ (the type flips when $a_l<0$), and so is its image under $\sigma$.
+- Output (1 pt): the final affine map keeps monotonicity.
+
+*Verified: 3000 random width-1 networks ($L\le8$, random signs, some zero weights, random $\alpha$) are monotone on a grid of 20001 points in $[-6,6]$ (numpy).*
+
+**4.b (6) A floor of $\frac18$ for every depth, and width 2 suffices**
+
+**What is asked.** Show that no width-1 network of any depth comes within $\frac18$ of $|2x-1|$ in $d$, conclude non-universality, show that $|2x-1|$ is in $\mathcal{H}_2$, and draw the moral. The answer is a proof, a construction and a sentence.
+
+**Tool and why.** Pair each point with a point a quarter to its right, where the target moves against any monotone function (cheat sheet §4: non-universality means one target and one $\epsilon_0$ that no member reaches). Part 4.a reduces the class to monotone functions; 1.a (third identity) gives the width-2 construction.
+
+**Definitions.** For a given $h$ let $e(x):=f(x)-h(x)$, the error at $x$.
+
+**Solution.**
+
+Step 1, the target on the left half moves down by $\frac12$: for $x\in[0,\frac14]$ both $x$ and $x+\frac14$ lie in $[0,\frac12]$, where $f(x)=1-2x$. So $f(x)=1-2x$ and $f(x+\frac14)=\frac12-2x$, and
+
+$$f(x)-f\big(x+\tfrac14\big)=\tfrac12.$$
+
+Step 2, a non-decreasing $h$: for $x\in[0,\frac14]$ we have $h(x+\frac14)\ge h(x)$, so, using $|a|+|b|\ge a-b$,
+
+$$\begin{aligned}
+|e(x)|+\big|e\big(x+\tfrac14\big)\big|&\ge e(x)-e\big(x+\tfrac14\big)\\
+&=f(x)-f\big(x+\tfrac14\big)+h\big(x+\tfrac14\big)-h(x)\\
+&\ge\tfrac12.
+\end{aligned}$$
+
+Step 3, integrate: substituting $x+\frac14$ in the second half of $[0,\frac12]$,
+
+$$\begin{aligned}
+d(f,h)&\ge\int_0^{1/2}|e(x)|\,dx\\
+&=\int_0^{1/4}\Big(|e(x)|+\big|e\big(x+\tfrac14\big)\big|\Big)dx\\
+&\ge\tfrac14\cdot\tfrac12=\tfrac18.
+\end{aligned}$$
+
+Step 4, a non-increasing $h$: use the right half. For $x\in[\frac12,\frac34]$ we have $f(x)=2x-1$ and $f(x+\frac14)=2x-\frac12$, so $f(x+\frac14)-f(x)=\frac12$, while $h(x)\ge h(x+\frac14)$. Then
+
+$$|e(x)|+\big|e\big(x+\tfrac14\big)\big|\ge e\big(x+\tfrac14\big)-e(x)\ge\tfrac12,$$
+
+and integrating over $x\in[\frac12,\frac34]$ gives $\int_{1/2}^1|e|\ge\frac18$, so again $d(f,h)\ge\frac18$.
+
+Step 5, every depth: by 4.a every $h\in\mathcal{N}_L$ is of one of the two types, so
+
+$$\boxed{d(f,h)\ge\tfrac18\quad\forall L\in\mathbb{N},\ \forall h\in\mathcal{N}_L}$$
+
+Step 6, non-universality: the definition of 3.a, applied to $(\mathcal{N}_L)_L$, fails for the continuous target $f$ and $\epsilon=\frac18$: no depth $L$ and no $h\in\mathcal{N}_L$ have $d(f,h)<\frac18$.
+
+Step 7, width 2 suffices: the third identity of 1.a with $z=2x-1$, divided by $1-\alpha$, gives
+
+$$|2x-1|=\frac{1}{1-\alpha}\,\sigma(2x-1)+\frac{1}{1-\alpha}\,\sigma(1-2x),$$
+
+a network with neurons $(w,b)=(2,-1)$ and $(-2,1)$, output weights $\frac{1}{1-\alpha}$ and bias $0$. So $f\in\mathcal{H}_2$ and its distance from $\mathcal{H}_2$ is $0$.
+
+Step 8, the moral: depth cannot replace width; a width-1 network of any depth stays at least $\frac18$ away from a function that one hidden layer of width $2$ computes exactly, so depth pays off (as in Lecture 2's sawtooth, at width 3) only on top of enough width.
+
+**In words.** A monotone function cannot follow a V: if it is low enough near the bottom of the V, it is too low on one of the arms. Every width-1 network is monotone, so it pays a fixed price on one arm, however many layers it has.
+
+**Sanity check.** The bound is valid but not tight: the best monotone $L^1$ fit of $|2x-1|$ on $[0,1]$ has error $\frac16$ (dynamic program on a fine grid), attained by the constant $\frac13$ up to $x=\frac23$ followed by $f$ itself. Random width-1 networks never got below $0.25$.
+
+**What to write in the exam.**
+
+- Pairing (2 pts): on $[0,\frac14]$, $f$ drops by $\frac12$ from $x$ to $x+\frac14$ while a non-decreasing $h$ does not drop, so the two errors sum to at least $\frac12$.
+- Integral (1 pt): integrate over $[0,\frac14]$ to get $\frac18$; the non-increasing case is symmetric on $[\frac12,1]$.
+- Conclusion (1 pt): by 4.a this covers all of $\bigcup_L\mathcal{N}_L$, so universality fails with $\epsilon=\frac18$.
+- Width 2 and moral (2 pts): $|2x-1|=\frac{\sigma(2x-1)+\sigma(1-2x)}{1-\alpha}$; depth does not replace width.
+
+*Verified: the pairing identities hold on both halves; 3000 random width-1 networks have $d\ge\frac18$ (minimum found $0.2501$); a dynamic program for the best monotone $L^1$ fit on a 2000-point grid gives $0.16667$ for both types; the width-2 formula is exact in fractions.*
 
 **Common mistakes.**
 
-- Quoting the closed form of part 1 without the induction. Here proving it is the task (in a\_2024 it was given), which costs 3 points; arguing non-universality with "linear functions are not all continuous functions" and no explicit $f$ costs 2.
-- Proving only one direction of a set equality in part 2 or 4.b (capped at half the points), or reading the geometric ratio forwards instead of backwards: $a_t = \lambda\, a_{t+1}$.
-- Checking the three-term identity at $t = 1$ or $t = L$, where it is not defined, or claiming a witness is in $\mathcal{S}_2$ without explicit weights. In part 4, treating $A^{L-t}$ as the exponential $e^{(L-t)A}$, which gives a bounded sinusoid instead of a scaled period-$4$ pattern.
+- In 2.a, converting each ReLU into two leaky neurons (the recitation formula) and stopping at width about $2p$: the function is right but $f\in\mathcal{H}_p$ is not proved (costs 3 points). Dropping the leftover term $\alpha(x-t_i)$ of the second identity breaks the construction altogether.
+- In 1.b and 2.b, treating only $w>0$, or not saying why the network is affine on closed intervals (both branches of $\sigma$ agree at $0$); in 3.b citing Lemma 1 of Lecture 2 instead of proving the interpolation bound (costs 3 points).
+- In 4.a, claiming that every layer is increasing: a negative $a_l$ reverses the order, so only "monotone of some type" survives. In 4.b, handling only the non-decreasing case (costs 2 points).
 
-**💡 Useful tricks:** Induct for the closed form $a_t=C^\top A^{L-t}B$; linear-in-$x$ ⇒ non-universal (witness $x_1x_2$); $d=1$ gives a *backwards* geometric $a_t=p\lambda^{L-t}$ with signature $a_{t+1}a_{t-1}=a_t^2$; anti-symmetric $A=\omega J$ has $J^k$ period-$4$, forcing $a_{t-2}=-\omega^2a_t$ ⇒ a sign constraint.
+**💡 Useful tricks:** A leaky neuron is $(1-\alpha)$ times a ReLU plus $\alpha z$, the identity is $\frac{\sigma(z)-\sigma(-z)}{1+\alpha}$, and $|z|$ is $\frac{\sigma(z)+\sigma(-z)}{1-\alpha}$. Collect all affine leftovers into one term $A(x-t_1)$ and build it at an existing kink: width $p$ for $p$ pieces, and $p-1$ when $s_0=\alpha s_{p-1}$. A single leaky neuron is never flat, so $[x]_+\notin\mathcal{H}_1$. For universality, write the interpolant as a convex combination of two grid values. Width-1 nets are monotone at every depth, and pairing $x$ with $x+\frac14$ prices the V-shaped target at $\frac18$.
 
-**⚠️ Watch out:** (1) here you must PROVE the closed form (a_2024 gave it) and prove non-membership for *all* $d$; (3) apply the three-term identity only at interior $t\in\{2,\dots,L-1\}$, and verify the witness is realizable in $\mathcal H_2$; (4) $A^{L-t}$ is a matrix *power* (rotation by $k\cdot90°$ scaled by $\omega^k$) — NOT the exponential $e^{(L-t)A}$; it's a period-4 geometric, not a bounded sinusoid.
+**⚠️ Watch out:** (1b) handle $w_i=0$ and both signs of $w_i$; the closed intervals need the two branches of $\sigma$ to agree at $0$. (2a) two leaky neurons per ReLU is correct but gives the wrong width; keep the $\alpha(x-t_i)$ leftovers. (2b) "non-constant" is what forces $v\ne0$ and $w\ne0$. (3b) prove the interpolation step; a fixed width is not enough, $B$ depends on $f$ and $\epsilon$. (4a) negative weights flip the order, so the claim is monotone, not increasing. (4b) treat the non-increasing case too, and remember $f$ itself is in $\mathcal{H}_2$.
 
 ## Q2 — Gradient flow on a single ReLU neuron (35)
 
@@ -704,9 +802,11 @@ Step 3, the model answer (four sentences): "The bound is small only if both of i
 ## Grading notes
 - Total 105; per-part partial credit as marked. Hints used during attempt: −20% of
   that sub-part.
-- Common traps to check: Q1.1 closed form quoted without induction; Q1.2/Q1.4b only
-  one direction of a characterization; Q1.3 witness not verified realizable in
-  $\mathcal{H}_2$; Q1.4 matrix power confused with matrix exponential; Q2.1
+- Common traps to check: Q1.1b only $w_i > 0$ treated, or affinity on closed intervals
+  not argued; Q1.2a two leaky neurons per ReLU (width about $2p$) or the leftover
+  $\alpha(x - t_i)$ dropped; Q1.2b only one sign of $w$ treated; Q1.3b Lemma 1 cited
+  instead of proved; Q1.4a "every layer is increasing" (negative weights reverse the
+  order); Q1.4b only the non-decreasing case handled; Q2.1
   missing factor $v$; Q2.3 claiming $v^2$ (rather than the difference) conserved,
   or skipping the IVT step; Q2.4 wrong class result cited in the contrast; Q3.1
   exponent sign; Q3.2 spurious union bound over $w$; Q3.3a vague "overfitting"

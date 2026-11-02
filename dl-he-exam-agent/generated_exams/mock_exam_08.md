@@ -1,4 +1,4 @@
-# מבחן לדוגמה FODL 8 (נוצר 2026-10-28)
+# מבחן לדוגמה FODL 8 (נוצר 2026-10-28) (שאלה 1 הוחלפה 2026-11-01)
 
 **הפורמט תואם למבחן האמיתי:** 3 שעות · ללא חומר עזר · 3 שאלות · 105 נקודות
 (ציון מרבי 100 — 5 הנקודות העודפות הן מרווח, כמו בשנים האחרונות).
@@ -9,108 +9,125 @@
 
 ---
 
-## Question 1 (40 pts) — RNN לינאריים: סכומים אקספוננציאליים, דרגת Hankel וסיבובים
+## Question 1 (40 pts) — פירוקי טנזורים עמוקים מול רדודים: דרגות Kronecker וגאומטריית pooling
 
-קבעו $L \in \mathbb{N}_{\ge 3}$. עבור $d \in \mathbb{N}$, *השערת RNN לינארית* עם
-מימד מצב $d$ מקבלת $x = (x_1, \dots, x_L) \in \mathbb{R}^L$ ומוציאה
-$h(x) \in \mathbb{R}$ באמצעות
+סימונים כמו בכיתה (הרצאה 2, §2): $\otimes$ היא המכפלה החיצונית (הטנזורית) ו-$\odot$ היא
+מכפלת Kronecker. יהי $M \in \mathbb{N}_{\ge 2}$ ויהי $N = 2^L$ עם $L \in \mathbb{N}_{\ge 2}$
+(כלומר $N \ge 4$). פונקציה $f : [M]^N \to \mathbb{R}$ מזוהה עם הטנזור מסדר $N$
+$\mathcal{A}_f$ המוגדר על ידי $(\mathcal{A}_f)_{d_1, \dots, d_N} := f(d_1, \dots, d_N)$. עבור
+$I \subseteq [N]$, $[\![\mathcal{A}]\!]_I$ היא המטריציזציה של $\mathcal{A}$ (האופנים ב-$I$
+ממספרים את השורות), ו-$[\![\mathcal{A}]\!]$ היא המטריציזציה הקנונית, כלומר
+$[\![\mathcal{A}]\!]_{I_{odd}}$ עם $I_{odd} := \{1, 3, \dots, N-1\}$. נסמן
+$I_{half} := \{1, 2, \dots, N/2\}$. דרגת ההפרדה של $f$ ביחס ל-$I$ היא
 
-$$s_0(x) = 0 \in \mathbb{R}^d, \qquad
-  \forall t \in [L]:\; s_t(x) = A\, s_{t-1}(x) + B\, x_t, \qquad
-  h(x) = C^\top s_L(x),$$
+$$\mathrm{sep}(f; I) := \min \Big\{ R \in \mathbb{N} \cup \{0\} :
+f(d_1, \dots, d_N) = \sum_{\nu=1}^{R} g_\nu\big((d_i)_{i \in I}\big)\,
+\bar g_\nu\big((d_i)_{i \notin I}\big) \Big\},$$
 
-עם משקלים $A \in \mathbb{R}^{d \times d}$ (*מטריצת המעבר*) ו-
-$B, C \in \mathbb{R}^d$. נסמן ב-$\mathcal{H}_d$ את מחלקת כל ההשערות מסוג זה. מותר
-להשתמש ללא הוכחה בעובדה השימושית
+כאשר המינימום הוא על פני כל הפונקציות $g_\nu, \bar g_\nu$ (סכום ריק הוא פונקציית האפס).
 
-$$h(x) = \sum_{t=1}^{L} C^\top A^{L-t} B\, x_t ,$$
+**שתי הרשתות.** הרשת ה*רדודה* ברוחב $Z$ (pooling מכפלה גלובלי) מממשת
+בדיוק את טנזורי ה-CP
 
-עם המוסכמה $A^0 := I_d$ (בפרט $\lambda^0 := 1$ עבור כל סקלר, כולל
-$\lambda = 0$). נוח לקרוא את המקדמים **לאחור**: עבור
-$k \in \{0, \dots, L-1\}$ נסמן $c_k := C^\top A^{k} B$ (המקדם של $x_{L-k}$), ונקרא ל-
-$c = (c_0, \dots, c_{L-1}) \in \mathbb{R}^L$ *סדרת המקדמים ההפוכה* של $h$. עבור
-תת-מחלקה $\mathcal{G} \subseteq \mathcal{H}_d$ תהי $\mathcal{S}(\mathcal{G}) \subseteq \mathbb{R}^L$
-קבוצת סדרות המקדמים ההפוכות של ההשערות ב-$\mathcal{G}$ (שתי השערות
-עם אותה סדרה הן אותה פונקציה, ולכן הכלות בין מחלקות שקולות
-להכלות בין קבוצות ה-$\mathcal{S}$ שלהן). נגדיר את תת-המחלקות
+$$\mathcal{A} = \sum_{z=1}^{Z} a_z \cdot \mathbf{a}^{z,1} \otimes \mathbf{a}^{z,2} \otimes \cdots
+\otimes \mathbf{a}^{z,N}$$
 
-- $\mathcal{H}_d^{diag}$: המטריצה $A$ אלכסונית;
-- $\mathcal{H}_d^{diag+}$: המטריצה $A$ אלכסונית וכל איברי האלכסון שלה $\ge 0$;
-- $\mathcal{H}_d^{sym}$: המטריצה $A$ סימטרית.
+עם $a_z \in \mathbb{R}$ ו-$\mathbf{a}^{z,i} \in \mathbb{R}^M$.
 
-*תזכורת (Vandermonde):* אם $\nu_1, \dots, \nu_m \in \mathbb{R}$ שונים זה מזה בזוגות, אז
-המטריצה $V \in \mathbb{R}^{m \times m}$ עם $V_{l,j} = \nu_l^{\,j}$ ($l \in [m]$,
-$j \in \{0, \dots, m-1\}$) הפיכה.
+הרשת ה*עמוקה* עם רוחבים חבויים $r_0, \dots, r_{L-1}$ (pooling מכפלה בגודל 2 על
+הזוגות $\{2j-1, 2j\}$, כמו בכיתה) מממשת בדיוק את הטנזורים של רקורסיית Hierarchical Tucker (HT)
+(הרצאה 2, Prop 4):
 
-1. **(8 pts)** *אי-אוניברסליות כמותית.* תהי $f(x) := |x_1|$. הוכיחו שעבור כל
-   $d \in \mathbb{N}$ וכל $h \in \mathcal{H}_d$
+$$\Phi^{1,j,\gamma} = \sum_{\alpha=1}^{r_0} a^{1,j,\gamma}_\alpha \cdot \mathbf{a}^{0,2j-1,\alpha} \otimes \mathbf{a}^{0,2j,\alpha}$$
 
-   $$\sup_{x \in [-1,1]^L} \big| h(x) - f(x) \big| \;\ge\; 1 ,$$
+עבור $j \in [N/2]$ ו-$\gamma \in [r_1]$; אחר כך, עבור $l \in \{2, \dots, L-1\}$ (אין $l$ כזה
+כאשר $L = 2$), $j \in [N/2^l]$ ו-$\gamma \in [r_l]$,
 
-   ושהערך $1$ מושג על ידי $h \in \mathcal{H}_d$ כלשהי. הסיקו ש-
-   $\bigcup_{d \in \mathbb{N}} \mathcal{H}_d$ אינה אוניברסלית: אי אפשר אפילו לקרב פונקציה רציפה
-   על הקובייה הקומפקטית לדיוק $\tfrac12$.
+$$\Phi^{l,j,\gamma} = \sum_{\alpha=1}^{r_{l-1}} a^{l,j,\gamma}_\alpha \cdot \Phi^{l-1,2j-1,\alpha} \otimes \Phi^{l-1,2j,\alpha};$$
 
-2. **(8 pts)** *סכומים אקספוננציאליים.*
-   a. **(4 pts)** הוכיחו ש-
+ולבסוף
 
-      $$\mathcal{S}(\mathcal{H}_d^{diag}) = \Big\{ c \in \mathbb{R}^L :
-      \exists\, p, \lambda \in \mathbb{R}^d \ \ \forall k \in \{0, \dots, L-1\}:\;
-      c_k = \sum_{i=1}^{d} p_i \lambda_i^{k} \Big\}$$
+$$\mathcal{A} = \sum_{\alpha=1}^{r_{L-1}} a^{L}_\alpha \cdot \Phi^{L-1,1,\alpha} \otimes \Phi^{L-1,2,\alpha},$$
 
-      (שני הכיוונים), ושהקבוצה $\mathcal{S}(\mathcal{H}_d^{diag+})$ היא אותה קבוצה עם
-      הדרישה הנוספת $\lambda \in \mathbb{R}_{\ge 0}^d$.
+עם $\mathbf{a}^{0,i,\alpha} \in \mathbb{R}^M$, $\mathbf{a}^{l,j,\gamma} \in \mathbb{R}^{r_{l-1}}$
+ו-$\mathbf{a}^{L} \in \mathbb{R}^{r_{L-1}}$. כל $\Phi^{l,j,\gamma}$ הוא מסדר $2^l$.
 
-   b. **(4 pts)** הוכיחו ש-$\mathcal{H}_d^{sym} = \mathcal{H}_d^{diag}$.
+**מותר להשתמש ללא הוכחה ב:** לינאריות המטריציזציה; Lemma 3 מהכיתה,
 
-3. **(9 pts)** *היררכיה של דרגת Hankel.* עבור $c \in \mathbb{R}^L$ ו-
-   $m \in \mathbb{N}$ עם $2m - 1 \le L$, תהי $H_m(c) \in \mathbb{R}^{m \times m}$
-   מטריצת Hankel $\big(H_m(c)\big)_{i,j} := c_{i+j}$, $i, j \in \{0, \dots, m-1\}$.
+$$[\![\mathcal{T} \otimes \bar{\mathcal{T}}]\!]_I =
+[\![\mathcal{T}]\!]_{I \cap [n]} \odot [\![\bar{\mathcal{T}}]\!]_{(I - n) \cap [\bar n]}$$
 
-   a. **(5 pts)** הוכיחו: אם $c \in \mathcal{S}(\mathcal{H}_d^{diag})$ אז
-      $\mathrm{rank}\, H_m(c) \le d$ עבור כל $m$ המקיים $2m - 1 \le L$.
-      *רמז:* כתבו את $H_m(c)$ כמכפלה של שלוש מטריצות.
+עבור טנזורים מסדרים $n, \bar n$ (ובפרט
+$[\![\mathcal{T} \otimes \bar{\mathcal{T}}]\!] = [\![\mathcal{T}]\!] \odot [\![\bar{\mathcal{T}}]\!]$
+כאשר $n, \bar n$ זוגיים); Prop 7 מהכיתה, $\mathrm{sep}(f; I) = \mathrm{rank}\,[\![\mathcal{A}_f]\!]_I$;
+תכונת המכפלה המעורבת $(A \odot B)(C \odot D) = (AC) \odot (BD)$; $I_m \odot I_n = I_{mn}$;
+$\mathrm{rank}(X + Y) \le \mathrm{rank}\,X + \mathrm{rank}\,Y$; ו*הצורה הנורמלית של הדרגה*: אם
+ל-$A \in \mathbb{R}^{m_1 \times m_2}$ יש דרגה $r$, קיימות $P, Q$ הפיכות עם
+$PAQ = J_r$, כאשר ל-$J_r \in \mathbb{R}^{m_1 \times m_2}$ יש $(J_r)_{i,i} = 1$ עבור $i \in [r]$
+וכל שאר האיברים $0$. **אין** לצטט את Lemma 2 (כפליות הדרגה) — סעיף 1 מבקש
+להוכיח אותה.
 
-   b. **(4 pts)** הוכיחו שאם $L \ge 2d + 1$ אז
-      $\mathcal{H}_d^{diag} \subsetneq \mathcal{H}_{d+1}^{diag}$ (גם ההכלה וגם
-      היותה ממש). *רמז:* נסו את $c_k := \sum_{i=1}^{d+1} i^{\,k}$.
+לאורך כל השאלה קבעו $G \in \mathbb{R}^{M \times M}$ עם $\rho := \mathrm{rank}\,G \ge 1$, והגדירו
 
-4. **(8 pts)** *מעברים אלכסוניים אי-שליליים לעומת כלליים.*
+$$f_G(d_1, \dots, d_N) := \prod_{j=1}^{N/2} G_{d_{2j-1},\, d_{2j}},$$
 
-   a. **(4 pts)** יהי $m \in \mathbb{N}$, יהיו $\mu_1 < \mu_2 < \dots < \mu_m$ ממשיים, ויהי
-      $q \in \mathbb{R}^m$ עם $q \ne 0$. הוכיחו שלפונקציה
+כלומר (כאשר $G$ נתפסת כטנזור מסדר 2)
 
-      $$g(s) := \sum_{j=1}^{m} q_j\, e^{\mu_j s}, \qquad s \in \mathbb{R},$$
+$$\mathcal{A}_{f_G} = \underbrace{G \otimes G \otimes \cdots \otimes G}_{N/2 \text{ factors}}.$$
 
-      יש לכל היותר $m - 1$ אפסים ממשיים שונים. *רמז:* אינדוקציה על $m$ ומשפט Rolle,
-      אחרי הכפלת $g$ בפונקציה חיובית מתאימה.
+לדוגמה, $G = I_M$ נותנת
+$f_{I_M}(d) = \prod_j \mathbb{1}[d_{2j-1} = d_{2j}]$.
 
-   b. **(4 pts)** תהי $c^{alt}$ הסדרה המתחלפת $c^{alt}_k := (-1)^k$,
-      $k \in \{0, \dots, L-1\}$. הוכיחו ש-$c^{alt} \in \mathcal{S}(\mathcal{H}_1^{diag})$,
-      וש-
+1. **(7 pts)** *דרגת Kronecker.* הוכיחו שלכל $A \in \mathbb{R}^{m_1 \times m_2}$ ולכל
+   $B \in \mathbb{R}^{n_1 \times n_2}$
 
-      $$c^{alt} \in \mathcal{S}(\mathcal{H}_d^{diag+}) \iff d \ge L .$$
+   $$\mathrm{rank}(A \odot B) = \mathrm{rank}(A) \cdot \mathrm{rank}(B).$$
 
-      הסיקו ש-$\mathcal{H}_d^{diag+} \subsetneq \mathcal{H}_d^{diag}$ עבור כל
-      $d \in \{1, \dots, L-1\}$ — ערך עצמי שלילי יחיד אינו ניתן לחיקוי על ידי $L-1$
-      ערכים עצמיים אי-שליליים.
+   *רמז:* צמצמו למקרה $J_r \odot J_s$, והראו שהאיברים השונים מאפס שלה נמצאים בשורות שונות
+   ובעמודות שונות.
 
-5. **(7 pts)** *סיבובים.* הניחו בסעיף זה $L \ge 4$. תהי
+2. **(8 pts)** *דרגות ההפרדה של $f_G$.* מותר להשתמש בסעיף 1.
 
-   $$R := \begin{pmatrix} \tfrac12 & -\tfrac{\sqrt3}{2} \\ \tfrac{\sqrt3}{2} & \tfrac12 \end{pmatrix}$$
+   a. **(5 pts)** הוכיחו ש-
+      $[\![\mathcal{A}_{f_G}]\!] = G \odot G \odot \cdots \odot G$ ($N/2$ גורמים), והסיקו
+      ש-$\mathrm{sep}(f_G; I_{odd}) = \rho^{N/2}$.
 
-   (סיבוב בזווית $\pi/3$), ותהי $h^{rot} \in \mathcal{H}_2$ ההשערה עם המשקלים $A = R$,
-   $B = C = e_1$.
+   b. **(3 pts)** הוכיחו ש-$\mathrm{sep}(f_G; I_{half}) = 1$.
 
-   a. **(2 pts)** הוכיחו שסדרת המקדמים ההפוכה של $h^{rot}$ היא
-      $c_k = \cos(k\pi/3)$, כלומר $c = (1, \tfrac12, -\tfrac12, -1, \dots)$.
+3. **(8 pts)** *רשת עמוקה קטנה.* כתבו $G = \sum_{\alpha=1}^{\rho} \mathbf{u}^\alpha (\mathbf{v}^\alpha)^\top$
+   עם $\mathbf{u}^\alpha, \mathbf{v}^\alpha \in \mathbb{R}^M$ (אפשרי כי
+   $\mathrm{rank}\,G = \rho$). תנו השמה מפורשת של הרשת העמוקה שבה כל הרוחבים החבויים
+   שווים ל-$\rho$ והמממשת את $f_G$, והוכיחו שהיא אכן מממשת אותה (אינדוקציה על
+   רמות רקורסיית ה-HT).
 
-   b. **(4 pts)** הוכיחו ש-$h^{rot} \notin \mathcal{H}_2^{sym}$ (באופן שקול, לפי סעיף 2,
-      $h^{rot} \notin \mathcal{H}_2^{diag}$). הסיקו ש-
-      $\mathcal{H}_2^{sym} \subsetneq \mathcal{H}_2$.
+4. **(9 pts)** *הרשת הרדודה זקוקה בדיוק ל-$\rho^{N/2}$.* מותר להשתמש בכך ש-
+   $\mathrm{rank}\,[\![\mathcal{A}_{f_G}]\!] = \rho^{N/2}$ (סעיף 2a) ובסעיף 1.
 
-   c. **(1 pt)** הסבירו במשפט או שניים מדוע אי אפשר להשתמש במבחן דרגת ה-Hankel של סעיף 3
-      כדי להוכיח את סעיף b.
+   a. **(5 pts)** הוכיחו שכל טנזור $\mathcal{A}$ שהרשת הרדודה ברוחב
+      $Z$ מממשת מקיים $\mathrm{rank}\,[\![\mathcal{A}]\!] \le Z$. הסיקו שהרשת הרדודה
+      מממשת את $f_G$ רק אם $Z \ge \rho^{N/2}$.
+
+   b. **(4 pts)** תנו השמה מפורשת של הרשת הרדודה ברוחב $Z = \rho^{N/2}$
+      המממשת את $f_G$, והוכיחו זאת. הסיקו, יחד עם סעיף 3, שעבור $\rho \ge 2$
+      הרשת העמוקה מממשת את $f_G$ ברוחב $\rho \le M$ בעוד הרשת הרדודה זקוקה
+      לרוחב אקספוננציאלי ב-$N$.
+
+5. **(8 pts)** *גאומטריית pooling.* תהי $P : [M]^N \to \mathbb{R}$ פונקציית האינדיקטור
+   של *פלינדרום*
+
+   $$P(d_1, \dots, d_N) := \prod_{i=1}^{N/2} \mathbb{1}\big[d_i = d_{N+1-i}\big].$$
+
+   a. **(5 pts)** הוכיחו שכל טנזור $\mathcal{A}$ שהרשת העמוקה מממשת מקיים
+      $\mathrm{rank}\,[\![\mathcal{A}]\!]_{I_{half}} \le r_{L-1}$. חשבו את
+      $\mathrm{sep}(P; I_{half})$, והסיקו שהרשת העמוקה מממשת את $P$ רק אם
+      $r_{L-1} \ge M^{N/2}$.
+
+   b. **(3 pts)** מצאו תמורה $\pi$ של $[N]$ כך ש-
+      $P(d_1, \dots, d_N) = f_{I_M}(d_{\pi(1)}, \dots, d_{\pi(N)})$ לכל
+      $d \in [M]^N$. הסיקו שהרשת העמוקה עם *גאומטריית ה-pooling המסודרת מחדש* (אותה
+      רשת כשמזינים לה את $(d_{\pi(1)}, \dots, d_{\pi(N)})$) מממשת את $P$ כאשר כל הרוחבים
+      החבויים שווים ל-$M$, והסבירו במשפט אחד מה זה אומר על ההטיה האינדוקטיבית
+      שקובעת גאומטריית ה-pooling.
 
 ---
 

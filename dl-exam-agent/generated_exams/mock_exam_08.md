@@ -1,4 +1,4 @@
-# FODL Mock Exam 8 (generated 2026-10-28)
+# FODL Mock Exam 8 (generated 2026-10-28) (Q1 replaced 2026-11-01)
 
 **Format matches the real exam:** 3 hours · no aid material · 3 questions · 105 points
 (max grade 100 — the 5 extra points are slack, as in recent years).
@@ -9,108 +9,125 @@ Solutions & grading rubric: `mock_exam_08_solutions.md` — **do not open before
 
 ---
 
-## Question 1 (40 pts) — Linear RNNs: exponential sums, Hankel rank and rotations
+## Question 1 (40 pts) — Deep versus shallow tensor decompositions: Kronecker ranks and pooling geometry
 
-Fix $L \in \mathbb{N}_{\ge 3}$. For $d \in \mathbb{N}$, a *linear RNN hypothesis* with
-state dimension $d$ receives $x = (x_1, \dots, x_L) \in \mathbb{R}^L$ and outputs
-$h(x) \in \mathbb{R}$ via
+Notation as in class (Lecture 2, §2): $\otimes$ is the outer (tensor) product and $\odot$ is
+the Kronecker product. Let $M \in \mathbb{N}_{\ge 2}$ and $N = 2^L$ with $L \in \mathbb{N}_{\ge 2}$
+(so $N \ge 4$). A function $f : [M]^N \to \mathbb{R}$ is identified with the order-$N$ tensor
+$\mathcal{A}_f$ defined by $(\mathcal{A}_f)_{d_1, \dots, d_N} := f(d_1, \dots, d_N)$. For
+$I \subseteq [N]$, $[\![\mathcal{A}]\!]_I$ is the matricization of $\mathcal{A}$ (modes in $I$
+index the rows), and $[\![\mathcal{A}]\!]$ is the canonical matricization, i.e.
+$[\![\mathcal{A}]\!]_{I_{odd}}$ with $I_{odd} := \{1, 3, \dots, N-1\}$. Put
+$I_{half} := \{1, 2, \dots, N/2\}$. The separation rank of $f$ w.r.t. $I$ is
 
-$$s_0(x) = 0 \in \mathbb{R}^d, \qquad
-  \forall t \in [L]:\; s_t(x) = A\, s_{t-1}(x) + B\, x_t, \qquad
-  h(x) = C^\top s_L(x),$$
+$$\mathrm{sep}(f; I) := \min \Big\{ R \in \mathbb{N} \cup \{0\} :
+f(d_1, \dots, d_N) = \sum_{\nu=1}^{R} g_\nu\big((d_i)_{i \in I}\big)\,
+\bar g_\nu\big((d_i)_{i \notin I}\big) \Big\},$$
 
-with weights $A \in \mathbb{R}^{d \times d}$ (the *transition matrix*) and
-$B, C \in \mathbb{R}^d$. Denote by $\mathcal{H}_d$ the class of all such hypotheses. You may
-use without proof the useful fact
+the minimum over all functions $g_\nu, \bar g_\nu$ (an empty sum is the zero function).
 
-$$h(x) = \sum_{t=1}^{L} C^\top A^{L-t} B\, x_t ,$$
+**The two networks.** The *shallow* network of width $Z$ (global product pooling) realizes
+exactly the CP tensors
 
-with the convention $A^0 := I_d$ (in particular $\lambda^0 := 1$ for every scalar, including
-$\lambda = 0$). It is convenient to read the coefficients **backwards**: for
-$k \in \{0, \dots, L-1\}$ put $c_k := C^\top A^{k} B$ (the coefficient of $x_{L-k}$), and call
-$c = (c_0, \dots, c_{L-1}) \in \mathbb{R}^L$ the *reversed coefficient sequence* of $h$. For a
-sub-class $\mathcal{G} \subseteq \mathcal{H}_d$ let $\mathcal{S}(\mathcal{G}) \subseteq \mathbb{R}^L$
-be the set of reversed coefficient sequences of hypotheses in $\mathcal{G}$ (two hypotheses
-with the same sequence are the same function, so inclusions between classes are equivalent
-to inclusions between their $\mathcal{S}$-sets). Define the sub-classes
+$$\mathcal{A} = \sum_{z=1}^{Z} a_z \cdot \mathbf{a}^{z,1} \otimes \mathbf{a}^{z,2} \otimes \cdots
+\otimes \mathbf{a}^{z,N}$$
 
-- $\mathcal{H}_d^{diag}$: $A$ is diagonal;
-- $\mathcal{H}_d^{diag+}$: $A$ is diagonal with all diagonal entries $\ge 0$;
-- $\mathcal{H}_d^{sym}$: $A$ is symmetric.
+with $a_z \in \mathbb{R}$ and $\mathbf{a}^{z,i} \in \mathbb{R}^M$.
 
-*Reminder (Vandermonde):* if $\nu_1, \dots, \nu_m \in \mathbb{R}$ are pairwise distinct, the
-matrix $V \in \mathbb{R}^{m \times m}$ with $V_{l,j} = \nu_l^{\,j}$ ($l \in [m]$,
-$j \in \{0, \dots, m-1\}$) is invertible.
+The *deep* network with hidden widths $r_0, \dots, r_{L-1}$ (size-2 product pooling over the
+pairs $\{2j-1, 2j\}$, as in class) realizes exactly the tensors of the Hierarchical Tucker (HT)
+recursion (Lecture 2, Prop 4):
 
-1. **(8 pts)** *Quantitative non-universality.* Let $f(x) := |x_1|$. Prove that for every
-   $d \in \mathbb{N}$ and every $h \in \mathcal{H}_d$
+$$\Phi^{1,j,\gamma} = \sum_{\alpha=1}^{r_0} a^{1,j,\gamma}_\alpha \cdot \mathbf{a}^{0,2j-1,\alpha} \otimes \mathbf{a}^{0,2j,\alpha}$$
 
-   $$\sup_{x \in [-1,1]^L} \big| h(x) - f(x) \big| \;\ge\; 1 ,$$
+for $j \in [N/2]$ and $\gamma \in [r_1]$; then, for $l \in \{2, \dots, L-1\}$ (no such $l$
+when $L = 2$), $j \in [N/2^l]$ and $\gamma \in [r_l]$,
 
-   and that the value $1$ is attained by some $h \in \mathcal{H}_d$. Conclude that
-   $\bigcup_{d \in \mathbb{N}} \mathcal{H}_d$ is not universal: a continuous function on the
-   compact cube cannot even be approximated to accuracy $\tfrac12$.
+$$\Phi^{l,j,\gamma} = \sum_{\alpha=1}^{r_{l-1}} a^{l,j,\gamma}_\alpha \cdot \Phi^{l-1,2j-1,\alpha} \otimes \Phi^{l-1,2j,\alpha};$$
 
-2. **(8 pts)** *Exponential sums.*
-   a. **(4 pts)** Prove that
+and finally
 
-      $$\mathcal{S}(\mathcal{H}_d^{diag}) = \Big\{ c \in \mathbb{R}^L :
-      \exists\, p, \lambda \in \mathbb{R}^d \ \ \forall k \in \{0, \dots, L-1\}:\;
-      c_k = \sum_{i=1}^{d} p_i \lambda_i^{k} \Big\}$$
+$$\mathcal{A} = \sum_{\alpha=1}^{r_{L-1}} a^{L}_\alpha \cdot \Phi^{L-1,1,\alpha} \otimes \Phi^{L-1,2,\alpha},$$
 
-      (both directions), and that $\mathcal{S}(\mathcal{H}_d^{diag+})$ is the same set with the
-      extra requirement $\lambda \in \mathbb{R}_{\ge 0}^d$.
+with $\mathbf{a}^{0,i,\alpha} \in \mathbb{R}^M$, $\mathbf{a}^{l,j,\gamma} \in \mathbb{R}^{r_{l-1}}$
+and $\mathbf{a}^{L} \in \mathbb{R}^{r_{L-1}}$. Each $\Phi^{l,j,\gamma}$ has order $2^l$.
 
-   b. **(4 pts)** Prove that $\mathcal{H}_d^{sym} = \mathcal{H}_d^{diag}$.
+**You may use without proof:** linearity of matricization; Lemma 3 of class,
 
-3. **(9 pts)** *A Hankel-rank hierarchy.* For $c \in \mathbb{R}^L$ and
-   $m \in \mathbb{N}$ with $2m - 1 \le L$, let $H_m(c) \in \mathbb{R}^{m \times m}$ be the
-   Hankel matrix $\big(H_m(c)\big)_{i,j} := c_{i+j}$, $i, j \in \{0, \dots, m-1\}$.
+$$[\![\mathcal{T} \otimes \bar{\mathcal{T}}]\!]_I =
+[\![\mathcal{T}]\!]_{I \cap [n]} \odot [\![\bar{\mathcal{T}}]\!]_{(I - n) \cap [\bar n]}$$
 
-   a. **(5 pts)** Prove: if $c \in \mathcal{S}(\mathcal{H}_d^{diag})$ then
-      $\mathrm{rank}\, H_m(c) \le d$ for every $m$ with $2m - 1 \le L$.
-      *Hint:* write $H_m(c)$ as a product of three matrices.
+for tensors of orders $n, \bar n$ (in particular
+$[\![\mathcal{T} \otimes \bar{\mathcal{T}}]\!] = [\![\mathcal{T}]\!] \odot [\![\bar{\mathcal{T}}]\!]$
+when $n, \bar n$ are even); Prop 7 of class, $\mathrm{sep}(f; I) = \mathrm{rank}\,[\![\mathcal{A}_f]\!]_I$;
+the mixed-product property $(A \odot B)(C \odot D) = (AC) \odot (BD)$; $I_m \odot I_n = I_{mn}$;
+$\mathrm{rank}(X + Y) \le \mathrm{rank}\,X + \mathrm{rank}\,Y$; and the *rank normal form*: if
+$A \in \mathbb{R}^{m_1 \times m_2}$ has rank $r$, there are invertible $P, Q$ with
+$PAQ = J_r$, where $J_r \in \mathbb{R}^{m_1 \times m_2}$ has $(J_r)_{i,i} = 1$ for $i \in [r]$
+and all other entries $0$. **Do not** quote Lemma 2 (rank multiplicativity) — part 1 asks
+you to prove it.
 
-   b. **(4 pts)** Prove that if $L \ge 2d + 1$ then
-      $\mathcal{H}_d^{diag} \subsetneq \mathcal{H}_{d+1}^{diag}$ (both the inclusion and the
-      strictness). *Hint:* try $c_k := \sum_{i=1}^{d+1} i^{\,k}$.
+Throughout, fix $G \in \mathbb{R}^{M \times M}$ with $\rho := \mathrm{rank}\,G \ge 1$, and define
 
-4. **(8 pts)** *Non-negative versus general diagonal transitions.*
+$$f_G(d_1, \dots, d_N) := \prod_{j=1}^{N/2} G_{d_{2j-1},\, d_{2j}},$$
 
-   a. **(4 pts)** Let $m \in \mathbb{N}$, let $\mu_1 < \mu_2 < \dots < \mu_m$ be real, and
-      let $q \in \mathbb{R}^m$ with $q \ne 0$. Prove that
+i.e. ($G$ viewed as an order-2 tensor)
 
-      $$g(s) := \sum_{j=1}^{m} q_j\, e^{\mu_j s}, \qquad s \in \mathbb{R},$$
+$$\mathcal{A}_{f_G} = \underbrace{G \otimes G \otimes \cdots \otimes G}_{N/2 \text{ factors}}.$$
 
-      has at most $m - 1$ distinct real zeros. *Hint:* induction on $m$ and Rolle's theorem,
-      after multiplying $g$ by a suitable positive function.
+For example, $G = I_M$ gives
+$f_{I_M}(d) = \prod_j \mathbb{1}[d_{2j-1} = d_{2j}]$.
 
-   b. **(4 pts)** Let $c^{alt}$ be the alternating sequence $c^{alt}_k := (-1)^k$,
-      $k \in \{0, \dots, L-1\}$. Prove that $c^{alt} \in \mathcal{S}(\mathcal{H}_1^{diag})$,
-      and that
+1. **(7 pts)** *Kronecker rank.* Prove that for all $A \in \mathbb{R}^{m_1 \times m_2}$ and
+   $B \in \mathbb{R}^{n_1 \times n_2}$
 
-      $$c^{alt} \in \mathcal{S}(\mathcal{H}_d^{diag+}) \iff d \ge L .$$
+   $$\mathrm{rank}(A \odot B) = \mathrm{rank}(A) \cdot \mathrm{rank}(B).$$
 
-      Conclude that $\mathcal{H}_d^{diag+} \subsetneq \mathcal{H}_d^{diag}$ for every
-      $d \in \{1, \dots, L-1\}$ — a single negative eigenvalue cannot be emulated by $L-1$
-      non-negative ones.
+   *Hint:* reduce to $J_r \odot J_s$, and show that its nonzero entries lie in distinct rows
+   and distinct columns.
 
-5. **(7 pts)** *Rotations.* Assume in this part $L \ge 4$. Let
+2. **(8 pts)** *Separation ranks of $f_G$.* You may use part 1.
 
-   $$R := \begin{pmatrix} \tfrac12 & -\tfrac{\sqrt3}{2} \\ \tfrac{\sqrt3}{2} & \tfrac12 \end{pmatrix}$$
+   a. **(5 pts)** Prove that
+      $[\![\mathcal{A}_{f_G}]\!] = G \odot G \odot \cdots \odot G$ ($N/2$ factors), and deduce
+      that $\mathrm{sep}(f_G; I_{odd}) = \rho^{N/2}$.
 
-   (rotation by $\pi/3$), and let $h^{rot} \in \mathcal{H}_2$ have weights $A = R$,
-   $B = C = e_1$.
+   b. **(3 pts)** Prove that $\mathrm{sep}(f_G; I_{half}) = 1$.
 
-   a. **(2 pts)** Prove that the reversed coefficient sequence of $h^{rot}$ is
-      $c_k = \cos(k\pi/3)$, i.e. $c = (1, \tfrac12, -\tfrac12, -1, \dots)$.
+3. **(8 pts)** *A small deep network.* Write $G = \sum_{\alpha=1}^{\rho} \mathbf{u}^\alpha (\mathbf{v}^\alpha)^\top$
+   with $\mathbf{u}^\alpha, \mathbf{v}^\alpha \in \mathbb{R}^M$ (possible since
+   $\mathrm{rank}\,G = \rho$). Give an explicit assignment of the deep network with all hidden
+   widths equal to $\rho$ that realizes $f_G$, and prove that it does (induction over the
+   levels of the HT recursion).
 
-   b. **(4 pts)** Prove that $h^{rot} \notin \mathcal{H}_2^{sym}$ (equivalently, by part 2,
-      $h^{rot} \notin \mathcal{H}_2^{diag}$). Conclude that
-      $\mathcal{H}_2^{sym} \subsetneq \mathcal{H}_2$.
+4. **(9 pts)** *The shallow network needs exactly $\rho^{N/2}$.* You may use that
+   $\mathrm{rank}\,[\![\mathcal{A}_{f_G}]\!] = \rho^{N/2}$ (part 2a) and part 1.
 
-   c. **(1 pt)** Explain in one or two sentences why the Hankel-rank test of part 3 cannot
-      be used to prove part b.
+   a. **(5 pts)** Prove that every tensor $\mathcal{A}$ realized by the shallow network of width
+      $Z$ satisfies $\mathrm{rank}\,[\![\mathcal{A}]\!] \le Z$. Deduce that the shallow network
+      realizes $f_G$ only if $Z \ge \rho^{N/2}$.
+
+   b. **(4 pts)** Give an explicit assignment of the shallow network of width $Z = \rho^{N/2}$
+      that realizes $f_G$, and prove it. Conclude, together with part 3, that for $\rho \ge 2$
+      the deep network realizes $f_G$ with width $\rho \le M$ while the shallow network needs
+      width exponential in $N$.
+
+5. **(8 pts)** *Pooling geometry.* Let $P : [M]^N \to \mathbb{R}$ be the *palindrome*
+   indicator
+
+   $$P(d_1, \dots, d_N) := \prod_{i=1}^{N/2} \mathbb{1}\big[d_i = d_{N+1-i}\big].$$
+
+   a. **(5 pts)** Prove that every tensor $\mathcal{A}$ realized by the deep network satisfies
+      $\mathrm{rank}\,[\![\mathcal{A}]\!]_{I_{half}} \le r_{L-1}$. Compute
+      $\mathrm{sep}(P; I_{half})$, and deduce that the deep network realizes $P$ only if
+      $r_{L-1} \ge M^{N/2}$.
+
+   b. **(3 pts)** Find a permutation $\pi$ of $[N]$ such that
+      $P(d_1, \dots, d_N) = f_{I_M}(d_{\pi(1)}, \dots, d_{\pi(N)})$ for all
+      $d \in [M]^N$. Deduce that the deep network with the *re-ordered pooling geometry* (the
+      same network fed with $(d_{\pi(1)}, \dots, d_{\pi(N)})$) realizes $P$ with all hidden
+      widths equal to $M$, and explain in one sentence what this says about the inductive bias
+      set by the pooling geometry.
 
 ---
 

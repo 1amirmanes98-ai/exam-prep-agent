@@ -5,10 +5,13 @@ verified numerically on 2026-10-28 (Q1: chain lemma, i.e. at most $k+1$ codes an
 switched set, on 3000 random integer-tied sign layers; the dense construction realizes
 $x \bmod 2$ exactly for $n = 2, \dots, 10$; the shallow witness of width $2^{n-1}-1$ is
 exact, and an exhaustive search over all threshold placements shows width $2^{n-1}-2$ is
-infeasible for $n = 3, 4$, so the lower bound is tight; Q2: RK4 integration of the flow, with
-drift of $\lambda^2 - k c^2$ below $3\cdot10^{-11}$, the loss below the 4b/4c envelopes on seven
-initializations, the loss pinned at $\ge y^2/2$ in the trap regime and frozen at
-$\lambda_0 = 0$; Q3: GD with $\eta = 1.9N/\mu_{\max}$ converges to $X^\top K^{-1}y$ to
+infeasible for $n = 3, 4$, so the lower bound is tight; Q2 (replaced 2026-11-01): sympy gives
+zero gradient and Hessian of $\phi$ at the origin and the end-to-end formula at random balanced
+points for every sign pattern, numpy matches the general gradient formula to finite differences
+with $\frac{d}{dt}(W_{j+1}^\top W_{j+1} - W_j W_j^\top)$ below $5\cdot10^{-13}$, RK4 keeps the
+drift of $a_j^2 - \|u\|^2$ below $4\cdot10^{-11}$, $\|w(t)\| \ge c$ and the loss below the 4b
+envelope on $18$ margin starts, and the anti-aligned start keeps the loss above
+$\frac12\|\beta\|^2$; Q3: GD with $\eta = 1.9N/\mu_{\max}$ converges to $X^\top K^{-1}y$ to
 $10^{-15}$ and diverges for $\eta = 2.1N/\mu_{\max}$, Monte-Carlo Rademacher
 $1.719 \le 2.077$ (the bound), Basel weights sum to $1$, and $L_D(h_{w^*}) = 1 - N/(2d)$
 exactly in the orthonormal example).
@@ -318,316 +321,403 @@ Step 5, the feature that helped: the skip connections. Every neuron of $\mathcal
 
 **⚠️ Watch out:** (1) handle $w_i < 0$ (the step is right-closed) and $w_i = 0$, since no sign restriction is given here. (2) The linear skip $\alpha x$ halves the bound to $2^{n-1}-1$; prove tightness with an explicit witness. (3) Prove the construction works with an invariant or induction; a weight list alone is not enough. (4) State and prove both conditions of the definition. (5) Arbitrary $F$ after the first layer cannot beat $k \ge 2^n - 1$; the input re-read is what matters.
 
-## Q2 — Learning a $k$-step memory with a scalar linear RNN (35)
+## Q2 — Gradient flow on a deep linear network with a vector input: balancedness, end-to-end dynamics and a margin (35)
 
-**Hint:** Unroll the recursion once and the loss becomes a function of the single product
-$c\lambda^k$. Weight sharing makes $\lambda$ behave like $k$ tied layers, so ask how
-$\frac{d}{dt}\lambda^2$ and $\frac{d}{dt}c^2$ compare. Then look for a line in parameter
-space that the flow cannot leave (or enter). For convergence, write an ODE for the residual
-itself and ask which way $\lambda$ and $c$ move while the sign of the residual is frozen.
+**Hint:** Every parameter enters $w$ through one product, so write each partial derivative as "the product of the other factors times $\nabla\ell(w)$", and ask what happens to it when all parameters are $0$. For the conservation law, multiply the flow of layer $j$ by $W_j^\top$ on the right and the flow of layer $j+1$ by $W_{j+1}^\top$ on the left and compare. Under balancedness every squared layer equals one number $s$, so try to express $s$, $\pi^2$ and $\langle \nabla\ell, u\rangle u$ through $w$ alone. For convergence, ask what the monotone loss says about how close $w(t)$ can come to the origin, and drop the non-negative extra term in $\frac{d}{dt}\ell$.
 
 **Full solution:**
 
-**1. (6) Unrolling the RNN and the gradient flow**
+**1.a (4) Gradients, a critical point at the origin, and non-convexity**
 
-**What is asked.** Prove the closed form of $s_L$, deduce the loss for the one-hot input, and derive the two flow equations. The answer is an induction and a derivative computation.
+**What is asked.** Compute the partial derivatives of $\phi$, show that the origin is a critical point whose value is above the minimum, and conclude that $\phi$ is not convex. The answer is a computation and a short proof.
 
-**Tool and why.** Induction on $t$ for the recursion, then the chain rule and the definition of gradient flow (cheat sheet §7). The recursion is linear, so unrolling it gives a polynomial in $\lambda$, and the one-hot input keeps a single term.
+**Tool and why.** The chain rule for $\phi=\ell(w)$ with $w=\pi u$, and the fact that for a differentiable convex function every critical point is a global minimum (cheat sheet §7). The product structure makes every partial derivative carry a factor that vanishes at the origin.
 
-**Definitions.** As in the statement, $r:=c\lambda^k-y$ is the residual; we use it as a function of $(\lambda,c)$ as well as along the trajectory.
+**Definitions.** $\nabla\ell(w)=w-\beta$, the gradient of $\ell$. As in the statement, $\pi=a_2\cdots a_N$ and $\pi_{-j}$ is the same product with $a_j$ left out, so $\pi=a_j\pi_{-j}$.
 
 **Solution.**
 
-**Claim.** For every $t\in[L]$, $s_t=\sum_{\tau=1}^{t}\lambda^{t-\tau}x_\tau$. We prove it by induction on $t$, upward from $1$.
+Step 1, the $u$-gradient: $w=\pi u$ is linear in $u$ with coefficient $\pi$, so for a direction $v\in\mathbb{R}^d$ the derivative of $\phi$ along $v$ is $\langle\nabla\ell(w),\pi v\rangle$. Hence
 
-**Base.** For $t=1$: $s_1=\lambda\cdot0+x_1$, which is $x_1$, and the sum has the single term $\lambda^0x_1$, which is $x_1$ by the convention $\lambda^0:=1$.
+$$\nabla_u\phi=\pi\,\nabla\ell(w).$$
 
-**Hypothesis.** The formula holds for $t-1$.
+Step 2, the $a_j$-derivative: $w=a_j\,\pi_{-j}u$ is linear in $a_j$ with coefficient $\pi_{-j}u$, so by the chain rule
 
-**Step.** Substituting the hypothesis into the recursion,
+$$\partial_{a_j}\phi=\pi_{-j}\,\langle\nabla\ell(w),u\rangle.$$
 
-$$\begin{aligned}
-s_t&=\lambda s_{t-1}+x_t\\
-&=\sum_{\tau=1}^{t-1}\lambda^{t-\tau}x_\tau+\lambda^{0}x_t\\
-&=\sum_{\tau=1}^{t}\lambda^{t-\tau}x_\tau.
-\end{aligned}$$
+Step 3, the gradient at the origin: at $\theta=0$ we have $\pi=0$, and $\pi_{-j}$ is a product of $N-2$ zeros, which is $0$ because $N-2\ge1$. So both formulas give $0$: $\nabla\phi(0)=0$, and the origin is a critical point.
 
-At $t=L$ this is the claimed formula for $s_L$.
+Step 4, the values: at the origin $w=0$, so $\phi(0)=\tfrac12\|\beta\|^2$, which is positive because $\beta\ne0$. At $\theta^*:=(\beta,1,\dots,1)$ we get $w=\beta$ and $\phi(\theta^*)=0$. Since $\phi\ge0$, $\min\phi=0$, and
 
-Step 2, the one-hot input: $k\in\{2,\dots,L-1\}$ gives $L-k\in\{1,\dots,L-2\}$, a valid position. For $x=e_{L-k}$ only $\tau=L-k$ survives, with power $L-(L-k)$, which is $k$. So $s_L=\lambda^k$, the output is $c\lambda^k$, and
+$$\phi(0)=\tfrac12\|\beta\|^2>0=\min\phi.$$
 
-$$\ell(\lambda,c)=\tfrac12\big(c\lambda^k-y\big)^2.$$
+Step 5, non-convexity: if $\phi$ were convex, the gradient inequality at the critical point $0$ would give, for every $\theta$,
 
-Step 3, the partial derivatives: by the chain rule, the outer derivative is $r$ and the inner derivatives of $c\lambda^k$ are $kc\lambda^{k-1}$ and $\lambda^k$:
+$$\phi(\theta)\ge\phi(0)+\langle\nabla\phi(0),\theta\rangle=\phi(0),$$
 
-$$\partial_\lambda\ell=k\,c\,\lambda^{k-1}\,r,\qquad\partial_c\ell=\lambda^k\,r.$$
+so $0$ would be a global minimum. Step 4 shows it is not, so $\phi$ is not convex.
 
-Step 4, the flow: gradient flow negates the gradient, which gives
+**In words.** At the origin every layer is switched off, so moving any single parameter changes nothing to first order: the gradient vanishes although the predictor $w=0$ is far from $\beta$. A convex function cannot have such a flat spot above its minimum.
 
-$$\dot\lambda=-k\,c\,\lambda^{k-1}\,r,\qquad\dot c=-\lambda^k\,r.$$
-
-**In words.** An impulse $k$ steps in the past passes through $k$ multiplications by the same $\lambda$ before it reaches the output. Weight sharing makes $\lambda$ act like $k$ tied layers, and that is where the factor $k$ in $\dot\lambda$ comes from.
-
-**Sanity check.** At an interpolating point $r=0$ both derivatives vanish, as they must at a global minimum. Formally setting $k=1$ gives the two-layer scalar factorization $c\lambda$, whose flow is $\dot\lambda=-cr$ and $\dot c=-\lambda r$, the familiar form.
+**Sanity check.** With $d=1$, $N=3$, $\beta=1$ the three partials of $\phi=\tfrac12(a_3a_2u-1)^2$ are $(a_3a_2u-1)a_3a_2$, $(a_3a_2u-1)a_3u$ and $(a_3a_2u-1)a_2u$, all $0$ at the origin, while $\phi(0)=\tfrac12$ and $\phi(1,1,1)=0$.
 
 **What to write in the exam.**
 
-- Closed form (2 pts): induction on $t$, with base $s_1=x_1$ and step $s_t=\lambda s_{t-1}+x_t$.
-- Loss (1 pt): only $\tau=L-k$ survives, so $s_L=\lambda^k$ and $\ell=\tfrac12(c\lambda^k-y)^2$.
-- Gradients (3 pts): $\partial_\lambda\ell=kc\lambda^{k-1}r$ and $\partial_c\ell=\lambda^kr$; negate them.
+- Gradients (2 pts): $\nabla_u\phi=\pi\nabla\ell(w)$ and $\partial_{a_j}\phi=\pi_{-j}\langle\nabla\ell(w),u\rangle$ by the chain rule.
+- Critical point (1 pt): at $\theta=0$ both $\pi$ and $\pi_{-j}$ vanish since $N\ge3$.
+- Non-convexity (1 pt): $\phi(0)=\tfrac12\|\beta\|^2$ but $\phi(\beta,1,\dots,1)=0$; a convex function has only global minima as critical points.
 
-*Verified: sympy unrolls the recursion for $L=3,\dots,6$, confirms $s_L=\lambda^k$ for every admissible $k$, and differentiates $\ell$ for $k=2,\dots,6$.*
+*Verified: sympy differentiates $\phi$ for $N=3,4,5$ and $d=2,3$, and confirms the gradient vanishes at the origin with $\phi(0)=\tfrac12\|\beta\|^2$.*
 
-**2. (7) A line of critical points, non-convexity, and stagnation**
+**1.b (3) A non-strict saddle at the origin**
 
-**What is asked.** Show that every $(0,c)$ is a critical point with loss $y^2/2$, that $\min\ell=0$, that $\ell$ is not convex, and that a flow started at $\lambda_0=0$ keeps the loss at $y^2/2$. The answer is four short proofs.
+**What is asked.** Show that the Hessian of $\phi$ at the origin is zero and that the origin is neither a local minimum nor a local maximum, then interpret this for the landscape approach. The answer is two short proofs and a sentence.
 
-**Tool and why.** "Convex plus critical point gives a global minimum", used in the contrapositive (cheat sheet §7), and uniqueness of solutions of the flow for the stagnation claim.
+**Tool and why.** A polynomial's gradient and Hessian at $0$ are read off from its terms of degree $1$ and $2$; strict saddles (cheat sheet §7, Lecture 3 Def 4) need a negative Hessian eigenvalue. Here $\phi$ is a polynomial whose non-constant terms all have degree at least $N\ge3$.
+
+**Definitions.** Let $\hat\beta:=\beta/\|\beta\|$, the unit vector along $\beta$. For $\varepsilon>0$ let $\theta_\varepsilon^{\pm}:=(\varepsilon\hat\beta,\pm\varepsilon,\varepsilon,\dots,\varepsilon)$, two points near the origin on either side of it.
+
+**Solution.**
+
+Step 1, expand $\phi$: opening the square,
+
+$$\phi(\theta)=\tfrac12\|\beta\|^2-\pi\langle u,\beta\rangle+\tfrac12\pi^2\|u\|^2.$$
+
+Step 2, degrees: $\pi\langle u,\beta\rangle$ is a sum of monomials with one factor from each of $a_2,\dots,a_N$ and one coordinate of $u$, so it has degree $N$. The last term has degree $2N$. Both are at least $3$ because $N\ge3$.
+
+Step 3, the Hessian: every second partial derivative of a monomial of degree at least $3$ still contains a parameter as a factor, so it vanishes at $\theta=0$. The constant term has no second derivatives. Hence $\nabla^2\phi(0)=0$.
+
+Step 4, values on both sides: at $\theta_\varepsilon^{\pm}$ we have $\pi=\pm\varepsilon^{N-1}$ and $u=\varepsilon\hat\beta$, so $w=\pm\varepsilon^N\hat\beta$ and
+
+$$\phi(\theta_\varepsilon^{\pm})=\tfrac12\big(\|\beta\|\mp\varepsilon^N\big)^2.$$
+
+For $\varepsilon^N$ positive and below $2\|\beta\|$ the "$+$" point has a value below $\tfrac12\|\beta\|^2$ and the "$-$" point a value above it. As $\varepsilon\to0$ both points tend to the origin, so the origin is neither a local minimum nor a local maximum: it is a saddle.
+
+Step 5, not strict: a strict saddle needs $\lambda_{\min}(\nabla^2\phi(0))<0$, but the Hessian is $0$, so this saddle is non-strict. This is exactly Lecture 3, Prop 3 (non-strict saddles at depth $N\ge3$), so the landscape approach, which requires all saddles to be strict, cannot guarantee that gradient methods avoid it; this is why Lecture 4 analyses trajectories instead.
+
+**In words.** Near the origin the loss changes only at order $\varepsilon^N$, far too weakly for any second-order test to see a direction of descent. A descent direction exists, but it is invisible to the Hessian.
+
+**Sanity check.** With $d=1$, $N=3$, $\beta=1$ and $\varepsilon=0.1$: $\phi(\theta_\varepsilon^+)=\tfrac12(0.999)^2$, about $0.4990$, and $\phi(\theta_\varepsilon^-)=\tfrac12(1.001)^2$, about $0.5010$, on the two sides of $\phi(0)=0.5$.
+
+**What to write in the exam.**
+
+- Expansion (1 pt): $\phi=\tfrac12\|\beta\|^2-\pi\langle u,\beta\rangle+\tfrac12\pi^2\|u\|^2$, with non-constant terms of degree $N$ and $2N$.
+- Hessian (1 pt): all monomials have degree at least $3$, so $\nabla^2\phi(0)=0$.
+- Saddle (1 pt): $\theta_\varepsilon^{\pm}$ give values on both sides of $\phi(0)$; zero Hessian means non-strict, so the landscape approach fails here.
+
+*Verified: sympy computes the full Hessian at the origin as the zero matrix for $N=3,4,5$ and $d=2,3$; python evaluates $\phi(\theta_\varepsilon^\pm)$ at $\varepsilon=0.1$.*
+
+**2.a (5) The conservation law for a general linear network**
+
+**What is asked.** Prove that $W_{j+1}^\top W_{j+1}-W_jW_j^\top$ is constant in time along gradient flow, for a general depth-$N$ linear network, without citing the lemma from class. The answer is a proof.
+
+**Tool and why.** The layer-wise flow from Lecture 3's gradient formula, and the "multiply, symmetrize, integrate" technique (cheat sheet §8). Multiplying the flow of adjacent layers by the right transposes produces the same matrix twice.
+
+**Definitions.** Write $G(t):=\nabla L(W_{1:N}(t))$ for the loss gradient at the current end-to-end matrix. Let $A_j(t):=W_{j+1:N}^\top\,G\,W_{1:j}^\top$; we introduce it because both derivatives below turn out to equal $A_j+A_j^\top$, up to sign.
+
+**Solution.**
+
+Step 1, the flow: by the reminder and the definition of gradient flow, for every $j$,
+
+$$\dot W_j=-W_{j+1:N}^\top\,G\,W_{1:j-1}^\top.$$
+
+Step 2, multiply layer $j$ on the right by $W_j^\top$: since $W_jW_{1:j-1}=W_{1:j}$, transposing gives $W_{1:j-1}^\top W_j^\top=W_{1:j}^\top$, and
+
+$$\dot W_jW_j^\top=-W_{j+1:N}^\top\,G\,W_{1:j}^\top=-A_j.$$
+
+Step 3, multiply layer $j+1$ on the left by $W_{j+1}^\top$: since $W_{j+2:N}W_{j+1}=W_{j+1:N}$, transposing gives $W_{j+1}^\top W_{j+2:N}^\top=W_{j+1:N}^\top$, and by step 1 with $j+1$ in place of $j$
+
+$$W_{j+1}^\top\dot W_{j+1}=-W_{j+1}^\top W_{j+2:N}^\top\,G\,W_{1:j}^\top=-A_j.$$
+
+Step 4, symmetrize: by the product rule and steps 2 and 3,
+
+$$\begin{aligned}
+\frac{d}{dt}\big(W_jW_j^\top\big)&=\dot W_jW_j^\top+W_j\dot W_j^\top\\
+&=-A_j-A_j^\top,\\
+\frac{d}{dt}\big(W_{j+1}^\top W_{j+1}\big)&=\dot W_{j+1}^\top W_{j+1}+W_{j+1}^\top\dot W_{j+1}\\
+&=-A_j^\top-A_j.
+\end{aligned}$$
+
+Here $W_j\dot W_j^\top$ is the transpose of $\dot W_jW_j^\top$, and $\dot W_{j+1}^\top W_{j+1}$ is the transpose of $W_{j+1}^\top\dot W_{j+1}$.
+
+Step 5, integrate: the two derivatives are equal, so the derivative of $W_{j+1}^\top W_{j+1}-W_jW_j^\top$ is $0$, and a matrix function with zero derivative on $[0,\infty)$ is constant:
+
+$$\boxed{W_{j+1}(t)^\top W_{j+1}(t)-W_j(t)W_j(t)^\top=W_{j+1}(0)^\top W_{j+1}(0)-W_j(0)W_j(0)^\top}$$
+
+**In words.** Layer $j$ and layer $j+1$ meet in the hidden space of dimension $d_j$, and gradient flow grows the "output Gram" of layer $j$ and the "input Gram" of layer $j+1$ at exactly the same rate. Rescaling one layer up and the next one down never changes $W_{1:N}$, and gradient flow never moves along that free direction.
+
+**Sanity check.** Both matrices are $d_j\times d_j$: $W_j\in\mathbb{R}^{d_j\times d_{j-1}}$ gives $W_jW_j^\top\in\mathbb{R}^{d_j\times d_j}$, and $W_{j+1}\in\mathbb{R}^{d_{j+1}\times d_j}$ gives $W_{j+1}^\top W_{j+1}\in\mathbb{R}^{d_j\times d_j}$. Swapping the transposes would give matrices of the wrong sizes whenever $d_{j-1}\ne d_j$ or $d_{j+1}\ne d_j$.
+
+**What to write in the exam.**
+
+- Flow (1 pt): $\dot W_j=-W_{j+1:N}^\top GW_{1:j-1}^\top$.
+- Products (2 pts): $\dot W_jW_j^\top$ and $W_{j+1}^\top\dot W_{j+1}$ both equal $-W_{j+1:N}^\top GW_{1:j}^\top$.
+- Symmetrize (2 pts): add the transposes, so both Gram matrices have the same derivative; their difference is constant.
+
+*Verified: numpy on 200 random networks with $N\in\{3,4,5\}$ and random widths $1$ to $4$ matches the gradient formula to central finite differences (relative error $8\cdot10^{-10}$) and gives $\frac{d}{dt}(W_{j+1}^\top W_{j+1}-W_jW_j^\top)$ below $5\cdot10^{-13}$.*
+
+**2.b (3) The conservation law for our network**
+
+**What is asked.** Specialize part 2.a to our network to get that $a_j^2-\|u\|^2$ is constant, and check directly that $a_j^2$ and $\|u\|^2$ both move at rate $-2\langle\nabla\ell(w),w\rangle$. The answer is a deduction and a short computation.
+
+**Tool and why.** Part 2.a with the given widths, plus the gradients of part 1.a (cheat sheet §8).
 
 **Definitions.** No new notation.
 
 **Solution.**
 
-Step 1, the gradient on the line $\lambda=0$: since $k\ge2$, the exponent $k-1$ is at least $1$, so $\lambda^{k-1}=0$ and $\lambda^k=0$ at $\lambda=0$. Both partial derivatives of part 1 carry one of these factors, so both vanish: every $(0,c)$ is critical.
+Step 1, the layers: $W_1=u^\top$ is $1\times d$ and $W_j=a_j$ is $1\times1$ for $j\ge2$. So $W_1W_1^\top=\|u\|^2$ (it is $u^\top u$), $W_2^\top W_2=a_2^2$, and for $j\ge2$ we get $W_jW_j^\top=a_j^2$ and $W_{j+1}^\top W_{j+1}=a_{j+1}^2$.
 
-Step 2, the loss there: $\ell(0,c)=\tfrac12(c\cdot0-y)^2$, which is $y^2/2$.
+Step 2, apply 2.a: the differences $a_2^2-\|u\|^2$ and $a_{j+1}^2-a_j^2$ (for $j=2,\dots,N-1$) are constant. Adding the first $j-1$ of them telescopes to $a_j^2-\|u\|^2$, a sum of constants, hence constant.
 
-Step 3, the global minimum: $\ell\ge0$, and $\ell(1,y)=\tfrac12(y-y)^2$, which is $0$. So $\min\ell=0$.
+Step 3, direct check: by part 1.a and the flow,
 
-Step 4, non-convexity: for a differentiable convex $f$ and a critical point $z_0$, the gradient inequality gives
+$$\frac{d}{dt}\|u\|^2=2\langle u,\dot u\rangle=-2\pi\langle u,\nabla\ell(w)\rangle=-2\langle\nabla\ell(w),w\rangle,$$
 
-$$f(z)\ge f(z_0)+\nabla f(z_0)^\top(z-z_0)=f(z_0)$$
+because $\pi u=w$. Similarly, using $a_j\pi_{-j}=\pi$,
 
-for every $z$, so every critical point is a global minimum. The point $(0,c)$ is critical with value $y^2/2$, which is positive because $y>0$, while the minimum is $0$. So $\ell$ is not convex.
+$$\frac{d}{dt}a_j^2=2a_j\dot a_j=-2a_j\pi_{-j}\langle\nabla\ell(w),u\rangle=-2\langle\nabla\ell(w),w\rangle.$$
 
-Step 5, stagnation: consider the constant curve $(\lambda(t),c(t))\equiv(0,c_0)$. Its derivative is $0$, and by step 1 the right-hand side of the flow at $(0,c_0)$ is also $0$, so it solves the flow from $(0,c_0)$. By uniqueness it is *the* solution, and the loss stays $y^2/2$ for all $t\ge0$.
+**In words.** All $N$ layers grow or shrink their squared size at the same rate $-2\langle\nabla\ell(w),w\rangle$, so the gaps between them are frozen.
 
-**In words.** With no recurrence the impulse never reaches time $L$, so the output is $0$ whatever $c$ is. The derivative in $\lambda$ also vanishes there, because of the factor $\lambda^{k-1}$, so the flow has no reason to start moving: the line is a flat trap.
-
-**Sanity check.** A direct midpoint test: $\ell(1,y)=0$, and the point $(-1,(-1)^ky)$ also has loss $0$, since its output is $(-1)^ky(-1)^k$, which is $y$. Their midpoint is $(0,(y+(-1)^ky)/2)$, on the critical line, with loss $y^2/2$, larger than the average $0$ of the endpoints, which a convex function cannot do.
+**Sanity check.** With $d=1$ this is the law $w_i^2-w_j^2$ constant of c\_2024 Q2(1) (equivalently b\_2021 Q2(a)). With $d\ge2$ only the norm $\|u\|$ is tied to the scalars; the direction of $u$ is free to rotate.
 
 **What to write in the exam.**
 
-- Critical line (3 pts): at $\lambda=0$ both partials carry $\lambda^{k-1}$ or $\lambda^k$, so they vanish, and $\ell(0,c)=y^2/2$.
-- Non-convexity (2 pts): $\ell(1,y)=0$; for a convex function every critical point would be a global minimum.
-- Stagnation (2 pts): $(0,c_0)$ is a constant solution, so by uniqueness it is the flow, and $\ell\equiv y^2/2$.
+- Specialization (2 pts): $W_1W_1^\top=\|u\|^2$, and both Gram matrices of a scalar layer equal $a_j^2$; then telescope 2.a.
+- Direct rate (1 pt): $2\langle u,\dot u\rangle$ and $2a_j\dot a_j$ both equal $-2\langle\nabla\ell(w),w\rangle$.
 
-*Verified: sympy confirms both partials vanish at $\lambda=0$ for $k=2,\dots,6$ and $\ell(1,y)=0$; python checks the midpoint example for $k=2,\dots,6$; RK4 from $(0,0.7)$ stays at its start.*
+*Verified: sympy confirms both rates equal $-2\langle\nabla\ell(w),w\rangle$ for $N=3,4,5$ and $d=2,3$; RK4 on $24$ runs (balanced and unbalanced starts) keeps the drift of $a_j^2-\|u\|^2$ below $4\cdot10^{-11}$.*
 
-**3. (8) The conserved quantity, the sign of $\lambda$, and the trap**
+**3.a (6) End-to-end dynamics**
 
-**What is asked.** Prove that $\lambda^2-kc^2$ is constant, that $\lambda$ never vanishes and keeps its sign when $\lambda_0\ne0$, and deduce that in the stated regime the loss stays above $y^2/2$. The answer is three proofs.
+**What is asked.** Under a balanced initialization, derive the ODE for $w(t)$ in closed form, without citing the theorem from class. The answer is a derivation.
 
-**Tool and why.** A balancedness-type conservation law, obtained by differentiating along the flow (cheat sheet §8); uniqueness of solutions and the intermediate value theorem for the signs.
+**Tool and why.** The product rule for $w=\pi u$, the flows of part 1.a, and balancedness from part 2.b to rewrite every parameter-dependent factor through $w$ (cheat sheet §8). This mirrors the proof of Lecture 4, Thm 1, but here it needs no SVD.
 
-**Definitions.** Let $D:=\lambda_0^2-kc_0^2$, the value of the conserved quantity. We name it because the trap regime is exactly $D<0$ with $\lambda_0>0$ and $c_0<0$.
-
-**Solution.**
-
-Step 1, the derivative of $\lambda^2$: by the flow of part 1,
-
-$$\frac{d}{dt}\lambda^2=2\lambda\dot\lambda=-2k\,c\lambda^kr.$$
-
-Step 2, the derivative of $kc^2$:
-
-$$\frac{d}{dt}(kc^2)=2kc\,\dot c=-2k\,c\lambda^kr.$$
-
-Step 3, conservation: the two derivatives are equal, so $\frac{d}{dt}(\lambda^2-kc^2)=0$ and $\lambda(t)^2-kc(t)^2$ equals $D$ for all $t$. (This is balancedness with the factor $k$ coming from the tied weights; the untied depth-$(k+1)$ version gives $w_i^2-w_j^2$, as in c\_2024 Q2.)
-
-Step 4, $\lambda$ cannot reach $0$: suppose $\lambda(t_1)=0$ for some $t_1$. The constant curve $(0,c(t_1))$ solves the flow (part 2, step 5) and passes through the same point at time $t_1$. By uniqueness, forward and backward in time, the trajectory is that constant curve for all times, so $\lambda_0=0$. Hence $\lambda_0\ne0$ implies $\lambda(t)\ne0$ for all $t$.
-
-Step 5, the sign of $\lambda$: $\lambda(t)$ is continuous and never $0$, so by the intermediate value theorem it keeps the sign of $\lambda_0$.
-
-Step 6, $c$ keeps its sign in the trap regime: assume $\lambda_0>0$, $c_0<0$ and $D<0$. By conservation,
-
-$$k\,c(t)^2=\lambda(t)^2-D\ge-D>0,$$
-
-so $c$ never vanishes, and by the intermediate value theorem $c(t)<0$ for all $t$.
-
-Step 7, the loss: $\lambda(t)>0$ by step 5 and $c(t)<0$ by step 6, so the output $c\lambda^k$ is negative. Hence $r=c\lambda^k-y$ is below $-y$, so $|r|>y$ and $\ell=r^2/2$ is above $y^2/2$ for every $t\ge0$. Gradient flow never reaches the global minimum, where $\ell=0$.
-
-**In words.** The conserved quantity confines the trajectory to one branch of the hyperbola $\lambda^2-kc^2=D$. When $D<0$ that branch never crosses $c=0$, so with $\lambda>0$ and $c<0$ the network always outputs the wrong sign, which is worse than outputting $0$.
-
-**Sanity check.** From $(\lambda_0,c_0)=(0.5,-0.8)$ with $k=2$, $y=1$: $D=0.25-1.28$, which is $-1.03$. Numerically the loss stays above $0.5$ (its minimum is $0.50000008$) while $\lambda\to0$ and $c$ tends to $-\sqrt{1.03/2}$, about $-0.718$. In contrast, from $(1.5,-0.5)$, where $D=1.75$ is positive, $c$ crosses $0$ and the loss reaches $8\cdot10^{-27}$.
-
-**What to write in the exam.**
-
-- Conservation (3 pts): $\frac{d}{dt}\lambda^2$ and $\frac{d}{dt}(kc^2)$ both equal $-2kc\lambda^kr$.
-- Sign of $\lambda$ (2 pts): if $\lambda(t_1)=0$, uniqueness backward in time forces $\lambda_0=0$; then the intermediate value theorem.
-- Trap (3 pts): $kc^2\ge-D$ and $-D>0$, so $c<0$ forever; with $\lambda>0$ the residual is below $-y$, so $\ell>y^2/2$.
-
-*Verified: sympy confirms that the time derivative of $\lambda^2-kc^2$ vanishes for $k=2,\dots,6$; RK4 with step $10^{-4}$ keeps the drift below $3\cdot10^{-11}$ on seven runs, and three trap starts keep the loss above $y^2/2$.*
-
-**4.a (2) The residual equation and its sign**
-
-**What is asked.** Prove that $\dot r=-P(t)\,r$ with the given $P\ge0$, and that $r$ never changes sign. The answer is a computation and a short argument.
-
-**Tool and why.** The chain rule on $r=c\lambda^k-y$, then the integrating factor for a scalar linear ODE (cheat sheet §9). A linear equation in $r$ with a non-negative coefficient can shrink $r$ but never push it through $0$.
-
-**Definitions.** Let $I(t):=\int_0^tP(s)\,ds$, the accumulated rate. We introduce it as the exponent of the integrating factor.
+**Definitions.** Let $g:=\nabla\ell(w)$. Let $s(t):=\|u(t)\|^2$; by step 1 every $a_j(t)^2$ also equals $s(t)$, so $s$ is the common squared size of all layers.
 
 **Solution.**
 
-Step 1, the chain rule: $\dot r=\lambda^k\dot c+kc\lambda^{k-1}\dot\lambda$.
+Step 1, balancedness persists: by part 2.b, $a_j(t)^2-\|u(t)\|^2$ equals its initial value, which is $0$. So $a_j(t)^2=s(t)$ for all $j$ and $t$.
 
-Step 2, substitute the flow of part 1 and factor out $\lambda^{2k-2}$:
+Step 2, $s$ through $w$: $\pi^2$ is the product of the $N-1$ squares $a_j^2$, so $\pi^2=s^{N-1}$. Hence
+
+$$\|w\|^2=\pi^2\|u\|^2=s^{N-1}s=s^N,$$
+
+so $s=\|w\|^{2/N}$, $\pi^2=\|w\|^{2-\frac2N}$, and $\pi_{-j}^2=s^{N-2}$.
+
+Step 3, the product rule:
+
+$$\dot w=\dot\pi\,u+\pi\,\dot u.$$
+
+Step 4, the second term: by part 1.a, $\dot u=-\pi g$, so $\pi\dot u=-\pi^2g$, which is $-\|w\|^{2-\frac2N}g$ by step 2.
+
+Step 5, the derivative of $\pi$: by the product rule and part 1.a,
 
 $$\begin{aligned}
-\dot r&=\lambda^k(-\lambda^kr)+kc\lambda^{k-1}(-kc\lambda^{k-1}r)\\
-&=-\lambda^{2k}r-k^2c^2\lambda^{2k-2}r\\
-&=-\lambda^{2k-2}\big(\lambda^2+k^2c^2\big)r\\
-&=-P\,r.
+\dot\pi&=\sum_{j=2}^{N}\pi_{-j}\,\dot a_j\\
+&=-\langle g,u\rangle\sum_{j=2}^{N}\pi_{-j}^2\\
+&=-(N-1)\,s^{N-2}\,\langle g,u\rangle.
 \end{aligned}$$
 
-Step 3, $P\ge0$: $2k-2$ is even, so $\lambda^{2k-2}\ge0$, and $\lambda^2+k^2c^2$ is a sum of squares.
+The last line uses $\pi_{-j}^2=s^{N-2}$ from step 2 for each of the $N-1$ terms.
 
-Step 4, the sign: by the product rule and step 2,
+Step 6, the first term through $w$: since $w=\pi u$ and $\pi^2=s^{N-1}$,
 
-$$\frac{d}{dt}\big(r\,e^{I(t)}\big)=(\dot r+Pr)\,e^{I(t)}=0,$$
+$$\langle g,w\rangle w=\pi^2\langle g,u\rangle u=s^{N-1}\langle g,u\rangle u.$$
 
-so $r(t)=r(0)\,e^{-I(t)}$. The exponential is positive, so $r(t)$ has the sign of $r(0)$ for all $t$ (and $r\equiv0$ if $r(0)=0$).
+Assume $w\ne0$; then $s>0$ by step 2, and dividing by $s$,
 
-**In words.** The residual decays at the instantaneous rate $P(t)$, but the decay is multiplicative, so it can never overshoot through zero.
+$$s^{N-2}\langle g,u\rangle u=\frac{\langle g,w\rangle w}{s}=\frac{\langle g,w\rangle w}{\|w\|^{2/N}}.$$
 
-**Sanity check.** On the line $\lambda=0$ we get $P=0$, so $r$ is frozen at $-y$, which matches the stagnation of part 2.
+So by step 5, $\dot\pi u=-(N-1)\|w\|^{-\frac2N}\langle g,w\rangle w$.
+
+Step 7, combine: by steps 3, 4 and 6, and writing $\|w\|^{-\frac2N}$ as $\|w\|^{2-\frac2N}/\|w\|^2$,
+
+$$\boxed{\dot w=-\|w\|^{2-\frac2N}\Big(g+(N-1)\frac{\langle g,w\rangle}{\|w\|^2}w\Big)}$$
+
+Step 8, the case $w(t)=0$: then $s=0$ by step 2, so $u=0$ and every $a_j=0$, and the parameters sit at the origin, where $\nabla\phi=0$ (part 1.a). Hence $\dot u$ and all $\dot a_j$ vanish at time $t$, and so does $\dot w=\dot\pi u+\pi\dot u$.
+
+**In words.** Balancedness ties the size of every layer to $\|w\|$, so the network's internal state is determined by $w$ up to signs, and the dynamics close on $w$. Depth multiplies the plain gradient by $\|w\|^{2-2/N}$ and adds an extra push of $(N-1)$ times the component of the gradient along $w$.
+
+**Sanity check.** For $d=1$ we get $\frac{\langle g,w\rangle w}{w^2}=g$, so $\dot w=-N|w|^{2-\frac2N}(w-\beta)$, the scalar law of c\_2024 Q2(2) (there with $w>0$). For a concrete check take $N=3$, $\beta=(2,0)$, $w=(2,1)$: then $g=(0,1)$, $\langle g,w\rangle=1$ and $\|w\|^2=5$, so $\dot w=-5^{2/3}(0.8,1.4)$, about $(-2.339,-4.094)$, which matches the parameter flow for all sign patterns of the $a_j$.
 
 **What to write in the exam.**
 
-- Chain rule: $\dot r=\lambda^k\dot c+kc\lambda^{k-1}\dot\lambda$, which simplifies to $-Pr$.
-- Sign: $P\ge0$ and $r(t)=r(0)e^{-\int_0^tP}$.
+- Balancedness (1 pt): by 2.b, $a_j^2=\|u\|^2$ for all $t$; call it $s$.
+- Size (1 pt): $\|w\|^2=s^N$, so $\pi^2=\|w\|^{2-2/N}$ and $\pi_{-j}^2=s^{N-2}$.
+- Product rule (2 pts): $\pi\dot u=-\pi^2g$ and $\dot\pi=-(N-1)s^{N-2}\langle g,u\rangle$.
+- Rewrite (2 pts): $s^{N-2}\langle g,u\rangle u=\|w\|^{-2/N}\langle g,w\rangle w$, then combine; $w=0$ forces the origin, a critical point.
 
-*Verified: sympy confirms $\dot r+Pr=0$ identically for $k=2,\dots,6$.*
+*Verified: sympy compares $\dot\pi u+\pi\dot u$ with the boxed formula at random balanced points for $N=3,4,5$, $d=3$ and every sign pattern of $a_2,\dots,a_N$ (relative error below $10^{-12}$); numpy reproduces the concrete value.*
 
-**4.b (5) Under-fitting start**
+**3.b (3) The preconditioner**
 
-**What is asked.** For $c_0\lambda_0^k<y$, prove that $\lambda$ and $c$ are non-decreasing and that the loss decays at least like $e^{-2P_0t}$. The answer is a proof.
+**What is asked.** Write the dynamics as $\dot w=-P_w\nabla\ell(w)$, find the spectrum of $P_w$, compare with Lecture 4, Prop 1, and interpret. The answer is a matrix, its eigen-decomposition, and a sentence.
 
-**Tool and why.** The frozen signs of $r$ (part 4.a) and of $\lambda$ (part 3) fix the direction of motion of both parameters; then a lower bound on $P$ gives an exponential rate, as in PL-type arguments (cheat sheet §9).
+**Tool and why.** Rewrite $\langle g,w\rangle w$ as $ww^\top g$, then use the spectrum of identity plus a rank-one projection (cheat sheet §3 and §8).
 
-**Definitions.** $P_0$ and $I(t)$ as above; note that $P_0$ is $P$ evaluated at time $0$.
+**Definitions.** For $w\ne0$ let $\hat w:=w/\|w\|$, the unit vector along $w$.
 
 **Solution.**
 
-Step 1, the sign of $r$: $r(0)=c_0\lambda_0^k-y$ is negative, so $r(t)<0$ for all $t$ by 4.a.
+Step 1, the matrix: $\langle g,w\rangle w$ equals $ww^\top g$, so part 3.a reads $\dot w=-P_wg$ with
 
-Step 2, the sign of $\lambda$: $\lambda_0>0$, so $\lambda(t)>0$ for all $t$ by part 3.
+$$P_w:=\|w\|^{2-\frac2N}\big(I_d+(N-1)\hat w\hat w^\top\big),$$
 
-Step 3, $c$ increases: $\dot c=-\lambda^kr$, and both $\lambda^k$ and $-r$ are positive, so $\dot c>0$ and $c(t)\ge c_0$, which is positive.
+which is symmetric.
 
-Step 4, $\lambda$ increases: $\dot\lambda=-kc\lambda^{k-1}r$, and $c>0$ (step 3), $\lambda^{k-1}>0$ and $-r>0$, so $\dot\lambda>0$ and $\lambda(t)\ge\lambda_0$.
+Step 2, the direction $\hat w$: $\hat w\hat w^\top\hat w=\hat w$, so $P_w\hat w=N\|w\|^{2-\frac2N}\hat w$. The eigenvalue is $N\|w\|^{2-\frac2N}$.
 
-Step 5, the rate is at least $P_0$: for positive $\lambda,c$ both factors $\lambda^{2k-2}$ and $\lambda^2+k^2c^2$ are non-decreasing in $\lambda$ and in $c$, so steps 3 and 4 give $P(t)\ge P_0$, hence $I(t)\ge P_0t$.
+Step 3, directions orthogonal to $w$: if $\langle v,w\rangle=0$ then $\hat w\hat w^\top v=0$, so $P_wv=\|w\|^{2-\frac2N}v$. This eigenvalue $\|w\|^{2-\frac2N}$ has multiplicity $d-1$.
 
-Step 6, the loss: by 4.a,
+Step 4, compare with Lecture 4, Prop 1: the $1\times d$ matrix $w^\top$ has the single singular value $\sigma_1=\|w\|$ with left vector $1$ and right vector $\hat w$, and $\sigma_{r'}=0$ for the other right vectors. Prop 1 gives the eigenvalue $\sum_{j=1}^N\sigma_1^{\frac{2(N-j)}{N}}\sigma_{r'}^{\frac{2(j-1)}{N}}$. For $r'=1$ every term equals $\sigma_1^{\frac{2(N-1)}{N}}$, so the sum is $N\|w\|^{2-\frac2N}$. For $r'\ge2$ only the $j=1$ term survives, with the convention $\sigma^0=1$, and equals $\|w\|^{2-\frac2N}$. Both agree with steps 2 and 3.
 
-$$\begin{aligned}
-\ell(t)&=\tfrac12r(t)^2\\
-&=\tfrac12r(0)^2e^{-2I(t)}\\
-&\le\ell(\lambda_0,c_0)\,e^{-2P_0t}.
-\end{aligned}$$
+Step 5, interpretation: depth amplifies motion along the current direction of $w$, by the factor $N$ relative to rotations of $w$; so growing or shrinking the predictor along the direction it already points in is favoured over turning it.
 
-**In words.** Once both parameters move up, the problem only becomes better conditioned, because $P$ grows with $\lambda$ and $c$. So the rate at the start is a guaranteed worst case for the whole run.
+**In words.** The deep network is plain gradient flow on $\ell$ seen through a lens that magnifies the radial component of the gradient $N$ times. The lens is set by where $w$ already is, which is the "depth promotes directions already traversed" picture of Lecture 4.
 
-**Sanity check.** For $k=2$, $y=1$ and $(\lambda_0,c_0)=(0.5,0.5)$: $P_0=0.25\cdot(0.25+4\cdot0.25)$, which is $0.3125$, so the guaranteed rate $2P_0$ is $0.625$. This is also the value of part 5's formula $2(1+k^2)\varepsilon^{2k}$ at $\varepsilon=0.5$, as it should be.
+**Sanity check.** At $N=1$ the formula would give $P_w=I_d$, plain gradient flow. The eigenvalues are all positive when $w\ne0$, so $P_w$ is positive definite there, and the loss can only decrease.
 
 **What to write in the exam.**
 
-- Monotonicity (2 pts): $r<0$ by 4.a and $\lambda>0$ by part 3, so $\dot c>0$ and then $\dot\lambda>0$.
-- Rate (1 pt): $P(t)\ge P_0$ because $P$ is non-decreasing in positive $\lambda$ and $c$.
-- Bound (2 pts): $\ell(t)=\ell(0)e^{-2\int_0^tP}$, at most $\ell(0)e^{-2P_0t}$.
+- Matrix (1 pt): $P_w=\|w\|^{2-2/N}(I_d+(N-1)\hat w\hat w^\top)$.
+- Spectrum (1 pt): $N\|w\|^{2-2/N}$ on $\hat w$, and $\|w\|^{2-2/N}$ on $w^\perp$ ($d-1$ times); same as Prop 1 with $\sigma_1=\|w\|$.
+- Interpretation (1 pt): depth speeds up radial motion along $w$ by the factor $N$ relative to rotation.
 
-*Verified: RK4 on four under-fitting starts with $k\in\{2,3,4\}$ shows $\lambda$ and $c$ non-decreasing on the whole grid and the loss below the envelope $\ell(0)e^{-2P_0t}$.*
+*Verified: numpy eigenvalues of $P_w$ for random $w\in\mathbb{R}^4$ and $N=3,4,7$ equal $\|w\|^{2-2/N}$ times $(1,1,1,N)$, and Prop 1's formula with $\sigma=(\|w\|,0,0,0)$ gives the same list.*
 
-**4.c (3) Over-fitting start**
+**4.a (3) The end-to-end vector stays away from the origin**
 
-**What is asked.** For $c_0\lambda_0^k>y$, prove that the loss decays at least like $e^{-2y^2t/c_0^2}$. The answer is a proof.
+**What is asked.** Prove that $\|w(t)\|\ge c$ for all $t$. The answer is a short proof.
 
-**Tool and why.** Part 4.a again (cheat sheet §9), but the lower bound on $P$ must now come from the output $c\lambda^k$ staying above $y$, because both parameters decrease.
+**Tool and why.** Gradient flow never increases the objective (Recitation: gradient flow, cheat sheet §7), and the objective equals $\ell(w(t))$, a function of the distance to $\beta$. A distance to $\beta$ that never grows keeps $w$ away from $0$ by the triangle inequality. This is the margin-persistence step of Lecture 4, Thm 2.
 
 **Definitions.** No new notation.
 
 **Solution.**
 
-Step 1, the signs: $r(0)>0$, so $r(t)>0$ for all $t$ by 4.a, and $\lambda(t)>0$ by part 3.
+Step 1, the loss does not increase: $\phi(\theta(t))=\ell(w(t))$ is non-increasing, so $\ell(w(t))\le\ell(w(0))$.
 
-Step 2, $c$ decreases: $\dot c=-\lambda^kr$ is negative, so $c(t)\le c_0$.
+Step 2, the distance to $\beta$: $\ell(w)=\tfrac12\|w-\beta\|^2$, so step 1 gives $\|w(t)-\beta\|\le\|w(0)-\beta\|$.
 
-Step 3, $c$ stays positive: $c\lambda^k=y+r$, which exceeds $y$ because $r>0$, so it is positive; since $\lambda^k>0$, this forces $c>0$. (Then also $\dot\lambda=-kc\lambda^{k-1}r$ is negative: both parameters decrease.)
+Step 3, the triangle inequality: $\|\beta\|\le\|w(t)\|+\|\beta-w(t)\|$, so by step 2
 
-Step 4, a lower bound on $\lambda^k$: dividing $c\lambda^k>y$ by $c>0$ and using $c\le c_0$,
+$$\begin{aligned}
+\|w(t)\|&\ge\|\beta\|-\|w(t)-\beta\|\\
+&\ge\|\beta\|-\|w(0)-\beta\|\\
+&=c.
+\end{aligned}$$
 
-$$\lambda(t)^k>\frac{y}{c(t)}\ge\frac{y}{c_0}.$$
+**In words.** The flow starts inside the ball of radius $\|\beta\|-c$ around $\beta$ and can never leave it, because leaving would increase the loss. That ball stays at distance $c$ from the origin, the dangerous saddle of part 1.
 
-Step 5, a lower bound on $P$: drop the non-negative term $k^2c^2\lambda^{2k-2}$ from $P$:
-
-$$P=\lambda^{2k}+k^2c^2\lambda^{2k-2}\ge\lambda^{2k}>\frac{y^2}{c_0^2}.$$
-
-Step 6, the loss: as in 4.b, $\ell(t)=\ell(0)e^{-2I(t)}$ with $I(t)\ge y^2t/c_0^2$, which gives the stated bound.
-
-**In words.** Here the parameters shrink, so the monotonicity of 4.b cannot be reused. But the output never drops below the target, which keeps $\lambda^k$ bounded away from $0$ and the rate bounded below.
-
-**Sanity check.** For $k=2$, $y=1$ and $(\lambda_0,c_0)=(1.5,1.2)$ the guaranteed rate $2y^2/c_0^2$ is about $1.39$, and the numerical loss stays below the envelope and reaches $9\cdot10^{-23}$ by $t=5$.
+**Sanity check.** With $\beta=(2,0)$ and $w(0)=(2,1)$: $\|w(0)-\beta\|=1$, below $\|\beta\|=2$, so $c=1$. Numerically $\|w(t)\|$ starts at $\sqrt5$, about $2.236$, and settles at $\|\beta\|=2$; its smallest value is about $1.946$ for $N=3$ and $1.915$ for $N=5$, far above $c=1$.
 
 **What to write in the exam.**
 
-- Signs (1 pt): $r>0$ by 4.a, $\lambda>0$ by part 3, so $c$ decreases.
-- Lower bound (1 pt): $c\lambda^k>y$ gives $c>0$ and $\lambda^k>y/c_0$.
-- Rate (1 pt): $P\ge\lambda^{2k}$ and $\lambda^{2k}>y^2/c_0^2$, then 4.a.
+- Monotone loss (1 pt): $\ell(w(t))\le\ell(w(0))$, so $\|w(t)-\beta\|\le\|w(0)-\beta\|$.
+- Triangle inequality (2 pts): $\|w(t)\|\ge\|\beta\|-\|w(t)-\beta\|$, and the right side is at least $c$.
 
-*Verified: RK4 on three over-fitting starts shows $\lambda$ and $c$ non-increasing and the loss below the envelope $\ell(0)e^{-2y^2t/c_0^2}$.*
+*Verified: RK4 runs on $18$ random balanced starts with a margin ($N\in\{3,4,6\}$, $d\le4$, random signs of $a_j$) keep $\|w(t)\|/c\ge1$ on the whole grid.*
 
-**5. (4) Vanishing gradients**
+**4.b (4) A linear convergence rate**
 
-**What is asked.** At the initialization $(\lambda_0,c_0)=(\varepsilon,\varepsilon)$ bound the gradient norm, compute the rate of 4.b, and interpret the result for long memories. The answer is two formulas and an interpretation.
+**What is asked.** Prove that the loss decays at least like $\exp(-2c^{2-2/N}t)$. The answer is a proof.
 
-**Tool and why.** Substitution into the gradient of part 1 and into $P_0$ of 4.b (cheat sheet §9).
+**Tool and why.** The chain rule along the end-to-end dynamics of 3.a, a lower bound on the preconditioner, and an integrating factor (cheat sheet §9). This is Lecture 4, Thm 2 done by hand for this network.
 
-**Definitions.** Let $r_0:=\varepsilon^{k+1}-y$, the residual at initialization.
+**Definitions.** Let $L(t):=\ell(w(t))$ and $\kappa:=2c^{2-\frac2N}$, the claimed rate.
 
 **Solution.**
 
-Step 1, 4.b applies: $\varepsilon^{k+1}$ is positive and below $1$, while $y\ge1$, so
+Step 1, 3.a applies: by 4.a, $\|w(t)\|\ge c$, which is positive, so $w(t)\ne0$ for every $t$.
 
-$$-y<r_0<0.$$
+Step 2, the derivative of the loss: with $g=w-\beta$, the gradient of $\ell$, the chain rule and 3.a give
 
-In particular $c_0\lambda_0^k<y$ and $|r_0|<y$.
+$$\begin{aligned}
+\dot L&=\langle g,\dot w\rangle\\
+&=-\|w\|^{2-\frac2N}\Big(\|g\|^2+(N-1)\frac{\langle g,w\rangle^2}{\|w\|^2}\Big)\\
+&\le-\|w\|^{2-\frac2N}\|g\|^2.
+\end{aligned}$$
 
-Step 2, the gradient: by part 1, $\partial_\lambda\ell=k\varepsilon\cdot\varepsilon^{k-1}r_0$, which is $k\varepsilon^kr_0$, and $\partial_c\ell=\varepsilon^kr_0$. So
+The inequality drops a term that is non-negative because $N-1>0$.
 
-$$\|\nabla\ell(\varepsilon,\varepsilon)\|=|r_0|\,\varepsilon^k\sqrt{k^2+1}.$$
+Step 3, the gradient through the loss: $\|g\|^2$ is $\|w-\beta\|^2$, which equals $2L$.
 
-Step 3, the bound: $\sqrt{k^2+1}\le k+1$ because $k^2+1\le k^2+2k+1$, and $|r_0|<y$ by step 1. Hence
+Step 4, the lower bound on the size: the exponent $2-\frac2N$ is positive, so $x\mapsto x^{2-\frac2N}$ is increasing on $[0,\infty)$, and $\|w\|\ge c$ (4.a) gives $\|w\|^{2-\frac2N}\ge c^{2-\frac2N}$. With step 3,
 
-$$\|\nabla\ell(\varepsilon,\varepsilon)\|\le(k+1)\,y\,\varepsilon^k.$$
+$$\dot L\le-2c^{2-\frac2N}L=-\kappa L.$$
 
-Step 4, the rate: substituting $(\lambda_0,c_0)=(\varepsilon,\varepsilon)$ into $P_0$,
+Step 5, integrating factor: by the product rule and step 4,
 
-$$2P_0=2\varepsilon^{2k-2}(\varepsilon^2+k^2\varepsilon^2)=2(1+k^2)\varepsilon^{2k}.$$
+$$\frac{d}{dt}\big(e^{\kappa t}L(t)\big)=e^{\kappa t}\big(\dot L+\kappa L\big)\le0,$$
 
-Step 5, interpretation: both the gradient and the guaranteed rate are exponentially small in the lag $k$. With small recurrent weights the gradient signal from an impulse $k$ steps back decays like $\varepsilon^k$, so a long-range memory is learned slowly; this is the vanishing-gradient phenomenon.
+so $e^{\kappa t}L(t)\le L(0)$, that is
 
-**In words.** The learning signal travels back through the same $k$ multiplications by $\lambda$ as the forward signal, so a small $\lambda$ damps it $k$ times. The stagnation at $\lambda_0=0$ in part 2 is the limit $\varepsilon\to0$ of this picture.
+$$\boxed{\ell(w(t))\le\ell(w(0))\,e^{-2c^{2-\frac2N}t}}$$
 
-**Sanity check.** At $\varepsilon=0.5$ the rate $2(1+k^2)\varepsilon^{2k}$ is $0.625$ for $k=2$, about $0.051$ for $k=5$ and about $1.9\cdot10^{-4}$ for $k=10$: a lag of $10$ already makes learning thousands of times slower than a lag of $2$.
+**In words.** The margin keeps $\|w\|$ at least $c$, so the preconditioner never drops below $c^{2-2/N}$ times the identity, and the strongly convex loss then decays exponentially, at any depth. Without a margin, $\|w\|$ could approach $0$, where the preconditioner vanishes.
+
+**Sanity check.** With $\beta=(2,0)$, $w(0)=(2,1)$ and $c=1$ the bound is $\tfrac12e^{-2t}$ for every $N$: at $t=1$ it is about $0.0677$, while the numerical loss is $0.0029$ for $N=3$ and $0.0011$ for $N=5$. Compared with Thm 2 of Lecture 4 (with $\alpha=1$), our rate is twice as large because $\|\nabla\ell\|^2=2(\ell-\ell^*)$ exactly here. The rate $c^{2-2/N}$ depends on depth: for $c=0.5$ it is $0.397$ at $N=3$ and $0.287$ at $N=10$, while for $c=2$ it grows with $N$.
 
 **What to write in the exam.**
 
-- Applicability: $r_0=\varepsilon^{k+1}-y$ lies in $(-y,0)$, so 4.b applies.
-- Gradient (part of 3 pts): $|r_0|\varepsilon^k\sqrt{k^2+1}\le(k+1)y\varepsilon^k$.
-- Rate (part of 3 pts): $2P_0=2(1+k^2)\varepsilon^{2k}$.
-- Interpretation (1 pt): exponentially small in $k$, the vanishing-gradient phenomenon.
+- Chain rule (1 pt): $\dot L=-\|w\|^{2-2/N}(\|g\|^2+(N-1)\langle g,\hat w\rangle^2)$, at most $-\|w\|^{2-2/N}\|g\|^2$.
+- Bounds (2 pts): $\|g\|^2=2L$ and $\|w\|^{2-2/N}\ge c^{2-2/N}$ by 4.a.
+- Integration (1 pt): $\frac{d}{dt}(e^{\kappa t}L)\le0$ with $\kappa=2c^{2-2/N}$.
 
-*Verified: sympy simplifies the squared gradient norm at $(\varepsilon,\varepsilon)$ to $(\varepsilon^{k+1}-y)^2\varepsilon^{2k}(k^2+1)$ and $2P_0$ to $2(1+k^2)\varepsilon^{2k}$ for $k=2,\dots,6$; python evaluates the rates at $\varepsilon=0.5$.*
+*Verified: the same $18$ RK4 runs (step $2\cdot10^{-3}$ up to $t=6$) keep the ratio of the loss to the envelope at most $1$; the concrete example gives $0.00292$ ($N=3$) and $0.00108$ ($N=5$) against $0.0677$ at $t=1$.*
+
+**5. (4) The margin cannot be dropped**
+
+**What is asked.** For a balanced start with $w(0)=-\gamma\beta$, prove that the loss stays above $\tfrac12\|\beta\|^2$ forever. The answer is a proof.
+
+**Tool and why.** Uniqueness of the flow at the critical origin (as in part 1.a) to keep $w(t)\ne0$; then the end-to-end ODE of 3.a gives a linear ODE for the component of $w$ orthogonal to $\beta$, solved by an integrating factor (cheat sheet §7 and §8); finally the intermediate value theorem for the sign.
+
+**Definitions.** Let $Q:=I_d-\hat\beta\hat\beta^\top$, the orthogonal projection onto the complement of $\beta$; we introduce it to follow the part of $w$ that is not along $\beta$. Let $\rho(t):=\langle w(t),\hat\beta\rangle$, the coordinate of $w$ along $\beta$.
+
+**Solution.**
+
+Step 1, $w(t)$ never vanishes: suppose $w(t_1)=0$. By 3.a, step 8, the parameters are at the origin at time $t_1$. The origin is a critical point (part 1.a), so the constant curve $\theta\equiv0$ solves the flow through that point. By uniqueness, forward and backward in time, $\theta(t)=0$ for all $t$, so $w(0)=0$. This contradicts $w(0)=-\gamma\beta$, which is not $0$.
+
+Step 2, the orthogonal part: since $Q\beta=0$, we get $Qg=Qw$ from $g=w-\beta$. Applying $Q$ to the boxed formula of 3.a (valid by step 1),
+
+$$Q\dot w=-k(t)\,Qw,\qquad k(t):=\|w\|^{2-\frac2N}\Big(1+(N-1)\frac{\langle g,w\rangle}{\|w\|^2}\Big),$$
+
+where $k$ is continuous because $w(t)\ne0$.
+
+Step 3, solve it: let $K(t):=\int_0^tk$. By the product rule and step 2, $\frac{d}{dt}\big(e^{K(t)}Qw(t)\big)=0$, so $Qw(t)=e^{-K(t)}Qw(0)$. And $Qw(0)$ is $-\gamma Q\beta$, which is $0$, so $Qw(t)=0$ for all $t$: $w(t)=\rho(t)\hat\beta$.
+
+Step 4, the sign of $\rho$: $\rho$ is continuous, $\rho(t)\ne0$ by steps 1 and 3, and $\rho(0)=-\gamma\|\beta\|$ is negative. By the intermediate value theorem $\rho(t)<0$ for all $t$.
+
+Step 5, the loss: $w-\beta=(\rho-\|\beta\|)\hat\beta$, and $\rho-\|\beta\|<-\|\beta\|$, a negative number, so
+
+$$\ell(w(t))=\tfrac12\big(\rho(t)-\|\beta\|\big)^2>\tfrac12\|\beta\|^2.$$
+
+Interpretation: here $\|w(0)-\beta\|=(1+\gamma)\|\beta\|$, which is more than $\|\beta\|$, so part 4 does not apply. In Lecture 4, a small random initialization has a margin only with probability about $\tfrac12$; this is an extreme case of the other half.
+
+**In words.** Pointing exactly against $\beta$, the predictor can only shrink towards $0$ along the same line, and it cannot pass through $0$ because the origin is a critical point of the parameters. So it creeps towards the non-strict saddle of part 1 and stalls there.
+
+**Sanity check.** With $\beta=(1,0,0)$ and $w(0)=-\beta$, RK4 up to $t=200$ keeps the two orthogonal coordinates exactly $0$ and $\rho<0$, with the loss decreasing from $2$ towards $\tfrac12$ but staying above it (about $0.5000001$ at $t=200$ for $N=3$). A tilted start $w(0)=(-1,0.05)$ is not covered: it lingers near the saddle (loss $0.5001$ at $t=20$) and then escapes (loss $3\cdot10^{-6}$ at $t=80$).
+
+**What to write in the exam.**
+
+- Nonzero (1 pt): $w(t_1)=0$ means all parameters are $0$, a critical point, so uniqueness forces $w(0)=0$.
+- Orthogonal part (2 pts): $Q\dot w=-k(t)Qw$ with $Qw(0)=0$, so $w(t)=\rho(t)\hat\beta$.
+- Sign and loss (1 pt): $\rho$ stays negative, so $\ell=\tfrac12(\rho-\|\beta\|)^2$ exceeds $\tfrac12\|\beta\|^2$.
+
+*Verified: RK4 (step $10^{-2}$ up to $t=200$) from $w(0)=-\beta$ for $N=3,4,5$ keeps the orthogonal part at $0$, $\rho<0$ and the minimum loss above $\tfrac12$ ($0.50000012$, $0.5000062$, $0.5000233$); the tilted run gives $0.500098$ at $t=20$ and $3\cdot10^{-6}$ at $t=80$.*
 
 **Common mistakes.**
 
-- Dropping the factor $k$ in $\dot\lambda$ (costs 1 point). It also breaks part 3: one would "conserve" $\lambda^2-c^2$, which is false.
-- Claiming that $\lambda^2$ or $c^2$ alone is conserved, or arguing that "$\lambda$ cannot cross $0$ because the gradient is small near $0$" instead of using uniqueness backward in time.
-- In 4.b, using positivity of $\lambda$ and $c$ without justification (costs 2 points); in 4.c, reusing the monotonicity of 4.b although the parameters now decrease.
+- Flipping the transposes in 2.a, writing $W_{j+1}W_{j+1}^\top-W_j^\top W_j$ (the matrices then have the wrong sizes), or stopping after step 3 without symmetrizing (costs 2 points).
+- In 3.a, writing $\pi=s^{(N-1)/2}$ instead of $\pi^2=s^{N-1}$ (the sign of $\pi$ is free), or forgetting the factor $N-1$ in $\dot\pi$.
+- In 4.b, using the bound $\|w\|\ge c$ without proving it (that is part 4.a), or applying the formula of 3.a without noting $w(t)\ne0$; in 5, claiming "$w$ cannot cross $0$" from continuity alone instead of uniqueness at the critical origin.
 
-**💡 Useful tricks:** Unroll to $s_L = \sum\lambda^{L-t}x_t$, so a one-hot input picks out the single power $\lambda^k$. Weight sharing gives the conservation law $\lambda^2 - kc^2$ (note the factor $k$). The line $\{\lambda = 0\}$ is invariant, so by uniqueness the sign of $\lambda$ is frozen. The residual obeys a linear ODE $\dot r = -Pr$, so its sign is frozen too. Lower-bound $P$ via monotonicity (under-fit) or via $c\lambda^k \ge y$ (over-fit) to get the exponential rates.
+**💡 Useful tricks:** Each partial derivative is "product of the other factors times $\nabla\ell$", which vanishes at the origin for $N\ge3$, and all non-constant terms of $\phi$ have degree at least $N$. For conservation, compare $\dot W_jW_j^\top$ with $W_{j+1}^\top\dot W_{j+1}$ and add transposes. Under balancedness $\|w\|^2=s^N$, so every factor becomes a power of $\|w\|$. Monotone loss plus the triangle inequality keeps $\|w\|\ge c$, which lower-bounds the preconditioner.
 
-**⚠️ Watch out:** (1) don't drop the factor $k$ in $\dot\lambda$. (2) Non-convexity needs a critical point that is *not* a global minimum, so exhibit both. (3) Conserved is $\lambda^2 - kc^2$, not $\lambda^2$ or $c^2$; "$\lambda$ cannot cross $0$" needs backward uniqueness. (4) Justify positivity before lower-bounding $P$, and in the over-fit case the parameters *decrease*. (5) The rate $\propto\varepsilon^{2k}$ is exponentially small in the memory length: this is the vanishing-gradient phenomenon.
+**⚠️ Watch out:** (1) Non-convexity needs a critical point that is not a global minimum, so exhibit both. (2) Balancedness is $W_{j+1}^\top W_{j+1}=W_jW_j^\top$, not the transposed version. (3) $\pi$ can be negative; only $\pi^2=s^{N-1}$ is fixed. (4) The rate needs $\|w(t)\|\ge c$ for all $t$, proved from the margin, not just at $t=0$. (5) Without a margin, gradient flow can stall at the non-strict saddle at the origin.
 
 ## Q3 — Min-norm interpolation and a norm-adaptive bound with doubling radii (30)
 
@@ -890,9 +980,11 @@ Step 9, why the vacuity is deserved: for any prediction $p$, the two possible lo
 - Common traps to check: Q1.1 only $w_i > 0$ treated (right-closed steps and constant neurons
   missed); Q1.2 the skip term $\alpha x$ ignored, or c\_2024's $B+1$ pieces quoted outside its
   hypotheses; Q1.3 construction without an invariant proof; Q1.4 condition (1) omitted; Q1.5
-  missing that $F$ is arbitrary; Q2.1 missing factor $k$; Q2.2 critical point without a
-  strictly better point; Q2.3 claiming $\lambda^2$ conserved, or no uniqueness argument for
-  the sign of $\lambda$; Q2.4 positivity of $\lambda, c$ assumed without proof, or over-fit
-  case treated like the under-fit one; Q3.1 convergence assumed instead of proved; Q3.2
+  missing that $F$ is arbitrary; Q2.1 critical point without a strictly better point, or
+  Hessian claimed zero without the degree argument; Q2.2 transposes flipped
+  ($W_{j+1} W_{j+1}^\top$) or no symmetrization; Q2.3 $\pi = s^{(N-1)/2}$ instead of
+  $\pi^2 = s^{N-1}$, or the factor $N-1$ in $\dot\pi$ missing; Q2.4 $\|w(t)\| \ge c$ used
+  without proof; Q2.5 "cannot cross $0$" without the uniqueness argument at the origin;
+  Q3.1 convergence assumed instead of proved; Q3.2
   missing $\frac1N$ or Jensen reversed; Q3.3 non-summable $\delta_k$ or a shell not containing
   $w$; Q3.4b calling the vacuity a weakness of the bound.
